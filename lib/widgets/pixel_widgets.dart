@@ -62,6 +62,8 @@ class PixelTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final int maxLines;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
 
   const PixelTextField({
     super.key,
@@ -74,6 +76,8 @@ class PixelTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.maxLines = 1,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -112,6 +116,8 @@ class PixelTextField extends StatelessWidget {
       onTap: onTap,
       maxLines: maxLines,
       enableInteractiveSelection: true, // Hacer el texto seleccionable
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
     );
   }
 }
