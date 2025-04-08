@@ -9,6 +9,7 @@ import 'theme/pixel_theme.dart';
 import 'screens/admin/admin_screen.dart';
 import 'services/user_service.dart';
 import 'screens/missions/mission_list_screen.dart';
+import 'screens/game/character_creation_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const AuthCheckScreen(),
         '/auth': (context) => const AuthWrapper(),
+        '/character': (context) => const CharacterCreationScreen(),
         '/home': (context) => const HomeScreen(),
         '/admin': (context) => const AdminScreen(),
         '/missions': (context) => const MissionListScreen(),
@@ -91,6 +93,14 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProv
       if (user != null) {
         final userData = await _userService.getUserData(user.uid);
         final role = userData?['role'] as String? ?? 'user';
+        // Si es usuario y no ha creado personaje, redirigir a creación
+        if (role != 'admin') {
+          final created = userData?['characterCreated'] as bool? ?? false;
+          if (!created) {
+            Navigator.pushReplacementNamed(context, '/character');
+            return;
+          }
+        }
         if (role == 'admin') {
           Navigator.pushReplacementNamed(context, '/admin');
         } else {

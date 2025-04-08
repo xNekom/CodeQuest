@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'question_screen.dart';
 import '../../widgets/pixel_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/user_service.dart';
 
 /// Pantalla de detalle de misión y primer paso de aventura
 class MissionDetailScreen extends StatelessWidget {
   final String missionId;
 
-  const MissionDetailScreen({Key? key, required this.missionId}) : super(key: key);
+  const MissionDetailScreen({super.key, required this.missionId});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,11 @@ class MissionDetailScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 Center(
                   child: PixelButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        await UserService().startMission(user.uid, missionId);
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(

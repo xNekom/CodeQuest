@@ -1,0 +1,16 @@
+[
+  {
+    "id": "q1",
+    "text": "¿Qué es una variable en Java?",
+    "options": ["Un valor almacenado", "Una función", "Una clase", "Un comentario"],
+    "correctAnswerIndex": 0,
+    "explanation": "Una variable almacena datos que pueden cambiar durante la ejecución."
+  },
+  {
+    "id": "q2",
+    "text": "¿Cuál es la salida de `System.out.println(2 + 3);`?",
+    "options": ["23", "5", "Error", "`2 + 3`"],
+    "correctAnswerIndex": 1,
+    "explanation": "El operador + suma dos números enteros, dando 5."
+  }
+]

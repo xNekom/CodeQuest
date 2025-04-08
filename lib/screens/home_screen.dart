@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/character_pixelart.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
         child: _isLoading
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -95,12 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAppBar() {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2,2))],
       ),
       child: Row(
         children: [
@@ -118,6 +121,16 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: 'Editar Personaje',
+            onPressed: () async {
+              // Navegar a creación/edición de personaje
+              await Navigator.pushNamed(context, '/character');
+              // Recargar datos del usuario para reflejar cambios
+              await _loadUserData();
+            },
+          ),
         ],
       ),
     );
@@ -125,54 +138,68 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUserHeader() {
     return PixelCard(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              PixelAvatar(
-                size: 80,
-                name: _userData!['username'],
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: LayoutBuilder(builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 400;
+        return Column(
+          children: [
+            isWide
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      '${_userData!['username'] ?? 'Aventurero'}',
-                      style: Theme.of(context).textTheme.titleLarge,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.star, size: 18),
-                        SizedBox(width: 8),
-                        Text('Nivel: ${_userData!['level'] ?? 1}'),
-                      ],
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.monetization_on, size: 18, color: Colors.amber),
-                        SizedBox(width: 8),
-                        Text('${_userData!['coins'] ?? 0} monedas'),
-                      ],
-                    ),
+                    Hero(tag: 'avatar_${_userData!['username']}', child: CharacterPixelArt(
+                      skinTone: _userData!['skinTone'] as String,
+                      hairStyle: _userData!['hairStyle'] as String,
+                      outfit: _userData!['outfit'] as String,
+                      size: 80,
+                    )),
+                    const SizedBox(width: 16),
+                    Expanded(child: _buildUserInfo()),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Hero(tag: 'avatar_${_userData!['username']}', child: CharacterPixelArt(
+                      skinTone: _userData!['skinTone'] as String,
+                      hairStyle: _userData!['hairStyle'] as String,
+                      outfit: _userData!['outfit'] as String,
+                      size: 80,
+                    )),
+                    const SizedBox(height: 8),
+                    _buildUserInfo(),
                   ],
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          Text('Experiencia'),
-          SizedBox(height: 4),
-          PixelProgressBar(
-            value: _calculateExpProgress(),
-            label: '${_userData!['experience'] ?? 0} / ${_getCurrentLevelMaxExp()} XP',
-          ),
-        ],
-      ),
+            const SizedBox(height: 16),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: _calculateExpProgress()),
+              duration: const Duration(seconds: 1),
+              builder: (context, value, child) {
+                return Column(children: [
+                  const Text('Experiencia'),
+                  const SizedBox(height: 4),
+                  PixelProgressBar(value: value, label: '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP'),
+                ]);
+              },
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildUserInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${_userData!['username']}',
+          style: Theme.of(context).textTheme.titleLarge,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 8),
+        Row(children: [Icon(Icons.star, size: 18), const SizedBox(width: 8), Text('Nivel: ${_userData!['level'] ?? 1}')]),
+        const SizedBox(height: 4),
+        Row(children: [Icon(Icons.monetization_on, size: 18, color: Colors.amber), const SizedBox(width: 8), Text('${_userData!['coins'] ?? 0} monedas')]),
+      ],
     );
   }
 

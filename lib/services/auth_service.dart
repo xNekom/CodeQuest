@@ -125,6 +125,9 @@ class AuthService {
         'inventory': {},
         'unlockedAbilities': [],
         'equippedItems': {},
+        'skinTone': 'normal',
+        'hairStyle': 'short',
+        'outfit': 'adventurer',
         'characterStats': {
           'questionsAnswered': 0,
           'correctAnswers': 0,
