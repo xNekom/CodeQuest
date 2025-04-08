@@ -25,9 +25,16 @@ class AuthService {
       
       // Actualizar la fecha del último inicio de sesión
       if (result.user != null) {
-        await _firestore.collection('users').doc(result.user!.uid).update({
+        final uid = result.user!.uid;
+        await _firestore.collection('users').doc(uid).update({
           'lastLogin': FieldValue.serverTimestamp(),
         });
+        // Verificar si falta documento de perfil y crearlo si no existe
+        final doc = await _firestore.collection('users').doc(uid).get();
+        if (!doc.exists) {
+          final defaultUsername = result.user!.email!.split('@')[0];
+          await _createUserDocument(uid, result.user!.email!, defaultUsername);
+        }
       }
       
       return result;
@@ -76,6 +83,16 @@ class AuthService {
     }
   }
   
+  // Enviar email de restablecimiento de contraseña
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      debugPrint('Error al enviar reset de contraseña: $e');
+      rethrow;
+    }
+  }
+  
   // Verificar si un nombre de usuario ya existe
   Future<bool> _checkUsernameExists(String username) async {
     try {
@@ -98,18 +115,26 @@ class AuthService {
       await _firestore.collection('users').doc(uid).set({
         'email': email,
         'username': username,
-        'createdAt': FieldValue.serverTimestamp(),
-        'lastLogin': FieldValue.serverTimestamp(),
+        'role': 'user',
+        'currentMissionId': '',
+        'progressInMission': {},
+        'completedMissions': {},
         'level': 1,
-        'experience': 0,
-        'coins': 0,
-        'completedMissions': [],
-        'stats': {
+        'experiencePoints': 0,
+        'gameCurrency': 0,
+        'inventory': {},
+        'unlockedAbilities': [],
+        'equippedItems': {},
+        'characterStats': {
           'questionsAnswered': 0,
           'correctAnswers': 0,
           'battlesWon': 0,
           'battlesLost': 0,
         },
+        'difficultConcepts': {},
+        'settings': {},
+        'lastLogin': FieldValue.serverTimestamp(),
+        'creationDate': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       debugPrint('Error al crear documento de usuario: $e');

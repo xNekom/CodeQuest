@@ -1,0 +1,141 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
+import '../../widgets/pixel_widgets.dart';
+
+/// Pantalla de preguntas de una misión
+class QuestionScreen extends StatefulWidget {
+  final String missionId;
+
+  const QuestionScreen({Key? key, required this.missionId}) : super(key: key);
+
+  @override
+  State<QuestionScreen> createState() => _QuestionScreenState();
+}
+
+class _QuestionScreenState extends State<QuestionScreen> {
+  final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
+  List<String> _questionIds = [];
+  int _currentIndex = 0;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMissionStructure();
+  }
+
+  Future<void> _loadMissionStructure() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('missions')
+        .doc(widget.missionId)
+        .get();
+    if (doc.exists) {
+      final data = doc.data() as Map<String, dynamic>;
+      setState(() {
+        _questionIds = List<String>.from(data['structure'] ?? []);
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<DocumentSnapshot> _loadQuestion(String qId) {
+    return FirebaseFirestore.instance.collection('questions').doc(qId).get();
+  }
+
+  Future<void> _showExplanationAndProceed(String qId, int selectedIndex, int correctIndex, String explanation) async {
+    final user = _authService.currentUser;
+    if (user == null) return;
+    final isCorrect = selectedIndex == correctIndex;
+    await _userService.updateStatsAfterQuestion(user.uid, isCorrect);
+    await _userService.updateProgressInMission(user.uid, qId, isCorrect);
+    // Diálogo con explicación
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(isCorrect ? '¡Correcto!' : 'Incorrecto'),
+        content: Text(explanation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Continuar'),
+          ),
+        ],
+      ),
+    );
+    // Avanzar o completar misión
+    if (_currentIndex + 1 < _questionIds.length) {
+      setState(() {
+        _currentIndex++;
+      });
+    } else {
+      await _userService.completeMission(user.uid, widget.missionId);
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('¡Misión completada!'),
+          content: const Text('Has completado la misión con éxito.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_questionIds.isEmpty) {
+      return Scaffold(body: Center(child: Text('Estructura de misión vacía.')));
+    }
+    final qId = _questionIds[_currentIndex];
+    return FutureBuilder<DocumentSnapshot>(
+      future: _loadQuestion(qId),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
+        }
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        final data = snapshot.data!.data() as Map<String, dynamic>;
+        final options = List<String>.from(data['options'] ?? []);
+        final correctIndex = data['correctAnswerIndex'] ?? 0;
+        final explanation = data['explanation'] as String? ?? 'No hay explicación disponible.';
+
+        return Scaffold(
+          appBar: AppBar(title: Text('Pregunta ${_currentIndex + 1}/${_questionIds.length}')),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(data['text'] ?? '', style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 24),
+                ...List.generate(options.length, (i) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: PixelButton(
+                      onPressed: () => _showExplanationAndProceed(qId, i, correctIndex, explanation),
+                      color: Theme.of(context).colorScheme.primary,
+                      child: Text(options[i]),
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

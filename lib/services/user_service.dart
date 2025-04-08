@@ -94,6 +94,8 @@ class UserService {
     try {
       await _firestore.collection('users').doc(uid).update({
         'completedMissions': FieldValue.arrayUnion([missionId]),
+        'currentMissionId': '',
+        'progressInMission': {},
       });
     } catch (e) {
       debugPrint('Error al completar misión: $e');
@@ -109,6 +111,31 @@ class UserService {
       });
     } catch (e) {
       debugPrint('Error al añadir item al inventario: $e');
+      rethrow;
+    }
+  }
+
+  // Iniciar misión: actualizar misión actual y progreso inicial
+  Future<void> startMission(String uid, String missionId) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        'currentMissionId': missionId,
+        'progressInMission': {},
+      });
+    } catch (e) {
+      debugPrint('Error al iniciar misión: $e');
+      rethrow;
+    }
+  }
+
+  // Actualizar progreso dentro de una misión (mapa de progresoInMission)
+  Future<void> updateProgressInMission(String uid, String questionId, bool isCorrect) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        'progressInMission.$questionId': isCorrect,
+      });
+    } catch (e) {
+      debugPrint('Error al actualizar progreso en misión: $e');
       rethrow;
     }
   }
