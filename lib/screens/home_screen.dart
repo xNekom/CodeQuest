@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
-        color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+        color: Theme.of(context).colorScheme.surface.withAlpha(230), // 0.9 * 255 ≈ 230
         boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2,2))],
       ),
       child: Row(

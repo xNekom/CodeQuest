@@ -85,28 +85,30 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProv
 
   Future<void> _checkAuthentication() async {
     User? user = _authService.currentUser;
-    
-    // Uso de mounted para evitar errores con BuildContext
+
     Future.delayed(const Duration(seconds: 2), () async {
       if (!mounted) return;
-      
+
       if (user != null) {
         final userData = await _userService.getUserData(user.uid);
+        if (!mounted) return;
         final role = userData?['role'] as String? ?? 'user';
-        // Si es usuario y no ha creado personaje, redirigir a creación
         if (role != 'admin') {
           final created = userData?['characterCreated'] as bool? ?? false;
+          if (!mounted) return;
           if (!created) {
             Navigator.pushReplacementNamed(context, '/character');
             return;
           }
         }
+        if (!mounted) return;
         if (role == 'admin') {
           Navigator.pushReplacementNamed(context, '/admin');
         } else {
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {
+        if (!mounted) return;
         Navigator.pushReplacementNamed(context, '/auth');
       }
     });
