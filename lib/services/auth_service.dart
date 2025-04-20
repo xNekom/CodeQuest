@@ -1,0 +1,119 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Usuario actual
+  User? get currentUser => _auth.currentUser;
+
+  // Stream del estado de autenticación
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  // Inicio de sesión con email y contraseña
+  Future<UserCredential> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      
+      // Actualizar la fecha del último inicio de sesión
+      if (result.user != null) {
+        await _firestore.collection('users').doc(result.user!.uid).update({
+          'lastLogin': FieldValue.serverTimestamp(),
+        });
+      }
+      
+      return result;
+    } catch (e) {
+      debugPrint('Error en inicio de sesión: $e');
+      rethrow;
+    }
+  }
+
+  // Registro con email y contraseña
+  Future<UserCredential> registerWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String username,
+  }) async {
+    try {
+      // Verificar si el nombre de usuario ya existe
+      bool usernameExists = await _checkUsernameExists(username);
+      if (usernameExists) {
+        throw Exception('El nombre de usuario ya está en uso');
+      }
+
+      // Crear usuario en Firebase Auth
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      
+      // Crear documento del usuario en Firestore
+      await _createUserDocument(userCredential.user!.uid, email, username);
+      
+      return userCredential;
+    } catch (e) {
+      debugPrint('Error en registro: $e');
+      rethrow;
+    }
+  }
+
+  // Cerrar sesión
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      debugPrint('Error en SignOut: $e');
+      rethrow;
+    }
+  }
+  
+  // Verificar si un nombre de usuario ya existe
+  Future<bool> _checkUsernameExists(String username) async {
+    try {
+      final QuerySnapshot result = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .limit(1)
+          .get();
+          
+      return result.docs.isNotEmpty;
+    } catch (e) {
+      debugPrint('Error al verificar nombre de usuario: $e');
+      rethrow;
+    }
+  }
+  
+  // Crear documento de usuario en Firestore
+  Future<void> _createUserDocument(String uid, String email, String username) async {
+    try {
+      await _firestore.collection('users').doc(uid).set({
+        'email': email,
+        'username': username,
+        'createdAt': FieldValue.serverTimestamp(),
+        'lastLogin': FieldValue.serverTimestamp(),
+        'level': 1,
+        'experience': 0,
+        'coins': 0,
+        'completedMissions': [],
+        'stats': {
+          'questionsAnswered': 0,
+          'correctAnswers': 0,
+          'battlesWon': 0,
+          'battlesLost': 0,
+        },
+      });
+    } catch (e) {
+      debugPrint('Error al crear documento de usuario: $e');
+      rethrow;
+    }
+  }
+}
