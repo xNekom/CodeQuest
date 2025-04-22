@@ -61,7 +61,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         
         if (mounted) {
-          Navigator.pushReplacementNamed(context, '/home');
+          // Redirigir a la pantalla de creación de personaje en lugar de /home
+          Navigator.pushReplacementNamed(context, '/character'); 
         }
       } catch (e) {
         if (!mounted) return;

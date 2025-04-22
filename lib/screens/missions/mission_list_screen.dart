@@ -23,8 +23,25 @@ class _MissionListScreenState extends State<MissionListScreen> {
         builder: (context, userSnap) {
           if (userSnap.hasError) return Center(child: Text('Error usuario: ${userSnap.error}'));
           if (!userSnap.hasData) return const Center(child: CircularProgressIndicator());
-          final userData = userSnap.data!.data() as Map<String, dynamic>;
-          final completed = List<String>.from(userData['completedMissions'] ?? []);
+          
+          final userData = userSnap.data!.data() as Map<String, dynamic>? ?? {}; // Asegurar que userData no sea null
+          
+          List<String> completed = [];
+          final completedData = userData['completedMissions'];
+          if (completedData is List) {
+            try {
+              // Intentar convertir cada elemento a String, filtrando nulos si los hubiera
+              completed = completedData.whereType<String>().toList();
+            } catch (e) {
+              print('Error al procesar completedMissions: $e. Data: $completedData');
+              // Mantener completed como lista vacía en caso de error inesperado en la conversión
+            }
+          } else if (completedData != null) {
+            // Si completedMissions existe pero no es una lista, loguear y usar lista vacía.
+            print('El campo completedMissions no es una lista para el usuario ${_uid}. Data: $completedData');
+          }
+          // Si completedData es null, 'completed' ya es [] por defecto.
+
           final current = userData['currentMissionId'] as String? ?? '';
           
           return StreamBuilder<QuerySnapshot>(

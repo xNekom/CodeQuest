@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../screens/mission_completed_screen.dart';
 
 /// Pantalla de preguntas de una misión
 class QuestionScreen extends StatefulWidget {
@@ -14,19 +15,19 @@ class QuestionScreen extends StatefulWidget {
   State<QuestionScreen> createState() => _QuestionScreenState();
 }
 
-class _QuestionScreenState extends State<QuestionScreen> {
-  final AuthService _authService = AuthService();
+class _QuestionScreenState extends State<QuestionScreen> {  final AuthService _authService = AuthService();
   final UserService _userService = UserService();
   List<String> _questionIds = [];
   int _currentIndex = 0;
   bool _isLoading = true;
+  String _missionName = "";
+  int _experiencePoints = 50; // Puntos base por completar una misión
 
   @override
   void initState() {
     super.initState();
     _loadMissionStructure();
   }
-
   Future<void> _loadMissionStructure() async {
     final doc = await FirebaseFirestore.instance
         .collection('missions')
@@ -35,6 +36,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
     final data = doc.exists ? doc.data() as Map<String, dynamic> : null;
     setState(() {
       _questionIds = data != null ? List<String>.from(data['structure'] ?? []) : [];
+      _missionName = data != null ? data['name'] as String? ?? 'Misión' : 'Misión';
       _isLoading = false;
     });
   }
@@ -71,21 +73,22 @@ class _QuestionScreenState extends State<QuestionScreen> {
       if (_currentIndex + 1 < _questionIds.length) {
         setState(() {
           _currentIndex++;
-        });
-      } else {
+        });      } else {
         await _userService.completeMission(user.uid, widget.missionId);
+        await _userService.addExperience(user.uid, _experiencePoints);
+        
         if (!mounted) return;
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('¡Misión completada!'),
-            content: const Text('Has completado la misión con éxito.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
-                child: const Text('OK'),
-              ),
-            ],
+        
+        // En lugar de mostrar un diálogo simple, navegar a la pantalla de misión completada
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MissionCompletedScreen(
+              missionId: widget.missionId,
+              missionName: _missionName,
+              experiencePoints: _experiencePoints,
+              onContinue: () => Navigator.popUntil(context, (route) => route.isFirst),
+            ),
           ),
         );
       }

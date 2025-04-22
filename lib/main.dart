@@ -10,6 +10,8 @@ import 'screens/admin/admin_screen.dart';
 import 'services/user_service.dart';
 import 'screens/missions/mission_list_screen.dart';
 import 'screens/game/character_creation_screen.dart';
+import 'screens/achievements_screen.dart';
+import 'widgets/reward_notification_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,21 +26,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CodeQuest',
-      debugShowCheckedModeBanner: false,
-      theme: PixelTheme.lightTheme,
-      darkTheme: PixelTheme.darkTheme,
-      themeMode: ThemeMode.light,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const AuthCheckScreen(),
-        '/auth': (context) => const AuthWrapper(),
-        '/character': (context) => const CharacterCreationScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/admin': (context) => const AdminScreen(),
-        '/missions': (context) => const MissionListScreen(),
-      },
+    return RewardNotificationManager(
+      child: MaterialApp(
+        title: 'CodeQuest',
+        debugShowCheckedModeBanner: false,
+        theme: PixelTheme.lightTheme,
+        darkTheme: PixelTheme.darkTheme,
+        themeMode: ThemeMode.light,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const AuthCheckScreen(),
+          '/auth': (context) => const AuthWrapper(),
+          '/character': (context) => const CharacterCreationScreen(),
+          '/home': (context) => const HomeScreen(),
+          '/admin': (context) => const AdminScreen(),
+          '/missions': (context) => const MissionListScreen(),
+          '/achievements': (context) => const AchievementsScreen(),
+        },
+      ),
     );
   }
 }
@@ -53,69 +58,30 @@ class AuthCheckScreen extends StatefulWidget {
 class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProviderStateMixin {
   final AuthService _authService = AuthService();
   final UserService _userService = UserService();
-  late AnimationController _controller;
+  
+  late AnimationController _animationController;
   late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    
-    // Configurar animación
-    _controller = AnimationController(
+    _animationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
-    
     _animation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    
-    _controller.repeat(reverse: true);
-    _checkAuthentication();
+    _animationController.repeat(reverse: true);
   }
-  
+
   @override
   void dispose() {
-    _controller.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
-  Future<void> _checkAuthentication() async {
-    User? user = _authService.currentUser;
-
-    Future.delayed(const Duration(seconds: 2), () async {
-      if (!mounted) return;
-
-      if (user != null) {
-        final userData = await _userService.getUserData(user.uid);
-        if (!mounted) return;
-        final role = userData?['role'] as String? ?? 'user';
-        if (role != 'admin') {
-          final created = userData?['characterCreated'] as bool? ?? false;
-          if (!mounted) return;
-          if (!created) {
-            Navigator.pushReplacementNamed(context, '/character');
-            return;
-          }
-        }
-        if (!mounted) return;
-        if (role == 'admin') {
-          Navigator.pushReplacementNamed(context, '/admin');
-        } else {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-      } else {
-        if (!mounted) return;
-        Navigator.pushReplacementNamed(context, '/auth');
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSplashScreen() {
     return Scaffold(
       body: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -165,6 +131,77 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProv
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: _authService.authStateChanges,
+      builder: (context, authSnapshot) {
+        if (authSnapshot.connectionState == ConnectionState.waiting) {
+          return _buildSplashScreen(); // Muestra splash mientras espera el estado de auth
+        }
+
+        final User? user = authSnapshot.data;
+
+        if (user != null) {
+          // Usuario autenticado, verificar characterCreated
+          return FutureBuilder<Map<String, dynamic>?>(
+            future: _userService.getUserData(user.uid), // Obtener datos del usuario
+            builder: (context, userSnapshot) {
+              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                return _buildSplashScreen(); // Muestra splash mientras carga datos del usuario
+              }
+
+              String routeToGo = '/auth'; // Ruta por defecto si algo falla
+
+              if (userSnapshot.hasError) {
+                // Error al cargar datos del usuario (ej. problemas de red)
+                // Podrías ir a una pantalla de error o reintentar. Por ahora, a /auth.
+                print("Error al cargar datos del usuario: ${userSnapshot.error}");
+                routeToGo = '/auth'; 
+              } else {
+                // No hay error en FutureBuilder, procesar userData
+                final userData = userSnapshot.data; // Puede ser null si el documento no existe
+                final role = userData?['role'] as String? ?? 'user';
+                // Si userData es null (doc no existe) o characterCreated no está, se asume false.
+                final characterCreated = userData?['characterCreated'] as bool? ?? false;
+
+                if (role == 'admin') {
+                  // Los administradores siempre van a /home después del login.
+                  // Accederán a /admin a través del botón en HomeScreen.
+                  routeToGo = '/home';
+                } else if (!characterCreated) {
+                  // Si no es admin y el personaje no está creado, va a /character
+                  routeToGo = '/character';
+                } else {
+                  // Si no es admin y el personaje SÍ está creado, va a /home
+                  routeToGo = '/home';
+                }
+              }
+              
+              // Navegar después de que el frame actual se construya
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) { // Asegurarse que el widget sigue montado antes de navegar
+                  Navigator.pushReplacementNamed(context, routeToGo);
+                }
+              });
+              // Muestra el splash screen mientras la navegación ocurre en el siguiente frame.
+              // Esto evita parpadeos o construir la UI de la pantalla anterior brevemente.
+              return _buildSplashScreen(); 
+            },
+          );
+        } else {
+          // Usuario no autenticado
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              Navigator.pushReplacementNamed(context, '/auth');
+            }
+          });
+          return _buildSplashScreen(); // Muestra splash mientras navega a /auth
+        }
+      },
     );
   }
 }

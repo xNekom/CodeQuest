@@ -125,9 +125,10 @@ class AuthService {
         'inventory': {},
         'unlockedAbilities': [],
         'equippedItems': {},
-        'skinTone': 'normal',
-        'hairStyle': 'short',
-        'outfit': 'adventurer',
+        'skinTone': 'normal', // Valor inicial por defecto
+        'hairStyle': 'short', // Valor inicial por defecto
+        'outfit': 'adventurer', // Valor inicial por defecto
+        'characterCreated': false, // Nuevo campo para rastrear la creación del personaje
         'characterStats': {
           'questionsAnswered': 0,
           'correctAnswers': 0,
@@ -141,6 +142,45 @@ class AuthService {
       });
     } catch (e) {
       debugPrint('Error al crear documento de usuario: $e');
+      rethrow;
+    }
+  }
+
+  // Reautenticar al usuario
+  Future<bool> reauthenticateUser(String currentPassword) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null || user.email == null) {
+        throw Exception("Usuario no encontrado o email no disponible para reautenticación.");
+      }
+
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      // Manejar errores específicos de Firebase Auth, por ejemplo, contraseña incorrecta
+      debugPrint('Error de reautenticación: ${e.code} - ${e.message}');
+      return false;
+    } catch (e) {
+      debugPrint('Error inesperado durante la reautenticación: $e');
+      rethrow;
+    }
+  }
+
+  // Cambiar la contraseña del usuario
+  Future<void> changePassword(String newPassword) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("Usuario no encontrado para cambiar contraseña.");
+      }
+      await user.updatePassword(newPassword);
+    } catch (e) {
+      debugPrint('Error al cambiar la contraseña: $e');
       rethrow;
     }
   }

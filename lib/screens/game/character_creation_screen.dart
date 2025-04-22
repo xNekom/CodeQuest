@@ -12,6 +12,7 @@ class CharacterCreationScreen extends StatefulWidget {
 
 class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
   bool _isLoading = true;
+  bool _isEditing = false; // Nueva variable de estado
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   String _selectedClass = 'Warrior';
@@ -30,12 +31,17 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
   Future<void> _loadExistingData() async {
     if (user != null) {
       final data = await _userService.getUserData(user!.uid);
-      if (data != null && (data['characterCreated'] as bool? ?? false)) {
-        _nameCtrl.text = data['characterName'] as String? ?? '';
-        _selectedClass = data['characterClass'] as String? ?? _selectedClass;
-        _selectedSkinTone = data['skinTone'] as String? ?? _selectedSkinTone;
-        _selectedHairStyle = data['hairStyle'] as String? ?? _selectedHairStyle;
-        _selectedOutfit = data['outfit'] as String? ?? _selectedOutfit;
+      if (data != null) {
+        // Usar el username como nombre del héroe y hacerlo no editable
+        _nameCtrl.text = data['username'] as String? ?? ''; 
+        
+        if (data['characterCreated'] as bool? ?? false) {
+          _selectedClass = data['characterClass'] as String? ?? _selectedClass;
+          _selectedSkinTone = data['skinTone'] as String? ?? _selectedSkinTone;
+          _selectedHairStyle = data['hairStyle'] as String? ?? _selectedHairStyle;
+          _selectedOutfit = data['outfit'] as String? ?? _selectedOutfit;
+          _isEditing = true;
+        }
       }
     }
     setState(() => _isLoading = false);
@@ -47,7 +53,7 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear Tu Héroe')),
+      appBar: AppBar(title: Text(_isEditing ? 'Editar tu Héroe' : 'Crear Tu Héroe')), // Título dinámico
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isPortrait = constraints.maxWidth < 600;
@@ -70,8 +76,9 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _nameCtrl,
-                    decoration: const InputDecoration(labelText: 'Nombre de tu héroe'),
-                    validator: (v) => v == null || v.isEmpty ? 'Ingresa un nombre' : null,
+                    decoration: const InputDecoration(labelText: 'Nombre de tu héroe (Nick)'), // Etiqueta actualizada
+                    readOnly: true, // Hacer el campo no editable
+                    validator: (v) => v == null || v.isEmpty ? 'El nombre del héroe no puede estar vacío' : null,
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
@@ -126,8 +133,9 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                       if (!_formKey.currentState!.validate()) return;
                       final user = FirebaseAuth.instance.currentUser;
                       if (user != null) {
+                        // Asegurarse de que el username (que está en _nameCtrl) se guarde como characterName
                         await _userService.updateUserData(user.uid, {
-                          'characterName': _nameCtrl.text,
+                          'characterName': _nameCtrl.text, // _nameCtrl.text contendrá el username
                           'characterClass': _selectedClass,
                           'skinTone': _selectedSkinTone,
                           'hairStyle': _selectedHairStyle,
@@ -135,13 +143,13 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                           'characterCreated': true,
                         });
                         if (!context.mounted) return;
-                        // Feedback visual
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Personaje creado!')));
+                        // Feedback visual dinámico
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_isEditing ? '¡Personaje actualizado!' : '¡Personaje creado!')));
                         if (!context.mounted) return;
                         Navigator.pushReplacementNamed(context, '/home');
                       }
                     },
-                    child: const Text('Comenzar aventura'),
+                    child: Text(_isEditing ? 'Guardar Cambios' : 'Comenzar aventura'), // Texto del botón dinámico
                   ),
                   if (!isPortrait) const SizedBox(height: 16),
                 ],

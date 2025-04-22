@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'reward_service.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final RewardService _rewardService = RewardService();
 
   // Obtener datos del usuario actual
   Future<Map<String, dynamic>?> getUserData(String uid) async {
@@ -88,7 +90,6 @@ class UserService {
       rethrow;
     }
   }
-
   // Marcar una misión como completada
   Future<void> completeMission(String uid, String missionId) async {
     try {
@@ -97,6 +98,9 @@ class UserService {
         'currentMissionId': '',
         'progressInMission': {},
       });
+      
+      // Verificar si se desbloquean logros al completar esta misión
+      await _rewardService.checkAndUnlockAchievement(uid, missionId);
     } catch (e) {
       debugPrint('Error al completar misión: $e');
       rethrow;
