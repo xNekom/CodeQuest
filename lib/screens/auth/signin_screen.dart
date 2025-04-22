@@ -170,7 +170,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           PixelButton(
                             isSecondary: true,
                             onPressed: () {
-                              // Implementar recuperación de contraseña
+                              Navigator.pushNamed(context, '/password-recovery');
                             },
                             child: const Text('OLVIDÉ MI CONTRASEÑA'),
                           ),
