@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:codequest/models/achievement_model.dart';
 import 'package:codequest/models/reward_model.dart';
 import 'package:codequest/services/reward_service.dart';

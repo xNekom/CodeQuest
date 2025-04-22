@@ -7,9 +7,9 @@ class RewardNotificationManager extends StatefulWidget {
   final Widget child;
 
   const RewardNotificationManager({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<RewardNotificationManager> createState() => _RewardNotificationManagerState();

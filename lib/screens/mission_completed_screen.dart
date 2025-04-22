@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import '../models/achievement_model.dart';
 import '../models/reward_model.dart';
@@ -14,14 +16,14 @@ class MissionCompletedScreen extends StatelessWidget {
   final VoidCallback onContinue;
 
   const MissionCompletedScreen({
-    Key? key,
+    super.key,
     required this.missionId,
     required this.missionName,
     this.unlockedAchievement,
     this.earnedReward,
     required this.experiencePoints,
     required this.onContinue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

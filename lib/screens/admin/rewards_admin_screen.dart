@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/reward_model.dart';
@@ -5,7 +7,7 @@ import '../../models/achievement_model.dart';
 import '../../services/reward_service.dart';
 
 class RewardsAdminScreen extends StatefulWidget {
-  const RewardsAdminScreen({Key? key}) : super(key: key);
+  const RewardsAdminScreen({super.key});
 
   @override
   State<RewardsAdminScreen> createState() => _RewardsAdminScreenState();

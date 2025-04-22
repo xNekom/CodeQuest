@@ -66,13 +66,13 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
               children: <Widget>[
                 Text(
                   'Recupera tu Contraseña',
-                  style: theme.textTheme.headlineSmall?.copyWith(color: theme.colorScheme.onBackground),
+                  style: theme.textTheme.headlineSmall?.copyWith(color: theme.colorScheme.onSurface),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.',
-                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onBackground.withAlpha(150)),
+                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withAlpha(150)),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32.0),
