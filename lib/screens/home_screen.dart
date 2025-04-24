@@ -27,18 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
+    // No es necesario llamar a setState aquí si _isLoading ya es true por defecto o se maneja al inicio.
+    // Si es necesario, asegurarse de que esté montado:
+    // if (mounted) {
+    //   setState(() {
+    //     _isLoading = true;
+    //   });
+    // }
     
     try {
       User? user = _authService.currentUser;
       if (user != null) {
         final userData = await _userService.getUserData(user.uid);
-        setState(() {
-          _userData = userData;
-          _isLoading = false;
-        });
+        if (mounted) { // <--- AÑADIR ESTA COMPROBACIÓN
+          setState(() {
+            _userData = userData;
+            _isLoading = false;
+          });
+        }
       } else {
         // No hay usuario autenticado, redirigir a la pantalla de inicio de sesión
         if (mounted) {
@@ -48,9 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       // Usar logger en lugar de print en producción
       debugPrint('Error al cargar datos del usuario: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) { // <--- Comprobación ya existente, pero buena práctica revisarla
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

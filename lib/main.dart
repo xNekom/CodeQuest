@@ -11,6 +11,8 @@ import 'services/user_service.dart';
 import 'screens/game/character_creation_screen.dart';
 import 'widgets/reward_notification_manager.dart';
 import 'package:codequest/screens/auth/password_recovery_screen.dart';
+import 'screens/achievements_screen.dart'; // Importar AchievementsScreen
+import 'screens/missions/missions_screen.dart'; // Importar MissionsScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +42,8 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const HomeScreen(),
           '/admin': (context) => const AdminScreen(),
           '/password-recovery': (context) => const PasswordRecoveryScreen(), // Nueva ruta
+          '/achievements': (context) => const AchievementsScreen(), // Nueva ruta para logros
+          '/missions': (context) => const MissionsScreen(), // Nueva ruta para misiones
         },
       ),
     );
