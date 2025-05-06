@@ -6,7 +6,7 @@ class MissionService {
 
   // Obtener todas las misiones
   Stream<List<MissionModel>> getMissions() {
-    return _firestore.collection('missions').snapshots().map((snapshot) {
+    return _firestore.collection('missions').orderBy('difficultyLevel').snapshots().map((snapshot) {
       try {
         return snapshot.docs
             .map((doc) => MissionModel.fromFirestore(doc))

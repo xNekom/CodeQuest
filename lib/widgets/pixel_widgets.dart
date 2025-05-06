@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Botón personalizado con estilo pixel art
-class PixelButton extends StatelessWidget {
+class PixelButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final Widget child;
   final bool isSecondary;
@@ -22,30 +22,69 @@ class PixelButton extends StatelessWidget {
   });
 
   @override
+  State<PixelButton> createState() => _PixelButtonState();
+}
+
+class _PixelButtonState extends State<PixelButton> {
+  bool _isPressed = false;
+
+  void _handleTapDown(TapDownDetails details) {
+    if (widget.onPressed == null) return;
+    setState(() {
+      _isPressed = true;
+    });
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    if (widget.onPressed == null) return;
+    setState(() {
+      _isPressed = false;
+    });
+    widget.onPressed?.call();
+  }
+
+  void _handleTapCancel() {
+    if (widget.onPressed == null) return;
+    setState(() {
+      _isPressed = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width ?? double.infinity,
-      height: height ?? (isSmall ? 36.0 : 48.0),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSecondary 
-              ? Colors.white 
-              : color ?? Theme.of(context).colorScheme.primary,
-          foregroundColor: isSecondary 
-              ? Theme.of(context).colorScheme.primary 
-              : Colors.white,
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
-            width: 2.0,
-          ),
-          padding: EdgeInsets.zero,
-          elevation: 0,
-          shape: const BeveledRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0)),
+    return GestureDetector(
+      onTapDown: _handleTapDown,
+      onTapUp: _handleTapUp,
+      onTapCancel: _handleTapCancel,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: SizedBox(
+          width: widget.width ?? double.infinity,
+          height: widget.height ?? (widget.isSmall ? 36.0 : 48.0),
+          child: ElevatedButton(
+            // onPressed is handled by GestureDetector, but needs to be non-null for enabled state
+            onPressed: widget.onPressed != null ? () {} : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.isSecondary
+                  ? Colors.white
+                  : widget.color ?? Theme.of(context).colorScheme.primary,
+              foregroundColor: widget.isSecondary
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.white,
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3), // Updated border color
+                width: 2.0,
+              ),
+              padding: EdgeInsets.zero,
+              elevation: 0,
+              shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(0)),
+              ),
+            ),
+            child: widget.child,
           ),
         ),
-        child: child,
       ),
     );
   }
@@ -147,7 +186,7 @@ class PixelCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).colorScheme.surface,
-        border: Border.all(color: Colors.black, width: 2),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5), width: 2), // Updated border
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(51), // Reemplazado .withOpacity(0.2)
@@ -180,7 +219,7 @@ class PixelDialog extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(color: Colors.black, width: 2),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5), width: 2), // Updated border
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(51), // Reemplazado .withOpacity(0.2)

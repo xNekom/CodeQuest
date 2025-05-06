@@ -53,33 +53,34 @@ class _QuestionScreenState extends State<QuestionScreen> {  final AuthService _a
     if (!mounted) return;
     await _userService.updateProgressInMission(user.uid, qId, isCorrect);
     if (!mounted) return;
-    // Diálogo con explicación
-    await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(isCorrect ? '¡Correcto!' : 'Incorrecto'),
-        content: Text(explanation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Continuar'),
-          ),
-        ],
-      ),
-    );
-    if (!mounted) return;
-    // Solo avanzar o completar si la respuesta es correcta
+
     if (isCorrect) {
+      // Respuesta correcta
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('¡Correcto!'),
+          content: const Text('¡Bien hecho!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Continuar'),
+            ),
+          ],
+        ),
+      );
+      if (!mounted) return;
+
       if (_currentIndex + 1 < _questionIds.length) {
         setState(() {
           _currentIndex++;
-        });      } else {
+        });
+      } else {
         await _userService.completeMission(user.uid, widget.missionId);
         await _userService.addExperience(user.uid, _experiencePoints);
         
         if (!mounted) return;
         
-        // En lugar de mostrar un diálogo simple, navegar a la pantalla de misión completada
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -92,9 +93,23 @@ class _QuestionScreenState extends State<QuestionScreen> {  final AuthService _a
           ),
         );
       }
+    } else {
+      // Respuesta incorrecta
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Incorrecto'),
+          content: const Text('¡Inténtalo de nuevo!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      );
+      // No se hace nada más, el usuario permanece en la misma pregunta.
     }
-    // En caso de error, mantener la misma pregunta para reintentar
-    // (ya se mostró explicación)
   }
 
   @override
