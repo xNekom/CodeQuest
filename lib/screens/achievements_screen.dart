@@ -129,7 +129,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
               fontFamily: 'PixelFont',
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: PixelTheme.textColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -184,7 +184,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
             '${_unlockedAchievements.length} de ${_allAchievements.length} logros desbloqueados',
             style: TextStyle(
               fontSize: 14,
-              color: PixelTheme.textColor.withAlpha(204),
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(204),
             ),
           ),
         ],
@@ -245,13 +245,13 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: PixelTheme.backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
           isUnlocked ? achievement.name : 'Logro Bloqueado',
           style: TextStyle(
             fontFamily: 'PixelFont',
             fontWeight: FontWeight.bold,
-            color: PixelTheme.textColor,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         content: Column(
@@ -292,7 +292,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                   : 'Completa las misiones necesarias para desbloquear este logro.',
               style: TextStyle(
                 fontSize: 16,
-                color: PixelTheme.textColor,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -303,7 +303,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                 style: TextStyle(
                   fontSize: 14,
                   fontStyle: FontStyle.italic,
-                  color: PixelTheme.textColor.withAlpha(179),
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(179),
                 ),
               ),
             ],
