@@ -132,6 +132,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             keyboardType: TextInputType.emailAddress,
                             prefixIcon: const Icon(Icons.email),
                             validator: (val) => val!.isEmpty ? 'Ingresa un correo electrónico' : null,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                           ),
                           
                           const SizedBox(height: 16.0),
@@ -142,6 +144,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             obscureText: true,
                             prefixIcon: const Icon(Icons.lock),
                             validator: (val) => val!.length < 6 ? 'La contraseña debe tener al menos 6 caracteres' : null,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _handleSignIn(),
                           ),
                           
                           const SizedBox(height: 24.0),
@@ -150,10 +154,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: Text(
-                                _error,
-                                style: TextStyle(color: Theme.of(context).colorScheme.error),
-                                textAlign: TextAlign.center,
-                              ),
+                                _error,  textAlign: TextAlign.center,
+                                style: TextStyle(color: Theme.of(context).colorScheme.error),    ),
                             ),
                           
                           _isLoading
