@@ -241,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Center(
       child: PixelButton(
         onPressed: () {
-          // Navegar a la pantalla de misiones
+          Navigator.pushNamed(context, '/missions');
         },
         color: Theme.of(context).colorScheme.secondary,
         child: Row(

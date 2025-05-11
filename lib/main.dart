@@ -6,6 +6,9 @@ import 'screens/auth/auth_wrapper.dart';
 import 'screens/home_screen.dart';
 import 'services/auth_service.dart';
 import 'theme/pixel_theme.dart';
+import 'screens/admin/admin_screen.dart';
+import 'services/user_service.dart';
+import 'screens/missions/mission_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => const AuthCheckScreen(),
         '/auth': (context) => const AuthWrapper(),
         '/home': (context) => const HomeScreen(),
+        '/admin': (context) => const AdminScreen(),
+        '/missions': (context) => const MissionListScreen(),
       },
     );
   }
@@ -45,6 +50,7 @@ class AuthCheckScreen extends StatefulWidget {
 
 class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProviderStateMixin {
   final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -79,11 +85,17 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProv
     User? user = _authService.currentUser;
     
     // Uso de mounted para evitar errores con BuildContext
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () async {
       if (!mounted) return;
       
       if (user != null) {
-        Navigator.pushReplacementNamed(context, '/home');
+        final userData = await _userService.getUserData(user.uid);
+        final role = userData?['role'] as String? ?? 'user';
+        if (role == 'admin') {
+          Navigator.pushReplacementNamed(context, '/admin');
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       } else {
         Navigator.pushReplacementNamed(context, '/auth');
       }
