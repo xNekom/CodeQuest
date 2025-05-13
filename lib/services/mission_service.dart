@@ -6,16 +6,26 @@ class MissionService {
 
   // Obtener todas las misiones
   Stream<List<MissionModel>> getMissions() {
-    return _firestore.collection('missions').orderBy('difficultyLevel').snapshots().map((snapshot) {
-      try {
-        return snapshot.docs
-            .map((doc) => MissionModel.fromFirestore(doc))
-            .toList();
-      } catch (e) {
-        // print('Error al mapear misiones: $e'); // Comentado: avoid_print
-        // print('Datos del documento con error: ${snapshot.docs.firstWhere((d) => MissionModel.fromFirestore(d) == null).data()}'); // Comentado: avoid_print
-        return []; // Retorna lista vacía en caso de error de parseo
+    return _firestore.collection('missions').orderBy('levelRequired').snapshots().map((snapshot) {
+      List<MissionModel> missions = [];
+      if (snapshot.docs.isEmpty) {
+        print('[MissionService] No mission documents found in snapshot.');
+        return missions;
       }
+      print('[MissionService] Received ${snapshot.docs.length} mission documents.');
+      for (var doc in snapshot.docs) {
+        try {
+          missions.add(MissionModel.fromFirestore(doc));
+        } catch (e) {
+          print('[MissionService] Error parsing mission with ID ${doc.id}: $e');
+          print('[MissionService] Data for mission ${doc.id}: ${doc.data()}');
+          // Optionally, decide if you want to skip this mission or handle error differently
+        }
+      }
+      if (missions.isEmpty && snapshot.docs.isNotEmpty) {
+        print('[MissionService] All mission documents failed to parse.');
+      }
+      return missions;
     });
   }
 

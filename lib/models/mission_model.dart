@@ -38,30 +38,37 @@ class MissionModel {
   }
 
   factory MissionModel.fromJson(Map<String, dynamic> json, String missionId) {
-    var objectivesData = json['objectives'] as List<dynamic>? ?? [];
-    List<Objective> objectivesList = objectivesData
-        .map((objData) => Objective.fromJson(objData as Map<String, dynamic>))
-        .toList();
+    print('[MissionModel] Attempting to parse missionId: $missionId');
+    try {
+      var objectivesData = json['objectives'] as List<dynamic>? ?? [];
+      List<Objective> objectivesList = objectivesData
+          .map((objData) => Objective.fromJson(objData as Map<String, dynamic>))
+          .toList();
 
-    return MissionModel(
-      missionId: missionId, // Usar el ID del documento de Firestore
-      title: json['title'] as String,
-      description: json['description'] as String,
-      zone: json['zone'] as String,
-      levelRequired: json['levelRequired'] as int,
-      status: json['status'] as String,
-      prerequisiteMissionId: json['prerequisiteMissionId'] as String?,
-      isRepeatable: json['isRepeatable'] as bool,
-      objectives: objectivesList,
-      rewards: Rewards.fromJson(json['rewards'] as Map<String, dynamic>),
-      dialogue: json['dialogue'] != null
-          ? Dialogue.fromJson(json['dialogue'] as Map<String, dynamic>)
-          : null,
-      storyContent: json['storyContent'] != null
-          ? StoryContent.fromJson(json['storyContent'] as Map<String, dynamic>)
-          : null,
-      originalId: json['id'] as String?, // Capturar el 'id' original del JSON
-    );
+      return MissionModel(
+        missionId: missionId, // Usar el ID del documento de Firestore
+        title: json['title'] as String,
+        description: json['description'] as String,
+        zone: json['zone'] as String,
+        levelRequired: json['levelRequired'] as int,
+        status: json['status'] as String,
+        prerequisiteMissionId: json['prerequisiteMissionId'] as String?,
+        isRepeatable: json['isRepeatable'] as bool,
+        objectives: objectivesList,
+        rewards: Rewards.fromJson(json['rewards'] as Map<String, dynamic>),
+        dialogue: json['dialogue'] != null
+            ? Dialogue.fromJson(json['dialogue'] as Map<String, dynamic>)
+            : null,
+        storyContent: json['storyContent'] != null
+            ? StoryContent.fromJson(json['storyContent'] as Map<String, dynamic>)
+            : null,
+        originalId: json['id'] as String?, // Capturar el 'id' original del JSON
+      );
+    } catch (e) {
+      print('[MissionModel] ERROR parsing missionId: $missionId. Data: $json');
+      print('[MissionModel] Parser exception: $e');
+      rethrow; // Rethrow to allow service to catch if needed, or handle differently
+    }
   }
 
   Map<String, dynamic> toJson() {
