@@ -40,7 +40,7 @@ class _PixelButtonState extends State<PixelButton> {
     setState(() {
       _isPressed = false;
     });
-    widget.onPressed?.call();
+    // widget.onPressed?.call(); // Removed
   }
 
   void _handleTapCancel() {
@@ -63,8 +63,7 @@ class _PixelButtonState extends State<PixelButton> {
           width: widget.width ?? double.infinity,
           height: widget.height ?? (widget.isSmall ? 36.0 : 48.0),
           child: ElevatedButton(
-            // onPressed is handled by GestureDetector, but needs to be non-null for enabled state
-            onPressed: widget.onPressed != null ? () {} : null,
+            onPressed: widget.onPressed, // Changed to directly use widget.onPressed
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.isSecondary
                   ? Colors.white

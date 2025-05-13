@@ -453,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.pushNamed(context, '/achievements');
               },
-              color: Colors.orange,
+              color: Theme.of(context).colorScheme.tertiary,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // Mantener un padding adecuado
                 child: Row(
