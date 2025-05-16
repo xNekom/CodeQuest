@@ -1,4 +1,4 @@
-// filepath: c:\Users\Pedro\Documents\GitHub\CodeQuest\lib\models\mission_model.dart
+// filepath: c:/Users/Pedro/Documents/GitHub/CodeQuest/lib/models/mission_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'story_page_model.dart';
 import 'battle_config_model.dart';
@@ -10,7 +10,7 @@ class MissionModel {
   final String description;
   final String zone;
   final int levelRequired; // Kept for quick access, also in requirements
-  String status; // 'disponible', 'bloqueada', 'en_progreso', 'completada'
+  String status; // \'disponible\', \'bloqueada\', \'en_progreso\', \'completada\'
   // final String? prerequisiteMissionId; // Removed, handled by requirements
   final bool isRepeatable;
   final List<Objective> objectives;
@@ -50,7 +50,6 @@ class MissionModel {
 
   factory MissionModel.fromJson(Map<String, dynamic> json, String missionId) {
     try {
-      // Parseo robusto de Objectives
       var objectivesData = json['objectives'] as List<dynamic>? ?? [];
       List<Objective> objectivesList = objectivesData
           .map((objData) {
@@ -65,10 +64,9 @@ class MissionModel {
               return null;
             }
           })
-          .whereType<Objective>() // Filtra los nulls si Objective.fromJson puede devolver null o fallar
+          .whereType<Objective>() 
           .toList();
 
-      // Parseo robusto de Rewards
       var rewardsData = json['rewards'] as Map<String, dynamic>?;
       Rewards rewardsInstance;
       if (rewardsData != null) {
@@ -76,17 +74,12 @@ class MissionModel {
           rewardsInstance = Rewards.fromJson(rewardsData);
         } catch (e) {
           // print('[MissionModel] Failed to parse rewards for mission $missionId: $e. Data: $rewardsData');
-          // Asumimos que Rewards tiene un constructor .empty() o uno que puede manejar un mapa vacío.
-          // Si no, necesitarías definir Rewards.empty() o ajustar esto.
-          rewardsInstance = Rewards.fromJson({}); // Intenta con un mapa vacío como fallback
+          rewardsInstance = Rewards.fromJson({}); 
         }
       } else {
-        // Si rewardsData es null, intenta crear una instancia de Rewards con un mapa vacío.
-        // Esto requiere que Rewards.fromJson pueda manejar un mapa vacío y asignar valores por defecto.
         rewardsInstance = Rewards.fromJson({}); 
       }
       
-      // Parseo robusto de StoryPages
       List<StoryPageModel>? storyPagesList;
       if (json['storyPages'] is List<dynamic>) {
         storyPagesList = (json['storyPages'] as List<dynamic>)
@@ -104,7 +97,7 @@ class MissionModel {
             })
             .whereType<StoryPageModel>()
             .toList();
-        if (storyPagesList.isEmpty) storyPagesList = null; // Si la lista queda vacía después de filtrar, asignar null
+        if (storyPagesList.isEmpty) storyPagesList = null; 
       }
 
 
@@ -139,20 +132,17 @@ class MissionModel {
       );
     } catch (e) {
       // print('[MissionModel] CRITICAL ERROR parsing missionId: $missionId. Data: $json. Exception: $e');
-      // Este rethrow es para errores que no se pudieron manejar con valores por defecto,
-      // lo que hará que MissionService omita esta misión.
       rethrow;
     }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name, // Updated
+      'name': name,
       'description': description,
       'zone': zone,
       'levelRequired': levelRequired,
       'status': status,
-      // 'prerequisiteMissionId': prerequisiteMissionId, // Removed
       'isRepeatable': isRepeatable,
       'objectives': objectives.map((obj) => obj.toJson()).toList(),
       'rewards': rewards.toJson(),
@@ -168,26 +158,26 @@ class MissionModel {
 }
 
 class Objective {
-  final String type; // 'questions', 'battle', 'collection', 'interaction', etc.
+  final String type;
   final String description;
-  final int? target; // Para 'questions' (número de respuestas correctas) o 'collection' (cantidad)
-  final List<String>? questionIds; // Para 'questions' y 'battle'
-  final String? enemyId; // Para 'battle'
-  final int? targetKillCount; // Para 'battle' (si es derrotar N enemigos de un tipo)
-  final List<String>? requiredItemIds; // Para 'battle' o 'interaction'
-  final int? timeLimitSeconds; // Para 'questions' u otros objetivos cronometrados
-  final String? itemIdToCollect; // Para 'collection'
-  final int? quantity; // Para 'collection', podría ser redundante con 'target'.
-  final String? collectionSourceDescription; // Para 'collection'
-  final String? targetObjectId; // Para 'interaction'
-  final List<String>? interactionSequence; // Para 'interaction'
-  final String? interactionHint; // Para 'interaction'
+  final int? target;
+  final List<String> questionIds;
+  final String? enemyId;
+  final int? targetKillCount;
+  final List<String>? requiredItemIds;
+  final int? timeLimitSeconds;
+  final String? itemIdToCollect;
+  final int? quantity;
+  final String? collectionSourceDescription;
+  final String? targetObjectId;
+  final List<String>? interactionSequence;
+  final String? interactionHint;
 
   Objective({
     required this.type,
     required this.description,
     this.target,
-    this.questionIds,
+    required this.questionIds,
     this.enemyId,
     this.targetKillCount,
     this.requiredItemIds,
@@ -201,20 +191,29 @@ class Objective {
   });
 
   factory Objective.fromJson(Map<String, dynamic> json) {
+    List<String> parsedQuestionIds;
+    if (json['questionIds'] is List) {
+      parsedQuestionIds = (json['questionIds'] as List<dynamic>)
+          .map((e) => e.toString()) 
+          .toList();
+    } else {
+      parsedQuestionIds = []; 
+    }
+
     return Objective(
-      type: json['type'] as String,
-      description: json['description'] as String,
-      target: json['target'] as int?,
-      questionIds: (json['questionIds'] as List<dynamic>?)?.map((id) => id as String).toList(),
+      type: json['type'] as String? ?? 'unknown',
+      description: json['description'] as String? ?? 'No description',
+      target: (json['target'] as num?)?.toInt(),
+      questionIds: parsedQuestionIds, 
       enemyId: json['enemyId'] as String?,
-      targetKillCount: json['targetKillCount'] as int?,
-      requiredItemIds: (json['requiredItemIds'] as List<dynamic>?)?.map((id) => id as String).toList(),
-      timeLimitSeconds: json['timeLimitSeconds'] as int?,
+      targetKillCount: (json['targetKillCount'] as num?)?.toInt(),
+      requiredItemIds: (json['requiredItemIds'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      timeLimitSeconds: (json['timeLimitSeconds'] as num?)?.toInt(),
       itemIdToCollect: json['itemIdToCollect'] as String?,
-      quantity: json['quantity'] as int?,
+      quantity: (json['quantity'] as num?)?.toInt(),
       collectionSourceDescription: json['collectionSourceDescription'] as String?,
       targetObjectId: json['targetObjectId'] as String?,
-      interactionSequence: (json['interactionSequence'] as List<dynamic>?)?.map((step) => step as String).toList(),
+      interactionSequence: (json['interactionSequence'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
       interactionHint: json['interactionHint'] as String?,
     );
   }
@@ -224,16 +223,16 @@ class Objective {
       'type': type,
       'description': description,
       if (target != null) 'target': target,
-      if (questionIds != null) 'questionIds': questionIds,
+      if (questionIds.isNotEmpty) 'questionIds': questionIds,
       if (enemyId != null) 'enemyId': enemyId,
       if (targetKillCount != null) 'targetKillCount': targetKillCount,
-      if (requiredItemIds != null) 'requiredItemIds': requiredItemIds,
+      if (requiredItemIds != null && requiredItemIds!.isNotEmpty) 'requiredItemIds': requiredItemIds,
       if (timeLimitSeconds != null) 'timeLimitSeconds': timeLimitSeconds,
       if (itemIdToCollect != null) 'itemIdToCollect': itemIdToCollect,
       if (quantity != null) 'quantity': quantity,
       if (collectionSourceDescription != null) 'collectionSourceDescription': collectionSourceDescription,
       if (targetObjectId != null) 'targetObjectId': targetObjectId,
-      if (interactionSequence != null) 'interactionSequence': interactionSequence,
+      if (interactionSequence != null && interactionSequence!.isNotEmpty) 'interactionSequence': interactionSequence,
       if (interactionHint != null) 'interactionHint': interactionHint,
     };
   }
@@ -241,13 +240,13 @@ class Objective {
 
 class Rewards {
   final int experience;
-  final int gold; // Renamed from coins
+  final int gold;
   final List<RewardItem> items;
-  final List<String>? unlocks; // IDs de misiones o features desbloqueadas
+  final List<String>? unlocks;
 
   Rewards({
     required this.experience,
-    required this.gold, // Updated
+    required this.gold,
     required this.items,
     this.unlocks,
   });
@@ -255,21 +254,42 @@ class Rewards {
   factory Rewards.fromJson(Map<String, dynamic> json) {
     var itemsData = json['items'] as List<dynamic>? ?? [];
     List<RewardItem> itemsList = itemsData
-        .map((itemData) => RewardItem.fromJson(itemData)) // Updated to pass dynamic
+        .map((itemData) {
+            try {
+                if (itemData is Map<String, dynamic> || itemData is String) {
+                    return RewardItem.fromJson(itemData);
+                }
+                // print('[Rewards.fromJson] Invalid itemData type: ${itemData.runtimeType} for itemData: $itemData');
+                return null;
+            } catch (e) {
+                // print('[Rewards.fromJson] Failed to parse a reward item: $e. Data: $itemData');
+                return null; 
+            }
+        })
+        .whereType<RewardItem>() 
         .toList();
     
+    List<String> unlocksList;
+    if (json['unlocks'] is List) {
+        unlocksList = (json['unlocks'] as List<dynamic>)
+            .map((unlock) => unlock.toString())
+            .toList();
+    } else {
+        unlocksList = [];
+    }
+
     return Rewards(
       experience: json['experience'] as int? ?? 0,
-      gold: json['gold'] as int? ?? json['coins'] as int? ?? 0, // Handle old 'coins' and default to 0
+      gold: json['gold'] as int? ?? json['coins'] as int? ?? 0, 
       items: itemsList,
-      unlocks: (json['unlocks'] as List<dynamic>?)?.map((unlock) => unlock as String).toList(),
+      unlocks: unlocksList.isNotEmpty ? unlocksList : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'experience': experience,
-      'gold': gold, // Updated
+      'gold': gold,
       'items': items.map((item) => item.toJson()).toList(),
       if (unlocks != null) 'unlocks': unlocks,
     };
@@ -278,78 +298,127 @@ class Rewards {
 
 class RewardItem {
   final String itemId;
-  // final int quantity; // Removing quantity for now to match simple string list
 
-  RewardItem({required this.itemId /*, required this.quantity */});
+  RewardItem({required this.itemId});
 
-  factory RewardItem.fromJson(dynamic json) { // Accept dynamic for item
+  factory RewardItem.fromJson(dynamic json) { 
     if (json is String) {
       return RewardItem(itemId: json);
-    } else if (json is Map<String, dynamic>) { // Keep if more complex items are also possible
-        if (json['itemId'] == null) throw ArgumentError('RewardItem map missing itemId');
-      return RewardItem(itemId: json['itemId'] as String);
+    } else if (json is Map<String, dynamic>) { 
+        final itemId = json['itemId'] as String?;
+        if (itemId == null) {
+            // print('[RewardItem.fromJson] RewardItem map missing or null itemId. Data: $json');
+            throw ArgumentError('RewardItem map missing or null itemId. Data: $json');
+        }
+      return RewardItem(itemId: itemId);
+    } else if (json == null) {
+        // print('[RewardItem.fromJson] Received null for reward item.');
+        throw ArgumentError('Cannot parse null RewardItem');
     }
-    throw ArgumentError('Invalid RewardItem format: must be String or Map. Received: $json');
+    // print('[RewardItem.fromJson] Invalid type for RewardItem: ${json.runtimeType}. Data: $json');
+    throw ArgumentError('Invalid type for RewardItem: ${json.runtimeType}. Data: $json');
   }
 
-  // If items are just strings, toJson might just be part of Rewards.toJson
-  // For now, let's make it simple, assuming Rewards.toJson will handle it.
-  String toJson() => itemId; 
+  Map<String, dynamic> toJson() {
+    return {
+      'itemId': itemId,
+    };
+  }
 }
 
 class Dialogue {
-  final String npcName;
-  final String start;
-  final List<String>? during;
-  final String endSuccess;
-  final String? endFailure;
+  final String characterId;
+  final List<String> lines;
+  final String? mood;
 
-  Dialogue({
-    required this.npcName,
-    required this.start,
-    this.during,
-    required this.endSuccess,
-    this.endFailure,
-  });
+  Dialogue({required this.characterId, required this.lines, this.mood});
 
   factory Dialogue.fromJson(Map<String, dynamic> json) {
+    var linesData = json['lines'] as List<dynamic>? ?? [];
     return Dialogue(
-      npcName: json['npcName'] as String,
-      start: json['start'] as String,
-      during: (json['during'] as List<dynamic>?)?.map((d) => d as String).toList(),
-      endSuccess: json['endSuccess'] as String,
-      endFailure: json['endFailure'] as String?,
+      characterId: json['characterId'] as String? ?? 'unknown_character',
+      lines: linesData.map((line) => line.toString()).toList(),
+      mood: json['mood'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'npcName': npcName,
-      'start': start,
-      if (during != null) 'during': during,
-      'endSuccess': endSuccess,
-      if (endFailure != null) 'endFailure': endFailure,
+      'characterId': characterId,
+      'lines': lines,
+      if (mood != null) 'mood': mood,
     };
   }
 }
 
 class StoryContent {
-  final String? introduction;
-  final String? conclusion;
+  final String introduction;
+  final String conclusion;
+  final List<String>? keyEvents;
 
-  StoryContent({this.introduction, this.conclusion});
+  StoryContent({required this.introduction, required this.conclusion, this.keyEvents});
 
   factory StoryContent.fromJson(Map<String, dynamic> json) {
+    var keyEventsData = json['keyEvents'] as List<dynamic>?;
     return StoryContent(
-      introduction: json['introduction'] as String?,
-      conclusion: json['conclusion'] as String?,
+      introduction: json['introduction'] as String? ?? 'No introduction',
+      conclusion: json['conclusion'] as String? ?? 'No conclusion',
+      keyEvents: keyEventsData?.map((event) => event.toString()).toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (introduction != null) 'introduction': introduction,
-      if (conclusion != null) 'conclusion': conclusion,
+      'introduction': introduction, // No null check needed as it's required in constructor
+      'conclusion': conclusion,   // No null check needed as it's required in constructor
+      if (keyEvents != null) 'keyEvents': keyEvents,
     };
   }
 }
+
+// Ensure other nested models like StoryPageModel, BattleConfigModel, RequirementsModel 
+// (defined in their own files) also handle null strings and lists robustly if they have such fields.
+// Example for StoryPageModel (in story_page_model.dart):
+/*
+class StoryPageModel {
+  // ... fields ...
+  factory StoryPageModel.fromJson(Map<String, dynamic> json) {
+    return StoryPageModel(
+      pageId: json['pageId'] as String? ?? 'unknown_page_${DateTime.now().millisecondsSinceEpoch}',
+      text: json['text'] as String? ?? 'No text for this page.',
+      imageUrl: json['imageUrl'] as String?,
+      // ... other fields like choices, ensuring robust parsing ...
+    );
+  }
+}
+*/
+// Example for BattleConfigModel (in battle_config_model.dart):
+/*
+class BattleConfigModel {
+  // ... fields ...
+  factory BattleConfigModel.fromJson(Map<String, dynamic> json) {
+    return BattleConfigModel(
+      enemyId: json['enemyId'] as String? ?? 'default_enemy',
+      // ... other fields ...
+    );
+  }
+}
+*/
+// Example for RequirementsModel (in requirements_model.dart):
+/*
+class RequirementsModel {
+  // ... fields ...
+  factory RequirementsModel.fromJson(Map<String, dynamic> json) {
+    return RequirementsModel(
+      level: (json['level'] as num?)?.toInt(),
+      completedMissionIds: (json['completedMissionIds'] as List<dynamic>?)
+          ?.map((id) => id.toString())
+          .toList() ?? [], // Default to empty list
+      requiredItemIds: (json['requiredItemIds'] as List<dynamic>?)
+          ?.map((id) => id.toString())
+          .toList() ?? [], // Default to empty list
+      // ... other fields ...
+    );
+  }
+}
+*/
