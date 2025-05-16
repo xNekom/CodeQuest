@@ -150,7 +150,7 @@ class UserService {
     // TODO: Implement actual Firestore update logic.
     // Example structure in Firestore: users/{uid}/missionProgress/{missionId}/theoryCompleted = true
     // Or add to a subcollection: users/{uid}/completedTheories/{missionId} = {completedAt: Timestamp}
-    print('[UserService] TODO: Implement markTheoryAsComplete for user $uid, mission $missionId');
+    // print('[UserService] TODO: Implement markTheoryAsComplete for user $uid, mission $missionId');
     // For now, this is a placeholder.
     await Future.value(); 
   }
@@ -160,8 +160,24 @@ class UserService {
   Future<bool> isTheoryCompleted(String uid, String missionId) async {
     // TODO: Implement actual Firestore read logic.
     // Example: Check users/{uid}/missionProgress/{missionId}/theoryCompleted
-    print('[UserService] TODO: Implement isTheoryCompleted for user $uid, mission $missionId');
-    // For now, default to false.
+    // print('[UserService] TODO: Implement isTheoryCompleted for user $uid, mission $missionId');
+    // For ahora, por defecto es falso.
     return Future.value(false);
+  }
+
+  Future<void> updateUserProgress(String userId, Map<String, dynamic> progressData) async {
+    // TODO: Implement actual Firestore update logic.
+    // print("Actualizando progreso del usuario $userId con: $progressData");
+    // Ejemplo:
+    // await _firestore.collection('users').doc(userId).update({'progress': progressData});
+  }
+
+  Future<Map<String, dynamic>?> getUserProgress(String userId) async {
+    // TODO: Implement actual Firestore read logic.
+    // print("Obteniendo progreso del usuario $userId");
+    // Ejemplo:
+    // DocumentSnapshot doc = await _firestore.collection('users').doc(userId).get();
+    // return doc.exists ? doc.data() as Map<String, dynamic> : null;
+    return null;
   }
 }

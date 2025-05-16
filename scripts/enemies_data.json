@@ -1,6 +1,6 @@
 [
   {
-    "id": "b3106d03-7f85-4d87-aed4-0d428b07dbee",
+    "id": "enemigo_bug_del_punto_y_coma",
     "name": "Bug del Punto y Coma",
     "level": 2,
     "health": 20,
@@ -13,7 +13,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "43622d39-2c10-4d74-b7f0-c8886d051173",
         "dropChance": 0.7
       }
     ],
@@ -24,7 +23,7 @@
     }
   },
   {
-    "id": "db4badc7-f5c7-42e6-89f2-9be8a1b6e88d",
+    "id": "enemigo_nullpointerexception",
     "name": "NullPointerException",
     "level": 5,
     "health": 40,
@@ -37,7 +36,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_manual_excepciones",
         "dropChance": 0.5
       }
     ],
@@ -48,7 +46,7 @@
     }
   },
   {
-    "id": "a0754abd-f732-44aa-908b-52af5378aa80",
+    "id": "enemigo_bug_de_bucle_infinito",
     "name": "Bug de Bucle Infinito",
     "level": 4,
     "health": 35,
@@ -61,7 +59,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_break_bucle",
         "dropChance": 0.6
       }
     ],
@@ -72,7 +69,7 @@
     }
   },
   {
-    "id": "29cbf42a-7b35-458d-820e-ce0e30f7c2e6",
+    "id": "enemigo_stackoverflowerror",
     "name": "StackOverflowError",
     "level": 6,
     "health": 45,
@@ -85,7 +82,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_pila_debug",
         "dropChance": 0.5
       }
     ],
@@ -96,7 +92,7 @@
     }
   },
   {
-    "id": "b94a06a1-9663-4b08-b325-8b71ff9094c9",
+    "id": "enemigo_error_de_java",
     "name": "Error de Java",
     "level": 7,
     "health": 60,
@@ -109,7 +105,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_error_java",
         "dropChance": 0.4
       }
     ],
@@ -120,7 +115,7 @@
     }
   },
   {
-    "id": "0a026b38-ad03-4612-9b69-f4b5ac5d0308",
+    "id": "enemigo_manejador_de_excepciones",
     "name": "Manejador de Excepciones",
     "level": 3,
     "health": 25,
@@ -133,7 +128,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_excepcion_manejada",
         "dropChance": 0.6
       }
     ],
@@ -144,7 +138,7 @@
     }
   },
   {
-    "id": "25bddc93-ff05-4092-809b-82779d8e6ec5",
+    "id": "enemigo_bug_de_variable_no_inicializada",
     "name": "Bug de Variable No Inicializada",
     "level": 2,
     "health": 15,
@@ -157,7 +151,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_variable_debug",
         "dropChance": 0.7
       }
     ],
@@ -168,7 +161,7 @@
     }
   },
   {
-    "id": "0b25d305-0814-40c6-8f5e-aef2d43736eb",
+    "id": "enemigo_arrayindexoutofboundsexception",
     "name": "ArrayIndexOutOfBoundsException",
     "level": 4,
     "health": 30,
@@ -181,7 +174,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_array_debug",
         "dropChance": 0.5
       }
     ],
@@ -192,7 +184,7 @@
     }
   },
   {
-    "id": "4d6c449f-3660-4310-b837-60f4ebb0122f",
+    "id": "enemigo_classnotfoundexception",
     "name": "ClassNotFoundException",
     "level": 5,
     "health": 35,
@@ -205,7 +197,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_clase_no_encontrada",
         "dropChance": 0.4
       }
     ],
@@ -216,7 +207,7 @@
     }
   },
   {
-    "id": "5917d97d-d40b-45b3-b894-9812c33508e6",
+    "id": "enemigo_illegalargumentexception",
     "name": "IllegalArgumentException",
     "level": 3,
     "health": 20,
@@ -229,7 +220,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_argumento_illegal",
         "dropChance": 0.6
       }
     ],
@@ -240,7 +230,7 @@
     }
   },
   {
-    "id": "da350e43-d10d-4b22-a79b-5c2f6d8be342",
+    "id": "enemigo_securityexception",
     "name": "SecurityException",
     "level": 6,
     "health": 50,
@@ -253,7 +243,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_excepcion_seguridad",
         "dropChance": 0.5
       }
     ],
@@ -264,7 +253,7 @@
     }
   },
   {
-    "id": "c126776e-98d1-4793-9329-2c636557393c",
+    "id": "enemigo_noclassdeffounderror",
     "name": "NoClassDefFoundError",
     "level": 7,
     "health": 55,
@@ -277,7 +266,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_no_class_def_found",
         "dropChance": 0.4
       }
     ],
@@ -288,7 +276,7 @@
     }
   },
   {
-    "id": "efd8870e-cbce-4835-9b89-75ec757ef326",
+    "id": "enemigo_error_de_jvm",
     "name": "Error de JVM",
     "level": 8,
     "health": 70,
@@ -301,7 +289,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_error_jvm",
         "dropChance": 0.3
       }
     ],
@@ -312,7 +299,7 @@
     }
   },
   {
-    "id": "75a95190-2568-4929-86ce-bc684ab04781",
+    "id": "enemigo_outofmemoryerror",
     "name": "OutOfMemoryError",
     "level": 9,
     "health": 80,
@@ -325,7 +312,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_fuera_de_memoria",
         "dropChance": 0.3
       }
     ],
@@ -336,7 +322,7 @@
     }
   },
   {
-    "id": "c5d9e453-bcd8-4b92-b392-46df5a64ecae",
+    "id": "enemigo_internalerror",
     "name": "InternalError",
     "level": 10,
     "health": 90,
@@ -349,7 +335,6 @@
     ],
     "lootTable": [
       {
-        "itemId": "item_error_interno",
         "dropChance": 0.2
       }
     ],
@@ -357,6 +342,58 @@
       "encounter": "¡Error interno en el sistema!",
       "victory": "¡El sistema ha sido restaurado!",
       "defeat": "¡El error es inevitable!"
+    }
+  },
+  {
+    "id": "enemigo_guardian_de_las_sombras",
+    "name": "Guardián de las Sombras",
+    "description": "Un antiguo espíritu que protege los secretos del Bosque Susurrante. Desafía a los viajeros con acertijos y pruebas de combate.",
+    "assetPath": "assets/enemies/guardian_sombras.png",
+    "stats": {
+      "health": 150,
+      "attack": 20,
+      "defense": 15,
+      "speed": 10,
+      "intelligence": 25
+    },
+    "abilities": [
+      {
+        "name": "Golpe Sombrío",
+        "type": "attack",
+        "power": 20,
+        "accuracy": 0.9,
+        "effect": "damage"
+      },
+      {
+        "name": "Acertijo Paralizante",
+        "type": "debuff",
+        "effect": "stun",
+        "duration": 1,
+        "accuracy": 0.7
+      }
+    ],
+    "resistances": {
+      "physical": 0.1,
+      "dark": 0.5
+    },
+    "weaknesses": {
+      "light": 0.5,
+      "fire": 0.2
+    },
+    "drops": [
+      {
+        "chance": 0.5,
+        "quantity": 1
+      },
+      {
+        "chance": 0.3,
+        "quantity": 2
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Prepárate para enfrentar la oscuridad!",
+      "victory": "La sabiduría prevalece...",
+      "defeat": "Aún no estás listo..."
     }
   }
 ]

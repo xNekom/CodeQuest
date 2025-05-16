@@ -4,7 +4,6 @@ import '../models/achievement_model.dart';
 import '../services/auth_service.dart';
 import '../services/reward_service.dart';
 import '../widgets/achievement_card.dart';
-import '../theme/pixel_theme.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_art_background.dart';
 

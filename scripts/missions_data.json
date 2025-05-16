@@ -1,6 +1,6 @@
 [
   {
-    "id": "0b9f5607-4e94-40b8-b629-4c9e6f4266ee",
+    "id": "mision_el_despertar_del_heroe",
     "title": "El Despertar del Héroe",
     "description": "Una introducción al mundo de CodeQuest. Demuestra tu conocimiento básico para empezar tu aventura.",
     "zone": "Villa Tutorial",
@@ -14,9 +14,9 @@
         "description": "Responde correctamente a una serie de preguntas introductorias.",
         "target": 3,
         "questionIds": [
-          "question_001",
-          "question_002",
-          "question_003"
+          "pregunta_que_es_un_programa",
+          "pregunta_multiplataforma_java",
+          "pregunta_estructura_principal_java_clase_main"
         ],
         "timeLimitSeconds": null
       }
@@ -26,13 +26,13 @@
       "coins": 50,
       "items": [
         {
-          "itemId": "item_espada_bronce",
+          "itemId": "item_espada_corta_de_aprendiz",
           "quantity": 1
         }
       ],
       "unlocks": [
-        "fe770231-403b-44bf-b01c-66d521ef8a0b",
-        "71a11c99-1030-48c5-be5a-161341c7ff08"
+        "mision_el_misterio_del_bosque_susurrante",
+        "mision_el_contrabandista_de_pociones"
       ]
     },
     "dialogue": {
@@ -51,708 +51,22 @@
     }
   },
   {
-    "id": "fe770231-403b-44bf-b01c-66d521ef8a0b",
+    "id": "mision_el_misterio_del_bosque_susurrante",
     "title": "El Misterio del Bosque Susurrante",
-    "description": "Un antiguo guardián bloquea el paso en el Bosque Susurrante. Supera sus acertijos para continuar.",
+    "description": "Adéntrate en el misterioso Bosque Susurrante y descubre la fuente de sus extraños susurros.",
     "zone": "Bosque Susurrante",
-    "levelRequired": 3,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "0b9f5607-4e94-40b8-b629-4c9e6f4266ee",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota al Guardián de las Sombras en un duelo de ingenio.",
-        "enemyId": "enemy_guardian_sombras",
-        "requiredItemIds": [],
-        "questionIds": [
-          "question_004",
-          "question_005",
-          "question_006",
-          "question_007"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 250,
-      "coins": 120,
-      "items": [
-        {
-          "itemId": "item_armadura_cuero",
-          "quantity": 1
-        },
-        {
-          "itemId": "item_pocion_curacion_pequena",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "0faf8916-2a5d-47a3-b669-63b7139d6f27",
-        "99fb8701-652a-4de1-aded-2023b990f12d"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Guardián de las Sombras",
-      "start": "El Bosque Susurrante esconde antiguos secretos. Yo protejo este camino. Solo los sabios podrán pasar. ¿Te atreves a desafiarme?",
-      "during": [
-        "Interesante respuesta...",
-        "No subestimes el poder del conocimiento ancestral."
-      ],
-      "endSuccess": "Has vencido al Guardián con tu intelecto. El bosque te agradece. ¡Tus hazañas serán cantadas!",
-      "endFailure": "El bosque no revela sus secretos a cualquiera. Vuelve cuando estés más preparado."
-    },
-    "storyContent": {
-      "introduction": "Tras superar tu primera prueba, te aventuras en el Bosque Susurrante, donde un enigmático guardián te desafía.",
-      "conclusion": "Al derrotar al Guardián, el camino se abre y ganas acceso a nuevas áreas y conocimientos."
-    }
-  },
-  {
-    "id": "0faf8916-2a5d-47a3-b669-63b7139d6f27",
-    "title": "La Prueba de la Cumbre Helada",
-    "description": "En la cima de la Montaña Helada te espera una prueba final de sabiduría para obtener un artefacto poderoso.",
-    "zone": "Montañas Heladas",
-    "levelRequired": 5,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "fe770231-403b-44bf-b01c-66d521ef8a0b",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Responde a una serie de preguntas desafiantes en la cima de la montaña.",
-        "target": 5,
-        "questionIds": [
-          "question_008",
-          "question_009",
-          "question_010",
-          "question_011",
-          "question_012"
-        ],
-        "timeLimitSeconds": 300
-      }
-    ],
-    "rewards": {
-      "experience": 500,
-      "coins": 300,
-      "items": [
-        {
-          "itemId": "item_amuleto_sabiduria",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "4a4c0b15-2892-419f-b462-17ccca24b19e"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Espíritu de la Montaña",
-      "start": "La Cumbre Helada pone a prueba tanto tu resistencia como tu mente. Muchos han fallado. ¿Estás listo para el desafío final?",
-      "during": [
-        "El frío puede nublar el juicio, mantente enfocado.",
-        "Cada respuesta te acerca al Cristal."
-      ],
-      "endSuccess": "¡Lo has logrado! El Cristal de Sabiduría es tuyo. Tu conocimiento ilumina las tierras. Úsalo sabiamente.",
-      "endFailure": "La montaña no cede sus tesoros fácilmente. Medita sobre tus errores y vuelve a intentarlo."
-    },
-    "storyContent": {
-      "introduction": "Guiado por tus éxitos anteriores, asciendes la Montaña Helada en busca del legendario Cristal de Sabiduría.",
-      "conclusion": "Al superar las pruebas, el Espíritu de la Montaña te concede el Cristal, un testimonio de tu creciente poder y conocimiento."
-    }
-  },
-  {
-    "id": "71a11c99-1030-48c5-be5a-161341c7ff08",
-    "title": "Ingredientes para la Curandera",
-    "description": "La curandera Elara necesita hierbas raras para sus pociones. Recoge 3 Flores Lunares en los Campos Aledaños.",
-    "zone": "Campos Aledaños",
-    "levelRequired": 2,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "0b9f5607-4e94-40b8-b629-4c9e6f4266ee",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "collection",
-        "description": "Recoge 3 Flores Lunares.",
-        "itemIdToCollect": "item_flor_lunar",
-        "quantity": 3,
-        "collectionSourceDescription": "Se encuentran cerca de arroyos en los Campos Aledaños."
-      }
-    ],
-    "rewards": {
-      "experience": 75,
-      "coins": 30,
-      "items": [
-        {
-          "itemId": "item_pocion_curacion_pequena",
-          "quantity": 2
-        }
-      ],
-      "unlocks": [
-        "06b4da72-d24c-482f-a246-86c1e05ea02c"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Curandera Elara",
-      "start": "Joven héroe, necesito tu ayuda. Unas Flores Lunares me vendrían de perlas para mis ungüentos.",
-      "endSuccess": "¡Magnífico! Estas flores son perfectas. Toma esto por tu esfuerzo."
-    },
-    "storyContent": {
-      "introduction": "La curandera local te pide un favor sencillo pero vital para la aldea.",
-      "conclusion": "Con las hierbas entregadas, Elara puede continuar su labor."
-    }
-  },
-  {
-    "id": "06b4da72-d24c-482f-a246-86c1e05ea02c",
-    "title": "El Enigma del Granjero",
-    "description": "El Granjero Pepin ha olvidado la combinación de su granero. Ayúdalo resolviendo acertijos sobre agricultura.",
-    "zone": "Villa Tutorial",
-    "levelRequired": 2,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "71a11c99-1030-48c5-be5a-161341c7ff08",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Resuelve los acertijos del granjero.",
-        "target": 2,
-        "questionIds": [
-          "q_farm_001",
-          "q_farm_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 60,
-      "coins": 25,
-      "items": [
-        {
-          "itemId": "item_manzana_dorada",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "de00f65b-d658-4b3c-8d2d-97dbb42fb6aa"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Granjero Pepin",
-      "start": "¡Ay de mí! No recuerdo cómo abrir el granero. ¿Podrías ayudarme con estos enigmas?",
-      "endSuccess": "¡Increíble! ¡Esa es la combinación! Muchas gracias, toma esta manzana especial."
-    },
-    "storyContent": {
-      "introduction": "Un despistado granjero necesita tu ingenio.",
-      "conclusion": "El granero está abierto y el granjero, agradecido."
-    }
-  },
-  {
-    "id": "de00f65b-d658-4b3c-8d2d-97dbb42fb6aa",
-    "title": "Lobos Hambrientos",
-    "description": "Una manada de lobos amenaza los campos. Derrota a su líder.",
-    "zone": "Campos Aledaños",
-    "levelRequired": 4,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "06b4da72-d24c-482f-a246-86c1e05ea02c",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota al Lobo Alfa.",
-        "enemyId": "enemy_lobo_alfa",
-        "questionIds": [
-          "q_combat_001",
-          "q_combat_002",
-          "q_combat_003"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 150,
-      "coins": 70,
-      "items": [
-        {
-          "itemId": "item_colmillo_lobo",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Aldeano Agradecido",
-      "start": "¡Esos lobos nos van a arruinar! Por favor, encárgate de su líder.",
-      "endSuccess": "¡Nos has salvado! No sé cómo agradecerte. Este colmillo es prueba de tu valor."
-    },
-    "storyContent": {
-      "introduction": "La seguridad de los campos está en tus manos.",
-      "conclusion": "Los lobos ya no son una amenaza, por ahora."
-    }
-  },
-  {
-    "id": "99fb8701-652a-4de1-aded-2023b990f12d",
-    "title": "Setas Luminosas",
-    "description": "El alquimista local necesita Setas Luminosas para un experimento. Se dice que crecen en las partes más oscuras del bosque.",
-    "zone": "Bosque Susurrante",
-    "levelRequired": 5,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "fe770231-403b-44bf-b01c-66d521ef8a0b",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "collection",
-        "description": "Consigue 5 Setas Luminosas.",
-        "itemIdToCollect": "item_seta_luminosa",
-        "quantity": 5,
-        "collectionSourceDescription": "Busca en cuevas húmedas o bajo árboles muy densos en el Bosque Susurrante."
-      }
-    ],
-    "rewards": {
-      "experience": 200,
-      "coins": 100,
-      "items": [
-        {
-          "itemId": "item_pocion_invisibilidad_temporal",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "81eaf752-dd69-4a6d-9f91-8dfbc6170b40"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Alquimista Zazz",
-      "start": "¡Ah, un aventurero! Justo lo que necesito. Tráeme unas Setas Luminosas y te recompensaré bien.",
-      "endSuccess": "¡Perfectas! Justo lo que mi poción necesitaba. Aquí tienes, una pequeña muestra de mis creaciones."
-    }
-  },
-  {
-    "id": "81eaf752-dd69-4a6d-9f91-8dfbc6170b40",
-    "title": "El Santuario Olvidado",
-    "description": "Descubre la secuencia correcta para activar un antiguo santuario en el corazón del bosque.",
-    "zone": "Bosque Susurrante",
-    "levelRequired": 6,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "99fb8701-652a-4de1-aded-2023b990f12d",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "interaction",
-        "description": "Activa el Santuario Olvidado.",
-        "targetObjectId": "santuario_bosque_01",
-        "interactionSequence": [
-          "palanca_norte",
-          "boton_sur",
-          "gema_este"
-        ],
-        "interactionHint": "Las runas cercanas susurran el orden: 'Desde el frío inicio, hacia el cálido final, con la joya del amanecer guiando el ritual.'"
-      }
-    ],
-    "rewards": {
-      "experience": 300,
-      "coins": 150,
-      "items": [
-        {
-          "itemId": "item_runa_antigua_activacion",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "49b175e6-d086-44eb-a297-2db0c2f8f4ea"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Voz Espectral del Santuario",
-      "start": "El santuario yace dormido, esperando la señal correcta...",
-      "endSuccess": "El santuario despierta... Su energía fluye de nuevo gracias a ti."
-    }
-  },
-  {
-    "id": "49b175e6-d086-44eb-a297-2db0c2f8f4ea",
-    "title": "La Araña Tejesombras",
-    "description": "Una araña gigante ha hecho su nido en una cueva, bloqueando un camino importante. Derrótala.",
-    "zone": "Bosque Susurrante",
-    "levelRequired": 7,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "81eaf752-dd69-4a6d-9f91-8dfbc6170b40",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota a la Araña Tejesombras.",
-        "enemyId": "enemy_arana_tejesombras",
-        "questionIds": [
-          "q_spider_001",
-          "q_spider_002",
-          "q_spider_003",
-          "q_spider_004"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 400,
-      "coins": 200,
-      "items": [
-        {
-          "itemId": "item_caparazon_quitina_resistente",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Mercader Atrapado",
-      "start": "¡Ayuda! ¡Esa araña monstruosa no me deja pasar! Si la derrotas, te deberé una.",
-      "endSuccess": "¡Lo hiciste! ¡El camino está libre! Toma esto, es lo menos que puedo hacer."
-    }
-  },
-  {
-    "id": "4a4c0b15-2892-419f-b462-17ccca24b19e",
-    "title": "Refugio en la Tormenta",
-    "description": "Una tormenta de nieve te ha atrapado. Responde preguntas sobre supervivencia para encontrar/reparar un refugio antes de que sea tarde.",
-    "zone": "Montañas Heladas",
-    "levelRequired": 6,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "0faf8916-2a5d-47a3-b669-63b7139d6f27",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Responde correctamente para asegurar el refugio.",
-        "target": 3,
-        "questionIds": [
-          "q_survival_001",
-          "q_survival_002",
-          "q_survival_003"
-        ],
-        "timeLimitSeconds": 600
-      }
-    ],
-    "rewards": {
-      "experience": 350,
-      "coins": 180,
-      "items": [
-        {
-          "itemId": "item_mapa_parcial_montanas",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "b31c87fd-1e76-4f60-9ea8-dd2361269e3b"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Voz Interior",
-      "start": "La tormenta arrecia... Debo encontrar refugio o no sobreviviré. ¿Qué debo hacer primero?",
-      "endSuccess": "A salvo... por ahora. Esta experiencia me ha enseñado mucho. Y este mapa podría ser útil."
-    }
-  },
-  {
-    "id": "b31c87fd-1e76-4f60-9ea8-dd2361269e3b",
-    "title": "Cristales de Hielo Eterno",
-    "description": "El herrero de la ciudadela necesita Cristales de Hielo Eterno para forjar armas especiales. Se encuentran en las grietas más profundas.",
-    "zone": "Montañas Heladas",
-    "levelRequired": 8,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "4a4c0b15-2892-419f-b462-17ccca24b19e",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "collection",
-        "description": "Consigue 3 Cristales de Hielo Eterno.",
-        "itemIdToCollect": "item_cristal_hielo_eterno",
-        "quantity": 3,
-        "collectionSourceDescription": "Busca en zonas con hielo azul brillante, a menudo custodiadas por elementales de hielo."
-      }
-    ],
-    "rewards": {
-      "experience": 450,
-      "coins": 220,
-      "items": [],
-      "unlocks": [
-        "22d642a2-c71c-4ca4-a07b-a52b3a790194",
-        "descuento_herreria_MH"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Herrero Borin",
-      "start": "¡Aventurero! Si me traes Cristales de Hielo Eterno, podré forjar equipo como nunca has visto. Y te haré un buen precio.",
-      "endSuccess": "¡Estos cristales son magníficos! Pásate por la herrería cuando quieras, tendrás un descuento especial."
-    }
-  },
-  {
-    "id": "22d642a2-c71c-4ca4-a07b-a52b3a790194",
-    "title": "El Yeti Solitario",
-    "description": "Un Yeti bloquea el paso a un antiguo templo en la montaña. Demuestra tu valía.",
-    "zone": "Montañas Heladas",
-    "levelRequired": 9,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "b31c87fd-1e76-4f60-9ea8-dd2361269e3b",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota al Yeti Solitario.",
-        "enemyId": "enemy_yeti_solitario",
-        "questionIds": [
-          "q_yeti_001",
-          "q_yeti_002",
-          "q_yeti_003",
-          "q_yeti_004",
-          "q_yeti_005"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 600,
-      "coins": 300,
-      "items": [
-        {
-          "itemId": "item_piel_yeti_gruesa",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "937ef041-bf73-4622-8f0a-006d8224c45f"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Monje del Templo (al vencer al Yeti)",
-      "start": "El Yeti protege la entrada al templo. Solo aquellos con fuerza y sabiduría pueden pasar.",
-      "endSuccess": "Has demostrado tu valía. El camino al templo está abierto. La piel del Yeti es un trofeo de tu logro."
-    }
-  },
-  {
-    "id": "937ef041-bf73-4622-8f0a-006d8224c45f",
-    "title": "El Secreto de las Ruinas",
-    "description": "Explora las Ruinas Ancestrales y descifra los glifos para abrir la cámara central.",
-    "zone": "Ruinas Ancestrales",
-    "levelRequired": 8,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "22d642a2-c71c-4ca4-a07b-a52b3a790194",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "interaction",
-        "description": "Abre la cámara central de las ruinas.",
-        "targetObjectId": "camara_central_ruinas_01",
-        "interactionHint": "Los glifos deben activarse en el orden de los elementos: Tierra, Agua, Fuego, Aire. Busca los símbolos correspondientes."
-      }
-    ],
-    "rewards": {
-      "experience": 500,
-      "coins": 250,
-      "items": [
-        {
-          "itemId": "item_artefacto_menor_conocimiento",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "f42962b0-a7b9-467a-bd6b-e22ab896b6bb"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Narrador",
-      "start": "Las ruinas susurran historias de un pasado olvidado. Una cámara sellada parece guardar un secreto.",
-      "endSuccess": "Con la secuencia correcta, la puerta de piedra se desliza, revelando un artefacto antiguo."
-    }
-  },
-  {
-    "id": "f42962b0-a7b9-467a-bd6b-e22ab896b6bb",
-    "title": "El Guardián Golem",
-    "description": "Un golem ancestral protege la entrada a una biblioteca perdida. Responde a sus enigmas sobre historia antigua.",
-    "zone": "Ruinas Ancestrales",
-    "levelRequired": 10,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "937ef041-bf73-4622-8f0a-006d8224c45f",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Responde a los enigmas del Golem.",
-        "target": 4,
-        "questionIds": [
-          "q_hist_ancient_001",
-          "q_hist_ancient_002",
-          "q_hist_ancient_003",
-          "q_hist_ancient_004"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 700,
-      "coins": 350,
-      "items": [],
-      "unlocks": [
-        "facc0839-bc1e-4d0c-86a0-93400f1f0d3a",
-        "acceso_biblioteca_perdida"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Guardián Golem",
-      "start": "DETENTE. SOLO AQUELLOS CON CONOCIMIENTO DEL PASADO PUEDEN ENTRAR. RESPONDE MIS ENIGMAS.",
-      "endSuccess": "TU SABIDURÍA ES SUFICIENTE. PUEDES PASAR A LA BIBLIOTECA PERDIDA."
-    }
-  },
-  {
-    "id": "facc0839-bc1e-4d0c-86a0-93400f1f0d3a",
-    "title": "Pergaminos Olvidados",
-    "description": "Dentro de la Biblioteca Perdida, recupera 3 Pergaminos Olvidados que contienen sabiduría arcana.",
-    "zone": "Ruinas Ancestrales (Biblioteca Perdida)",
-    "levelRequired": 11,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "f42962b0-a7b9-467a-bd6b-e22ab896b6bb",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "collection",
-        "description": "Encuentra 3 Pergaminos Olvidados.",
-        "itemIdToCollect": "item_pergamino_olvidado_sabiduria",
-        "quantity": 3,
-        "collectionSourceDescription": "Busca en atriles y estanterías polvorientas de la Biblioteca Perdida."
-      }
-    ],
-    "rewards": {
-      "experience": 800,
-      "coins": 400,
-      "items": [
-        {
-          "itemId": "item_hechizo_basico_luz",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "f578dcf5-1e6c-4bfb-9e23-d251273f9c00"
-      ]
-    },
-    "dialogue": {
-      "npcName": "Fantasma del Bibliotecario",
-      "start": "Estos pergaminos... tanto conocimiento perdido... Por favor, recupéralos.",
-      "endSuccess": "Gracias... Que esta sabiduría te guíe. Toma este pequeño encantamiento de luz, te será útil."
-    },
-    "storyContent": {
-      "introduction": "Al entrar en la Biblioteca Perdida, el aire está lleno de polvo y misterio. Los pergaminos esperan ser recuperados.",
-      "conclusion": "Con los pergaminos en mano, sientes que el conocimiento antiguo fluye a través de ti."
-    }
-  },
-  {
-    "id": "f578dcf5-1e6c-4bfb-9e23-d251273f9c00",
-    "title": "Espectros Vengativos",
-    "description": "Los espíritus de antiguos eruditos, corrompidos, acechan en la biblioteca. Pacifica a 3 de ellos.",
-    "zone": "Ruinas Ancestrales (Biblioteca Perdida)",
-    "levelRequired": 12,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "facc0839-bc1e-4d0c-86a0-93400f1f0d3a",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Pacifica a 3 Espectros Eruditos.",
-        "enemyId": "enemy_espectro_erudito",
-        "targetKillCount": 3,
-        "questionIds": [
-          "q_ghost_lore_001",
-          "q_ghost_lore_002",
-          "q_ghost_lore_003"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 1000,
-      "coins": 500,
-      "items": [
-        {
-          "itemId": "item_esencia_espiritual_pura",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Fantasma del Bibliotecario",
-      "start": "Los pobres espíritus... la corrupción los ha vuelto agresivos. Debes calmarlos.",
-      "endSuccess": "Descansan en paz ahora... gracias a ti. Esta esencia es prueba de su gratitud."
-    }
-  },
-  {
-    "id": "1303f139-6ec1-4bcb-ade5-728971685c57",
-    "title": "Desafío de Conocimiento Diario",
-    "description": "Pon a prueba tus conocimientos con una serie de preguntas aleatorias. ¡Recompensas diarias!",
-    "zone": "Global",
     "levelRequired": 1,
     "status": "disponible",
     "prerequisiteMissionId": null,
-    "isRepeatable": true,
-    "cooldownDays": 1,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Completa el desafío diario respondiendo 5 preguntas.",
-        "target": 5,
-        "questionPoolId": "pool_general_conocimiento_diario"
-      }
-    ],
-    "rewards": {
-      "experience": 50,
-      "coins": 20,
-      "items": [
-        {
-          "itemId": "item_cofre_recompensa_diaria_pequeno",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Anunciador de Desafíos",
-      "start": "¿Listo para tu dosis diaria de sabiduría? ¡Demuestra lo que sabes!",
-      "endSuccess": "¡Bien hecho! Vuelve mañana para otro desafío y más recompensas."
-    }
-  },
-  {
-    "id": "27ce3269-362a-4061-897b-2ffe98be3238",
-    "title": "Control de Plagas del Bosque",
-    "description": "Ayuda a mantener a raya a las criaturas menores del Bosque Susurrante.",
-    "zone": "Bosque Susurrante",
-    "levelRequired": 4,
-    "status": "disponible",
-    "prerequisiteMissionId": "fe770231-403b-44bf-b01c-66d521ef8a0b",
-    "isRepeatable": true,
-    "cooldownHours": 6,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota a 5 Goblins Exploradores.",
-        "enemyId": "enemy_goblin_explorador",
-        "targetKillCount": 5,
-        "questionIds": [
-          "q_goblin_easy_001",
-          "q_goblin_easy_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 70,
-      "coins": 30,
-      "items": [
-        {
-          "itemId": "item_ingrediente_comun_goblin",
-          "quantity": 2
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Guardabosques Local",
-      "start": "Esos goblins vuelven a causar problemas. ¿Podrías encargarte de algunos?",
-      "endSuccess": "Buen trabajo. El bosque está un poco más tranquilo gracias a ti."
-    }
-  },
-  {
-    "id": "6cd3813e-b00f-4240-9b38-71b053f24b4b",
-    "title": "El Mapa Fragmentado",
-    "description": "Un viejo explorador te da un fragmento de mapa que podría llevar a un artefacto poderoso. Parece que el primer fragmento está en tu poder.",
-    "zone": "Villa Tutorial",
-    "levelRequired": 5,
-    "status": "disponible",
-    "prerequisiteMissionId": "de00f65b-d658-4b3c-8d2d-97dbb42fb6aa",
     "isRepeatable": false,
     "objectives": [
       {
-        "type": "interaction",
-        "description": "Habla con el Viejo Explorador para recibir el primer fragmento e iniciar la búsqueda.",
-        "targetObjectId": "npc_viejo_explorador_mapa"
+        "type": "exploracion",
+        "description": "Encuentra 3 pistas sobre el origen de los susurros.",
+        "target": 3,
+        "progress": 0,
+        "completed": false,
+        "optional": false
       }
     ],
     "rewards": {
@@ -760,753 +74,49 @@
       "coins": 50,
       "items": [
         {
-          "itemId": "item_fragmento_mapa_AP_01",
-          "quantity": 1
+          "itemId": "item_pocion_de_curacion_menor",
+          "quantity": 2
         }
       ],
       "unlocks": [
-        "1a58fdea-47f4-428f-9a35-b21d3fe77c66"
+        "mision_nueva_zona_bosque_profundo"
       ]
     },
     "dialogue": {
-      "npcName": "Viejo Explorador",
-      "start": "Joven, veo potencial en ti. Toma este fragmento de mapa. Lleva a algo grande, pero necesitarás encontrar los otros. El primero... bueno, digamos que ya lo tienes si aceptas esta tarea.",
-      "endSuccess": "El primer fragmento es tuyo. Busca el siguiente en el Bosque Susurrante, donde los acertijos guardan secretos."
-    }
-  },
-  {
-    "id": "1a58fdea-47f4-428f-9a35-b21d3fe77c66",
-    "title": "Tras la Pista de los Fragmentos",
-    "description": "El primer fragmento insinúa la ubicación del segundo en el Bosque Susurrante, custodiado por acertijos.",
-    "zone": "Bosque Susurrante",
-    "levelRequired": 7,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "6cd3813e-b00f-4240-9b38-71b053f24b4b",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Resuelve el acertijo del guardián del fragmento.",
-        "target": 2,
-        "questionIds": [
-          "q_map_fragment_001",
-          "q_map_fragment_002"
-        ]
-      },
-      {
-        "type": "collection",
-        "description": "Obtén el segundo fragmento.",
-        "itemIdToCollect": "item_fragmento_mapa_AP_02",
-        "quantity": 1,
-        "collectionSourceDescription": "El fragmento se revelará al resolver los acertijos."
-      }
-    ],
-    "rewards": {
-      "experience": 300,
-      "coins": 150,
-      "items": [
-        {
-          "itemId": "item_fragmento_mapa_AP_02",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "94a77cad-851f-43a3-8f3c-fe47c043eb9f"
-      ]
+      "npcName": "Eldrin, el Ermitaño",
+      "start": "El bosque guarda secretos antiguos, joven aventurero. ¿Te atreves a escucharlos?",
+      "endSuccess": "Has demostrado tu valía. El bosque te revela una parte de su misterio.",
+      "endFailure": "Los susurros son demasiado para ti por ahora. Vuelve cuando seas más fuerte."
     },
-    "dialogue": {
-      "npcName": "Espíritu Guardián del Fragmento",
-      "start": "Buscas el conocimiento oculto... Responde y quizás lo encuentres.",
-      "endSuccess": "Has demostrado tu ingenio. El segundo fragmento es tuyo. El tercero te espera en las alturas heladas."
+    "storyContent": {
+      "introduction": "Te adentras en el Bosque Susurrante, un lugar envuelto en niebla y leyendas. Los árboles parecen observarte y un escalofrío recorre tu espalda.",
+      "conclusion": "Tras seguir un sendero oculto, encuentras extrañas runas en una piedra ancestral. Parecen ser la clave de algo importante.",
+      "pages": []
     }
   },
   {
-    "id": "94a77cad-851f-43a3-8f3c-fe47c043eb9f",
-    "title": "La Cripta del Artefacto",
-    "description": "Con el mapa completo, encuentras la Cripta del Artefacto en las Montañas Heladas. Supera al guardián final.",
-    "zone": "Montañas Heladas",
-    "levelRequired": 10,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "1a58fdea-47f4-428f-9a35-b21d3fe77c66",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota al Guardián del Artefacto.",
-        "enemyId": "enemy_guardian_artefacto_AP",
-        "questionIds": [
-          "q_artifact_guardian_001",
-          "q_artifact_guardian_002",
-          "q_artifact_guardian_003"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 1200,
-      "coins": 600,
-      "items": [
-        {
-          "itemId": "item_artefacto_poderoso_AP_sellado",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Guardián Final del Artefacto",
-      "start": "Has llegado lejos, mortal. Pero este artefacto no es para cualquiera. ¡Demuestra tu poder!",
-      "endSuccess": "Impresionante... El artefacto es tuyo. Úsalo con sabiduría."
-    }
-  },
-  {
-    "id": "f5a66deb-7376-4c93-8db0-36b73e798713",
-    "title": "El Debate de los Eruditos",
-    "description": "Participa en un debate en la Gran Biblioteca de la Ciudadela. Responde correctamente para ganar prestigio.",
-    "zone": "Ciudadela",
-    "levelRequired": 12,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "f578dcf5-1e6c-4bfb-9e23-d251273f9c00",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Gana el debate respondiendo a 5 rondas de preguntas.",
-        "target": 5,
-        "questionPoolId": "pool_debate_eruditos_ciudadela"
-      }
-    ],
-    "rewards": {
-      "experience": 900,
-      "coins": 450,
-      "items": [
-        {
-          "itemId": "item_medalla_erudicion_ciudadela",
-          "quantity": 1
-        }
-      ],
-      "reputation": [
-        {
-          "factionId": "eruditos_ciudadela",
-          "amount": 100
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Moderador del Debate",
-      "start": "¡Bienvenidos al gran debate! Que gane el más sabio. Primera pregunta para nuestro nuevo contendiente...",
-      "endSuccess": "¡Una demostración de intelecto sobresaliente! La medalla de erudición es tuya, y el respeto de la Ciudadela."
-    }
-  },
-  {
-    "id": "327706cc-0b30-4c53-b76d-aa810acd48cb",
-    "title": "Las Minas Abandonadas",
-    "description": "Explora las Minas Abandonadas en busca de vetas de un mineral raro, pero cuidado con las criaturas que las habitan.",
-    "zone": "Minas Abandonadas",
-    "levelRequired": 13,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "22d642a2-c71c-4ca4-a07b-a52b3a790194",
-    "isRepeatable": true,
-    "cooldownDays": 3,
-    "objectives": [
-      {
-        "type": "collection",
-        "description": "Encuentra 3 vetas de Mitrilo.",
-        "itemIdToCollect": "item_mineral_mitrilo_bruto",
-        "quantity": 3,
-        "collectionSourceDescription": "Las vetas brillan con un tenue fulgor azul en las paredes de la mina."
-      },
-      {
-        "type": "battle",
-        "description": "Derrota al Supervisor Minero Fantasmal que custodia la veta principal.",
-        "enemyId": "enemy_supervisor_minero_fantasmal",
-        "questionIds": [
-          "q_mine_ghost_001",
-          "q_mine_ghost_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 1100,
-      "coins": 550,
-      "items": [
-        {
-          "itemId": "item_mineral_mitrilo_bruto",
-          "quantity": 3
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Narrador",
-      "start": "Las minas son oscuras y peligrosas, pero ricas en minerales. El eco de picos y lamentos fantasmales resuena en la distancia.",
-      "endSuccess": "Con el supervisor derrotado y los minerales en tu poder, sales de las minas. Un buen botín."
-    }
-  },
-  {
-    "id": "1ae8a69a-c650-4229-9c20-c137a3bcfe67",
-    "title": "Agua en el Oasis Perdido",
-    "description": "Atraviesa el Desierto Abrasador y encuentra el Oasis Perdido para rellenar tus odres. El calor es tu enemigo.",
-    "zone": "Desierto Abrasador",
-    "levelRequired": 15,
-    "status": "bloqueada",
-    "prerequisiteMissionId": "f5a66deb-7376-4c93-8db0-36b73e798713",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "interaction",
-        "description": "Navega por el desierto usando las estrellas y pistas para encontrar el Oasis Perdido.",
-        "targetObjectId": "oasis_perdido_localizacion",
-        "interactionHint": "Sigue la constelación del Escorpión hacia el sur. Busca tres rocas altas juntas."
-      },
-      {
-        "type": "collection",
-        "description": "Recolecta Agua Fresca del Oasis.",
-        "itemIdToCollect": "item_agua_fresca_oasis",
-        "quantity": 5,
-        "collectionSourceDescription": "El agua brota de una fuente en el centro del oasis."
-      }
-    ],
-    "rewards": {
-      "experience": 1500,
-      "coins": 750,
-      "items": [
-        {
-          "itemId": "item_mapa_oasis_secreto",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Nómada del Desierto (si se encuentra)",
-      "start": "El desierto no perdona a los incautos. ¿Buscas el oasis? Pocos lo encuentran. Que las estrellas te guíen.",
-      "endSuccess": "Has encontrado el Oasis Perdido, un refugio en este mar de arena. Este mapa te ayudará a recordarlo."
-    }
-  },
-  {
-    "id": "ec1894b4-57f4-4cf7-bb5b-338902810d88",
-    "title": "El Festival de la Cosecha",
-    "description": "Participa en los juegos y concursos del Festival de la Cosecha anual. ¡Premios especiales disponibles!",
-    "zone": "Villa Tutorial",
+    "id": "mision_el_contrabandista_de_pociones",
+    "title": "El Contrabandista de Pociones",
+    "description": "Un contrabandista ha estado vendiendo pociones adulteradas. Investiga y llévalo ante la justicia.",
+    "zone": "Callejón Oscuro",
     "levelRequired": 2,
     "status": "disponible",
-    "prerequisiteMissionId": null,
+    "prerequisiteMissionId": "mision_el_misterio_del_bosque_susurrante",
     "isRepeatable": true,
-    "eventTimeframe": {
-      "start": "2024-09-01",
-      "end": "2024-09-07"
-    },
     "objectives": [
       {
-        "type": "questions",
-        "description": "Gana el concurso de preguntas sobre la cosecha.",
+        "type": "investigacion",
+        "description": "Reúne 3 pruebas contra el contrabandista.",
         "target": 3,
-        "questionPoolId": "pool_festival_cosecha_preguntas"
+        "progress": 0,
+        "completed": false
       },
       {
-        "type": "collection",
-        "description": "Aporta 10 Manzanas Rojas al festín.",
-        "itemIdToCollect": "item_manzana_roja_comun",
-        "quantity": 10,
-        "collectionSourceDescription": "Las manzanas se pueden recoger de los árboles alrededor de la villa."
-      },
-      {
-        "type": "interaction",
-        "description": "Ayuda a decorar la plaza del pueblo para el festival.",
-        "targetObjectId": "plaza_festival_decoracion"
-      }
-    ],
-    "rewards": {
-      "experience": 200,
-      "coins": 100,
-      "items": [
-        {
-          "itemId": "item_ficha_festival_cosecha",
-          "quantity": 5
-        },
-        {
-          "itemId": "item_pastel_cosecha_especial",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Alcalde de la Villa",
-      "start": "¡Bienvenido al Festival de la Cosecha! ¡Participa en las actividades y diviértete!",
-      "endSuccess": "¡Gracias por tu ayuda y participación! El festival ha sido un éxito. ¡Toma estas fichas y disfruta del pastel!"
-    }
-  },
-  {
-    "id": "2f7d8b8c-c492-48a1-901c-4dc918548ee4",
-    "title": "Hola Mundo!",
-    "description": "Escribe tu primer programa en Java que imprima 'Hola Mundo' en consola.",
-    "zone": "Aula de Introducción",
-    "levelRequired": 1,
-    "status": "disponible",
-    "prerequisiteMissionId": null,
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Cuál es la sintaxis correcta para imprimir en Java?",
+        "type": "batalla",
+        "description": "Enfréntate al contrabandista.",
         "target": 1,
-        "questionIds": [
-          "java_print_001"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 50,
-      "coins": 20,
-      "items": [
-        {
-          "itemId": "8f861552-fe41-42d8-b5b6-98f0bf0daffa",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Profesor Byte",
-      "start": "¡Bienvenido! Todo programador empieza con un 'Hola Mundo'. ¿Listo para tu primer reto?",
-      "endSuccess": "¡Perfecto! Has dado el primer paso en Java.",
-      "endFailure": "Revisa la sintaxis y vuelve a intentarlo."
-    },
-    "storyContent": {
-      "introduction": "El profesor Byte te desafía a escribir tu primer línea de código.",
-      "conclusion": "Con el clásico 'Hola Mundo', tu aventura en Java comienza."
-    }
-  },
-  {
-    "id": "8e708c49-48c7-47fb-8061-9497156e164f",
-    "title": "Variables y Tipos",
-    "description": "Aprende a declarar variables de diferentes tipos en Java.",
-    "zone": "Laboratorio de Variables",
-    "levelRequired": 2,
-    "status": "disponible",
-    "prerequisiteMissionId": "2f7d8b8c-c492-48a1-901c-4dc918548ee4",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "Declara una variable entera y una de texto.",
-        "target": 2,
-        "questionIds": [
-          "java_var_001",
-          "java_var_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 60,
-      "coins": 25,
-      "items": [
-        {
-          "itemId": "d370aad2-237c-4798-a93d-be2fc077e194",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Asistente Stack",
-      "start": "Las variables son la base de todo programa. ¿Puedes declararlas correctamente?",
-      "endSuccess": "¡Bien hecho! Ahora puedes almacenar datos en tu código.",
-      "endFailure": "Revisa el tipo y el nombre de la variable."
-    },
-    "storyContent": {
-      "introduction": "Stack te explica la importancia de las variables en Java.",
-      "conclusion": "Ahora puedes guardar y manipular información en tus programas."
-    }
-  },
-  {
-    "id": "b717b0da-ae75-4379-b741-3b943e47a003",
-    "title": "El Bug del Punto y Coma",
-    "description": "Encuentra y corrige el error de sintaxis causado por un punto y coma faltante.",
-    "zone": "Sala de Depuración",
-    "levelRequired": 2,
-    "status": "disponible",
-    "prerequisiteMissionId": "8e708c49-48c7-47fb-8061-9497156e164f",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota al Bug del Punto y Coma encontrando el error en el código.",
-        "enemyId": "b3106d03-7f85-4d87-aed4-0d428b07dbee",
-        "questionIds": [
-          "java_bug_001"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 70,
-      "coins": 30,
-      "items": [
-        {
-          "itemId": "43622d39-2c10-4d74-b7f0-c8886d051173",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Debugger",
-      "start": "¡Cuidado! Un bug acecha en tu código. ¿Puedes encontrarlo?",
-      "endSuccess": "¡El bug ha sido eliminado! Tu código compila correctamente.",
-      "endFailure": "Sigue buscando, el error está en la sintaxis."
-    },
-    "storyContent": {
-      "introduction": "Un error común aparece en tu pantalla: falta un punto y coma.",
-      "conclusion": "Con el bug resuelto, tu código vuelve a la vida."
-    }
-  },
-  {
-    "id": "3bb174c7-74ee-4b69-80c0-3e4fd6954f86",
-    "title": "Estructuras de Control",
-    "description": "Domina las estructuras de control en Java: if, else y switch.",
-    "zone": "Aula de Control",
-    "levelRequired": 3,
-    "status": "disponible",
-    "prerequisiteMissionId": "b717b0da-ae75-4379-b741-3b943e47a003",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Cómo se declara una estructura if en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_if_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cuál es la diferencia entre == y = en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_if_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 80,
-      "coins": 35,
-      "items": [
-        {
-          "itemId": "item_manual_control",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Profesor Byte",
-      "start": "Las estructuras de control son fundamentales. ¿Listo para el siguiente nivel?",
-      "endSuccess": "¡Excelente! Ahora tu código puede tomar decisiones.",
-      "endFailure": "Revisa las estructuras y vuelve a intentarlo."
-    },
-    "storyContent": {
-      "introduction": "El profesor Byte te introduce en las estructuras de control.",
-      "conclusion": "Tu código ahora puede decidir qué camino tomar."
-    }
-  },
-  {
-    "id": "b1e1486f-fc0b-44c8-aba9-e04ffd08c79f",
-    "title": "Bucles y Más Bucles",
-    "description": "Aprende a usar bucles for, while y do-while en Java.",
-    "zone": "Laboratorio de Bucles",
-    "levelRequired": 4,
-    "status": "disponible",
-    "prerequisiteMissionId": "3bb174c7-74ee-4b69-80c0-3e4fd6954f86",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Cómo se declara un bucle for en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_loop_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cuál es la diferencia entre while y do-while?",
-        "target": 1,
-        "questionIds": [
-          "java_loop_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 90,
-      "coins": 40,
-      "items": [
-        {
-          "itemId": "item_manual_bucles",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Asistente Loop",
-      "start": "Los bucles son esenciales para repetir acciones. ¿Puedes dominarlos?",
-      "endSuccess": "¡Bien hecho! Ahora tu código puede repetir tareas eficientemente.",
-      "endFailure": "Revisa la lógica del bucle y vuelve a intentarlo."
-    },
-    "storyContent": {
-      "introduction": "Asistente Loop te guía a través del mundo de los bucles.",
-      "conclusion": "Ahora puedes hacer que tu código repita acciones sin esfuerzo."
-    }
-  },
-  {
-    "id": "18941911-4d92-4ce2-b10b-8f63a9f0c1bc",
-    "title": "Arreglando Errores",
-    "description": "Identifica y corrige errores comunes en fragmentos de código Java.",
-    "zone": "Sala de Errores",
-    "levelRequired": 4,
-    "status": "disponible",
-    "prerequisiteMissionId": "b1e1486f-fc0b-44c8-aba9-e04ffd08c79f",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "battle",
-        "description": "Derrota al Error de Lógica corrigiendo el código.",
-        "enemyId": "enemy_error_logica",
-        "questionIds": [
-          "java_error_001"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 100,
-      "coins": 50,
-      "items": [
-        {
-          "itemId": "item_correccion_error",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Debugger",
-      "start": "Un error de lógica está causando estragos. ¡Corrígelo!",
-      "endSuccess": "¡Error corregido! Tu código es más robusto ahora.",
-      "endFailure": "Sigue intentando, el error está en alguna parte de la lógica."
-    },
-    "storyContent": {
-      "introduction": "Te enfrentas a un error de lógica que debes resolver.",
-      "conclusion": "Con el error corregido, el código funciona como se esperaba."
-    }
-  },
-  {
-    "id": "19ea43d5-3ff4-4a51-89dc-7c14b7eb89fd",
-    "title": "Métodos y Funciones",
-    "description": "Crea y utiliza métodos y funciones en Java para organizar tu código.",
-    "zone": "Aula de Métodos",
-    "levelRequired": 5,
-    "status": "disponible",
-    "prerequisiteMissionId": "18941911-4d92-4ce2-b10b-8f63a9f0c1bc",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Cómo se declara un método en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_method_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cuál es la diferencia entre un parámetro y un argumento?",
-        "target": 1,
-        "questionIds": [
-          "java_method_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 110,
-      "coins": 55,
-      "items": [
-        {
-          "itemId": "item_manual_metodos",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Profesor Byte",
-      "start": "Los métodos son clave para un código limpio. ¿Listo para aprender sobre ellos?",
-      "endSuccess": "¡Excelente! Ahora tu código está organizado y es reutilizable.",
-      "endFailure": "Revisa la declaración del método y vuelve a intentarlo."
-    },
-    "storyContent": {
-      "introduction": "El profesor Byte te enseña sobre la creación de métodos.",
-      "conclusion": "Tu código ahora es más limpio y eficiente gracias a los métodos."
-    }
-  },
-  {
-    "id": "15932d1e-d90b-4239-970b-d1e40b3b91b0",
-    "title": "Programación Orientada a Objetos",
-    "description": "Introduce conceptos de POO: clases, objetos, herencia y polimorfismo.",
-    "zone": "Aula de POO",
-    "levelRequired": 6,
-    "status": "disponible",
-    "prerequisiteMissionId": "19ea43d5-3ff4-4a51-89dc-7c14b7eb89fd",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Qué es una clase en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_poo_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cómo se crea un objeto de una clase?",
-        "target": 1,
-        "questionIds": [
-          "java_poo_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 120,
-      "coins": 60,
-      "items": [
-        {
-          "itemId": "item_manual_poo",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Asistente POO",
-      "start": "La programación orientada a objetos es fundamental en Java. ¿Listo para aprender?",
-      "endSuccess": "¡Bien hecho! Ahora entiendes los conceptos básicos de POO.",
-      "endFailure": "Revisa los conceptos de clase y objeto."
-    },
-    "storyContent": {
-      "introduction": "Asistente POO te introduce en el mundo de la programación orientada a objetos.",
-      "conclusion": "Ahora puedes crear tus propias clases y objetos en Java."
-    }
-  },
-  {
-    "id": "a378f919-2485-4b7a-9629-4b2b2126a9c9",
-    "title": "Interfaces y Clases Abstractas",
-    "description": "Aprende a definir y usar interfaces y clases abstractas en Java.",
-    "zone": "Aula de Interfaces",
-    "levelRequired": 7,
-    "status": "disponible",
-    "prerequisiteMissionId": "15932d1e-d90b-4239-970b-d1e40b3b91b0",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Qué es una interfaz en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_interface_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cómo se declara una clase abstracta?",
-        "target": 1,
-        "questionIds": [
-          "java_interface_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 130,
-      "coins": 65,
-      "items": [
-        {
-          "itemId": "item_manual_interfaces",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Profesor Byte",
-      "start": "Las interfaces y clases abstractas son avanzadas pero poderosas. ¿Listo para el desafío?",
-      "endSuccess": "¡Impresionante! Ahora tu conocimiento de Java está más completo.",
-      "endFailure": "Revisa cómo se declaran las interfaces y clases abstractas."
-    },
-    "storyContent": {
-      "introduction": "El profesor Byte profundiza en conceptos avanzados de Java.",
-      "conclusion": "Con estos conocimientos, estás listo para enfrentar desafíos de programación más complejos."
-    }
-  },
-  {
-    "id": "96152d3f-ab92-4730-8556-35d7926568cc",
-    "title": "Excepciones y Manejo de Errores",
-    "description": "Implementa manejo de excepciones en Java para crear programas más robustos.",
-    "zone": "Aula de Excepciones",
-    "levelRequired": 8,
-    "status": "disponible",
-    "prerequisiteMissionId": "a378f919-2485-4b7a-9629-4b2b2126a9c9",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Qué es una excepción en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_exception_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cómo se maneja una excepción con try-catch?",
-        "target": 1,
-        "questionIds": [
-          "java_exception_002"
-        ]
-      }
-    ],
-    "rewards": {
-      "experience": 140,
-      "coins": 70,
-      "items": [
-        {
-          "itemId": "item_manual_excepciones",
-          "quantity": 1
-        }
-      ]
-    },
-    "dialogue": {
-      "npcName": "Asistente Error",
-      "start": "Manejar errores es crucial en programación. ¿Puedes hacerlo?",
-      "endSuccess": "¡Bien hecho! Tu programa es ahora más resistente a fallos.",
-      "endFailure": "Revisa cómo se manejan las excepciones en Java."
-    },
-    "storyContent": {
-      "introduction": "Te enfrentas al desafío de implementar manejo de excepciones en tu código.",
-      "conclusion": "Con el manejo de excepciones, tu código puede enfrentar errores de manera elegante."
-    }
-  },
-  {
-    "id": "a44ef18e-40d8-4c4e-b949-5f5b8b3298ae",
-    "title": "Programación Concurrente",
-    "description": "Introduce conceptos de programación concurrente y multihilo en Java.",
-    "zone": "Aula de Concurrencia",
-    "levelRequired": 9,
-    "status": "disponible",
-    "prerequisiteMissionId": "96152d3f-ab92-4730-8556-35d7926568cc",
-    "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Qué es un hilo en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_thread_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cómo se crea un hilo en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_thread_002"
-        ]
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
@@ -1514,154 +124,372 @@
       "coins": 75,
       "items": [
         {
-          "itemId": "item_manual_concurrencia",
           "quantity": 1
         }
-      ]
+      ],
+      "unlocks": []
     },
     "dialogue": {
-      "npcName": "Profesor Concurrencia",
-      "start": "La programación concurrente es el futuro. ¿Listo para aprender sobre hilos?",
-      "endSuccess": "¡Impresionante! Ahora tu código puede hacer múltiples cosas a la vez.",
-      "endFailure": "Revisa cómo se crean y manejan los hilos en Java."
+      "npcName": "Guardia de la Ciudad",
+      "start": "Necesitamos tu ayuda para detener a un criminal que está poniendo en peligro a nuestros ciudadanos.",
+      "endSuccess": "¡Gran trabajo! Has hecho de esta ciudad un lugar más seguro.",
+      "endFailure": "El contrabandista escapó. Necesitamos más pruebas o una mejor estrategia."
     },
     "storyContent": {
-      "introduction": "Te adentras en el mundo de la programación concurrente con el profesor Concurrencia.",
-      "conclusion": "Con los hilos, tu código puede ser más eficiente y rápido."
+      "introduction": "El capitán de la guardia te informa sobre un astuto contrabandista que opera en los callejones más oscuros de la ciudad, vendiendo pociones peligrosas a incautos.",
+      "conclusion": "Con las pruebas en mano y tras un breve enfrentamiento, el contrabandista es arrestado. La red de distribución de pociones adulteradas ha sido desmantelada gracias a tu intervención.",
+      "pages": []
     }
   },
   {
-    "id": "58e33cac-7663-4979-ae13-e8557a0b949b",
+    "id": "mision_la_senda_del_erudito_olvidado",
+    "title": "La Senda del Erudito Olvidado",
+    "description": "Un antiguo erudito dejó pistas hacia un conocimiento perdido. Sigue su senda y reclama el saber.",
+    "zone": "Biblioteca Antigua",
+    "levelRequired": 3,
+    "status": "disponible",
+    "prerequisiteMissionId": null,
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "puzzle",
+        "description": "Resuelve 3 acertijos dejados por el erudito.",
+        "target": 3,
+        "progress": 0,
+        "completed": false,
+        "puzzleIds": []
+      }
+    ],
+    "rewards": {
+      "experience": 200,
+      "coins": 0,
+      "items": [
+        {
+          "quantity": 1
+        }
+      ],
+      "unlocks": [
+        "mision_habilidad_conocimiento_arcano"
+      ]
+    },
+    "dialogue": {
+      "npcName": "Espíritu del Erudito",
+      "start": "Solo aquellos con una mente aguda podrán desentrañar los secretos que he guardado.",
+      "endSuccess": "Has demostrado ser digno. Que este conocimiento te guíe.",
+      "endFailure": "Mis acertijos han resultado ser demasiado complejos para ti. Medita y vuelve a intentarlo."
+    },
+    "storyContent": {
+      "introduction": "Encuentras un diario polvoriento que habla de un erudito que ocultó un gran saber antes de desaparecer. Las primeras pistas te llevan a una biblioteca olvidada, llena de tomos y secretos.",
+      "conclusion": "Tras resolver el último acertijo, una sección oculta de la biblioteca se revela, conteniendo el tomo que el erudito protegió. Sientes cómo un nuevo conocimiento fluye en ti.",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_el_desafio_del_golem_guardian",
+    "title": "El Desafío del Golem Guardián",
+    "description": "Un poderoso golem bloquea el acceso a unas ruinas ancestrales. Demuestra tu valía derrotándolo en combate.",
+    "zone": "Ruinas Ancestrales",
+    "levelRequired": 5,
+    "status": "bloqueada",
+    "prerequisiteMissionId": "mision_la_senda_del_erudito_olvidado",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "batalla_jefe",
+        "description": "Derrota al Golem Guardián.",
+        "target": 1,
+        "progress": 0,
+        "completed": false
+      }
+    ],
+    "rewards": {
+      "experience": 300,
+      "coins": 150,
+      "items": [
+        {
+          "quantity": 1
+        },
+        {
+          "quantity": 3
+        }
+      ],
+      "unlocks": [
+        "mision_acceso_ruinas_interiores"
+      ]
+    },
+    "dialogue": {
+      "npcName": "",
+      "start": "El suelo tiembla. Un imponente golem de piedra y magia se alza ante ti, sus ojos brillantes con una luz azulada. No parece que vaya a dejarte pasar pacíficamente.",
+      "endSuccess": "Con un último crujido, el golem se desmorona en un montón de rocas y polvo mágico. El camino hacia las profundidades de las ruinas está despejado.",
+      "endFailure": "El golem es demasiado poderoso. Sus golpes te hacen retroceder. Necesitas prepararte mejor para este desafío."
+    },
+    "storyContent": {
+      "introduction": "Las leyendas hablan de un golem indestructible que protege la entrada a unas ruinas llenas de tesoros y peligros. Al acercarte, sientes la tierra vibrar bajo tus pies.",
+      "conclusion": "El golem yace derrotado. Detrás de él, una puerta masiva, sellada por siglos, ahora es accesible. ¿Qué maravillas o terrores te aguardan dentro?",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_recoleccion_de_hierbas_raras",
+    "title": "Recolección de Hierbas Raras",
+    "description": "El herborista local necesita urgentemente hierbas raras que solo crecen en la peligrosa Ciénaga Sombría.",
+    "zone": "Ciénaga Sombría",
+    "levelRequired": 4,
+    "status": "disponible",
+    "prerequisiteMissionId": null,
+    "isRepeatable": true,
+    "objectives": [
+      {
+        "type": "recoleccion",
+        "description": "Recolecta 5 Flores Lunares.",
+        "target": 5,
+        "progress": 0,
+        "completed": false,
+        "itemId": "item_hierba_lunar_brillante"
+      },
+      {
+        "type": "recoleccion",
+        "description": "Recolecta 3 Raíces Sanguinas.",
+        "target": 3,
+        "progress": 0,
+        "completed": false
+      }
+    ],
+    "rewards": {
+      "experience": 120,
+      "coins": 100,
+      "items": [
+        {
+          "itemId": "item_pocion_de_curacion_media",
+          "quantity": 2
+        }
+      ],
+      "unlocks": []
+    },
+    "dialogue": {
+      "npcName": "Elara, la Herborista",
+      "start": "¡Aventurero! Necesito tu ayuda. Las hierbas que busco son vitales, pero la ciénaga es un lugar traicionero. ¿Te arriesgarías?",
+      "endSuccess": "¡Estas son exactamente las hierbas que necesitaba! Gracias a ti, podré preparar mis remedios. Toma esto por tus esfuerzos.",
+      "endFailure": "Veo que la ciénaga no te lo ha puesto fácil. Descansa y si lo deseas, inténtalo de nuevo. Estas hierbas son muy importantes."
+    },
+    "storyContent": {
+      "introduction": "Elara, conocida por sus potentes pociones y remedios, te pide ayuda. Necesita ingredientes que solo se encuentran en la Ciénaga Sombría, un lugar plagado de criaturas peligrosas y terreno engañoso.",
+      "conclusion": "A pesar de los peligros, logras recolectar las hierbas solicitadas. Elara te recibe con alivio y te recompensa generosamente, destacando la importancia de tu valor y habilidad.",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_el_codigo_perdido",
+    "title": "El Código Perdido",
+    "description": "Un programador legendario escondió un fragmento de código fuente de incalculable valor. Resuelve sus enigmas para encontrarlo.",
+    "zone": "Campus Universitario Abandonado",
+    "levelRequired": 6,
+    "status": "bloqueada",
+    "prerequisiteMissionId": "mision_el_desafio_del_golem_guardian",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "codigo",
+        "description": "Descifra el primer fragmento del algoritmo.",
+        "target": 1,
+        "progress": 0,
+        "completed": false,
+        "language": "python",
+        "expectedOutput": "42"
+      },
+      {
+        "type": "codigo",
+        "description": "Completa la función de ordenamiento.",
+        "target": 1,
+        "progress": 0,
+        "completed": false,
+        "language": "javascript",
+        "expectedOutput": "[1, 2, 3, 5, 8]"
+      }
+    ],
+    "rewards": {
+      "experience": 400,
+      "coins": 0,
+      "items": [
+        {
+          "quantity": 1
+        }
+      ],
+      "unlocks": [
+        "mision_habilidad_programacion_avanzada"
+      ]
+    },
+    "dialogue": {
+      "npcName": " Holograma del Programador",
+      "start": "Saludos, buscador de conocimiento. Solo la lógica y el ingenio te permitirán acceder a mi legado. ¿Estás listo para el desafío?",
+      "endSuccess": "¡Impresionante! Has demostrado una comprensión profunda de los principios de la programación. El código es tuyo.",
+      "endFailure": "Hmm, parece que hay un error en tu lógica. Revisa tu código y vuelve a intentarlo. La persistencia es clave en la programación."
+    },
+    "storyContent": {
+      "introduction": "Se rumorea que un programador genio, antes de desaparecer, ocultó un código revolucionario en algún lugar del antiguo campus universitario. Dejó una serie de desafíos para protegerlo.",
+      "conclusion": "Tras superar las pruebas de lógica y programación, accedes a una terminal oculta. En la pantalla, un mensaje de felicitación y el código fuente que buscabas. Sientes que tus habilidades han alcanzado un nuevo nivel.",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_interfaces_y_clases_abstractas",
+    "title": "Interfaces y Clases Abstractas",
+    "description": "Aprende a definir y usar interfaces y clases abstractas en Java.",
+    "zone": "Aula de Interfaces",
+    "levelRequired": 7,
+    "status": "disponible",
+    "prerequisiteMissionId": "mision_15932d1e_d90b_4239_970b_d1e40b3b91b0",
+    "isRepeatable": false,
+    "objectives": [],
+    "rewards": {
+      "experience": 0,
+      "coins": 0,
+      "items": [],
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "",
+      "endSuccess": "",
+      "endFailure": "Revisa cómo se declaran las interfaces y clases abstractas."
+    },
+    "storyContent": {
+      "introduction": "",
+      "conclusion": "",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_excepciones_y_manejo_de_errores",
+    "title": "Excepciones y Manejo de Errores",
+    "description": "Implementa manejo de excepciones en Java para crear programas más robustos.",
+    "zone": "Aula de Excepciones",
+    "levelRequired": 8,
+    "status": "disponible",
+    "prerequisiteMissionId": "mision_interfaces_y_clases_abstractas",
+    "isRepeatable": false,
+    "objectives": [],
+    "rewards": {
+      "experience": 0,
+      "coins": 0,
+      "items": [],
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "",
+      "endSuccess": "",
+      "endFailure": "Revisa cómo se manejan las excepciones en Java."
+    },
+    "storyContent": {
+      "introduction": "",
+      "conclusion": "",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_programacion_concurrente",
+    "title": "Programación Concurrente",
+    "description": "Introduce conceptos de programación concurrente y multihilo en Java.",
+    "zone": "Aula de Concurrencia",
+    "levelRequired": 9,
+    "status": "disponible",
+    "prerequisiteMissionId": "mision_excepciones_y_manejo_de_errores",
+    "isRepeatable": false,
+    "objectives": [],
+    "rewards": {
+      "experience": 0,
+      "coins": 0,
+      "items": [],
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "",
+      "endSuccess": "",
+      "endFailure": "Revisa cómo se crean y manejan los hilos en Java."
+    },
+    "storyContent": {
+      "introduction": "",
+      "conclusion": "",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_java_avanzado_streams_y_lambdas",
     "title": "Java Avanzado: Streams y Lambdas",
     "description": "Domina el uso de Streams y expresiones lambda en Java para un código más limpio y eficiente.",
     "zone": "Aula Avanzada",
     "levelRequired": 10,
     "status": "disponible",
-    "prerequisiteMissionId": "a44ef18e-40d8-4c4e-b949-5f5b8b3298ae",
+    "prerequisiteMissionId": "mision_programacion_concurrente",
     "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Qué es un Stream en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_stream_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cómo se usa una expresión lambda en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_stream_002"
-        ]
-      }
-    ],
+    "objectives": [],
     "rewards": {
-      "experience": 160,
-      "coins": 80,
-      "items": [
-        {
-          "itemId": "item_manual_streams",
-          "quantity": 1
-        }
-      ]
+      "experience": 0,
+      "coins": 0,
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
-      "npcName": "Asistente Lambda",
-      "start": "Los Streams y lambdas llevan tu código al siguiente nivel. ¿Listo para aprender?",
-      "endSuccess": "¡Excelente! Tu código es ahora más limpio y expresivo.",
+      "start": "",
+      "endSuccess": "",
       "endFailure": "Revisa cómo se utilizan los Streams y lambdas en Java."
     },
     "storyContent": {
-      "introduction": "Asistente Lambda te guía a través de las características avanzadas de Java.",
-      "conclusion": "Con estos conocimientos, tu código es más moderno y eficiente."
+      "introduction": "",
+      "conclusion": "",
+      "pages": []
     }
   },
   {
-    "id": "42e870ce-1af2-4423-9547-d7a75fe22fe9",
+    "id": "mision_patrones_de_diseno",
     "title": "Patrones de Diseño",
     "description": "Introduce a los patrones de diseño más comunes en el desarrollo con Java.",
     "zone": "Aula de Patrones",
     "levelRequired": 11,
     "status": "disponible",
-    "prerequisiteMissionId": "58e33cac-7663-4979-ae13-e8557a0b949b",
+    "prerequisiteMissionId": "mision_java_avanzado_streams_y_lambdas",
     "isRepeatable": false,
-    "objectives": [
-      {
-        "type": "questions",
-        "description": "¿Qué es un patrón de diseño?",
-        "target": 1,
-        "questionIds": [
-          "java_pattern_001"
-        ]
-      },
-      {
-        "type": "questions",
-        "description": "¿Cuál es el patrón Singleton?",
-        "target": 1,
-        "questionIds": [
-          "java_pattern_002"
-        ]
-      }
-    ],
+    "objectives": [],
     "rewards": {
-      "experience": 170,
-      "coins": 85,
-      "items": [
-        {
-          "itemId": "item_manual_patrones",
-          "quantity": 1
-        }
-      ]
+      "experience": 0,
+      "coins": 0,
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
-      "npcName": "Profesor Diseño",
-      "start": "Los patrones de diseño son soluciones probadas a problemas comunes. ¿Listo para aprender sobre ellos?",
-      "endSuccess": "¡Impresionante! Ahora puedes aplicar patrones de diseño en tus proyectos.",
+      "start": "",
+      "endSuccess": "",
       "endFailure": "Revisa la definición y ejemplos de los patrones de diseño."
     },
     "storyContent": {
       "introduction": "Te adentras en el mundo de los patrones de diseño con el profesor Diseño.",
-      "conclusion": "Con estos patrones, tu código será más robusto y fácil de mantener."
+      "conclusion": "Con estos patrones, tu código será más robusto y fácil de mantener.",
+      "pages": []
     }
   },
   {
-    "id": "809bc394-0a2e-462c-8824-7072550b518f",
+    "id": "mision_prueba_y_documentacion",
     "title": "Prueba y Documentación",
     "description": "Aprende sobre la importancia de las pruebas y la documentación en el desarrollo de software.",
     "zone": "Aula de Pruebas",
     "levelRequired": 12,
     "status": "disponible",
-    "prerequisiteMissionId": "42e870ce-1af2-4423-9547-d7a75fe22fe9",
+    "prerequisiteMissionId": "mision_patrones_de_diseno",
     "isRepeatable": false,
     "objectives": [
       {
-        "type": "questions",
-        "description": "¿Por qué son importantes las pruebas en el software?",
-        "target": 1,
-        "questionIds": [
-          "java_test_001"
-        ]
+        "progress": 0,
+        "completed": false
       },
       {
-        "type": "questions",
-        "description": "¿Qué es Javadoc?",
-        "target": 1,
-        "questionIds": [
-          "java_test_002"
-        ]
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
       "experience": 180,
       "coins": 90,
-      "items": [
-        {
-          "itemId": "item_manual_pruebas",
-          "quantity": 1
-        }
-      ]
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Asistente Test",
@@ -1671,43 +499,30 @@
     },
     "storyContent": {
       "introduction": "Te enfrentas al desafío de probar y documentar tu software adecuadamente.",
-      "conclusion": "Con estas habilidades, tu perfil como desarrollador es mucho más completo."
+      "conclusion": "Con estas habilidades, tu perfil como desarrollador es mucho más completo.",
+      "pages": []
     }
   },
   {
-    "id": "20595467-8bb1-45ae-9911-932f2c996690",
+    "id": "mision_proyecto_final_la_calculadora",
     "title": "Proyecto Final: La Calculadora",
     "description": "Aplica todo lo aprendido para desarrollar una calculadora en Java que soporte operaciones básicas y avance.",
     "zone": "Aula de Proyectos",
     "levelRequired": 13,
     "status": "disponible",
-    "prerequisiteMissionId": "809bc394-0a2e-462c-8824-7072550b518f",
+    "prerequisiteMissionId": "mision_prueba_y_documentacion",
     "isRepeatable": false,
     "objectives": [
       {
-        "type": "development",
-        "description": "Desarrolla una calculadora funcional en Java.",
-        "requiredCodeFiles": [
-          "calculadora.java"
-        ],
-        "testCases": [
-          "test_calculadora_001",
-          "test_calculadora_002"
-        ]
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
       "experience": 250,
       "coins": 150,
-      "items": [
-        {
-          "itemId": "item_certificado_java_basico",
-          "quantity": 1
-        }
-      ],
-      "unlocks": [
-        "a4ea4eb4-ea91-4b56-8e19-f6daf8d09eef"
-      ]
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Profesor Byte",
@@ -1717,45 +532,34 @@
     },
     "storyContent": {
       "introduction": "Con todos los conocimientos adquiridos, es hora de demostrar tus habilidades.",
-      "conclusion": "Has completado con éxito el curso básico de Java. ¡El mundo de la programación se abre ante ti!"
+      "conclusion": "Has completado con éxito el curso básico de Java. ¡El mundo de la programación se abre ante ti!",
+      "pages": []
     }
   },
   {
-    "id": "a4ea4eb4-ea91-4b56-8e19-f6daf8d09eef",
+    "id": "mision_java_intermedio_colecciones_y_genericos",
     "title": "Java Intermedio: Colecciones y Genéricos",
     "description": "Adéntrate en el uso de colecciones y genéricos en Java para manejar datos de manera eficiente.",
     "zone": "Aula Intermedia",
     "levelRequired": 14,
     "status": "bloqueada",
-    "prerequisiteMissionId": "20595467-8bb1-45ae-9911-932f2c996690",
+    "prerequisiteMissionId": "mision_proyecto_final_la_calculadora",
     "isRepeatable": false,
     "objectives": [
       {
-        "type": "questions",
-        "description": "¿Qué es una colección en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_collection_001"
-        ]
+        "progress": 0,
+        "completed": false
       },
       {
-        "type": "questions",
-        "description": "¿Cómo se declara un ArrayList en Java?",
-        "target": 1,
-        "questionIds": [
-          "java_collection_002"
-        ]
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
       "experience": 200,
       "coins": 100,
-      "items": [
-        {
-          "itemId": "item_manual_colecciones",
-          "quantity": 1
-        }
-      ]
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Asistente Colecciones",
@@ -1765,45 +569,34 @@
     },
     "storyContent": {
       "introduction": "Asistente Colecciones te guía a través del manejo de datos en Java.",
-      "conclusion": "Con las colecciones, tu código es más flexible y poderoso."
+      "conclusion": "Con las colecciones, tu código es más flexible y poderoso.",
+      "pages": []
     }
   },
   {
-    "id": "7c11b333-9dcb-407a-b1a1-83f830a70865",
+    "id": "mision_java_avanzado_conexiones_a_bases_de_datos",
     "title": "Java Avanzado: Conexiones a Bases de Datos",
     "description": "Aprende a conectar tu aplicación Java a bases de datos usando JDBC.",
     "zone": "Aula de Bases de Datos",
     "levelRequired": 15,
     "status": "bloqueada",
-    "prerequisiteMissionId": "a4ea4eb4-ea91-4b56-8e19-f6daf8d09eef",
+    "prerequisiteMissionId": "mision_java_intermedio_colecciones_y_genericos",
     "isRepeatable": false,
     "objectives": [
       {
-        "type": "questions",
-        "description": "¿Qué es JDBC?",
-        "target": 1,
-        "questionIds": [
-          "java_jdbc_001"
-        ]
+        "progress": 0,
+        "completed": false
       },
       {
-        "type": "questions",
-        "description": "¿Cómo se establece una conexión a la base de datos?",
-        "target": 1,
-        "questionIds": [
-          "java_jdbc_002"
-        ]
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
       "experience": 220,
       "coins": 110,
-      "items": [
-        {
-          "itemId": "item_manual_jdbc",
-          "quantity": 1
-        }
-      ]
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Profesor Base de Datos",
@@ -1813,45 +606,34 @@
     },
     "storyContent": {
       "introduction": "Te enfrentas al desafío de conectar tu aplicación Java a una base de datos.",
-      "conclusion": "Con esta habilidad, tu aplicación es mucho más poderosa y versátil."
+      "conclusion": "Con esta habilidad, tu aplicación es mucho más poderosa y versátil.",
+      "pages": []
     }
   },
   {
-    "id": "c926203f-3ebe-4d06-b442-38b773a7cb2c",
+    "id": "mision_seguridad_en_aplicaciones_java",
     "title": "Seguridad en Aplicaciones Java",
     "description": "Introduce conceptos de seguridad en el desarrollo de aplicaciones Java.",
     "zone": "Aula de Seguridad",
     "levelRequired": 16,
     "status": "bloqueada",
-    "prerequisiteMissionId": "7c11b333-9dcb-407a-b1a1-83f830a70865",
+    "prerequisiteMissionId": "mision_java_avanzado_conexiones_a_bases_de_datos",
     "isRepeatable": false,
     "objectives": [
       {
-        "type": "questions",
-        "description": "¿Por qué es importante la seguridad en aplicaciones?",
-        "target": 1,
-        "questionIds": [
-          "java_security_001"
-        ]
+        "progress": 0,
+        "completed": false
       },
       {
-        "type": "questions",
-        "description": "¿Qué es la inyección de SQL?",
-        "target": 1,
-        "questionIds": [
-          "java_security_002"
-        ]
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
       "experience": 240,
       "coins": 120,
-      "items": [
-        {
-          "itemId": "item_manual_seguridad",
-          "quantity": 1
-        }
-      ]
+      "items": [],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Asistente Seguridad",
@@ -1861,34 +643,35 @@
     },
     "storyContent": {
       "introduction": "Te enfrentas al desafío de asegurar tu aplicación Java contra vulnerabilidades.",
-      "conclusion": "Con estos conocimientos, tu aplicación es más confiable y segura."
+      "conclusion": "Con estos conocimientos, tu aplicación es más confiable y segura.",
+      "pages": []
     }
   },
   {
-    "id": "23d6e661-d9af-47a7-9ce1-d7f9b524107c",
+    "id": "mision_despliegue_de_aplicaciones_java",
     "title": "Despliegue de Aplicaciones Java",
     "description": "Aprende a empaquetar y desplegar aplicaciones Java en diferentes entornos.",
     "zone": "Aula de Despliegue",
     "levelRequired": 17,
     "status": "bloqueada",
-    "prerequisiteMissionId": "c926203f-3ebe-4d06-b442-38b773a7cb2c",
+    "prerequisiteMissionId": "mision_seguridad_en_aplicaciones_java",
     "isRepeatable": false,
     "objectives": [
       {
         "type": "questions",
         "description": "¿Qué es un archivo JAR?",
         "target": 1,
-        "questionIds": [
-          "java_jar_001"
-        ]
+        "questionIds": [],
+        "progress": 0,
+        "completed": false
       },
       {
         "type": "questions",
         "description": "¿Cómo se despliega una aplicación en un servidor?",
         "target": 1,
-        "questionIds": [
-          "java_jar_002"
-        ]
+        "questionIds": [],
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
@@ -1896,10 +679,10 @@
       "coins": 130,
       "items": [
         {
-          "itemId": "item_manual_despliegue",
           "quantity": 1
         }
-      ]
+      ],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Profesor Despliegue",
@@ -1909,17 +692,18 @@
     },
     "storyContent": {
       "introduction": "Te enfrentas al desafío de empaquetar y desplegar tu aplicación Java.",
-      "conclusion": "Con esta habilidad, puedes llevar tus aplicaciones al mundo real."
+      "conclusion": "Con esta habilidad, puedes llevar tus aplicaciones al mundo real.",
+      "pages": []
     }
   },
   {
-    "id": "4ec0b4f0-fb44-44d5-b3cc-54a6bbe457b1",
+    "id": "mision_proyecto_final_la_tienda_en_linea",
     "title": "Proyecto Final: La Tienda en Línea",
     "description": "Aplica todo lo aprendido para desarrollar una tienda en línea en Java que incluya base de datos y seguridad.",
     "zone": "Aula de Proyectos Avanzados",
     "levelRequired": 18,
     "status": "bloqueada",
-    "prerequisiteMissionId": "23d6e661-d9af-47a7-9ce1-d7f9b524107c",
+    "prerequisiteMissionId": "mision_despliegue_de_aplicaciones_java",
     "isRepeatable": false,
     "objectives": [
       {
@@ -1928,10 +712,9 @@
         "requiredCodeFiles": [
           "tienda_online.java"
         ],
-        "testCases": [
-          "test_tienda_online_001",
-          "test_tienda_online_002"
-        ]
+        "testCases": [],
+        "progress": 0,
+        "completed": false
       }
     ],
     "rewards": {
@@ -1939,10 +722,10 @@
       "coins": 200,
       "items": [
         {
-          "itemId": "item_certificado_java_intermedio",
           "quantity": 1
         }
-      ]
+      ],
+      "unlocks": []
     },
     "dialogue": {
       "npcName": "Profesor Byte",
@@ -1952,7 +735,272 @@
     },
     "storyContent": {
       "introduction": "Con todos los conocimientos adquiridos, es hora de demostrar tus habilidades en un proyecto completo.",
-      "conclusion": "Has completado con éxito el curso intermedio de Java. ¡El mundo de la programación avanzada se abre ante ti!"
+      "conclusion": "Has completado con éxito el curso intermedio de Java. ¡El mundo de la programación avanzada se abre ante ti!",
+      "pages": []
+    }
+  },
+  {
+    "id": "mision_el_secreto_del_bosque_susurrante",
+    "title": "El Secreto del Bosque Susurrante",
+    "description": "Adéntrate en el misterioso Bosque Susurrante y descubre la fuente de sus extraños susurros. Se rumorea que un antiguo guardián protege un secreto ancestral.",
+    "zone": "Bosque Susurrante",
+    "levelRequired": 1,
+    "status": "disponible",
+    "prerequisiteMissionId": null,
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "exploracion_batalla",
+        "description": "Explora el Bosque Susurrante y enfrenta a sus guardianes.",
+        "target": 1,
+        "progress": 0,
+        "completed": false,
+        "battleConfig": {
+          "enemyId": "enemigo_bug_del_punto_y_coma",
+          "playerHealthMultiplier": 1.2,
+          "enemyAttackMultiplier": 0.8,
+          "environment": "bosque_oscuro"
+        }
+      }
+    ],
+    "rewards": {
+      "experience": 100,
+      "items": [
+        {
+          "itemId": "item_pocion_de_curacion_menor",
+          "quantity": 1
+        }
+      ],
+      "coins": 0,
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "El Bosque Susurrante te llama. ¿Descubrirás sus secretos?",
+      "endSuccess": "Has desvelado uno de los misterios del bosque. El conocimiento es tu recompensa.",
+      "endFailure": "El bosque aún no te considera digno de sus secretos. Inténtalo de nuevo."
+    },
+    "storyContent": {
+      "introduction": "Te adentras en el Bosque Susurrante. Los árboles parecen observarte y un escalofrío recorre tu espalda. (assets/story/bosque_entrada.png)",
+      "conclusion": "Encuentras extrañas runas en una piedra. Parecen antiguas y emanan una débil energía. (assets/story/runas_piedra.png)",
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "Te adentras en el Bosque Susurrante. Los árboles parecen observarte y un escalofrío recorre tu espalda.",
+          "imageUrl": "assets/story/bosque_entrada.png"
+        },
+        {
+          "pageNumber": 2,
+          "text": "Encuentras extrañas runas en una piedra. Parecen antiguas y emanan una débil energía.",
+          "imageUrl": "assets/story/runas_piedra.png"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mision_el_eco_de_las_montanas",
+    "title": "El Eco de las Montañas",
+    "description": "Las Montañas del Eco resuenan con un lamento. Investiga su origen y calma el espíritu que pena en sus cumbres.",
+    "zone": "Montañas del Eco",
+    "levelRequired": 5,
+    "status": "bloqueada",
+    "prerequisiteMissionId": "mision_el_secreto_del_bosque_susurrante",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "investigacion_batalla",
+        "description": "Investiga el lamento en las Montañas del Eco y enfrenta al espíritu.",
+        "target": 1,
+        "progress": 0,
+        "completed": false,
+        "battleConfig": {
+          "enemyId": "enemigo_guardian_de_las_sombras",
+          "playerHealthMultiplier": 1,
+          "enemyAttackMultiplier": 1,
+          "environment": "cueva_eco"
+        }
+      }
+    ],
+    "rewards": {
+      "experience": 150,
+      "items": [
+        {
+          "quantity": 1
+        },
+        {
+          "quantity": 1
+        }
+      ],
+      "coins": 0,
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "Un eco lastimero te guía hacia las Montañas del Eco.",
+      "endSuccess": "Has calmado al espíritu y el eco cesa. La montaña te agradece.",
+      "endFailure": "El espíritu sigue penando. Necesitas más preparación."
+    },
+    "storyContent": {
+      "introduction": "Las Montañas del Eco se alzan imponentes. Un lamento distante llega con el viento. (assets/story/montanas_vista.png)",
+      "conclusion": "Sigues el sonido hasta una cueva oculta. Dentro, encuentras un altar antiguo. (assets/story/cueva_altar.png)",
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "Las Montañas del Eco se alzan imponentes. Un lamento distante llega con el viento.",
+          "imageUrl": "assets/story/montanas_vista.png"
+        },
+        {
+          "pageNumber": 2,
+          "text": "Sigues el sonido hasta una cueva oculta. Dentro, encuentras un altar antiguo.",
+          "imageUrl": "assets/story/cueva_altar.png"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mision_las_ruinas_olvidadas",
+    "title": "Las Ruinas Olvidadas",
+    "description": "Explora las Ruinas Olvidadas en busca de un artefacto perdido. Cuidado con las trampas y los guardianes que protegen el lugar.",
+    "zone": "Ruinas Olvidadas",
+    "levelRequired": 10,
+    "status": "bloqueada",
+    "prerequisiteMissionId": null,
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "busqueda_tesoro",
+        "description": "Explora las Ruinas Olvidadas y encuentra el artefacto perdido.",
+        "target": 1,
+        "progress": 0,
+        "completed": false
+      }
+    ],
+    "rewards": {
+      "experience": 200,
+      "coins": 500,
+      "items": [
+        {
+          "quantity": 1
+        },
+        {
+          "quantity": 1
+        }
+      ],
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "Las ruinas aguardan a los valientes...",
+      "endSuccess": "Has recuperado un tesoro del pasado.",
+      "endFailure": "Las ruinas no ceden sus secretos fácilmente."
+    },
+    "storyContent": {
+      "introduction": "Las Ruinas Olvidadas se extienden ante ti, cubiertas por la vegetación y el misterio. (assets/story/ruinas_entrada.png)",
+      "conclusion": "Evitas una trampa de dardos y encuentras una inscripción que habla de un poderoso artefacto. (assets/story/ruinas_trampa.png)",
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "Las Ruinas Olvidadas se extienden ante ti, cubiertas por la vegetación y el misterio.",
+          "imageUrl": "assets/story/ruinas_entrada.png"
+        },
+        {
+          "pageNumber": 2,
+          "text": "Evitas una trampa de dardos y encuentras una inscripción que habla de un poderoso artefacto.",
+          "imageUrl": "assets/story/ruinas_trampa.png"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mision_el_corazon_del_desierto_de_cenizas",
+    "title": "El Corazón del Desierto de Cenizas",
+    "description": "Atraviesa el Desierto de Cenizas para encontrar un oasis legendario. El calor y las criaturas del desierto serán tus mayores desafíos.",
+    "zone": "Desierto de Cenizas",
+    "levelRequired": 15,
+    "status": "bloqueada",
+    "prerequisiteMissionId": null,
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "supervivencia",
+        "description": "Encuentra el oasis legendario en el Desierto de Cenizas. Requiere: mapa_desierto_incompleto.",
+        "target": 1,
+        "progress": 0,
+        "completed": false
+      }
+    ],
+    "rewards": {
+      "experience": 250,
+      "items": [
+        {
+          "quantity": 1
+        },
+        {
+          "quantity": 1
+        }
+      ],
+      "coins": 0,
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "El Desierto de Cenizas pone a prueba tu resistencia. ¿Encontrarás el oasis?",
+      "endSuccess": "¡Has llegado al oasis! Tu perseverancia ha dado frutos.",
+      "endFailure": "El desierto es implacable. Necesitas prepararte mejor."
+    },
+    "storyContent": {
+      "introduction": "El sol abrasador del Desierto de Cenizas dificulta cada paso. La arena se extiende hasta donde alcanza la vista. (assets/story/desierto_sol.png)",
+      "conclusion": "Después de días de ardua travesía, vislumbras un oasis verde en la distancia. ¿Será real o un espejismo? (assets/story/desierto_oasis.png)",
+      "pages": []
+    },
+    "requirements": {
+      "level": 15,
+      "items": [
+        {
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "mision_el_faro_de_la_isla_de_las_tormentas",
+    "title": "El Faro de la Isla de las Tormentas",
+    "description": "Navega hasta la Isla de las Tormentas y reactiva el antiguo faro para guiar a los barcos perdidos. Las tormentas y los peligros marinos acechan.",
+    "zone": "Isla de las Tormentas",
+    "levelRequired": 20,
+    "status": "bloqueada",
+    "prerequisiteMissionId": null,
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "progress": 0,
+        "completed": false
+      }
+    ],
+    "rewards": {
+      "experience": 300,
+      "reputationChange": {
+        "generic_faction": 50
+      },
+      "items": [
+        {
+          "quantity": 1
+        },
+        {
+          "quantity": 1
+        }
+      ],
+      "coins": 0,
+      "unlocks": []
+    },
+    "dialogue": {
+      "start": "La Isla de las Tormentas te desafía. ¿Podrás encender el faro?",
+      "endSuccess": "¡El faro brilla de nuevo, guiando a los perdidos! Tu hazaña será recordada.",
+      "endFailure": "La tormenta o los peligros de la isla te han vencido. El faro sigue oscuro."
+    },
+    "storyContent": {
+      "introduction": "Una feroz tormenta azota tu barco mientras te acercas a la Isla de las Tormentas. El faro está apagado. (assets/story/isla_tormenta.png)",
+      "conclusion": "Llegas a la cima del faro. El mecanismo está dañado, pero con tus habilidades, podrías repararlo. (assets/story/faro_mecanismo.png)",
+      "pages": []
+    },
+    "requirements": {
+      "items": []
     }
   }
 ]

@@ -9,21 +9,18 @@ class MissionService {
     return _firestore.collection('missions').orderBy('levelRequired').snapshots().map((snapshot) {
       List<MissionModel> missions = [];
       if (snapshot.docs.isEmpty) {
-        print('[MissionService] No mission documents found in snapshot.');
         return missions;
       }
-      print('[MissionService] Received ${snapshot.docs.length} mission documents.');
       for (var doc in snapshot.docs) {
         try {
           missions.add(MissionModel.fromFirestore(doc));
         } catch (e) {
-          print('[MissionService] Error parsing mission with ID ${doc.id}: $e');
-          print('[MissionService] Data for mission ${doc.id}: ${doc.data()}');
-          // Optionally, decide if you want to skip this mission or handle error differently
+          // print('[MissionService] Error parsing mission with ID ${doc.id}: $e');
+          // print('[MissionService] Data for mission ${doc.id}: ${doc.data()}');
         }
       }
       if (missions.isEmpty && snapshot.docs.isNotEmpty) {
-        print('[MissionService] All mission documents failed to parse.');
+        // print('[MissionService] All mission documents failed to parse.');
       }
       return missions;
     });

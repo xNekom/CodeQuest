@@ -1,105 +1,159 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart'; // REMOVED
+import '../../models/mission_model.dart';
+import '../../services/mission_service.dart';
+import '../../services/user_service.dart'; // Importar UserService
+import '../../services/auth_service.dart'; // Importar AuthService
 import 'mission_detail_screen.dart';
-import '../../utils/custom_page_route.dart'; // Import FadePageRoute
+import 'package:firebase_auth/firebase_auth.dart'; // Para obtener el usuario actual
 
 /// Pantalla que muestra todas las misiones disponibles
 class MissionListScreen extends StatefulWidget {
   const MissionListScreen({super.key});
 
   @override
-  State<MissionListScreen> createState() => _MissionListScreenState();
+  // ignore: library_private_types_in_public_api
+  _MissionListScreenState createState() => _MissionListScreenState();
 }
 
 class _MissionListScreenState extends State<MissionListScreen> {
+  final MissionService _missionService = MissionService();
+  final UserService _userService = UserService(); // Instancia de UserService
+  final AuthService _authService = AuthService(); // Instancia de AuthService
+
+  User? _currentUser;
+  Map<String, dynamic>? _userData;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUserAndData();
+  }
+
+  Future<void> _loadCurrentUserAndData() async {
+    _currentUser = _authService.currentUser;
+    if (_currentUser != null) {
+      _userData = await _userService.getUserData(_currentUser!.uid);
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  bool _isMissionUnlocked(MissionModel mission, Map<String, dynamic>? userData) {
+    if (userData == null) return false; // Si no hay datos de usuario, bloquear por defecto
+
+    final int userLevel = userData['level'] ?? 1;
+    final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
+
+    if (userLevel < mission.levelRequired) {
+      return false;
+    }
+
+    if (mission.requirements?.completedMissionId != null &&
+        mission.requirements!.completedMissionId!.isNotEmpty &&
+        !completedMissions.contains(mission.requirements!.completedMissionId!)) {
+      return false;
+    }
+    // Aquí se podrían añadir otras comprobaciones de requisitos si existen en mission.requirements
+
+    return true;
+  }
+
+  String _getLockReason(MissionModel mission, Map<String, dynamic>? userData) {
+    if (userData == null) return "Cargando datos del usuario...";
+
+    final int userLevel = userData['level'] ?? 1;
+    final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
+
+    if (userLevel < mission.levelRequired) {
+      return "Nivel requerido: ${mission.levelRequired}";
+    }
+
+    if (mission.requirements?.completedMissionId != null &&
+        mission.requirements!.completedMissionId!.isNotEmpty &&
+        !completedMissions.contains(mission.requirements!.completedMissionId!)) {
+      // Para obtener el nombre de la misión prerrequisito, necesitaríamos cargarla.
+      // Por simplicidad, solo mostramos el ID o un mensaje genérico.
+      // Si tienes acceso a todas las misiones aquí, podrías buscarla por ID.
+      return "Requiere completar la misión: ${mission.requirements!.completedMissionId!}";
+    }
+    return "Requisitos no cumplidos";
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mis Misiones')),
-      body: StreamBuilder<QuerySnapshot>(
-        // Stream simple de la colección 'missions' sin ordenar por campos inexistentes
-        stream: FirebaseFirestore.instance
-            .collection('missions')
-            .orderBy('levelRequired') // Updated orderBy field
-            .snapshots(),
-        builder: (context, snapshot) {
-          // Added logging
-          if (snapshot.hasError) {
-            print('[MissionListScreen] StreamBuilder error: ${snapshot.error}');
-          }
-          if (!snapshot.hasData) {
-            print('[MissionListScreen] StreamBuilder: No data yet.');
-          } else {
-            final docs = snapshot.data!.docs;
-            print('[MissionListScreen] StreamBuilder: Received ${docs.length} documents.');
-            if (docs.isEmpty) {
-              print('[MissionListScreen] StreamBuilder: Document list is empty.');
-            }
-          }
+    if (_currentUser == null && _authService.currentUser == null) {
+      // Aún no se ha intentado cargar o no hay usuario. Podrías mostrar un login o un mensaje.
+      // Si AuthService.currentUser es null persistentemente, indica que nadie ha iniciado sesión.
+      return const Center(child: Text("Por favor, inicia sesión para ver las misiones."));
+    }
+    if (_currentUser != null && _userData == null) {
+      // Usuario cargado, pero datos pendientes
+      return const Center(child: CircularProgressIndicator());
+    }
+    // Si _currentUser es null pero _authService.currentUser no lo es, significa que initState está en proceso o falló al setear _currentUser
+    // Esta condición es para el caso en que _loadCurrentUserAndData no haya completado la asignación de _userData aún.
+    if (_authService.currentUser != null && _userData == null) {
+        return const Center(child: CircularProgressIndicator(key: Key('loading_user_data')));
+    }
 
-          if (snapshot.hasError) return Center(child: Text('Error misiones: ${snapshot.error}'));
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-          final docs = snapshot.data!.docs;
-          if (docs.isEmpty) return const Center(child: Text('No hay misiones disponibles.'));
-          return ListView.separated(
-            padding: const EdgeInsets.all(8.0),
-            itemCount: docs.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final doc = docs[index];
-              final data = doc.data() as Map<String, dynamic>;
-              final level = data['levelRequired'] as int? ?? 0; // Updated field name
-              final zone = data['zone'] as String? ?? '';
-              return Card(
-                elevation: 4,
-                color: Theme.of(context).colorScheme.surface, // Explicitly set card color
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  leading: Icon(Icons.assignment, color: Theme.of(context).colorScheme.primary), // Kept as primary
-                  title: Text(
-                    data['name'] as String? ?? '',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(data['description'] as String? ?? ''),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Zona: $zone',
-                        style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withAlpha(50), // Changed background to secondary.withAlpha(50)
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'Nivel $level',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary, // Kept text color as primary
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      FadePageRoute( // Use FadePageRoute
-                        builder: (_) => MissionDetailScreen(missionId: doc.id),
-                      ),
-                    );
-                  },
+
+    return StreamBuilder<List<MissionModel>>(
+      stream: _missionService.getMissions(), // Corregido: getMissions y MissionModel
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error al cargar misiones: ${snapshot.error}'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final missions = snapshot.data;
+
+        if (missions == null || missions.isEmpty) {
+          return const Center(child: Text('No hay misiones disponibles.'));
+        }
+
+        return ListView.separated(
+          itemCount: missions.length,
+          separatorBuilder: (context, index) => const Divider(),
+          itemBuilder: (context, index) {
+            final mission = missions[index];
+            final bool isUnlocked = _isMissionUnlocked(mission, _userData);
+            String subtitleText = '${mission.description}\nZona: ${mission.zone} - Nivel Requerido: ${mission.levelRequired}';
+            if (!isUnlocked) {
+              subtitleText += '\nBloqueada: ${_getLockReason(mission, _userData)}';
+            }
+
+            return Card(
+              elevation: 2,
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              color: isUnlocked ? null : Colors.grey[350], // Color de fondo si está bloqueada
+              child: ListTile(
+                leading: Icon(
+                  isUnlocked ? Icons.explore : Icons.lock, // Icono de candado si está bloqueada
+                  color: isUnlocked ? Theme.of(context).colorScheme.secondary : Colors.grey,
                 ),
-              );
-            },
-          );
-        },
-      ),
+                title: Text(mission.name, style: TextStyle(fontWeight: FontWeight.bold, color: isUnlocked ? null : Colors.black54)),
+                subtitle: Text(subtitleText, style: TextStyle(color: isUnlocked ? null : Colors.black54)),
+                trailing: isUnlocked ? const Icon(Icons.arrow_forward_ios) : null,
+                onTap: isUnlocked
+                    ? () {
+                        Navigator.push(
+                          context,
+                          // Reemplaza FadePageRoute con MaterialPageRoute si FadePageRoute no está definido o causa problemas
+                          MaterialPageRoute(
+                            builder: (context) => MissionDetailScreen(missionId: mission.missionId),
+                          ),
+                        );
+                      }
+                    : null, // Deshabilitar onTap si está bloqueada
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

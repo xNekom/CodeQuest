@@ -1,6 +1,6 @@
 [
   {
-    "id": "c876166d-3e20-42b8-b14d-9502adefdb89",
+    "id": "item_pocion_de_curacion_menor",
     "name": "Poción de Curación Menor",
     "description": "Restaura 25 puntos de salud instantáneamente.",
     "icon": "potion_health_minor.png",
@@ -13,7 +13,7 @@
     "rareza": "Común"
   },
   {
-    "id": "e5ca3c43-f29c-4854-b5ef-f5a3bface03b",
+    "id": "item_pocion_de_mana_menor",
     "name": "Poción de Maná Menor",
     "description": "Restaura 15 puntos de maná.",
     "icon": "potion_mana_minor.png",
@@ -26,7 +26,7 @@
     "rareza": "Común"
   },
   {
-    "id": "692152b0-0af9-4ba9-bc5d-88369d7c69ba",
+    "id": "item_espada_corta_de_aprendiz",
     "name": "Espada Corta de Aprendiz",
     "description": "Una espada corta básica, ideal para principiantes.",
     "icon": "sword_short_apprentice.png",
@@ -44,7 +44,7 @@
     "rareza": "Común"
   },
   {
-    "id": "867105d6-e150-402d-9762-9e6097d78ed9",
+    "id": "item_escudo_de_madera_basico",
     "name": "Escudo de Madera Básico",
     "description": "Un escudo simple hecho de madera reforzada.",
     "icon": "shield_wood_basic.png",
@@ -60,7 +60,7 @@
     "rareza": "Común"
   },
   {
-    "id": "3fc1997b-46e4-4aa8-8f4d-3458bd6afd6f",
+    "id": "item_pocion_de_curacion_media",
     "name": "Poción de Curación Media",
     "description": "Restaura 50 puntos de salud.",
     "icon": "potion_health_medium.png",
@@ -73,7 +73,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "d04dcd6d-5ac0-48b9-92be-1bb428555471",
+    "id": "item_elixir_de_fuerza_de_oso",
     "name": "Elixir de Fuerza de Oso",
     "description": "Aumenta la Fuerza en 5 puntos durante 60 segundos.",
     "icon": "potion_strength_bear.png",
@@ -87,7 +87,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "7699af1f-e0e6-4c81-ae27-de821c1df0b0",
+    "id": "item_brebaje_de_resistencia_al_fuego",
     "name": "Brebaje de Resistencia al Fuego",
     "description": "Otorga un 30% de resistencia al fuego durante 120 segundos.",
     "icon": "potion_fire_resistance.png",
@@ -101,7 +101,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "396e9641-914c-45c9-969f-daeb45ef3e50",
+    "id": "item_filtro_de_invisibilidad_sombria",
     "name": "Filtro de Invisibilidad Sombría",
     "description": "Te vuelve invisible durante 30 segundos.",
     "icon": "potion_invisibility_shadow.png",
@@ -115,7 +115,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "d071e969-43c6-4fb1-a3ed-6bf24fd3797e",
+    "id": "item_pocion_de_curacion_mayor",
     "name": "Poción de Curación Mayor",
     "description": "Restaura 100 puntos de salud.",
     "icon": "potion_health_major.png",
@@ -128,7 +128,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "2d5f79c4-2b6c-4eed-bbaf-a49cab103722",
+    "id": "item_esencia_de_agilidad_felina",
     "name": "Esencia de Agilidad Felina",
     "description": "Aumenta la Agilidad en 8 puntos durante 60 segundos.",
     "icon": "potion_agility_cat.png",
@@ -142,7 +142,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "b75c8521-15ad-4715-af19-074790477c08",
+    "id": "item_unguento_contra_congelacion_glacial",
     "name": "Ungüento contra Congelación Glacial",
     "description": "Otorga un 40% de resistencia al hielo durante 120 segundos.",
     "icon": "potion_ice_resistance.png",
@@ -156,7 +156,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "bd92e579-65d6-4dff-a325-e5153e250b9c",
+    "id": "item_pocion_de_veneno_debil",
     "name": "Poción de Veneno Débil",
     "description": "Cubre un arma con veneno que inflige 5 de daño por segundo durante 10 segundos. Para lanzar o aplicar.",
     "icon": "potion_poison_weak.png",
@@ -170,7 +170,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "489f9a52-7fb2-4dd9-b72c-25b604ec9899",
+    "id": "item_daga_de_hierro_dentada",
     "name": "Daga de Hierro Dentada",
     "description": "Una daga de hierro simple pero efectiva, con bordes dentados para mayor daño.",
     "icon": "dagger_iron_serrated.png",
@@ -188,7 +188,7 @@
     "rareza": "Común"
   },
   {
-    "id": "05ac491e-9135-4b9f-848a-fc58dde0e713",
+    "id": "item_hacha_de_batalla_de_acero_pulido",
     "name": "Hacha de Batalla de Acero Pulido",
     "description": "Un hacha de batalla robusta, forjada en acero y bien equilibrada.",
     "icon": "axe_battle_steel.png",
@@ -206,7 +206,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "c8a05e9a-d01b-4afe-ac6d-e22ee0f5b74f",
+    "id": "item_arco_largo_elfico_susurrante",
     "name": "Arco Largo Élfico Susurrante",
     "description": "Un arco elegante y ligero, imbuido con la precisión de los elfos. Dispara flechas silenciosas.",
     "icon": "bow_long_elven.png",
@@ -224,7 +224,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "d480e943-1fc6-4c67-972e-59a85259ef8e",
+    "id": "item_varita_de_aprendiz_chispeante",
     "name": "Varita de Aprendiz Chispeante",
     "description": "Una varita básica para canalizar pequeños hechizos. A veces suelta chispas inofensivas.",
     "icon": "wand_apprentice_spark.png",
@@ -241,7 +241,7 @@
     "rareza": "Común"
   },
   {
-    "id": "9da0f115-301c-42ce-acfb-23e31d09c3c7",
+    "id": "item_espada_larga_de_caballero_leal",
     "name": "Espada Larga de Caballero Leal",
     "description": "Una espada larga de acero, símbolo de un caballero. Fiable y robusta.",
     "icon": "sword_long_knight.png",
@@ -259,7 +259,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "fa7db326-b6af-4f74-902a-401fe0bcd605",
+    "id": "item_maza_pesada_de_bronce_aplastante",
     "name": "Maza Pesada de Bronce Aplastante",
     "description": "Una maza de bronce maciza, diseñada para aplastar armaduras.",
     "icon": "mace_heavy_bronze.png",
@@ -277,7 +277,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "59699b75-1895-414b-b00c-5b91749de744",
+    "id": "item_baston_de_hechicero_de_cristal_arcano",
     "name": "Bastón de Hechicero de Cristal Arcano",
     "description": "Un bastón coronado con un cristal que amplifica la energía arcana.",
     "icon": "staff_sorcerer_crystal.png",
@@ -294,7 +294,7 @@
     "rareza": "Épico"
   },
   {
-    "id": "4ec0b0e4-6a3a-4cee-a1dd-d34b8db66a51",
+    "id": "item_casco_de_cuero_tachonado",
     "name": "Casco de Cuero Tachonado",
     "description": "Un casco de cuero ligero reforzado con tachuelas metálicas.",
     "icon": "helmet_leather_studded.png",
@@ -310,7 +310,7 @@
     "rareza": "Común"
   },
   {
-    "id": "79080fb1-a425-4f25-b893-796cd576e5d8",
+    "id": "item_pechera_de_malla_entrelazada",
     "name": "Pechera de Malla Entrelazada",
     "description": "Una pechera de malla que ofrece un buen equilibrio entre protección y movilidad.",
     "icon": "chest_mail_interlinked.png",
@@ -326,7 +326,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "43ef95ed-a463-45c4-bff2-0515206805a2",
+    "id": "item_guantes_de_placas_de_acero_runicos",
     "name": "Guantes de Placas de Acero Rúnicos",
     "description": "Guantes de placas pesadas, inscritos con runas que aumentan la vitalidad.",
     "icon": "gloves_plate_steel_runic.png",
@@ -342,7 +342,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "0113bdd6-0dee-4b96-bd93-7fc0a5ae9495",
+    "id": "item_botas_de_piel_ligeras_silenciosas",
     "name": "Botas de Piel Ligeras Silenciosas",
     "description": "Botas de piel suave que permiten moverse sin hacer ruido.",
     "icon": "boots_leather_silent.png",
@@ -358,7 +358,7 @@
     "rareza": "Común"
   },
   {
-    "id": "87ad35f2-96b6-4048-835a-48b249fdce72",
+    "id": "item_hombreras_de_hueso_tribal",
     "name": "Hombreras de Hueso Tribal",
     "description": "Hombreras hechas con huesos de bestias, adornadas con motivos tribales.",
     "icon": "shoulders_bone_tribal.png",
@@ -374,7 +374,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "e4c48426-6ab0-4e07-a269-af7e9d987955",
+    "id": "item_escudo_de_torre_de_hierro_reforzado",
     "name": "Escudo de Torre de Hierro Reforzado",
     "description": "Un escudo grande y pesado, capaz de resistir fuertes embestidas.",
     "icon": "shield_tower_iron.png",
@@ -390,7 +390,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "0af6867b-e4bd-4a22-9d0a-e4f1044a7681",
+    "id": "item_grebas_de_escamas_de_dragon_igneas",
     "name": "Grebas de Escamas de Dragón Ígneas",
     "description": "Grebas forjadas con escamas de dragón rojo, irradian un leve calor.",
     "icon": "greaves_dragonscale_fire.png",
@@ -406,7 +406,7 @@
     "rareza": "Épico"
   },
   {
-    "id": "afb29ceb-b749-4449-b4dd-9e078460dbfa",
+    "id": "item_llave_oxidada_de_celda",
     "name": "Llave Oxidada de Celda",
     "description": "Una vieja llave oxidada. Parece que podría abrir una cerradura simple, como la de una celda.",
     "icon": "key_rusty_cell.png",
@@ -419,7 +419,7 @@
     "rareza": "Común"
   },
   {
-    "id": "1ec04fbd-50f3-4476-81a6-bd508480400b",
+    "id": "item_rubi_pequeno_tallado",
     "name": "Rubí Pequeño Tallado",
     "description": "Un pequeño rubí, bien tallado. Podría usarse en joyería o para algún encantamiento.",
     "icon": "gem_ruby_small.png",
@@ -433,7 +433,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "0e7e59e2-fafb-4d9b-b3ed-810df197c1d9",
+    "id": "item_hierba_lunar_brillante",
     "name": "Hierba Lunar Brillante",
     "description": "Una hierba que solo crece bajo la luz de la luna llena. Usada en pociones de visión y magia.",
     "icon": "herb_moonpetal.png",
@@ -446,7 +446,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "8f861552-fe41-42d8-b5b6-98f0bf0daffa",
+    "id": "item_libro_hola_mundo",
     "name": "Libro: ¡Hola Mundo!",
     "description": "Un libro básico que enseña a imprimir en consola en Java.",
     "icon": "book_hello_world.png",
@@ -459,7 +459,7 @@
     "rareza": "Común"
   },
   {
-    "id": "d370aad2-237c-4798-a93d-be2fc077e194",
+    "id": "item_manual_de_variables",
     "name": "Manual de Variables",
     "description": "Guía rápida sobre declaración y uso de variables en Java.",
     "icon": "manual_variables.png",
@@ -472,7 +472,7 @@
     "rareza": "Común"
   },
   {
-    "id": "43622d39-2c10-4d74-b7f0-c8886d051173",
+    "id": "item_lupa_de_debugging",
     "name": "Lupa de Debugging",
     "description": "Herramienta para encontrar bugs ocultos en el código.",
     "icon": "debug_magnifier.png",
@@ -484,7 +484,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "0e4725f3-cfca-459e-ab94-d8de52b92b2a",
+    "id": "item_destornillador_de_precision",
     "name": "Destornillador de Precisión",
     "description": "Un destornillador fino, ideal para ajustar componentes pequeños.",
     "icon": "screwdriver_precision.png",
@@ -496,7 +496,7 @@
     "rareza": "Común"
   },
   {
-    "id": "41cafe66-c59e-41e8-b1c5-420f704ca5f4",
+    "id": "item_pasta_termica",
     "name": "Pasta Térmica",
     "description": "Mejora la conductividad térmica entre componentes electrónicos.",
     "icon": "thermal_paste.png",
@@ -509,7 +509,7 @@
     "rareza": "Común"
   },
   {
-    "id": "4491f104-11d2-44ac-85e8-9d77013ffdb8",
+    "id": "item_cable_usb",
     "name": "Cable USB",
     "description": "Cable para conexión y transferencia de datos entre dispositivos.",
     "icon": "cable_usb.png",
@@ -522,7 +522,7 @@
     "rareza": "Común"
   },
   {
-    "id": "0246f44d-82ed-46ae-903e-469f9c11c4db",
+    "id": "item_adaptador_usb_c",
     "name": "Adaptador USB-C",
     "description": "Permite conectar dispositivos con puerto USB-C a otros tipos de puertos USB.",
     "icon": "adapter_usb_c.png",
@@ -535,7 +535,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "09f679a2-625b-438f-8b31-4b472af44b40",
+    "id": "item_hub_usb",
     "name": "Hub USB",
     "description": "Permite conectar múltiples dispositivos USB a un solo puerto.",
     "icon": "hub_usb.png",
@@ -548,7 +548,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "778ed9e8-69e9-437f-af53-40a55cf610a5",
+    "id": "item_lector_de_tarjetas",
     "name": "Lector de Tarjetas",
     "description": "Permite leer tarjetas de memoria y otros tipos de tarjetas.",
     "icon": "card_reader.png",
@@ -561,7 +561,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "94ddb143-62ef-4d99-a13c-fb060047769e",
+    "id": "item_boligrafo_de_tinta_blanda",
     "name": "Bolígrafo de Tinta Blanda",
     "description": "Ideal para tomar notas rápidas sobre la marcha.",
     "icon": "pen_soft_ink.png",
@@ -574,7 +574,7 @@
     "rareza": "Común"
   },
   {
-    "id": "d9703e5c-2135-4786-b889-0259020b62a9",
+    "id": "item_libreta_de_notas",
     "name": "Libreta de Notas",
     "description": "Para llevar un registro de tus pensamientos e ideas.",
     "icon": "notebook_notes.png",
@@ -587,7 +587,7 @@
     "rareza": "Común"
   },
   {
-    "id": "2a642eee-8c48-4384-bf7b-cf78d1b0c0db",
+    "id": "item_tabla_de_ruteo",
     "name": "Tabla de Ruteo",
     "description": "Usada para planificar la arquitectura de red y ruteo de datos.",
     "icon": "routing_table.png",
@@ -600,7 +600,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "2644488e-199b-4a91-b154-a172b0189073",
+    "id": "item_diagrama_de_clases",
     "name": "Diagrama de Clases",
     "description": "Muestra las clases de un sistema y sus relaciones.",
     "icon": "class_diagram.png",
@@ -613,7 +613,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "c9184590-d918-460b-a0d9-6f32a8868afa",
+    "id": "item_codigo_fuente",
     "name": "Código Fuente",
     "description": "Archivo que contiene el código fuente de un programa.",
     "icon": "source_code.png",
@@ -626,7 +626,7 @@
     "rareza": "Común"
   },
   {
-    "id": "4d8077c2-ec85-44b0-aaba-d3354cdd48cb",
+    "id": "item_compilador_de_java",
     "name": "Compilador de Java",
     "description": "Convierte el código fuente de Java a código de bytes.",
     "icon": "java_compiler.png",
@@ -639,7 +639,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "c567def9-cf54-4893-af2b-b7af3590117b",
+    "id": "item_jdk_java_development_kit",
     "name": "JDK (Java Development Kit)",
     "description": "Kit de desarrollo para crear aplicaciones en Java.",
     "icon": "jdk.png",
@@ -652,7 +652,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "78145652-32b0-4aee-9ab3-1411ec9fda65",
+    "id": "item_idioma_java",
     "name": "Idioma Java",
     "description": "Referencia sobre la sintaxis y características del lenguaje Java.",
     "icon": "java_language.png",
@@ -665,7 +665,7 @@
     "rareza": "Común"
   },
   {
-    "id": "de2f75bd-e055-415f-b03e-d0e03e630417",
+    "id": "item_entorno_de_desarrollo_java",
     "name": "Entorno de Desarrollo Java",
     "description": "Configuración básica para comenzar a programar en Java.",
     "icon": "java_development_environment.png",
@@ -678,7 +678,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "ef286a10-8a61-40ea-bea6-318bea37ac50",
+    "id": "item_api_de_java",
     "name": "API de Java",
     "description": "Documentación de las clases y métodos disponibles en Java.",
     "icon": "java_api.png",
@@ -691,7 +691,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "e6339d92-c783-4bdf-a8a1-d2f0221ff0c0",
+    "id": "item_framework_java",
     "name": "Framework Java",
     "description": "Estructura de soporte para el desarrollo de aplicaciones Java.",
     "icon": "java_framework.png",
@@ -704,7 +704,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "d2cb150b-0897-4dc7-afe8-fb28fea74965",
+    "id": "item_patron_de_diseno_java",
     "name": "Patrón de Diseño Java",
     "description": "Plantilla para resolver problemas comunes en el desarrollo de software en Java.",
     "icon": "java_design_pattern.png",
@@ -717,7 +717,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "38036ee1-c0ca-436e-8cc7-da5f290c3bfb",
+    "id": "item_biblioteca_java",
     "name": "Biblioteca Java",
     "description": "Colección de clases y métodos preescritos para facilitar el desarrollo en Java.",
     "icon": "java_library.png",
@@ -730,7 +730,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "74133fe6-e6f2-4388-8503-e1bef2ca3f5e",
+    "id": "item_repositorio_de_codigo",
     "name": "Repositorio de Código",
     "description": "Almacenamiento y gestión de versiones del código fuente.",
     "icon": "code_repository.png",
@@ -743,7 +743,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "729c52d7-b44b-4c30-8e54-7b15989bb7a2",
+    "id": "item_control_de_versiones",
     "name": "Control de Versiones",
     "description": "Sistema para gestionar los cambios en el código fuente a lo largo del tiempo.",
     "icon": "version_control.png",
@@ -756,7 +756,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "6d0a7d60-1f95-48b1-814b-4bff3c7873b9",
+    "id": "item_metodologia_agil",
     "name": "Metodología Ágil",
     "description": "Enfoque para el desarrollo de software que promueve la entrega incremental.",
     "icon": "agile_methodology.png",
@@ -769,7 +769,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "785c8030-906d-4c8b-8a71-2f22a5aa1b03",
+    "id": "item_diagrama_de_secuencias",
     "name": "Diagrama de Secuencias",
     "description": "Representa la secuencia de mensajes entre objetos en un sistema.",
     "icon": "sequence_diagram.png",
@@ -782,7 +782,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "ba9483aa-c089-4fad-b555-e74a96bbe301",
+    "id": "item_diagrama_de_actividad",
     "name": "Diagrama de Actividad",
     "description": "Muestra el flujo de trabajo o actividades en un proceso.",
     "icon": "activity_diagram.png",
@@ -795,7 +795,7 @@
     "rareza": "Poco Común"
   },
   {
-    "id": "feeb070a-6871-4a45-8ae3-8281135e6cf0",
+    "id": "item_historia_de_usuario",
     "name": "Historia de Usuario",
     "description": "Descripción breve de una funcionalidad desde la perspectiva del usuario.",
     "icon": "user_story.png",
@@ -808,7 +808,7 @@
     "rareza": "Común"
   },
   {
-    "id": "15c8279e-a162-407b-a513-4db621743ae2",
+    "id": "item_tarea_de_programacion",
     "name": "Tarea de Programación",
     "description": "Actividad específica de programación para desarrollar una funcionalidad.",
     "icon": "programming_task.png",
@@ -821,7 +821,7 @@
     "rareza": "Común"
   },
   {
-    "id": "2f1f2e93-91bc-46a0-8029-933cba80e40b",
+    "id": "item_requerimiento_funcional",
     "name": "Requerimiento Funcional",
     "description": "Descripción de una función o característica que debe tener el sistema.",
     "icon": "functional_requirement.png",
@@ -834,7 +834,7 @@
     "rareza": "Común"
   },
   {
-    "id": "73ece4b5-c654-46e4-9821-6e780f2848f3",
+    "id": "item_requerimiento_no_funcional",
     "name": "Requerimiento No Funcional",
     "description": "Restricciones o condiciones que no están relacionadas con funciones específicas.",
     "icon": "non_functional_requirement.png",
@@ -847,7 +847,7 @@
     "rareza": "Común"
   },
   {
-    "id": "63ed53ca-94fa-4298-b3e7-365d938a93d6",
+    "id": "item_prueba_unitaria",
     "name": "Prueba Unitaria",
     "description": "Prueba que verifica el funcionamiento de una unidad específica del código.",
     "icon": "unit_test.png",
@@ -860,7 +860,7 @@
     "rareza": "Común"
   },
   {
-    "id": "51f825af-a970-407f-ae34-05b46997000a",
+    "id": "item_prueba_de_integracion",
     "name": "Prueba de Integración",
     "description": "Prueba que verifica la interacción entre diferentes módulos del sistema.",
     "icon": "integration_test.png",
@@ -873,7 +873,7 @@
     "rareza": "Común"
   },
   {
-    "id": "a81c5b54-98aa-45f4-88aa-797ccf1561a2",
+    "id": "item_prueba_de_sistema",
     "name": "Prueba de Sistema",
     "description": "Prueba que verifica el funcionamiento del sistema completo.",
     "icon": "system_test.png",
@@ -886,7 +886,7 @@
     "rareza": "Común"
   },
   {
-    "id": "8f88b34a-fe57-42a2-b5ec-214310bcedef",
+    "id": "item_prueba_de_aceptacion",
     "name": "Prueba de Aceptación",
     "description": "Prueba que verifica si el sistema cumple con los requisitos y es aceptable para el usuario.",
     "icon": "acceptance_test.png",
@@ -899,7 +899,7 @@
     "rareza": "Común"
   },
   {
-    "id": "04116f11-f7cd-41c0-ac23-c7464b1755bf",
+    "id": "item_documentacion_tecnica",
     "name": "Documentación Técnica",
     "description": "Descripción detallada de la arquitectura, diseño y funcionamiento del sistema.",
     "icon": "technical_documentation.png",
@@ -912,7 +912,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "37648c23-73a9-4b96-8cd2-fef4f52f1a6d",
+    "id": "item_documentacion_para_el_usuario",
     "name": "Documentación para el Usuario",
     "description": "Guía para ayudar al usuario a entender y usar el sistema.",
     "icon": "user_documentation.png",
@@ -925,7 +925,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "dc0e5760-e5c6-430d-88d9-76df055e0d1a",
+    "id": "item_plan_de_proyecto",
     "name": "Plan de Proyecto",
     "description": "Documento que describe los objetivos, alcance y plan de trabajo del proyecto.",
     "icon": "project_plan.png",
@@ -938,7 +938,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "02b8cbab-5efa-4016-930a-df27bd97d77b",
+    "id": "item_diagrama_de_gantt_del_proyecto",
     "name": "Diagrama de Gantt del Proyecto",
     "description": "Representa gráficamente el cronograma del proyecto.",
     "icon": "gantt_chart.png",
@@ -951,7 +951,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "1635fd98-114f-4557-a187-8bc4f6fa6ddf",
+    "id": "item_informe_de_avance",
     "name": "Informe de Avance",
     "description": "Documento que reporta el estado y avance del proyecto.",
     "icon": "progress_report.png",
@@ -964,7 +964,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "7b6d8b54-7758-41e7-9f15-5eb98a8983cb",
+    "id": "item_acta_de_decisiones",
     "name": "Acta de Decisiones",
     "description": "Registro de las decisiones tomadas durante las reuniones del proyecto.",
     "icon": "decisions_minutes.png",
@@ -977,7 +977,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "c485e7ca-d7aa-49e5-9fb3-4a1b9bbcc0b8",
+    "id": "item_acta_de_planificacion",
     "name": "Acta de Planificación",
     "description": "Registro de los acuerdos y planes establecidos en las reuniones de planificación.",
     "icon": "planning_minutes.png",
@@ -990,7 +990,7 @@
     "rareza": "Raro"
   },
   {
-    "id": "c8e3f619-74c1-4b8c-8801-bcba5a4f5112",
+    "id": "item_acta_de_cierre",
     "name": "Acta de Cierre",
     "description": "Documento que formaliza el cierre del proyecto y sus resultados.",
     "icon": "closure_minutes.png",
