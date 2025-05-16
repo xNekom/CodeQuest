@@ -1,35 +1,46 @@
 // filepath: c:\Users\Pedro\Documents\GitHub\CodeQuest\lib\models\mission_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'story_page_model.dart';
+import 'battle_config_model.dart';
+import 'requirements_model.dart';
 
 class MissionModel {
   final String missionId;
-  final String title;
+  final String name; // Renamed from title
   final String description;
   final String zone;
-  final int levelRequired;
+  final int levelRequired; // Kept for quick access, also in requirements
   String status; // 'disponible', 'bloqueada', 'en_progreso', 'completada'
-  final String? prerequisiteMissionId;
+  // final String? prerequisiteMissionId; // Removed, handled by requirements
   final bool isRepeatable;
   final List<Objective> objectives;
   final Rewards rewards;
   final Dialogue? dialogue;
   final StoryContent? storyContent;
   final String? originalId; // Para mantener el ID del JSON original si es necesario
+  final String? type; // e.g., "exploracion"
+  final List<StoryPageModel>? storyPages;
+  final BattleConfigModel? battleConfig;
+  final RequirementsModel? requirements;
 
   MissionModel({
     required this.missionId,
-    required this.title,
+    required this.name, // Updated
     required this.description,
     required this.zone,
     required this.levelRequired,
     required this.status,
-    this.prerequisiteMissionId,
+    // this.prerequisiteMissionId, // Removed
     required this.isRepeatable,
     required this.objectives,
     required this.rewards,
     this.dialogue,
     this.storyContent,
     this.originalId,
+    this.type,
+    this.storyPages,
+    this.battleConfig,
+    this.requirements,
   });
 
   factory MissionModel.fromFirestore(DocumentSnapshot doc) {
@@ -46,13 +57,13 @@ class MissionModel {
           .toList();
 
       return MissionModel(
-        missionId: missionId, // Usar el ID del documento de Firestore
-        title: json['title'] as String,
+        missionId: missionId,
+        name: json['name'] as String? ?? json['title'] as String, // Handle old 'title' field
         description: json['description'] as String,
         zone: json['zone'] as String,
         levelRequired: json['levelRequired'] as int,
         status: json['status'] as String,
-        prerequisiteMissionId: json['prerequisiteMissionId'] as String?,
+        // prerequisiteMissionId: json['prerequisiteMissionId'] as String?, // Removed
         isRepeatable: json['isRepeatable'] as bool,
         objectives: objectivesList,
         rewards: Rewards.fromJson(json['rewards'] as Map<String, dynamic>),
@@ -62,30 +73,43 @@ class MissionModel {
         storyContent: json['storyContent'] != null
             ? StoryContent.fromJson(json['storyContent'] as Map<String, dynamic>)
             : null,
-        originalId: json['id'] as String?, // Capturar el 'id' original del JSON
+        originalId: json['id'] as String?,
+        type: json['type'] as String?,
+        storyPages: (json['storyPages'] as List<dynamic>?)
+            ?.map((pageJson) => StoryPageModel.fromJson(pageJson as Map<String, dynamic>))
+            .toList(),
+        battleConfig: json['battleConfig'] != null
+            ? BattleConfigModel.fromJson(json['battleConfig'] as Map<String, dynamic>)
+            : null,
+        requirements: json['requirements'] != null
+            ? RequirementsModel.fromJson(json['requirements'] as Map<String, dynamic>)
+            : null,
       );
     } catch (e) {
       print('[MissionModel] ERROR parsing missionId: $missionId. Data: $json');
       print('[MissionModel] Parser exception: $e');
-      rethrow; // Rethrow to allow service to catch if needed, or handle differently
+      rethrow;
     }
   }
 
   Map<String, dynamic> toJson() {
-    // El missionId no se incluye aquí porque es el ID del documento en Firestore
     return {
-      'title': title,
+      'name': name, // Updated
       'description': description,
       'zone': zone,
       'levelRequired': levelRequired,
       'status': status,
-      'prerequisiteMissionId': prerequisiteMissionId,
+      // 'prerequisiteMissionId': prerequisiteMissionId, // Removed
       'isRepeatable': isRepeatable,
       'objectives': objectives.map((obj) => obj.toJson()).toList(),
       'rewards': rewards.toJson(),
       if (dialogue != null) 'dialogue': dialogue!.toJson(),
       if (storyContent != null) 'storyContent': storyContent!.toJson(),
-      if (originalId != null) 'id': originalId, // Restaurar el 'id' original si se guarda
+      if (originalId != null) 'id': originalId,
+      if (type != null) 'type': type,
+      if (storyPages != null) 'storyPages': storyPages!.map((page) => page.toJson()).toList(),
+      if (battleConfig != null) 'battleConfig': battleConfig!.toJson(),
+      if (requirements != null) 'requirements': requirements!.toJson(),
     };
   }
 }
@@ -164,13 +188,13 @@ class Objective {
 
 class Rewards {
   final int experience;
-  final int coins;
+  final int gold; // Renamed from coins
   final List<RewardItem> items;
   final List<String>? unlocks; // IDs de misiones o features desbloqueadas
 
   Rewards({
     required this.experience,
-    required this.coins,
+    required this.gold, // Updated
     required this.items,
     this.unlocks,
   });
@@ -178,12 +202,12 @@ class Rewards {
   factory Rewards.fromJson(Map<String, dynamic> json) {
     var itemsData = json['items'] as List<dynamic>? ?? [];
     List<RewardItem> itemsList = itemsData
-        .map((itemData) => RewardItem.fromJson(itemData as Map<String, dynamic>))
+        .map((itemData) => RewardItem.fromJson(itemData)) // Updated to pass dynamic
         .toList();
     
     return Rewards(
-      experience: json['experience'] as int,
-      coins: json['coins'] as int,
+      experience: json['experience'] as int? ?? 0,
+      gold: json['gold'] as int? ?? json['coins'] as int? ?? 0, // Handle old 'coins' and default to 0
       items: itemsList,
       unlocks: (json['unlocks'] as List<dynamic>?)?.map((unlock) => unlock as String).toList(),
     );
@@ -192,7 +216,7 @@ class Rewards {
   Map<String, dynamic> toJson() {
     return {
       'experience': experience,
-      'coins': coins,
+      'gold': gold, // Updated
       'items': items.map((item) => item.toJson()).toList(),
       if (unlocks != null) 'unlocks': unlocks,
     };
@@ -201,23 +225,23 @@ class Rewards {
 
 class RewardItem {
   final String itemId;
-  final int quantity;
+  // final int quantity; // Removing quantity for now to match simple string list
 
-  RewardItem({required this.itemId, required this.quantity});
+  RewardItem({required this.itemId /*, required this.quantity */});
 
-  factory RewardItem.fromJson(Map<String, dynamic> json) {
-    return RewardItem(
-      itemId: json['itemId'] as String,
-      quantity: json['quantity'] as int,
-    );
+  factory RewardItem.fromJson(dynamic json) { // Accept dynamic for item
+    if (json is String) {
+      return RewardItem(itemId: json);
+    } else if (json is Map<String, dynamic>) { // Keep if more complex items are also possible
+        if (json['itemId'] == null) throw ArgumentError('RewardItem map missing itemId');
+      return RewardItem(itemId: json['itemId'] as String);
+    }
+    throw ArgumentError('Invalid RewardItem format: must be String or Map. Received: $json');
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'itemId': itemId,
-      'quantity': quantity,
-    };
-  }
+  // If items are just strings, toJson might just be part of Rewards.toJson
+  // For now, let's make it simple, assuming Rewards.toJson will handle it.
+  String toJson() => itemId; 
 }
 
 class Dialogue {

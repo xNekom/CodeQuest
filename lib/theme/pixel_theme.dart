@@ -27,12 +27,19 @@ class PixelTheme {
   // Tema claro (principal)
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: Brightness.light,
-      // background: Colors.white, // Deprecated
-      surface: Colors.white, // Usar surface en lugar de background
-      onSurface: Colors.black, // Usar onSurface en lugar de onBackground
+    colorScheme: ColorScheme.light(
+      primary: primaryColor,
+      secondary: secondaryColor,
+      tertiary: accentColor, // Amarillo
+      surface: lightSurfaceColor, // Muy light yellow
+      background: lightScaffoldBackgroundColor, // Muy light green
+      error: errorColor,
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      onTertiary: Colors.black,
+      onSurface: lightTextColor, // Negro sobre light yellow
+      onBackground: lightTextColor, // Negro sobre light green
+      onError: Colors.black,
     ),
     scaffoldBackgroundColor: lightScaffoldBackgroundColor, // Muy light green
     textTheme: GoogleFonts.pressStart2pTextTheme(
@@ -72,12 +79,19 @@ class PixelTheme {
   // Tema oscuro
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: Brightness.dark,
-      // background: const Color(0xFF121212), // Deprecated
-      surface: const Color(0xFF121212), // Usar surface en lugar de background
-      onSurface: Colors.white, // Usar onSurface en lugar de onBackground
+    colorScheme: ColorScheme.dark(
+      primary: primaryColor,
+      secondary: secondaryColor,
+      tertiary: accentColor, // Amarillo
+      surface: darkDialogSurfaceColor, // Gris más claro para surfaces
+      background: darkBackgroundColor, // Gris oscuro para scaffold background
+      error: errorColor,
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      onTertiary: Colors.black,
+      onSurface: darkTextColor, // Blanco sobre gris más claro
+      onBackground: darkTextColor, // Blanco sobre gris oscuro
+      onError: Colors.black,
     ),
     scaffoldBackgroundColor: darkBackgroundColor, // Gris oscuro
     textTheme: GoogleFonts.pressStart2pTextTheme(

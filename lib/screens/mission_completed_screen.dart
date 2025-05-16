@@ -146,7 +146,7 @@ class MissionCompletedScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildRewardItem(context, earnedReward!),
+                _buildRewardItem(earnedReward!),
                 const SizedBox(height: 20),
               ],
               
@@ -173,7 +173,7 @@ class MissionCompletedScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRewardItem(BuildContext context, Reward reward) {
+  Widget _buildRewardItem(Reward reward) {
     Color rewardColor;
     IconData rewardIcon;
     String rewardText;
