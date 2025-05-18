@@ -172,6 +172,7 @@ class Objective {
   final String? targetObjectId;
   final List<String>? interactionSequence;
   final String? interactionHint;
+  final BattleConfigModel? battleConfig;
 
   Objective({
     required this.type,
@@ -188,6 +189,7 @@ class Objective {
     this.targetObjectId,
     this.interactionSequence,
     this.interactionHint,
+    this.battleConfig,
   });
 
   factory Objective.fromJson(Map<String, dynamic> json) {
@@ -215,6 +217,9 @@ class Objective {
       targetObjectId: json['targetObjectId'] as String?,
       interactionSequence: (json['interactionSequence'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
       interactionHint: json['interactionHint'] as String?,
+      battleConfig: json['battleConfig'] != null && json['battleConfig'] is Map<String, dynamic>
+          ? BattleConfigModel.fromJson(json['battleConfig'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -234,6 +239,7 @@ class Objective {
       if (targetObjectId != null) 'targetObjectId': targetObjectId,
       if (interactionSequence != null && interactionSequence!.isNotEmpty) 'interactionSequence': interactionSequence,
       if (interactionHint != null) 'interactionHint': interactionHint,
+      if (battleConfig != null) 'battleConfig': battleConfig!.toJson(),
     };
   }
 }
