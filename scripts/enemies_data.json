@@ -395,5 +395,32 @@
       "victory": "La sabiduría prevalece...",
       "defeat": "Aún no estás listo..."
     }
+  },
+  {
+    "id": "enemigo_espiritu_codigo_incompleto",
+    "name": "Espíritu del Código Incompleto",
+    "level": 4,
+    "health": 50,
+    "attack": 8,
+    "defense": 4,
+    "speed": 6,
+    "abilities": [
+      "corromper_logica",
+      "invocar_null_pointer"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_fragmento_codigo_puro",
+        "dropChance": 0.6,
+        "quantity": 1
+      }
+    ],
+    "dialogue": {
+      "encounter": "Tu creación es imperfecta... ¡sentirás el vacío de los constructores olvidados!",
+      "victory": "¡La nada te consume! Tu gólem se deshace sin una base sólida...",
+      "defeat": "Argh... la estructura... es demasiado... ¡completa!"
+    },
+    "assetPath": "assets/enemies/espiritu_incompleto.png",
+    "description": "Un ente malévolo que se alimenta de la omisión de constructores y de la inicialización incorrecta de objetos. Busca deshacer la lógica de los programas."
   }
 ]
