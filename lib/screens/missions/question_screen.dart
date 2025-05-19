@@ -8,7 +8,7 @@ import '../../widgets/pixel_widgets.dart';
 class QuestionScreen extends StatefulWidget {
   final String missionId;
 
-  const QuestionScreen({Key? key, required this.missionId}) : super(key: key);
+  const QuestionScreen({super.key, required this.missionId});
 
   @override
   State<QuestionScreen> createState() => _QuestionScreenState();
@@ -32,13 +32,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
         .collection('missions')
         .doc(widget.missionId)
         .get();
-    if (doc.exists) {
-      final data = doc.data() as Map<String, dynamic>;
-      setState(() {
-        _questionIds = List<String>.from(data['structure'] ?? []);
-        _isLoading = false;
-      });
-    }
+    final data = doc.exists ? doc.data() as Map<String, dynamic> : null;
+    setState(() {
+      _questionIds = data != null ? List<String>.from(data['structure'] ?? []) : [];
+      _isLoading = false;
+    });
   }
 
   Future<DocumentSnapshot> _loadQuestion(String qId) {
@@ -65,27 +63,32 @@ class _QuestionScreenState extends State<QuestionScreen> {
         ],
       ),
     );
-    // Avanzar o completar misión
-    if (_currentIndex + 1 < _questionIds.length) {
-      setState(() {
-        _currentIndex++;
-      });
+    // Solo avanzar o completar si la respuesta es correcta
+    if (isCorrect) {
+      if (_currentIndex + 1 < _questionIds.length) {
+        setState(() {
+          _currentIndex++;
+        });
+      } else {
+        await _userService.completeMission(user.uid, widget.missionId);
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('¡Misión completada!'),
+            content: const Text('Has completado la misión con éxito.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     } else {
-      await _userService.completeMission(user.uid, widget.missionId);
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('¡Misión completada!'),
-          content: const Text('Has completado la misión con éxito.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      // En caso de error, mantener la misma pregunta para reintentar
+      // (ya se mostró explicación)
     }
   }
 
@@ -104,8 +107,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
         if (snapshot.hasError) {
           return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
         }
-        if (!snapshot.hasData || !snapshot.data!.exists) {
+        if (!snapshot.hasData) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        if (!snapshot.data!.exists) {
+          return Scaffold(body: Center(child: Text('Pregunta no encontrada: $qId')));
         }
         final data = snapshot.data!.data() as Map<String, dynamic>;
         final options = List<String>.from(data['options'] ?? []);
