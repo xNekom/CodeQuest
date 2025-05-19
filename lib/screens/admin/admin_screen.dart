@@ -35,13 +35,18 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   Future<void> _resetPassword(String email) async {
     try {
       await _authService.sendPasswordResetEmail(email: email);
+      if (!mounted) return; // Corrected: Added mounted check
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email de restablecimiento enviado.')));
     } catch (e) {
+      if (!mounted) return; // Corrected: Added mounted check
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
   Future<void> _viewProfile(Map<String, dynamic> data) async {
+    // No direct context use after await here that needs a mounted check,
+    // as showDialog itself handles its context.
+    // The mounted check after showDialog is for operations *after* the dialog closes.
     await showDialog(context: context, builder: (_) {
       return AlertDialog(
         title: const Text('Detalles de Usuario'),
@@ -54,6 +59,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cerrar'))],
       );
     });
+    // if (!mounted) return; // This one is fine if there's no context use after it.
   }
 
   Future<void> _editField(String uid, String field, int current) async {
@@ -76,11 +82,13 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             if (!formKey.currentState!.validate()) return;
             final val = int.parse(controller.text);
             await _usersCol.doc(uid).update({field: val});
+            if (!mounted) return; // Corrected: Added mounted check for line 83
             Navigator.pop(context);
           }, child: const Text('Guardar')),
         ],
       );
     });
+    // if (!mounted) return; // This one is fine if there's no context use after it.
   }
 
   @override
@@ -94,6 +102,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             tooltip: 'Cerrar sesión',
             onPressed: () async {
               await _authService.signOut();
+              if (!context.mounted) return;
               Navigator.pushReplacementNamed(context, '/auth');
             },
           ),
@@ -158,6 +167,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                               ],
                             ),
                           );
+                          if (!context.mounted) return;
                           if (confirm == true) await _usersCol.doc(doc.id).delete();
                         },
                       ),
@@ -217,7 +227,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                           ])),
                           actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
                             TextButton(onPressed: () async {
-                              await _itemsCol.doc(doc.id).update({'name': nameCtrl.text, 'description': descCtrl.text, 'type': typeCtrl.text});
+                              await _itemsCol.doc(doc.id).update({
+                                'name': nameCtrl.text,
+                                'description': descCtrl.text,
+                                'type': typeCtrl.text,
+                              });
+                              if (!mounted) return; // Corrected: Added mounted check for line 449 (was 431)
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))],
                         ));
@@ -272,7 +287,14 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                             TextButton(onPressed: () async {
                               if (!formKey.currentState!.validate()) return;
                               final qList = pool.text.split(',').map((e) => e.trim()).toList();
-                              await _enemiesCol.doc(doc.id).update({'name': n.text, 'description': d.text, 'type': t.text, 'visualAssetUrl': v.text, 'questionPool': qList});
+                              await _enemiesCol.doc(doc.id).update({
+                                'name': n.text,
+                                'description': d.text,
+                                'type': t.text,
+                                'visualAssetUrl': v.text,
+                                'questionPool': qList,
+                              });
+                              if (!mounted) return; // Corrected: Added mounted check for line 479 (was 461)
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))
                           ],
@@ -324,7 +346,13 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                             TextButton(onPressed: () async {
                               if (!formKey.currentState!.validate()) return;
                               final sc = int.parse(scoreCtrl.text);
-                              await _leaderboardsCol.doc(doc.id).update({'userId': userCtrl.text, 'username': unameCtrl.text, 'score': sc, 'lastUpdated': FieldValue.serverTimestamp()});
+                              await _leaderboardsCol.doc(doc.id).update({
+                                'userId': userCtrl.text,
+                                'username': unameCtrl.text,
+                                'score': sc,
+                                'lastUpdated': FieldValue.serverTimestamp(),
+                              });
+                              if (!mounted) return; // Corrected: Added mounted check for line 507 (was 489)
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))
                           ],
@@ -379,6 +407,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                                 'correctAnswerIndex': int.parse(correctCtrl.text),
                                 'explanation': explCtrl.text,
                               });
+                              if (!mounted) return; // Corrected: Added mounted check for line 538 (was 520)
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))
                           ],
@@ -417,6 +446,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     TextButton(onPressed: () async {
                       // Utiliza la instancia de Firestore directamente o asegúrate que _itemsCol está definida y es correcta.
                       await FirebaseFirestore.instance.collection('items').add({'name': nameCtrl.text, 'description': descCtrl.text, 'type': typeCtrl.text});
+                      if (!mounted) return; // Corrected: Added mounted check for line 236
                       Navigator.pop(context);
                     }, child: const Text('Crear'))],
                 ));
@@ -447,6 +477,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     final list = pool.text.split(',').map((e) => e.trim()).toList();
                     // Utiliza la instancia de Firestore directamente o asegúrate que _enemiesCol está definida y es correcta.
                     await FirebaseFirestore.instance.collection('enemies').add({'name': n.text, 'description': d.text, 'type': t.text, 'visualAssetUrl': v.text, 'questionPool': list});
+                    if (!mounted) return; // Corrected: Added mounted check for line 298
                     Navigator.pop(context);
                   }, child: const Text('Crear'))
                 ],
@@ -475,6 +506,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     final sc = int.parse(score.text);
                     // Utiliza la instancia de Firestore directamente o asegúrate que _leaderboardsCol está definida y es correcta.
                     await FirebaseFirestore.instance.collection('leaderboards').add({'userId': userCtrl.text, 'username': uname.text, 'score': sc, 'lastUpdated': FieldValue.serverTimestamp()});
+                    if (!mounted) return; // Corrected: Added mounted check for line 356
                     Navigator.pop(context);
                   }, child: const Text('Crear'))
                 ],
@@ -506,6 +538,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                         'correctAnswerIndex': int.parse(correctCtrl.text),
                         'explanation': explCtrl.text,
                       });
+                      if (!mounted) return; // Corrected: Added mounted check for line 411
                       Navigator.pop(context);
                     }, child: const Text('Crear'))
                   ],

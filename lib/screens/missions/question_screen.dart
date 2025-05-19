@@ -48,7 +48,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
     if (user == null) return;
     final isCorrect = selectedIndex == correctIndex;
     await _userService.updateStatsAfterQuestion(user.uid, isCorrect);
+    if (!mounted) return;
     await _userService.updateProgressInMission(user.uid, qId, isCorrect);
+    if (!mounted) return;
     // Diálogo con explicación
     await showDialog(
       context: context,
@@ -63,6 +65,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         ],
       ),
     );
+    if (!mounted) return;
     // Solo avanzar o completar si la respuesta es correcta
     if (isCorrect) {
       if (_currentIndex + 1 < _questionIds.length) {
@@ -86,10 +89,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
           ),
         );
       }
-    } else {
-      // En caso de error, mantener la misma pregunta para reintentar
-      // (ya se mostró explicación)
     }
+    // En caso de error, mantener la misma pregunta para reintentar
+    // (ya se mostró explicación)
   }
 
   @override

@@ -134,8 +134,10 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                           'outfit': _selectedOutfit,
                           'characterCreated': true,
                         });
+                        if (!context.mounted) return;
                         // Feedback visual
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Personaje creado!')));
+                        if (!context.mounted) return;
                         Navigator.pushReplacementNamed(context, '/home');
                       }
                     },
