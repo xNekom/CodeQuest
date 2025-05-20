@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "codequest-854e8"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }
