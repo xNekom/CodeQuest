@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
+import '../../services/tutorial_service.dart';
 import '../../widgets/character_pixelart.dart';
+import '../../widgets/tutorial_floating_button.dart';
 
 class CharacterCreationScreen extends StatefulWidget {
   const CharacterCreationScreen({super.key});
@@ -22,10 +24,36 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
   final UserService _userService = UserService();
   final user = FirebaseAuth.instance.currentUser;
 
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _characterPreviewKey = GlobalKey();
+  final GlobalKey _classSelectionKey = GlobalKey();
+  final GlobalKey _customizationKey = GlobalKey();
+  final GlobalKey _saveButtonKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
     _loadExistingData();
+    _checkAndStartTutorial();
+  }
+
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.characterCreationTutorial,
+        TutorialService.getCharacterCreationTutorial(
+          characterPreviewKey: _characterPreviewKey,
+          classSelectionKey: _classSelectionKey,
+          customizationKey: _customizationKey,
+          saveButtonKey: _saveButtonKey,
+        ),
+      );
+    }
   }
 
   Future<void> _loadExistingData() async {
@@ -54,6 +82,15 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
     }
     return Scaffold(
       appBar: AppBar(title: Text(_isEditing ? 'Editar tu Héroe' : 'Crear Tu Héroe')), // Título dinámico
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.characterCreationTutorial,
+        tutorialSteps: TutorialService.getCharacterCreationTutorial(
+          characterPreviewKey: _characterPreviewKey,
+          classSelectionKey: _classSelectionKey,
+          customizationKey: _customizationKey,
+          saveButtonKey: _saveButtonKey,
+        ),
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isPortrait = constraints.maxWidth < 600;
@@ -63,9 +100,9 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Vista previa del personaje pixel art
+                children: [                  // Vista previa del personaje pixel art
                   Center(
+                    key: _characterPreviewKey,
                     child: CharacterPixelArt(
                       skinTone: _selectedSkinTone,
                       hairStyle: _selectedHairStyle,
@@ -82,6 +119,7 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
+                    key: _classSelectionKey,
                     value: _selectedClass,
                     decoration: const InputDecoration(labelText: 'Clase'),
                     items: const [
@@ -93,8 +131,7 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                       if (v != null) setState(() => _selectedClass = v);
                     },
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
+                  const SizedBox(height: 16),                  DropdownButtonFormField<String>(
                     value: _selectedSkinTone,
                     decoration: const InputDecoration(labelText: 'Tono de piel'),
                     items: const [
@@ -106,6 +143,7 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
+                    key: _customizationKey,
                     value: _selectedHairStyle,
                     decoration: const InputDecoration(labelText: 'Peinado'),
                     items: const [
@@ -125,9 +163,9 @@ class _CharacterCreationScreenState extends State<CharacterCreationScreen> {
                       DropdownMenuItem(value: 'Sigiloso', child: Text('Sigiloso')),
                     ],
                     onChanged: (v) { if (v != null) setState(() => _selectedOutfit = v); },
-                  ),
-                  const SizedBox(height: 24),
+                  ),                  const SizedBox(height: 24),
                   ElevatedButton(
+                    key: _saveButtonKey,
                     style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;

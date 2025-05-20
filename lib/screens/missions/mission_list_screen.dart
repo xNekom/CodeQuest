@@ -8,7 +8,14 @@ import 'package:firebase_auth/firebase_auth.dart'; // Para obtener el usuario ac
 
 /// Pantalla que muestra todas las misiones disponibles
 class MissionListScreen extends StatefulWidget {
-  const MissionListScreen({super.key});
+  final GlobalKey? missionListKey;
+  final GlobalKey? filterButtonKey;
+  
+  const MissionListScreen({
+    super.key,
+    this.missionListKey,
+    this.filterButtonKey,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -106,7 +113,8 @@ class _MissionListScreenState extends State<MissionListScreen> {
           return const Center(child: Text('No hay misiones disponibles.'));
         }
 
-        return ListView.separated(
+                return ListView.separated(
+          key: widget.missionListKey,
           // Mostrar misiones + 1 casilla fija al final
           itemCount: missions.length + 1,
           separatorBuilder: (context, index) => const Divider(),
@@ -135,6 +143,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               color: isUnlocked ? null : Colors.grey[350], // Color de fondo si está bloqueada
               child: ListTile(
+                key: index == 0 ? widget.filterButtonKey : null, // Usar filterButtonKey para la primera misión como ejemplo
                 leading: Icon(
                   isUnlocked ? Icons.explore : Icons.lock, // Icono de candado si está bloqueada
                   color: isUnlocked ? Theme.of(context).colorScheme.secondary : Colors.grey,

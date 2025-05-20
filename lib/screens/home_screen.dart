@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
+import '../services/tutorial_service.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/character_pixelart.dart';
+import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../widgets/test_error_widget.dart';
 
@@ -22,10 +24,50 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
 
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _profileKey = GlobalKey();
+  final GlobalKey _missionsKey = GlobalKey();
+  final GlobalKey _achievementsKey = GlobalKey();
+  final GlobalKey _leaderboardKey = GlobalKey();
+  final GlobalKey _adminKey = GlobalKey();
+  final GlobalKey _adventureButtonKey = GlobalKey(); // Nueva key para el botón de aventura
+  final GlobalKey _shopButtonKey = GlobalKey(); // Nueva key para el botón de tienda
+  final GlobalKey _inventoryButtonKey = GlobalKey(); // Nueva key para el botón de inventario
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _checkAndStartTutorial();
+  }
+
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente, pero con un tiempo menor
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    // Verificar si el widget sigue montado antes de continuar
+    if (!mounted) return;
+    
+    try {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.homeScreenTutorial,
+        TutorialService.getHomeScreenTutorial(
+          profileKey: _profileKey,
+          missionsKey: _missionsKey,
+          achievementsKey: _achievementsKey,
+          leaderboardKey: _leaderboardKey,
+          adventureButtonKey: _adventureButtonKey,
+          shopButtonKey: _shopButtonKey,
+          inventoryButtonKey: _inventoryButtonKey,
+        ),
+      );
+    } catch (e) {
+      // Capturar cualquier error que pueda ocurrir durante la inicialización del tutorial
+      ErrorHandler.logError(e, StackTrace.current);
+      // No mostrar error al usuario para no interrumpir la experiencia
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -65,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +121,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text('No se encontraron datos del usuario'),
                   )
                 : _buildUserDataContent(),
+      ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.homeScreenTutorial,
+        tutorialSteps: TutorialService.getHomeScreenTutorial(
+          profileKey: _profileKey,
+          missionsKey: _missionsKey,
+          achievementsKey: _achievementsKey,
+          leaderboardKey: _leaderboardKey,
+          adventureButtonKey: _adventureButtonKey,
+          shopButtonKey: _shopButtonKey,
+          inventoryButtonKey: _inventoryButtonKey,
+        ),
       ),
     );
   }
@@ -172,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUserHeader() {
     return PixelCard(
+      key: _profileKey, // Asignar la key al perfil
       child: LayoutBuilder(builder: (context, constraints) {
         final isWide = constraints.maxWidth > 400;
         return Column(
@@ -357,6 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildStatsSection() {
     return PixelCard(
+      key: _missionsKey, // Asignar la key a las estadísticas
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -419,6 +474,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildAdventureButton() {
     return Center(
       child: PixelButton(
+        key: _adventureButtonKey, // Usar la key correcta para el botón de aventura
         onPressed: () {
           Navigator.pushNamed(context, '/missions');
         },
@@ -440,6 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildShopButton() {
     return Center(
       child: PixelButton(
+        key: _shopButtonKey, // Asignar la key al botón de tienda
         onPressed: () {
           Navigator.pushNamed(context, '/shop');
         },
@@ -461,6 +518,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildInventoryButton() {
     return Center(
       child: PixelButton(
+        key: _inventoryButtonKey, // Asignar la key al botón de inventario
         onPressed: () {
           Navigator.pushNamed(context, '/inventory');
         },
@@ -480,6 +538,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildAchievementsSection() {
     return PixelCard(
+      key: _achievementsKey, // Asignar la key a la sección de logros
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
