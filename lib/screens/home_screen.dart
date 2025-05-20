@@ -69,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
   Widget _buildUserDataContent() {
     return SafeArea(
       child: Column(
@@ -86,6 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildStatsSection(),
                   const SizedBox(height: 24),
                   _buildAdventureButton(),
+                  const SizedBox(height: 24),
+                  _buildAchievementsSection(),
                 ],
               ),
             ),
@@ -96,6 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAppBar() {
+    // Determinar si el usuario es admin
+    final bool isAdmin = _userData != null && _userData!['role'] == 'admin';
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -112,6 +116,17 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Spacer(),
+          if (isAdmin) // Mostrar botón de admin solo si el usuario es admin
+            Padding( // Envuelve el IconButton con Padding
+              padding: const EdgeInsets.only(right: 8.0), // Añade espacio a la derecha
+              child: IconButton(
+                icon: const Icon(Icons.admin_panel_settings),
+                tooltip: 'Panel de Administrador',
+                onPressed: () {
+                  Navigator.pushNamed(context, '/admin');
+                },
+              ),
+            ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
@@ -199,7 +214,125 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(children: [Icon(Icons.star, size: 18), const SizedBox(width: 8), Text('Nivel: ${_userData!['level'] ?? 1}')]),
         const SizedBox(height: 4),
         Row(children: [Icon(Icons.monetization_on, size: 18, color: Colors.amber), const SizedBox(width: 8), Text('${_userData!['coins'] ?? 0} monedas')]),
+        const SizedBox(height: 8),
+        TextButton.icon(
+          icon: const Icon(Icons.lock_reset),
+          label: const Text('Cambiar Contraseña'),
+          onPressed: _showChangePasswordDialog,
+          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+        ),
       ],
+    );
+  }
+
+  Future<void> _showChangePasswordDialog() async {
+    final TextEditingController currentPasswordController = TextEditingController();
+    final TextEditingController newPasswordController = TextEditingController();
+    final TextEditingController confirmPasswordController = TextEditingController();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // El usuario debe tocar un botón para cerrar
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Cambiar Contraseña'),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: ListBody(
+                children: <Widget>[
+                  TextFormField(
+                    controller: currentPasswordController,
+                    decoration: const InputDecoration(labelText: 'Contraseña Actual'),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingresa tu contraseña actual';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: newPasswordController,
+                    decoration: const InputDecoration(labelText: 'Nueva Contraseña'),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingresa una nueva contraseña';
+                      }
+                      if (value.length < 6) {
+                        return 'La contraseña debe tener al menos 6 caracteres';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: confirmPasswordController,
+                    decoration: const InputDecoration(labelText: 'Confirmar Nueva Contraseña'),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, confirma tu nueva contraseña';
+                      }
+                      if (value != newPasswordController.text) {
+                        return 'Las contraseñas no coinciden';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Cambiar'),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  try {
+                    // Reautenticar al usuario es necesario para cambiar la contraseña
+                    bool reauthenticated = await _authService.reauthenticateUser(
+                      currentPasswordController.text,
+                    );
+
+                    if (reauthenticated) {
+                      await _authService.changePassword(newPasswordController.text);
+                      if (mounted) {
+                        Navigator.of(dialogContext).pop(); // Cerrar el diálogo
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Contraseña cambiada con éxito.')),
+                        );
+                      }
+                    } else {
+                       if (mounted) {
+                        // No cerrar el diálogo, mostrar error dentro del diálogo o con SnackBar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Error: La contraseña actual es incorrecta.')),
+                        );
+                      }
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                       ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error al cambiar la contraseña: $e')),
+                      );
+                    }
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -280,6 +413,55 @@ class _HomeScreenState extends State<HomeScreen> {
             Text('COMENZAR AVENTURA'),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildAchievementsSection() {
+    return PixelCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'LOGROS',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/achievements');
+                },
+                child: Text('Ver todos'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Center( // Usar Center para posicionar el botón
+            child: PixelButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/achievements');
+              },
+              color: Colors.orange,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // Mantener un padding adecuado
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // Clave para que el botón se ajuste al contenido
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.emoji_events, size: 20),
+                    const SizedBox(width: 8),
+                    Text( // Texto simplificado, sin Flexible ni softWrap
+                      'VER MIS LOGROS',
+                      textAlign: TextAlign.center, // Opcional, útil si el texto llegara a envolverse
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

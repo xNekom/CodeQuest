@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Importar FirebaseAuth
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
+import '../../models/reward_model.dart'; 
+import '../../models/achievement_model.dart'; 
+import '../../services/reward_service.dart'; 
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -10,20 +14,42 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStateMixin {
+  final AuthService _authService = AuthService();
+  final RewardService _rewardService = RewardService();
+  late final TabController _tabController;
+
   final CollectionReference _usersCol = FirebaseFirestore.instance.collection('users');
+  final CollectionReference _missionsCol = FirebaseFirestore.instance.collection('missions');
   final CollectionReference _itemsCol = FirebaseFirestore.instance.collection('items');
   final CollectionReference _enemiesCol = FirebaseFirestore.instance.collection('enemies');
   final CollectionReference _leaderboardsCol = FirebaseFirestore.instance.collection('leaderboards');
-  final AuthService _authService = AuthService();
-  late final TabController _tabController;
+  final CollectionReference _questionsCol = FirebaseFirestore.instance.collection('questions');
+  final CollectionReference _rewardsCol = FirebaseFirestore.instance.collection('rewards'); // Añadido
+  final CollectionReference _achievementsCol = FirebaseFirestore.instance.collection('achievements'); // Añadido
+  
+  Future<DocumentSnapshot?>? _userDataFuture;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 8, vsync: this);
     _tabController.addListener(() {
-      setState(() {});
+      if (mounted) { // Asegurar que el widget esté montado antes de llamar a setState
+        setState(() {});
+      }
     });
+    _loadUserData();
+  }
+
+  void _loadUserData() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      _userDataFuture = _usersCol.doc(user.uid).get();
+    } else {
+      // Si no hay usuario, se podría redirigir o manejar como no autorizado
+      // Por ahora, FutureBuilder lo manejará como si no tuviera datos o error
+      _userDataFuture = Future.value(null); 
+    }
   }
 
   @override
@@ -35,18 +61,15 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   Future<void> _resetPassword(String email) async {
     try {
       await _authService.sendPasswordResetEmail(email: email);
-      if (!mounted) return; // Corrected: Added mounted check
+      if (!mounted) return; 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email de restablecimiento enviado.')));
     } catch (e) {
-      if (!mounted) return; // Corrected: Added mounted check
+      if (!mounted) return; 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
   Future<void> _viewProfile(Map<String, dynamic> data) async {
-    // No direct context use after await here that needs a mounted check,
-    // as showDialog itself handles its context.
-    // The mounted check after showDialog is for operations *after* the dialog closes.
     await showDialog(context: context, builder: (_) {
       return AlertDialog(
         title: const Text('Detalles de Usuario'),
@@ -59,7 +82,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cerrar'))],
       );
     });
-    // if (!mounted) return; // This one is fine if there's no context use after it.
   }
 
   Future<void> _editField(String uid, String field, int current) async {
@@ -82,49 +104,126 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             if (!formKey.currentState!.validate()) return;
             final val = int.parse(controller.text);
             await _usersCol.doc(uid).update({field: val});
-            if (!mounted) return; // Corrected: Added mounted check for line 83
+            if (!mounted) return; 
             Navigator.pop(context);
           }, child: const Text('Guardar')),
         ],
       );
     });
-    // if (!mounted) return; // This one is fine if there's no context use after it.
+  }
+  
+  Widget _buildUnauthorizedScreen(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Acceso Denegado'),
+        automaticallyImplyLeading: false, // Para no mostrar el botón de atrás por defecto
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock, size: 100, color: Colors.red),
+            const SizedBox(height: 20),
+            const Text(
+              'Usuario no autorizado',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text('No tienes permisos para acceder a esta sección.'),
+            const SizedBox(height: 30),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.home),
+              label: const Text('Volver al Inicio'),
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Panel de Administrador'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Cerrar sesión',
-            onPressed: () async {
-              await _authService.signOut();
-              if (!context.mounted) return;
-              Navigator.pushReplacementNamed(context, '/auth');
-            },
+    return FutureBuilder<DocumentSnapshot?>(
+      future: _userDataFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+
+        if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+          // Error al cargar datos del usuario o usuario no logueado
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+                 Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
+            }
+          });
+          return const Scaffold(body: Center(child: Text("Redirigiendo a autenticación...")));
+        }
+
+        final userData = snapshot.data!.data() as Map<String, dynamic>?;
+        final String? role = userData?['role'] as String?;
+
+        if (role != 'admin') {
+          return _buildUnauthorizedScreen(context);
+        }
+
+        // Si es admin, construir la UI normal del AdminScreen
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Panel de Administrador'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                tooltip: 'Cerrar sesión',
+                onPressed: () async {
+                  await _authService.signOut();
+                  if (!context.mounted) return;
+                  Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
+                },
+              ),
+            ],
+            bottom: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              tabs: const [ // Asegúrate de que sean const si no cambian
+                Tab(icon: Icon(Icons.person), text: 'Usuarios'),
+                Tab(icon: Icon(Icons.flag), text: 'Misiones'),
+                Tab(icon: Icon(Icons.inventory), text: 'Items'),
+                Tab(icon: Icon(Icons.shield), text: 'Enemigos'),
+                Tab(icon: Icon(Icons.leaderboard), text: 'Clasificación'),
+                Tab(icon: Icon(Icons.question_answer), text: 'Preguntas'),
+                Tab(icon: Icon(Icons.star), text: 'Recompensas'),
+                Tab(icon: Icon(Icons.emoji_events), text: 'Logros'),
+              ],
+            ),
           ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabs: [
-            Tab(icon: Icon(Icons.person), text: 'Usuarios'),
-            Tab(icon: Icon(Icons.flag), text: 'Misiones'),
-            Tab(icon: Icon(Icons.inventory), text: 'Items'),
-            Tab(icon: Icon(Icons.shield), text: 'Enemigos'),
-            Tab(icon: Icon(Icons.leaderboard), text: 'Clasificación'),
-            Tab(icon: Icon(Icons.question_answer), text: 'Preguntas'),
-          ],
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          // Pestaña Usuarios
-          StreamBuilder<QuerySnapshot>(
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              // Pestaña Usuarios
+              _buildUsersTab(), // Asumiendo que tienes este método
+              _buildMissionsTab(),
+              _buildItemsTab(), // Asumiendo que tienes este método
+              _buildEnemiesTab(), // Asumiendo que tienes este método
+              _buildLeaderboardsTab(), // Asumiendo que tienes este método
+              _buildQuestionsTab(), // Asumiendo que tienes este método
+              _buildRewardsTab(),
+              _buildAchievementsTab(),
+            ],
+          ),
+          floatingActionButton: _buildFloatingActionButton(), // Asumiendo que tienes este método
+        );
+      },
+    );
+  }
+
+  // Métodos de construcción de pestañas (ejemplos, asegúrate de tenerlos definidos)
+  Widget _buildUsersTab() {
+    return StreamBuilder<QuerySnapshot>(
             stream: _usersCol.snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
@@ -193,11 +292,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                 },
               );
             },
-          ),
-          // Pestaña Misiones (temporal)
-          Center(child: Text('Gestión de misiones próximamente')),
-          // Pestaña Items
-          StreamBuilder<QuerySnapshot>(
+          );
+  }
+
+  Widget _buildItemsTab() {
+     return StreamBuilder<QuerySnapshot>(
             stream: _itemsCol.snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
@@ -232,7 +331,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                                 'description': descCtrl.text,
                                 'type': typeCtrl.text,
                               });
-                              if (!mounted) return; // Corrected: Added mounted check for line 449 (was 431)
+                              if (!mounted) return; 
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))],
                         ));
@@ -243,9 +342,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                 },
               );
             },
-          ),
-          // Pestaña Enemigos
-          StreamBuilder<QuerySnapshot>(
+          );
+  }
+
+  Widget _buildEnemiesTab() {
+    return StreamBuilder<QuerySnapshot>(
             stream: _enemiesCol.snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
@@ -294,7 +395,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                                 'visualAssetUrl': v.text,
                                 'questionPool': qList,
                               });
-                              if (!mounted) return; // Corrected: Added mounted check for line 479 (was 461)
+                              if (!mounted) return; 
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))
                           ],
@@ -306,9 +407,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                 },
               );
             },
-          ),
-          // Pestaña Leaderboards
-          StreamBuilder<QuerySnapshot>(
+          );
+  }
+
+  Widget _buildLeaderboardsTab() {
+    return StreamBuilder<QuerySnapshot>(
             stream: _leaderboardsCol.snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
@@ -352,7 +455,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                                 'score': sc,
                                 'lastUpdated': FieldValue.serverTimestamp(),
                               });
-                              if (!mounted) return; // Corrected: Added mounted check for line 507 (was 489)
+                              if (!mounted) return; 
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))
                           ],
@@ -364,10 +467,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                 },
               );
             },
-          ),
-          // Pestaña Preguntas
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('questions').snapshots(),
+          );
+  }
+
+  Widget _buildQuestionsTab() {
+    return StreamBuilder<QuerySnapshot>(
+            stream: _questionsCol.snapshots(), 
             builder: (context, snapshot) {
               if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
               if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
@@ -401,155 +506,510 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                             TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('Cancelar')),
                             TextButton(onPressed: () async {
                               if (!formKey.currentState!.validate()) return;
-                              await FirebaseFirestore.instance.collection('questions').doc(doc.id).update({
+                              await _questionsCol.doc(doc.id).update({ 
                                 'text': textCtrl.text,
                                 'options': optsCtrl.text.split('||'),
                                 'correctAnswerIndex': int.parse(correctCtrl.text),
                                 'explanation': explCtrl.text,
                               });
-                              if (!mounted) return; // Corrected: Added mounted check for line 538 (was 520)
+                              if (!mounted) return; 
                               Navigator.pop(context);
                             }, child: const Text('Guardar'))
                           ],
                         ));
                       }),
-                      IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () => FirebaseFirestore.instance.collection('questions').doc(doc.id).delete()),
+                      IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () => _questionsCol.doc(doc.id).delete()), 
                     ]),
                   );
                 },
               );
             },
+          );
+  }
+  
+  Widget _buildFloatingActionButton() {
+    // El FAB se mostrará solo si el usuario es admin y la UI principal está construida.
+    // La lógica del switch (_tabController.index) permanece igual.
+    switch (_tabController.index) {
+      case 0: // Usuarios
+        return const SizedBox.shrink();
+      case 1: // Misiones
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () => _showMissionDialog(),
+        );
+      case 2: // Items
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            final nameCtrl = TextEditingController();
+            final descCtrl = TextEditingController();
+            final typeCtrl = TextEditingController();
+            showDialog(context: context, builder: (_) => AlertDialog(
+              title: const Text('Crear Item'),
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                TextFormField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
+                TextFormField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Descripción')),
+                TextFormField(controller: typeCtrl, decoration: const InputDecoration(labelText: 'Tipo')),
+              ]),
+              actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+                TextButton(onPressed: () async {
+                  await FirebaseFirestore.instance.collection('items').add({'name': nameCtrl.text, 'description': descCtrl.text, 'type': typeCtrl.text});
+                  if (!mounted) return; 
+                  Navigator.pop(context);
+                }, child: const Text('Crear'))],
+            ));
+          },
+        );
+      case 3: // Enemigos
+        return FloatingActionButton(onPressed: () {
+          final formKey = GlobalKey<FormState>();
+          final n = TextEditingController(); final d = TextEditingController(); final t = TextEditingController(); final v = TextEditingController(); final pool = TextEditingController();
+          showDialog(context: context, builder: (_) => AlertDialog(
+            title: const Text('Crear Enemigo'),
+            content: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextFormField(controller: n, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+                  TextFormField(controller: d, decoration: const InputDecoration(labelText: 'Descripción')),
+                  TextFormField(controller: t, decoration: const InputDecoration(labelText: 'Tipo'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+                  TextFormField(controller: v, decoration: const InputDecoration(labelText: 'Asset URL'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+                  TextFormField(controller: pool, decoration: const InputDecoration(labelText: 'Question IDs (coma)'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+                ]),
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+              TextButton(onPressed: () async {
+                if (!formKey.currentState!.validate()) return;
+                final list = pool.text.split(',').map((e) => e.trim()).toList();
+                await FirebaseFirestore.instance.collection('enemies').add({'name': n.text, 'description': d.text, 'type': t.text, 'visualAssetUrl': v.text, 'questionPool': list});
+                if (!mounted) return; 
+                Navigator.pop(context);
+              }, child: const Text('Crear'))
+            ],
+          ));
+        }, child: const Icon(Icons.add));
+      case 4: // Leaderboards
+        return FloatingActionButton(onPressed: () {
+          final formKey = GlobalKey<FormState>();
+          final userCtrl = TextEditingController(); final uname = TextEditingController(); final score = TextEditingController();
+          showDialog(context: context, builder: (_) => AlertDialog(
+            title: const Text('Crear Entrada de Clasificación'),
+            content: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextFormField(controller: userCtrl, decoration: const InputDecoration(labelText: 'User ID'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+                  TextFormField(controller: uname, decoration: const InputDecoration(labelText: 'Username'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+                  TextFormField(controller: score, decoration: const InputDecoration(labelText: 'Puntuación'), keyboardType: TextInputType.number, validator: (v) => v == null || int.tryParse(v) == null ? 'Número inválido' : null),
+                ]),
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+              TextButton(onPressed: () async {
+                if (!formKey.currentState!.validate()) return;
+                final sc = int.parse(score.text);
+                await FirebaseFirestore.instance.collection('leaderboards').add({'userId': userCtrl.text, 'username': uname.text, 'score': sc, 'lastUpdated': FieldValue.serverTimestamp()});
+                if (!mounted) return; 
+                Navigator.pop(context);
+              }, child: const Text('Crear'))
+            ],
+          ));
+        }, child: const Icon(Icons.add));
+      case 5: // Preguntas
+        return FloatingActionButton(
+          onPressed: () {
+            final formKey = GlobalKey<FormState>();
+            final textCtrl = TextEditingController();
+            final optsCtrl = TextEditingController();
+            final correctCtrl = TextEditingController();
+            final explCtrl = TextEditingController();
+            showDialog(context: context, builder: (_) => AlertDialog(
+              title: const Text('Crear Pregunta'),
+              content: Form(key: formKey, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
+                TextFormField(controller: textCtrl, decoration: const InputDecoration(labelText: 'Texto'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
+                TextFormField(controller: optsCtrl, decoration: const InputDecoration(labelText: 'Opciones (separadas por ||)'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
+                TextFormField(controller: correctCtrl, decoration: const InputDecoration(labelText: 'Índice correcto'), keyboardType: TextInputType.number, validator: (v)=>v==null||int.tryParse(v)==null?'Número inválido':null),
+                TextFormField(controller: explCtrl, decoration: const InputDecoration(labelText: 'Explicación')),
+              ]))),
+              actions: [
+                TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('Cancelar')),
+                TextButton(onPressed: () async {
+                  if (!formKey.currentState!.validate()) return;
+                  await _questionsCol.add({ 
+                    'text': textCtrl.text,
+                    'options': optsCtrl.text.split('||'),
+                    'correctAnswerIndex': int.parse(correctCtrl.text),
+                    'explanation': explCtrl.text,
+                  });
+                  if (!mounted) return; 
+                  Navigator.pop(context);
+                }, child: const Text('Crear'))
+              ],
+            ));
+          },
+          child: const Icon(Icons.add),
+        );
+      case 6: // Recompensas
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () => _showRewardDialog(),
+        );
+      case 7: // Logros
+        return FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () => _showAchievementDialog(),
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+  
+  // --- Widgets para las nuevas pestañas (Recompensas y Logros) ---
+  Widget _buildRewardsTab() {
+    return StreamBuilder<List<Reward>>(
+      stream: _rewardService.getRewards(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
+        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        final rewards = snapshot.data!;
+        if (rewards.isEmpty) return const Center(child: Text('No hay recompensas registradas.'));
+        return ListView.separated(
+          itemCount: rewards.length,
+          separatorBuilder: (_, __) => const Divider(),
+          itemBuilder: (context, index) {
+            final reward = rewards[index];
+            return ListTile(
+              leading: reward.iconUrl.isNotEmpty ? Image.network(reward.iconUrl, width: 40, height: 40, errorBuilder: (_, __, ___) => const Icon(Icons.star_border)) : const Icon(Icons.star_border),
+              title: Text(reward.name),
+              subtitle: Text('${reward.description}\\nTipo: ${reward.type.name}, Valor: ${reward.value}'),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(icon: const Icon(Icons.edit, color: Colors.blue), onPressed: () => _showRewardDialog(reward: reward)),
+                IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () async {
+                  final confirm = await _showConfirmDialog('Eliminar Recompensa', '¿Seguro que deseas eliminar ${reward.name}?');
+                  if (confirm == true) {
+                    await _rewardService.deleteReward(reward.id);
+                  }
+                }),
+              ]),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildAchievementsTab() {
+    return StreamBuilder<List<Achievement>>(
+      stream: _rewardService.getAchievements(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
+        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        final achievements = snapshot.data!;
+        if (achievements.isEmpty) return const Center(child: Text('No hay logros registrados.'));
+        return ListView.separated(
+          itemCount: achievements.length,
+          separatorBuilder: (_, __) => const Divider(),
+          itemBuilder: (context, index) {
+            final achievement = achievements[index];
+            return ListTile(
+              leading: achievement.iconUrl.isNotEmpty ? Image.network(achievement.iconUrl, width: 40, height: 40, errorBuilder: (_, __, ___) => const Icon(Icons.emoji_events_outlined)) : const Icon(Icons.emoji_events_outlined),
+              title: Text(achievement.name),
+              subtitle: Text('${achievement.description}\\nMisiones: ${achievement.requiredMissionIds.join(", ")}\\nRecompensa ID: ${achievement.rewardId}'),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(icon: const Icon(Icons.edit, color: Colors.blue), onPressed: () => _showAchievementDialog(achievement: achievement)),
+                IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () async {
+                  final confirm = await _showConfirmDialog('Eliminar Logro', '¿Seguro que deseas eliminar ${achievement.name}?');
+                  if (confirm == true) {
+                    await _rewardService.deleteAchievement(achievement.id);
+                  }
+                }),
+              ]),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // --- Diálogos para CRUD de Recompensas y Logros ---
+  Future<void> _showRewardDialog({Reward? reward}) async {
+    final isEditing = reward != null;
+    final idCtrl = TextEditingController(text: isEditing ? reward.id : ''); 
+    final nameCtrl = TextEditingController(text: isEditing ? reward.name : '');
+    final descCtrl = TextEditingController(text: isEditing ? reward.description : '');
+    final iconCtrl = TextEditingController(text: isEditing ? reward.iconUrl : '');
+    RewardType typeValue = isEditing ? reward.type : RewardType.points;
+    final valueCtrl = TextEditingController(text: isEditing ? reward.value.toString() : '0');
+    final formKey = GlobalKey<FormState>();
+
+    await showDialog(context: context, builder: (_) => AlertDialog(
+      title: Text(isEditing ? 'Editar Recompensa' : 'Crear Recompensa'),
+      content: Form(key: formKey, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
+        if (isEditing) TextFormField(controller: idCtrl, decoration: const InputDecoration(labelText: 'ID (no editable)'), readOnly: true),
+        TextFormField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+        TextFormField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Descripción')),
+        TextFormField(controller: iconCtrl, decoration: const InputDecoration(labelText: 'URL del Icono')),
+        DropdownButtonFormField<RewardType>(
+          value: typeValue,
+          decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
+          items: RewardType.values.map((type) => DropdownMenuItem(value: type, child: Text(type.name))).toList(),
+          onChanged: (val) {
+            if (val != null) setState(() => typeValue = val); // Necesita ser StatefulBuilder o mover lógica al estado del diálogo
+          },
+        ),
+        TextFormField(controller: valueCtrl, decoration: const InputDecoration(labelText: 'Valor (ej: puntos, ID item)'), keyboardType: TextInputType.number, validator: (v) => v == null || int.tryParse(v) == null ? 'Número inválido' : null),
+      ]))),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+        TextButton(onPressed: () async {
+          if (!formKey.currentState!.validate()) return;
+          final newReward = Reward(
+            id: idCtrl.text.isNotEmpty ? idCtrl.text : _rewardsCol.doc().id, // Generar ID si es nuevo
+            name: nameCtrl.text,
+            description: descCtrl.text,
+            iconUrl: iconCtrl.text,
+            type: typeValue, // Asegúrate que typeValue esté actualizada
+            value: int.parse(valueCtrl.text),
+          );
+          if (isEditing) {
+            await _rewardService.updateReward(newReward);
+          } else {
+            await _rewardService.createReward(newReward);
+          }
+          if (!mounted) return;
+          Navigator.pop(context);
+        }, child: const Text('Guardar')),
+      ],
+    ));
+  }
+
+  Future<void> _showAchievementDialog({Achievement? achievement}) async {
+    final isEditing = achievement != null;
+    final idCtrl = TextEditingController(text: isEditing ? achievement.id : ''); 
+    final nameCtrl = TextEditingController(text: isEditing ? achievement.name : '');
+    final descCtrl = TextEditingController(text: isEditing ? achievement.description : '');
+    final iconCtrl = TextEditingController(text: isEditing ? achievement.iconUrl : '');
+    final missionsCtrl = TextEditingController(text: isEditing ? achievement.requiredMissionIds.join(',') : '');
+    final formKey = GlobalKey<FormState>();
+
+    List<Reward> allRewards = [];
+    String? selectedRewardId = isEditing ? achievement.rewardId : null;
+
+    // Cargar recompensas para el Dropdown
+    try {
+      allRewards = await _rewardService.getRewards().first;
+      if (allRewards.isNotEmpty && selectedRewardId == null && !isEditing) {
+        // selectedRewardId = allRewards.first.id; // Opcional: preseleccionar la primera recompensa al crear
+      }
+    } catch (e) {
+      if(mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al cargar recompensas: $e')));
+      return; // No mostrar diálogo si fallan las recompensas
+    }
+    
+
+    await showDialog(context: context, builder: (_) => StatefulBuilder( 
+      builder: (context, setDialogState) {
+        return AlertDialog(
+          title: Text(isEditing ? 'Editar Logro' : 'Crear Logro'),
+          content: Form(key: formKey, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
+            if (isEditing) TextFormField(controller: idCtrl, decoration: const InputDecoration(labelText: 'ID (no editable)'), readOnly: true),
+            TextFormField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
+            TextFormField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Descripción')),
+            TextFormField(controller: iconCtrl, decoration: const InputDecoration(labelText: 'URL del Icono')),
+            TextFormField(controller: missionsCtrl, decoration: const InputDecoration(labelText: 'IDs de Misiones (separadas por coma)')),
+            DropdownButtonFormField<String>(
+              value: selectedRewardId,
+              decoration: const InputDecoration(labelText: 'Recompensa Otorgada'),
+              items: allRewards.map((r) => DropdownMenuItem(value: r.id, child: Text(r.name))).toList(),
+              onChanged: (val) {
+                if (val != null) setDialogState(() => selectedRewardId = val);
+              },
+              validator: (v) => v == null ? 'Seleccione una recompensa' : null,
+            ),
+          ]))),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+            TextButton(onPressed: () async {
+              if (!formKey.currentState!.validate()) return;
+              if (selectedRewardId == null) { 
+                  if(mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Debe seleccionar una recompensa.')));
+                  return;
+              }
+              final newAchievement = Achievement(
+                id: idCtrl.text.isNotEmpty ? idCtrl.text : _achievementsCol.doc().id, // Generar ID si es nuevo
+                name: nameCtrl.text,
+                description: descCtrl.text,
+                iconUrl: iconCtrl.text,
+                requiredMissionIds: missionsCtrl.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList(),
+                rewardId: selectedRewardId!,
+              );
+              if (isEditing) {
+                await _rewardService.updateAchievement(newAchievement);
+              } else {
+                await _rewardService.createAchievement(newAchievement);
+              }
+              if (!mounted) return;
+              Navigator.pop(context);
+            }, child: const Text('Guardar')),
+          ],
+        );
+      }
+    ));
+  }
+
+  Future<bool?> _showConfirmDialog(String title, String content) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Confirmar')),
+        ],
+      ),
+    );
+  }
+
+  // --- CRUD para Misiones ---
+  Widget _buildMissionsTab() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _missionsCol.orderBy('difficultyLevel').orderBy('order').snapshots(), // Añadido orderBy
+      builder: (context, snapshot) {
+        if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
+        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        final docs = snapshot.data!.docs;
+        if (docs.isEmpty) return const Center(child: Text('No hay misiones registradas.'));
+        
+        return ListView.separated(
+          itemCount: docs.length,
+          separatorBuilder: (_, __) => const Divider(),
+          itemBuilder: (context, index) {
+            final doc = docs[index];
+            final data = doc.data() as Map<String, dynamic>;
+            // TODO: Definir un modelo para Mission y usarlo aquí
+            return ListTile(
+              title: Text(data['name'] ?? data['title'] ?? doc.id), // Usar 'name' o 'title'
+              subtitle: Text("Desc: ${data['description'] ?? 'N/A'}\\nDiff: ${data['difficultyLevel'] ?? 'N/A'}, Orden: ${data['order'] ?? 'N/A'}"),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () => _showMissionDialog(missionDoc: doc),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      final confirm = await _showConfirmDialog('Eliminar Misión', '¿Seguro que deseas eliminar ${data['name'] ?? data['title'] ?? doc.id}?');
+                      if (confirm == true) {
+                        await _missionsCol.doc(doc.id).delete();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showMissionDialog({DocumentSnapshot? missionDoc}) async {
+    final isEditing = missionDoc != null;
+    final data = missionDoc?.data() as Map<String, dynamic>?;
+
+    final idCtrl = TextEditingController(text: isEditing ? missionDoc.id : '');
+    final nameCtrl = TextEditingController(text: isEditing ? (data?['name'] as String? ?? data?['title'] as String? ?? '') : ''); 
+    final descCtrl = TextEditingController(text: isEditing ? (data?['description'] as String? ?? '') : '');
+    final difficultyLevelCtrl = TextEditingController(text: isEditing ? (data?['difficultyLevel']?.toString() ?? '1') : '1');
+    final orderCtrl = TextEditingController(text: isEditing ? (data?['order']?.toString() ?? '10') : '10');
+    
+    final formKey = GlobalKey<FormState>();
+
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(isEditing ? 'Editar Misión' : 'Crear Misión'), 
+        content: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isEditing)
+                  TextFormField(
+                    controller: idCtrl,
+                    decoration: const InputDecoration(labelText: 'ID (no editable)'),
+                    readOnly: true,
+                  ),
+                TextFormField(
+                  controller: nameCtrl, 
+                  decoration: const InputDecoration(labelText: 'Nombre de la Misión'), 
+                  validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
+                ),
+                TextFormField(
+                  controller: descCtrl,
+                  decoration: const InputDecoration(labelText: 'Descripción'),
+                  validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
+                ),
+                TextFormField(
+                  controller: difficultyLevelCtrl,
+                  decoration: const InputDecoration(labelText: 'Nivel de Dificultad (ej: 1, 2)'),
+                  keyboardType: TextInputType.number,
+                  validator: (v) => v == null || int.tryParse(v) == null ? 'Número inválido' : null,
+                ),
+                TextFormField(
+                  controller: orderCtrl,
+                  decoration: const InputDecoration(labelText: 'Orden (ej: 10, 20)'),
+                  keyboardType: TextInputType.number,
+                  validator: (v) => v == null || int.tryParse(v) == null ? 'Número inválido' : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () async {
+              if (!formKey.currentState!.validate()) return;
+
+              final missionData = {
+                'name': nameCtrl.text, 
+                'description': descCtrl.text,
+                'difficultyLevel': int.tryParse(difficultyLevelCtrl.text) ?? 1,
+                'order': int.tryParse(orderCtrl.text) ?? 10,
+              };
+
+              try {
+                if (isEditing) {
+                  // El operador '!' se elimina aquí porque isEditing ya garantiza que missionDoc no es null
+                  await _missionsCol.doc(missionDoc.id).update(missionData);
+                } else {
+                  await _missionsCol.add(missionData);
+                }
+                if (!mounted) return;
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Misión ${isEditing ? 'actualizada' : 'creada'} con éxito.')),
+                );
+              } catch (e) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error al guardar misión: $e')),
+                );
+              }
+            },
+            child: const Text('Guardar'),
           ),
         ],
       ),
-      floatingActionButton: Builder(builder: (context) {
-        switch (_tabController.index) {
-          case 0: // Usuarios
-            return const SizedBox.shrink();
-          case 1: // Misiones
-            return const SizedBox.shrink();
-          case 2: // Items
-            return FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                final nameCtrl = TextEditingController();
-                final descCtrl = TextEditingController();
-                final typeCtrl = TextEditingController();
-                showDialog(context: context, builder: (_) => AlertDialog(
-                  title: const Text('Crear Item'),
-                  content: Column(mainAxisSize: MainAxisSize.min, children: [
-                    TextFormField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
-                    TextFormField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Descripción')),
-                    TextFormField(controller: typeCtrl, decoration: const InputDecoration(labelText: 'Tipo')),
-                  ]),
-                  actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-                    TextButton(onPressed: () async {
-                      // Utiliza la instancia de Firestore directamente o asegúrate que _itemsCol está definida y es correcta.
-                      await FirebaseFirestore.instance.collection('items').add({'name': nameCtrl.text, 'description': descCtrl.text, 'type': typeCtrl.text});
-                      if (!mounted) return; // Corrected: Added mounted check for line 236
-                      Navigator.pop(context);
-                    }, child: const Text('Crear'))],
-                ));
-              },
-            );
-          case 3: // Enemigos
-            return FloatingActionButton(onPressed: () {
-              final formKey = GlobalKey<FormState>();
-              final n = TextEditingController(); final d = TextEditingController(); final t = TextEditingController(); final v = TextEditingController(); final pool = TextEditingController();
-              showDialog(context: context, builder: (_) => AlertDialog(
-                title: const Text('Crear Enemigo'),
-                content: Form(
-                  key: formKey,
-                  child: SingleChildScrollView(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      TextFormField(controller: n, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                      TextFormField(controller: d, decoration: const InputDecoration(labelText: 'Descripción')),
-                      TextFormField(controller: t, decoration: const InputDecoration(labelText: 'Tipo'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                      TextFormField(controller: v, decoration: const InputDecoration(labelText: 'Asset URL'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                      TextFormField(controller: pool, decoration: const InputDecoration(labelText: 'Question IDs (coma)'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                    ]),
-                  ),
-                ),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-                  TextButton(onPressed: () async {
-                    if (!formKey.currentState!.validate()) return;
-                    final list = pool.text.split(',').map((e) => e.trim()).toList();
-                    // Utiliza la instancia de Firestore directamente o asegúrate que _enemiesCol está definida y es correcta.
-                    await FirebaseFirestore.instance.collection('enemies').add({'name': n.text, 'description': d.text, 'type': t.text, 'visualAssetUrl': v.text, 'questionPool': list});
-                    if (!mounted) return; // Corrected: Added mounted check for line 298
-                    Navigator.pop(context);
-                  }, child: const Text('Crear'))
-                ],
-              ));
-            }, child: const Icon(Icons.add));
-          case 4: // Leaderboards
-            return FloatingActionButton(onPressed: () {
-              final formKey = GlobalKey<FormState>();
-              final userCtrl = TextEditingController(); final uname = TextEditingController(); final score = TextEditingController();
-              showDialog(context: context, builder: (_) => AlertDialog(
-                title: const Text('Crear Entrada de Clasificación'),
-                content: Form(
-                  key: formKey,
-                  child: SingleChildScrollView(
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      TextFormField(controller: userCtrl, decoration: const InputDecoration(labelText: 'User ID'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                      TextFormField(controller: uname, decoration: const InputDecoration(labelText: 'Username'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                      TextFormField(controller: score, decoration: const InputDecoration(labelText: 'Puntuación'), keyboardType: TextInputType.number, validator: (v) => v == null || int.tryParse(v) == null ? 'Número inválido' : null),
-                    ]),
-                  ),
-                ),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-                  TextButton(onPressed: () async {
-                    if (!formKey.currentState!.validate()) return;
-                    final sc = int.parse(score.text);
-                    // Utiliza la instancia de Firestore directamente o asegúrate que _leaderboardsCol está definida y es correcta.
-                    await FirebaseFirestore.instance.collection('leaderboards').add({'userId': userCtrl.text, 'username': uname.text, 'score': sc, 'lastUpdated': FieldValue.serverTimestamp()});
-                    if (!mounted) return; // Corrected: Added mounted check for line 356
-                    Navigator.pop(context);
-                  }, child: const Text('Crear'))
-                ],
-              ));
-            }, child: const Icon(Icons.add));
-          case 5: // Preguntas
-            return FloatingActionButton(
-              onPressed: () {
-                final formKey = GlobalKey<FormState>();
-                final textCtrl = TextEditingController();
-                final optsCtrl = TextEditingController();
-                final correctCtrl = TextEditingController();
-                final explCtrl = TextEditingController();
-                showDialog(context: context, builder: (_) => AlertDialog(
-                  title: const Text('Crear Pregunta'),
-                  content: Form(key: formKey, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    TextFormField(controller: textCtrl, decoration: const InputDecoration(labelText: 'Texto'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
-                    TextFormField(controller: optsCtrl, decoration: const InputDecoration(labelText: 'Opciones (separadas por ||)'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
-                    TextFormField(controller: correctCtrl, decoration: const InputDecoration(labelText: 'Índice correcto'), keyboardType: TextInputType.number, validator: (v)=>v==null||int.tryParse(v)==null?'Número inválido':null),
-                    TextFormField(controller: explCtrl, decoration: const InputDecoration(labelText: 'Explicación')),
-                  ]))),
-                  actions: [
-                    TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('Cancelar')),
-                    TextButton(onPressed: () async {
-                      if (!formKey.currentState!.validate()) return;
-                      await FirebaseFirestore.instance.collection('questions').add({
-                        'text': textCtrl.text,
-                        'options': optsCtrl.text.split('||'),
-                        'correctAnswerIndex': int.parse(correctCtrl.text),
-                        'explanation': explCtrl.text,
-                      });
-                      if (!mounted) return; // Corrected: Added mounted check for line 411
-                      Navigator.pop(context);
-                    }, child: const Text('Crear'))
-                  ],
-                ));
-              },
-              child: const Icon(Icons.add),
-            );
-          default:
-            return const SizedBox.shrink();
-        }
-      }),
     );
   }
 }
