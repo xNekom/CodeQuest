@@ -1,0 +1,133 @@
+[
+  {
+    "id": "mision_teoria_1",
+    "title": "Teoría 1: Fundamentos de Java",
+    "description": "Conceptos básicos: ¿Qué es un programa? Multiplataforma en Java.",
+    "zone": "Aula Teórica",
+    "levelRequired": 1,
+    "status": "disponible",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "questions",
+        "description": "Responde preguntas sobre los fundamentos vistos.",
+        "target": 2,
+        "questionIds": [
+          "pregunta_que_es_un_programa",
+          "pregunta_multiplataforma_java"
+        ],
+        "timeLimitSeconds": null
+      }
+    ],
+    "rewards": {
+      "experience": 50,
+      "coins": 20,
+      "items": [],
+      "unlocks": ["mision_teoria_2"]
+    },
+    "theory": "Un programa es un conjunto de instrucciones que el ordenador ejecuta para realizar tareas. Java es multiplataforma porque gracias a la JVM, el mismo código se ejecuta en distintos sistemas operativos.",
+    "examples": [
+      "Sistema Operativo A -> JVM -> Ejecuta bytecode",
+      "Sistema Operativo B -> JVM -> Ejecuta el mismo bytecode"
+    ]
+  },
+  {
+    "id": "mision_teoria_2",
+    "title": "Teoría 2: Estructura en Java",
+    "description": "Organización en clases y método main.",
+    "zone": "Aula Teórica",
+    "levelRequired": 1,
+    "status": "disponible",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "questions",
+        "description": "Responde preguntas sobre la estructura de un programa Java.",
+        "target": 2,
+        "questionIds": [
+          "pregunta_estructura_principal_java_clase_main",
+          "pregunta_instruccion_hola_mundo_java"
+        ],
+        "timeLimitSeconds": null
+      }
+    ],
+    "rewards": {
+      "experience": 50,
+      "coins": 20,
+      "items": [],
+      "unlocks": ["mision_teoria_3"]
+    },
+    "theory": "En Java, todo el código se encapsula en clases. El método main es el punto de entrada: public static void main(String[] args).",
+    "examples": [
+      "public class MiClase { public static void main(String[] args) { } }"
+    ]
+  },
+  {
+    "id": "mision_teoria_3",
+    "title": "Teoría 3: Variables y Tipos",
+    "description": "Uso de variables y tipos de datos en Java.",
+    "zone": "Aula Teórica",
+    "levelRequired": 1,
+    "status": "disponible",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "questions",
+        "description": "Responde preguntas sobre variables y tipos.",
+        "target": 2,
+        "questionIds": [
+          "pregunta_que_es_una_variable",
+          "pregunta_tipo_dato_edad_java"
+        ],
+        "timeLimitSeconds": null
+      }
+    ],
+    "rewards": {
+      "experience": 50,
+      "coins": 20,
+      "items": [],
+      "unlocks": ["mision_batalla_final"]
+    },
+    "theory": "Una variable es un espacio en memoria para almacenar valores cambiantes. En Java, int, double, String, boolean son tipos básicos.",
+    "examples": [
+      "int edad = 25;",
+      "String nombre = \"Pedro\";"
+    ]
+  },
+  {
+    "id": "mision_batalla_final",
+    "title": "Batalla Final: Bug Supremo",
+    "description": "Derrota al Bug Supremo respondiendo preguntas de toda la teoría.",
+    "zone": "Campo de Batalla",
+    "levelRequired": 1,
+    "status": "disponible",
+    "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "batalla",
+        "description": "Enfrenta al Bug Supremo respondiendo 6 preguntas.",
+        "target": 1,
+        "battleConfig": {
+          "enemyId": "enemigo_error_de_java",
+          "questionIds": [
+            "pregunta_que_es_un_programa",
+            "pregunta_multiplataforma_java",
+            "pregunta_estructura_principal_java_clase_main",
+            "pregunta_instruccion_hola_mundo_java",
+            "pregunta_que_es_una_variable",
+            "pregunta_tipo_dato_edad_java"
+          ],
+          "playerHealthMultiplier": 1.0,
+          "enemyAttackMultiplier": 1.0,
+          "environment": "campo_bug"
+        }
+      }
+    ],
+    "rewards": {
+      "experience": 200,
+      "coins": 100,
+      "items": [],
+      "unlocks": []
+    }
+  }
+]

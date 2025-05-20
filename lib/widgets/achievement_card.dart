@@ -51,7 +51,7 @@ class AchievementCard extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: isUnlocked ? PixelTheme.backgroundColor : Colors.black38,
+                  color: isUnlocked ? Theme.of(context).colorScheme.surface : Colors.black38,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: isUnlocked ? PixelTheme.accentColor : Colors.grey.shade700,
@@ -79,7 +79,7 @@ class AchievementCard extends StatelessWidget {
                         fontFamily: 'PixelFont',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: isUnlocked ? PixelTheme.textColor : Colors.grey.shade700,
+                        color: isUnlocked ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade700,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -87,7 +87,7 @@ class AchievementCard extends StatelessWidget {
                       isUnlocked ? achievement.description : 'Logro bloqueado',
                       style: TextStyle(
                         fontSize: 14,
-                        color: isUnlocked ? PixelTheme.textColor.withOpacity(0.8) : Colors.grey.shade600,
+                        color: isUnlocked ? Theme.of(context).colorScheme.onSurface.withOpacity(0.8) : Colors.grey.shade600,
                       ),
                     ),
                     if (isUnlocked && achievement.unlockedDate != null)
@@ -98,7 +98,7 @@ class AchievementCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontStyle: FontStyle.italic,
-                            color: PixelTheme.textColor.withOpacity(0.6),
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                           ),
                         ),
                       ),

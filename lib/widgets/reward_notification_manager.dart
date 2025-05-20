@@ -1,8 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../models/reward_model.dart';
-import '../services/reward_notification_service.dart';
 
-/// Widget para mostrar y gestionar las notificaciones de recompensas en cualquier pantalla
 class RewardNotificationManager extends StatefulWidget {
   final Widget child;
 
@@ -16,28 +14,63 @@ class RewardNotificationManager extends StatefulWidget {
 }
 
 class _RewardNotificationManagerState extends State<RewardNotificationManager> {
-  final RewardNotificationService _notificationService = RewardNotificationService();
+  StreamSubscription<Map<String, dynamic>>? _subscription;
 
   @override
   void initState() {
     super.initState();
-    // Escuchar los eventos de notificación
-    _notificationService.rewardStream.listen((reward) {
-      _showRewardNotification(reward);
-    });
+    // Como no existe rewardNotificationStream, vamos a comentar esto por ahora
+    // _subscription = _rewardService.rewardNotificationStream.listen(_showRewardNotification);
   }
 
-  void _showRewardNotification(Reward reward) {
-    // Usar el servicio para mostrar la notificación en la UI
-    _notificationService.showRewardNotificationWidget(context, reward);
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  void _showRewardNotification(Map<String, dynamic> achievement) {
+    // Verificar que el widget esté montado antes de mostrar la notificación
+    if (!mounted) return;
     
-    // Opcional: Reproducir efectos
-    _notificationService.playRewardSound();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.star, color: Colors.yellow),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '¡Logro desbloqueado!',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(achievement['name'] ?? 'Logro desconocido'),
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  // Método público para mostrar notificaciones manualmente
+  void showAchievementNotification(String achievementName) {
+    if (!mounted) return;
+    
+    _showRewardNotification({
+      'name': achievementName,
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Simplemente devolver el hijo que envuelve este widget
     return widget.child;
   }
 }

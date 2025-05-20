@@ -1,0 +1,133 @@
+[
+  {
+    "id": "achievement_bug_supremo",
+    "name": "Conquistador Supremo",
+    "description": "Derrota al Bug Supremo en la Batalla Final.",
+    "iconUrl": "assets/images/badge_bug_supremo.png",
+    "category": "mission",
+    "points": 100,
+    "conditions": {},
+    "requiredMissionIds": ["mision_batalla_final"],
+    "rewardId": "recompensa_bug_supremo",
+    "achievementType": "mission"
+  },
+  {
+    "id": "achievement_primer_bug",
+    "name": "Primer Bug Vencido",
+    "description": "Derrota tu primer Bug del Punto y Coma.",
+    "iconUrl": "assets/images/badge_primer_bug.png",
+    "category": "enemy",
+    "points": 10,
+    "conditions": {
+      "enemyId": "enemigo_bug_del_punto_y_coma",
+      "defeatsRequired": 1
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_bug_del_punto_y_coma",
+    "requiredEnemyDefeats": 1,
+    "rewardId": "recompensa_primer_bug"
+  },
+  {
+    "id": "achievement_cazador_bugs",
+    "name": "Cazador de Bugs",
+    "description": "Derrota 5 Bugs del Punto y Coma.",
+    "iconUrl": "assets/images/badge_cazador_bugs.png",
+    "category": "enemy",
+    "points": 25,
+    "conditions": {
+      "enemyId": "enemigo_bug_del_punto_y_coma",
+      "defeatsRequired": 5
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_bug_del_punto_y_coma",
+    "requiredEnemyDefeats": 5,
+    "rewardId": "recompensa_cazador_bugs"
+  },
+  {
+    "id": "achievement_null_hunter",
+    "name": "Cazador de Nulls",
+    "description": "Derrota 3 NullPointerExceptions.",
+    "iconUrl": "assets/images/badge_null_hunter.png",
+    "category": "enemy",
+    "points": 20,
+    "conditions": {
+      "enemyId": "enemigo_nullpointerexception",
+      "defeatsRequired": 3
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_nullpointerexception",
+    "requiredEnemyDefeats": 3,
+    "rewardId": "recompensa_null_hunter"
+  },
+  {
+    "id": "achievement_loop_breaker",
+    "name": "Rompe Bucles",
+    "description": "Derrota 2 Bugs de Bucle Infinito.",
+    "iconUrl": "assets/images/badge_loop_breaker.png",
+    "category": "enemy",
+    "points": 15,
+    "conditions": {
+      "enemyId": "enemigo_bug_de_bucle_infinito",
+      "defeatsRequired": 2
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_bug_de_bucle_infinito",
+    "requiredEnemyDefeats": 2,
+    "rewardId": "recompensa_loop_breaker"
+  },
+  {
+    "id": "achievement_stack_master",
+    "name": "Maestro del Stack",
+    "description": "Derrota 1 StackOverflowError.",
+    "iconUrl": "assets/images/badge_stack_master.png",
+    "category": "enemy",
+    "points": 30,
+    "conditions": {
+      "enemyId": "enemigo_stackoverflowerror",
+      "defeatsRequired": 1
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_stackoverflowerror",
+    "requiredEnemyDefeats": 1,
+    "rewardId": "recompensa_stack_master"
+  },
+  {
+    "id": "achievement_exception_handler",
+    "name": "Controlador de Excepciones",
+    "description": "Derrota 4 Manejadores de Excepciones.",
+    "iconUrl": "assets/images/badge_exception_handler.png",
+    "category": "enemy",
+    "points": 25,
+    "conditions": {
+      "enemyId": "enemigo_manejador_de_excepciones",
+      "defeatsRequired": 4
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_manejador_de_excepciones",
+    "requiredEnemyDefeats": 4,
+    "rewardId": "recompensa_exception_handler"
+  },
+  {
+    "id": "achievement_array_expert",
+    "name": "Experto en Arrays",
+    "description": "Derrota 3 ArrayIndexOutOfBoundsExceptions.",
+    "iconUrl": "assets/images/badge_array_expert.png",
+    "category": "enemy",
+    "points": 20,
+    "conditions": {
+      "enemyId": "enemigo_arrayindexoutofboundsexception",
+      "defeatsRequired": 3
+    },
+    "requiredMissionIds": [],
+    "achievementType": "enemy",
+    "requiredEnemyId": "enemigo_arrayindexoutofboundsexception",
+    "requiredEnemyDefeats": 3,
+    "rewardId": "recompensa_array_expert"
+  }
+]

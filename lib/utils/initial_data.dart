@@ -1,68 +1,91 @@
 // ignore_for_file: avoid_print
 
+import '../services/reward_service.dart';
 import 'package:codequest/models/achievement_model.dart';
 import 'package:codequest/models/reward_model.dart';
-import 'package:codequest/services/reward_service.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:codequest/firebase_options.dart';
 
-Future<void> seedInitialData() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  final rewardService = RewardService();
+class InitialData {
+  static final RewardService _rewardService = RewardService(); // Hacer estático
 
-  // Recompensas
-  final r1 = Reward(
-    id: 'puntos_novato_100',
-    name: '100 Puntos de Experiencia',
-    description: '¡Bien hecho! Aquí tienes 100 puntos para empezar.',
-    iconUrl: 'assets/images/rewards/points_icon.png',
-    type: RewardType.points,
-    value: 100,
-  );
-  await rewardService.createReward(r1);
+  static Future<void> createInitialData() async {
+    // Crear recompensas iniciales
+    await _createInitialRewards();
+    
+    // Crear logros iniciales
+    await _createInitialAchievements();
+  }
 
-  final r2 = Reward(
-    id: 'insignia_explorador_alpha',
-    name: 'Insignia del Explorador Alpha',
-    description: 'Otorgada por ser uno de los primeros en explorar CodeQuest.',
-    iconUrl: 'assets/images/achievements/founder_explorer_ach.png',
-    type: RewardType.badge,
-    value: 1,
-  );
-  await rewardService.createReward(r2);
+  static Future<void> _createInitialRewards() async {
+    try {
+      // Recompensa 1: Monedas
+      final reward1 = Reward(
+        id: 'reward_coins_50',
+        name: '50 Monedas',
+        description: 'Una pequeña cantidad de monedas de oro',
+        type: 'coins',
+        value: 50,
+        iconUrl: 'assets/images/icons/coins.png',
+        conditions: {},
+      );
+      await _rewardService.createReward(reward1);
 
-  final r3 = Reward(
-    id: 'item_pocion_sabiduria_p',
-    name: 'Poción de Sabiduría (Pequeña)',
-    description: 'Un pequeño impulso a tu conocimiento. ¡Úsala sabiamente!',
-    iconUrl: 'assets/images/items/potion_wisdom_small.png',
-    type: RewardType.item,
-    value: 101,
-  );
-  await rewardService.createReward(r3);
+      // Recompensa 2: Experiencia
+      final reward2 = Reward(
+        id: 'reward_exp_100',
+        name: '100 Experiencia',
+        description: 'Puntos de experiencia adicionales',
+        type: 'experience',
+        value: 100,
+        iconUrl: 'assets/images/icons/exp.png',
+        conditions: {},
+      );
+      await _rewardService.createReward(reward2);
 
-  // Logros
-  final a1 = Achievement(
-    id: 'logro_primeros_pasos',
-    name: 'Primeros Pasos',
-    description: 'Completa tu primera misión en CodeQuest.',
-    iconUrl: 'assets/images/achievements/first_steps_ach.png',
-    requiredMissionIds: ['mision_intro_1'],
-    rewardId: r1.id,
-  );
-  await rewardService.createAchievement(a1);
+      print('Recompensas iniciales creadas exitosamente');
+    } catch (e) {
+      print('Error al crear recompensas iniciales: $e');
+    }
+  }
 
-  final a2 = Achievement(
-    id: 'logro_explorador_fundador',
-    name: 'Explorador Fundador',
-    description: 'Completa la misión de bienvenida durante la fase alpha.',
-    iconUrl: 'assets/images/achievements/founder_explorer_ach.png',
-    requiredMissionIds: ['mision_bienvenida_alpha'],
-    rewardId: r2.id,
-  );
-  await rewardService.createAchievement(a2);
+  static Future<void> _createInitialAchievements() async {
+    try {
+      // Logro 1: Primer enemigo derrotado
+      final achievement1 = Achievement(
+        id: 'achievement_first_enemy',
+        name: 'Primer Adversario',
+        description: 'Derrota tu primer enemigo de programación',
+        iconUrl: 'assets/images/achievements/first_enemy.png',
+        category: 'enemy',
+        points: 10,
+        conditions: {
+          'enemyId': 'enemigo_error_de_java',
+          'count': 1,
+        },
+        requiredMissionIds: [],
+        rewardId: 'reward_coins_50',
+      );
+      await _rewardService.createAchievement(achievement1);
 
-  print('Initial data seeded successfully.');
+      // Logro 2: Cazador de bugs
+      final achievement2 = Achievement(
+        id: 'achievement_bug_hunter',
+        name: 'Cazador de Bugs',
+        description: 'Derrota 3 enemigos de programación',
+        iconUrl: 'assets/images/achievements/bug_hunter.png',
+        category: 'combat',
+        points: 25,
+        conditions: {
+          'type': 'total_enemies_defeated',
+          'count': 3,
+        },
+        requiredMissionIds: [],
+        rewardId: 'reward_exp_100',
+      );
+      await _rewardService.createAchievement(achievement2);
+
+      print('Logros iniciales creados exitosamente');
+    } catch (e) {
+      print('Error al crear logros iniciales: $e');
+    }
+  }
 }

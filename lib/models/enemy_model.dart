@@ -1,126 +1,80 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class EnemyModel {
-  final String enemyId; // ID del documento de Firestore
+  final String enemyId; // Firestore document ID
   final String name;
-  final int level;
-  final int health;
-  final int attack;
-  final int defense;
-  final int speed;
-  final List<String> abilities;
-  final List<LootItem> lootTable;
-  final EnemyDialogue dialogue;
-  final String? originalId; // Para mantener el 'id' del JSON original
-  // Se omite 'description' y 'visualAssetUrl' ya que no están en el JSON proporcionado.
-  // Se omite 'questionPool' y 'type' por la misma razón.
-  // 'stats' se desglosa en level, health, attack, defense, speed.
-  // 'reward' se maneja a través de 'lootTable'.
+  final String? description;
+  final String? assetPath; // Path to the enemy's image asset (opcional)
+  final List<Map<String, dynamic>>? lootTable; // Loot table
+  final List<Map<String, dynamic>>? drops; // Potential item drops
+  final Map<String, String>? dialogue; // Encounter, victory, defeat dialogue
 
   EnemyModel({
     required this.enemyId,
     required this.name,
-    required this.level,
-    required this.health,
-    required this.attack,
-    required this.defense,
-    required this.speed,
-    required this.abilities,
-    required this.lootTable,
-    required this.dialogue,
-    this.originalId,
+    this.description,
+    this.assetPath,
+    this.lootTable,
+    this.drops,
+    this.dialogue,
   });
 
-  factory EnemyModel.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return EnemyModel.fromJson(data, doc.id);
-  }
-
-  factory EnemyModel.fromJson(Map<String, dynamic> json, String enemyId) {
-    var abilitiesData = json['abilities'] as List<dynamic>? ?? [];
-    List<String> abilitiesList = abilitiesData.map((a) => a as String).toList();
-
-    var lootTableData = json['lootTable'] as List<dynamic>? ?? [];
-    List<LootItem> lootList = lootTableData
-        .map((l) => LootItem.fromJson(l as Map<String, dynamic>))
-        .toList();
+  factory EnemyModel.fromJson(Map<String, dynamic> json, String documentId) {
+    // Basic validation for required fields from your sample JSON
+    if (json['name'] == null) {
+      throw ArgumentError('Missing required field: name is required for enemy.');
+    }
 
     return EnemyModel(
-      enemyId: enemyId, // ID del documento de Firestore
+      enemyId: documentId,
       name: json['name'] as String,
-      level: json['level'] as int,
-      health: json['health'] as int,
-      attack: json['attack'] as int,
-      defense: json['defense'] as int,
-      speed: json['speed'] as int,
-      abilities: abilitiesList,
-      lootTable: lootList,
-      dialogue: EnemyDialogue.fromJson(json['dialogue'] as Map<String, dynamic>),
-      originalId: json['id'] as String?, // Capturar el 'id' original del JSON
+      description: json['description'] as String?,
+      assetPath: json['assetPath'] as String?,
+      lootTable: (json['lootTable'] as List<dynamic>?)
+          ?.map((loot) => loot as Map<String, dynamic>)
+          .toList(),
+      drops: (json['drops'] as List<dynamic>?)
+          ?.map((drop) => drop as Map<String, dynamic>)
+          .toList(),
+      dialogue: json['dialogue'] != null 
+          ? (json['dialogue'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(key, value.toString())
+            )
+          : null,
+    );
+  }
+
+  // Constructor alternativo para parsear desde JSON local (donde el ID está en el campo 'id')
+  factory EnemyModel.fromLocalJson(Map<String, dynamic> json) {
+    if (json['id'] == null || json['name'] == null) {
+      throw ArgumentError('Missing required fields: id and name are required for enemy.');
+    }
+
+    return EnemyModel(
+      enemyId: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      assetPath: json['assetPath'] as String?,
+      lootTable: (json['lootTable'] as List<dynamic>?)
+          ?.map((loot) => loot as Map<String, dynamic>)
+          .toList(),
+      drops: (json['drops'] as List<dynamic>?)
+          ?.map((drop) => drop as Map<String, dynamic>)
+          .toList(),
+      dialogue: json['dialogue'] != null 
+          ? (json['dialogue'] as Map<String, dynamic>).map(
+              (key, value) => MapEntry(key, value.toString())
+            )
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'level': level,
-      'health': health,
-      'attack': attack,
-      'defense': defense,
-      'speed': speed,
-      'abilities': abilities,
-      'lootTable': lootTable.map((l) => l.toJson()).toList(),
-      'dialogue': dialogue.toJson(),
-      if (originalId != null) 'id': originalId, // Restaurar el 'id' original si se guarda
-    };
-  }
-}
-
-class LootItem {
-  final String itemId;
-  final double dropChance;
-
-  LootItem({required this.itemId, required this.dropChance});
-
-  factory LootItem.fromJson(Map<String, dynamic> json) {
-    return LootItem(
-      itemId: json['itemId'] as String,
-      dropChance: (json['dropChance'] as num).toDouble(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'itemId': itemId,
-      'dropChance': dropChance,
-    };
-  }
-}
-
-class EnemyDialogue {
-  final String encounter;
-  final String victory;
-  final String defeat;
-
-  EnemyDialogue({
-    required this.encounter,
-    required this.victory,
-    required this.defeat,
-  });
-
-  factory EnemyDialogue.fromJson(Map<String, dynamic> json) {
-    return EnemyDialogue(
-      encounter: json['encounter'] as String,
-      victory: json['victory'] as String,
-      defeat: json['defeat'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'encounter': encounter,
-      'victory': victory,
-      'defeat': defeat,
+      if (description != null) 'description': description,
+      if (assetPath != null) 'assetPath': assetPath,
+      if (lootTable != null) 'lootTable': lootTable,
+      if (drops != null) 'drops': drops,
+      if (dialogue != null) 'dialogue': dialogue,
     };
   }
 }

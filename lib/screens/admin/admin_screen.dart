@@ -72,9 +72,7 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-
-    // Initialize grid items
+    _loadUserData();    // Initialize grid items
     _adminGridItems = [
       _AdminGridItem(title: 'Usuarios', icon: Icons.person, contentBuilder: () => _buildUsersTab()),
       _AdminGridItem(title: 'Misiones', icon: Icons.flag, contentBuilder: () => _buildMissionsTab()),
@@ -84,6 +82,7 @@ class _AdminScreenState extends State<AdminScreen> {
       _AdminGridItem(title: 'Preguntas', icon: Icons.question_answer, contentBuilder: () => _buildQuestionsTab()),
       _AdminGridItem(title: 'Recompensas', icon: Icons.star, contentBuilder: () => _buildRewardsTab()),
       _AdminGridItem(title: 'Logros', icon: Icons.emoji_events, contentBuilder: () => _buildAchievementsTab()),
+      _AdminGridItem(title: 'Logs de Errores', icon: Icons.error_outline, contentBuilder: () => _buildErrorLogsTab()),
     ];
     // _tabController = TabController(length: 8, vsync: this); // Removed
     // _tabController.addListener(() { // Removed
@@ -610,7 +609,7 @@ class _AdminScreenState extends State<AdminScreen> {
             return ListTile(
               leading: reward.iconUrl.isNotEmpty ? Image.network(reward.iconUrl, width: 40, height: 40, errorBuilder: (_, __, ___) => const Icon(Icons.star_border)) : const Icon(Icons.star_border),
               title: Text(reward.name),
-              subtitle: Text('${reward.description}\\nTipo: ${reward.type.name}, Valor: ${reward.value}'),
+              subtitle: Text('${reward.description}\\nTipo: ${reward.type}, Valor: ${reward.value}'),
               trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                 IconButton(icon: const Icon(Icons.edit, color: Colors.blue), onPressed: () => _showRewardDialog(reward: reward)),
                 IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () async {
@@ -667,7 +666,7 @@ class _AdminScreenState extends State<AdminScreen> {
     final nameCtrl = TextEditingController(text: isEditing ? reward.name : '');
     final descCtrl = TextEditingController(text: isEditing ? reward.description : '');
     final iconCtrl = TextEditingController(text: isEditing ? reward.iconUrl : '');
-    RewardType typeValue = isEditing ? reward.type : RewardType.points;
+    String typeValue = isEditing ? reward.type : 'points';
     final valueCtrl = TextEditingController(text: isEditing ? reward.value.toString() : '0');
     final formKey = GlobalKey<FormState>();
 
@@ -678,10 +677,10 @@ class _AdminScreenState extends State<AdminScreen> {
         TextFormField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
         TextFormField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Descripción')),
         TextFormField(controller: iconCtrl, decoration: const InputDecoration(labelText: 'URL del Icono')),
-        DropdownButtonFormField<RewardType>(
+        DropdownButtonFormField<String>(
           value: typeValue,
           decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
-          items: RewardType.values.map((type) => DropdownMenuItem(value: type, child: Text(type.name))).toList(),
+          items: RewardType.values.map((type) => DropdownMenuItem(value: type.name, child: Text(type.name))).toList(),
           onChanged: (val) {
             if (val != null) setState(() => typeValue = val); // Necesita ser StatefulBuilder o mover lógica al estado del diálogo
           },
@@ -697,7 +696,7 @@ class _AdminScreenState extends State<AdminScreen> {
             name: nameCtrl.text,
             description: descCtrl.text,
             iconUrl: iconCtrl.text,
-            type: typeValue, // Asegúrate que typeValue esté actualizada
+            type: typeValue,
             value: int.parse(valueCtrl.text),
           );
           if (isEditing) {
@@ -769,6 +768,9 @@ class _AdminScreenState extends State<AdminScreen> {
                 name: nameCtrl.text,
                 description: descCtrl.text,
                 iconUrl: iconCtrl.text,
+                category: 'general', // Añadir categoría por defecto
+                points: 10, // Añadir puntos por defecto
+                conditions: {}, // Añadir condiciones vacías
                 requiredMissionIds: missionsCtrl.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList(),
                 rewardId: selectedRewardId!,
               );
@@ -929,11 +931,42 @@ class _AdminScreenState extends State<AdminScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error al guardar misión: $e')),
                 );
-              }
-            },
+              }            },
             child: const Text('Guardar'),
           ),
         ],
+      ),
+    );
+  }
+
+  // Método para construir la pestaña de logs de errores
+  Widget _buildErrorLogsTab() {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 20),
+            const Text(
+              'Registro de Errores',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Accede a los logs detallados de errores de la aplicación',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/error-logs');
+              },
+              style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15)),
+              child: const Text('Ver Logs de Errores'),
+            ),
+          ],
+        ),
       ),
     );
   }

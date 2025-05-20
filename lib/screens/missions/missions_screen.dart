@@ -11,6 +11,21 @@ class MissionsScreen extends StatefulWidget {
 class _MissionsScreenState extends State<MissionsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const MissionListScreen();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'MISIÓN',
+          style: TextStyle(fontFamily: 'PixelFont', fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        // Leading por defecto para volver atrás
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: const MissionListScreen(),
+        ),
+      ),
+    );
   }
 }
