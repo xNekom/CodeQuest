@@ -36,6 +36,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool _answerSubmitted = false; // Para saber si el usuario ya respondió la pregunta actual
   bool? _isCurrentAnswerCorrect; // Para saber si la respuesta seleccionada fue correcta
   int _totalCorrectAnswers = 0; // Contador para respuestas correctas
+  int _totalIncorrectAnswers = 0; // Contador para respuestas incorrectas
 
   @override
   void initState() {
@@ -129,11 +130,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
       _isCurrentAnswerCorrect = currentQuestion.correctAnswerIndex == selectedIndex;
       if (_isCurrentAnswerCorrect == true) {
         _totalCorrectAnswers++; // Incrementar si la respuesta es correcta
+      } else {
+        _totalIncorrectAnswers++; // Incrementar si la respuesta es incorrecta
       }
-      // Aquí podrías, por ejemplo, sumar puntos si la respuesta es correcta
-      // if (_isCurrentAnswerCorrect == true) {
-      //   _userService.addScore(userId, scoreForCorrectAnswer);
-      // }
     });
   }
 
@@ -226,129 +225,140 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   Widget _buildContent() {
     if (_isLoading) {
-      // Reemplazado PixelProgressIndicator con CircularProgressIndicator estándar
-      return const Center(child: CircularProgressIndicator()); 
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage.isNotEmpty) {
-      return Center(
-        child: Text(_errorMessage, style: const TextStyle(fontSize: 18, color: Colors.red, fontFamily: 'PixelFont')), // Usando Text
-      );
+      return Center(child: Text(_errorMessage, style: const TextStyle(fontSize: 18, color: Colors.red)));
     }
 
-    if (_questions.isEmpty) { // Comprobar _questions en lugar de _questionIds
-      return const Center(
-        child: Text("No hay preguntas disponibles para esta misión.", style: TextStyle(fontSize: 18, fontFamily: 'PixelFont')), // Usando Text
-      );
-    }
+    final total = _questions.length;
+    final current = _currentIndex + 1;
+    final incorrect = _totalIncorrectAnswers;
 
-    final QuestionModel currentQuestion = _questions[_currentIndex]; // Obtener la pregunta actual
-
-    return SingleChildScrollView( // Envuelto en SingleChildScrollView para evitar overflow
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Barra de progreso similar a BattleScreen
+          LinearProgressIndicator(
+            value: current / total,
+            backgroundColor: Colors.grey[300],
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+          ),
+          const SizedBox(height: 24),
           Text(
-            "Pregunta ${_currentIndex + 1}/${_questions.length}",
-            style: const TextStyle(fontSize: 20, fontFamily: 'PixelFont'),
+            'Pregunta $current/$total',
             textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, fontFamily: 'PixelFont'),
+          ),
+          const SizedBox(height: 16),
+          // Pregunta
+          Card(
+            color: Colors.yellow[100],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                _questions[_currentIndex].text,
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              currentQuestion.text,
-              style: const TextStyle(fontSize: 18, fontFamily: 'PixelFont'),
-            ),
-          ),
-          const SizedBox(height: 20),
-          // Mostrar opciones de respuesta
-          ...currentQuestion.options.asMap().entries.map((entry) {
-            int idx = entry.key;
-            String optionText = entry.value;
-            
-            Color buttonColor = Colors.blue; // Color por defecto
-            bool isSelected = _selectedOptionIndex == idx;
-            bool isCorrect = currentQuestion.correctAnswerIndex == idx;
-
+          // Opciones con PixelButton
+          ..._questions[_currentIndex].options.asMap().entries.map((entry) {
+            final idx = entry.key;
+            final text = entry.value;
+            Color? btnColor;
+            final isSelected = _selectedOptionIndex == idx;
+            final isCorrectOpt = _questions[_currentIndex].correctAnswerIndex == idx;
             if (_answerSubmitted) {
-              if (isSelected) {
-                buttonColor = _isCurrentAnswerCorrect == true ? Colors.green : Colors.red;
-              } else if (isCorrect) {
-                buttonColor = Colors.green.withOpacity(0.7); // Resaltar la correcta si no fue la seleccionada
-              } else {
-                buttonColor = Colors.grey; // Opción no seleccionada e incorrecta
-              }
+              if (isSelected) btnColor = _isCurrentAnswerCorrect! ? Colors.green : Colors.red;
+              else if (isCorrectOpt) btnColor = Colors.green;
             }
-
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
-              // Usando ElevatedButton para facilitar el cambio de color y deshabilitación
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
-                  disabledBackgroundColor: buttonColor.withOpacity(0.5), // Color cuando está deshabilitado
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  textStyle: const TextStyle(fontFamily: 'PixelFont', fontSize: 16, color: Colors.white),
-                ).copyWith(
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Colors.white.withOpacity(0.8);
-                      }
-                      return Colors.white; // Color del texto
-                    },
-                  ),
-                ),
+              child: PixelButton(
                 onPressed: _answerSubmitted ? null : () => _submitAnswer(idx),
-                child: Text(optionText),
+                color: btnColor,
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  style: TextStyle(color: btnColor != null ? Colors.white : null),
+                ),
               ),
             );
-          }).toList(),
-          const SizedBox(height: 20),
-          if (_answerSubmitted)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: _isCurrentAnswerCorrect == true ? Colors.green.shade100 : Colors.red.shade100,
-                border: Border.all(color: _isCurrentAnswerCorrect == true ? Colors.green : Colors.red),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _isCurrentAnswerCorrect == true ? "¡Correcto!" : "Incorrecto",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'PixelFont',
-                      color: _isCurrentAnswerCorrect == true ? Colors.green.shade800 : Colors.red.shade800,
+          }),
+          if (_answerSubmitted && _questions[_currentIndex].explanation.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            Card(
+              color: _isCurrentAnswerCorrect! ? Colors.green[50] : Colors.red[50],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isCurrentAnswerCorrect! ? '¡Correcto!' : '¡Incorrecto!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: _isCurrentAnswerCorrect! ? Colors.green[800] : Colors.red[800],
+                      ),
                     ),
+                    const SizedBox(height: 8),
+                    Text(_questions[_currentIndex].explanation),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+          // Estadísticas
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        '$_totalCorrectAnswers',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text('Correctas'),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    currentQuestion.explanation,
-                    style: TextStyle(fontSize: 16, fontFamily: 'PixelFont', color: Colors.black87),
+                  Column(
+                    children: [
+                      Text(
+                        '$incorrect',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text('Incorrectas'),
+                    ],
                   ),
                 ],
               ),
             ),
-          const SizedBox(height: 30),
+          ),
+          const SizedBox(height: 24),
           if (_answerSubmitted)
-            PixelButton( // O ElevatedButton si PixelButton no está disponible/configurado
+            PixelButton(
               onPressed: _moveToNextQuestionOrComplete,
               child: Text(
-                _currentIndex < _questions.length - 1 ? "Siguiente Pregunta" : "Finalizar Misión",
-                style: const TextStyle(fontFamily: 'PixelFont', color: Colors.white)
+                _currentIndex < _questions.length - 1 ? 'Siguiente Pregunta' : 'Finalizar',
               ),
             ),
-          // ... El botón de retroceder se omite por simplicidad, pero podría añadirse aquí
         ],
       ),
     );

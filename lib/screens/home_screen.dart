@@ -93,8 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildUserHeader(),
                   const SizedBox(height: 24),
                   _buildStatsSection(),
-                  const SizedBox(height: 24),
-                  _buildAdventureButton(),
+                  const SizedBox(height: 24),                  _buildAdventureButton(),
+                  const SizedBox(height: 16),
+                  _buildShopButton(),
+                  const SizedBox(height: 16),
+                  _buildInventoryButton(),
                   const SizedBox(height: 24),
                   _buildAchievementsSection(),
                 ],
@@ -421,6 +424,48 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(Icons.sports_esports, size: 20),
             SizedBox(width: 8),
             Text('COMENZAR AVENTURA'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Botón para entrar a la Tienda
+  Widget _buildShopButton() {
+    return Center(
+      child: PixelButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/shop');
+        },
+        color: Theme.of(context).colorScheme.primary,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.store, size: 20),
+            SizedBox(width: 8),
+            Text('TIENDA'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Botón para acceder al Inventario
+  Widget _buildInventoryButton() {
+    return Center(
+      child: PixelButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/inventory');
+        },
+        color: Theme.of(context).colorScheme.secondary,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.inventory_2, size: 20),
+            SizedBox(width: 8),
+            Text('INVENTARIO'),
           ],
         ),
       ),

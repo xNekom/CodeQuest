@@ -100,8 +100,8 @@ class _StoryScreenState extends State<StoryScreen> {
                 if (_currentPageIndex > 0)
                   PixelButton(
                     onPressed: _previousPage,
-                    child: const Text('Anterior'),
                     isSmall: true,
+                    child: const Text('Anterior'),
                   )
                 else
                   const SizedBox.shrink(), // Keep space consistent
@@ -111,15 +111,15 @@ class _StoryScreenState extends State<StoryScreen> {
                 if (_currentPageIndex < widget.storyPages.length - 1)
                   PixelButton(
                     onPressed: _nextPage,
-                    child: const Text('Siguiente'),
                     isSmall: true,
+                    child: const Text('Siguiente'),
                   )
                 else
                   PixelButton(
                     onPressed: _finishTheory,
-                    color: theme.colorScheme.secondary, // Use a different color for emphasis
+                    color: theme.colorScheme.secondary,
+                    isSmall: true, // Use a different color for emphasis
                     child: Text('Finalizar Teoría', style: TextStyle(color: theme.colorScheme.onSecondary)),
-                    isSmall: true,
                   ),
               ],
             ),

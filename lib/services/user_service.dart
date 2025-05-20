@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'reward_service.dart';
+import '../services/reward_service.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -90,20 +90,37 @@ class UserService {
       rethrow;
     }
   }
+
+  // Actualizar estadísticas de enemigos derrotados
+  Future<void> updateEnemyDefeatedStats(String uid, String enemyId) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        'stats.enemiesDefeated.$enemyId': FieldValue.increment(1),
+        'stats.totalEnemiesDefeated': FieldValue.increment(1),
+      });
+    } catch (e) {
+      debugPrint('Error al actualizar estadísticas de enemigos: $e');
+      rethrow;
+    }
+  }
+
   // Marcar una misión como completada
   Future<void> completeMission(String uid, String missionId) async {
+    // Marcar misión como completada en Firestore
     try {
       await _firestore.collection('users').doc(uid).update({
         'completedMissions': FieldValue.arrayUnion([missionId]),
         'currentMissionId': '',
         'progressInMission': {},
       });
-      
-      // Verificar si se desbloquean logros al completar esta misión
+    } catch (e) {
+      debugPrint('[UserService] Error al actualizar misión en usuario: $e');
+    }
+    // Intentar desbloquear logros y otorgar recompensas sin propagar errores
+    try {
       await _rewardService.checkAndUnlockAchievement(uid, missionId);
     } catch (e) {
-      debugPrint('Error al completar misión: $e');
-      rethrow;
+      debugPrint('[UserService] Error al desbloquear logros: $e');
     }
   }
 

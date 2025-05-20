@@ -59,9 +59,11 @@ class _PixelButtonState extends State<PixelButton> {
       child: AnimatedScale(
         scale: _isPressed ? 0.95 : 1.0,
         duration: const Duration(milliseconds: 150),
-        child: SizedBox(
-          width: widget.width ?? double.infinity,
-          height: widget.height ?? (widget.isSmall ? 36.0 : 48.0),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: widget.width ?? 0.0,
+            minHeight: widget.height ?? (widget.isSmall ? 36.0 : 48.0),
+          ),
           child: ElevatedButton(
             onPressed: widget.onPressed, // Changed to directly use widget.onPressed
             style: ElevatedButton.styleFrom(
@@ -75,13 +77,13 @@ class _PixelButtonState extends State<PixelButton> {
                 color: Theme.of(context).colorScheme.onSurface.withAlpha(77), // Replaced withOpacity
                 width: 2.0,
               ),
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               elevation: 0,
               shape: const BeveledRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0)),
               ),
             ),
-            child: widget.child,
+            child: Center(child: widget.child),
           ),
         ),
       ),

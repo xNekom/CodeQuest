@@ -195,36 +195,42 @@ class _RewardNotificationState extends State<RewardNotification> with SingleTick
     );
   }
 
-  Widget _getRewardIcon(RewardType type) {
+  Widget _getRewardIcon(String type) {
     switch (type) {
-      case RewardType.points:
+      case 'points':
         return const Icon(Icons.star, color: Colors.amber, size: 40);
-      case RewardType.item:
+      case 'item':
         return const Icon(Icons.inventory_2, color: Colors.blue, size: 40);
-      case RewardType.badge:
+      case 'badge':
         return const Icon(Icons.emoji_events, color: Colors.orange, size: 40);
+      default:
+        return const Icon(Icons.help, color: Colors.grey, size: 40);
     }
   }
 
-  String _getRewardTypeText(RewardType type) {
+  String _getRewardTypeText(String type) {
     switch (type) {
-      case RewardType.points:
+      case 'points':
         return '+ ${widget.reward.value} puntos de experiencia';
-      case RewardType.item:
+      case 'item':
         return 'Nuevo objeto para tu inventario';
-      case RewardType.badge:
+      case 'badge':
         return 'Nueva insignia desbloqueada';
+      default:
+        return 'Recompensa desconocida';
     }
   }
 
-  Color _getRewardTypeColor(RewardType type) {
+  Color _getRewardTypeColor(String type) {
     switch (type) {
-      case RewardType.points:
+      case 'points':
         return Colors.amber;
-      case RewardType.item:
+      case 'item':
         return Colors.blue;
-      case RewardType.badge:
+      case 'badge':
         return Colors.orange;
+      default:
+        return Colors.grey;
     }
   }
 }

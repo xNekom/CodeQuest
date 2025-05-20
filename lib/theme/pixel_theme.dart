@@ -31,14 +31,12 @@ class PixelTheme {
       primary: primaryColor,
       secondary: secondaryColor,
       tertiary: accentColor, // Amarillo
-      surface: lightSurfaceColor, // Muy light yellow
-      background: lightScaffoldBackgroundColor, // Muy light green
+      surface: lightSurfaceColor, // Muy light green
       error: errorColor,
       onPrimary: Colors.white,
       onSecondary: Colors.black,
       onTertiary: Colors.black,
-      onSurface: lightTextColor, // Negro sobre light yellow
-      onBackground: lightTextColor, // Negro sobre light green
+      onSurface: lightTextColor, // Negro sobre light green
       onError: Colors.black,
     ),
     scaffoldBackgroundColor: lightScaffoldBackgroundColor, // Muy light green
@@ -83,14 +81,12 @@ class PixelTheme {
       primary: primaryColor,
       secondary: secondaryColor,
       tertiary: accentColor, // Amarillo
-      surface: darkDialogSurfaceColor, // Gris más claro para surfaces
-      background: darkBackgroundColor, // Gris oscuro para scaffold background
+      surface: darkDialogSurfaceColor, // Gris oscuro para scaffold background
       error: errorColor,
       onPrimary: Colors.white,
       onSecondary: Colors.black,
       onTertiary: Colors.black,
-      onSurface: darkTextColor, // Blanco sobre gris más claro
-      onBackground: darkTextColor, // Blanco sobre gris oscuro
+      onSurface: darkTextColor, // Blanco sobre gris oscuro
       onError: Colors.black,
     ),
     scaffoldBackgroundColor: darkBackgroundColor, // Gris oscuro

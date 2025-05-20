@@ -118,17 +118,28 @@ class AuthService {
         'role': 'user',
         'currentMissionId': '',
         'progressInMission': {},
-        'completedMissions': {},
+        'completedMissions': [],
         'level': 1,
+        'experience': 0,
         'experiencePoints': 0,
+        'coins': 0,
         'gameCurrency': 0,
-        'inventory': {},
+        'inventory': {'items': []},
         'unlockedAbilities': [],
         'equippedItems': {},
-        'skinTone': 'normal', // Valor inicial por defecto
-        'hairStyle': 'short', // Valor inicial por defecto
-        'outfit': 'adventurer', // Valor inicial por defecto
-        'characterCreated': false, // Nuevo campo para rastrear la creación del personaje
+        'unlockedAchievements': [], // AÑADIR ESTA LÍNEA
+        'skinTone': 'Claro',
+        'hairStyle': 'Corto',
+        'outfit': 'Aventurero',
+        'characterCreated': false,
+        'stats': {
+          'questionsAnswered': 0,
+          'correctAnswers': 0,
+          'battlesWon': 0,
+          'battlesLost': 0,
+          'enemiesDefeated': {},
+          'totalEnemiesDefeated': 0,
+        },
         'characterStats': {
           'questionsAnswered': 0,
           'correctAnswers': 0,
