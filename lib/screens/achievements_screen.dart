@@ -22,13 +22,12 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   final RewardService _rewardService = RewardService();
   final RewardNotificationService _rewardNotificationService = RewardNotificationService();
   late User? _currentUser;
-  final bool _isLoading = true;
+  bool _isLoading = true;
   List<Achievement> _allAchievements = [];
   List<Achievement> _unlockedAchievements = [];
   StreamSubscription<List<Achievement>>? _allSub;
   StreamSubscription<List<Achievement>>? _unlockedAchievementsSub;
   StreamSubscription<Reward>? _rewardSubscription; // Usar Reward importado
-
   @override
   void initState() {
     super.initState();
@@ -39,7 +38,8 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
           .listen((unlocked) {
         if (mounted) {
           setState(() {
-            _unlockedAchievements = unlocked; // Corregir esta línea
+            _unlockedAchievements = unlocked;
+            _isLoading = false; // Marcar como cargado cuando se reciben los datos
           });
         }
       });
@@ -47,6 +47,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
         if (mounted) {
           setState(() {
             _allAchievements = all;
+            _isLoading = false; // Marcar como cargado cuando se reciben los datos
           });
         }
       });
@@ -54,6 +55,11 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
         if (mounted) {
           _rewardNotificationService.showRewardNotificationWidget(context, reward);
         }
+      });
+    } else {
+      // Si no hay usuario, no cargar y quitar el spinner
+      setState(() {
+        _isLoading = false;
       });
     }
   }
