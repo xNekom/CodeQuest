@@ -72,9 +72,7 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-
-    // Initialize grid items
+    _loadUserData();    // Initialize grid items
     _adminGridItems = [
       _AdminGridItem(title: 'Usuarios', icon: Icons.person, contentBuilder: () => _buildUsersTab()),
       _AdminGridItem(title: 'Misiones', icon: Icons.flag, contentBuilder: () => _buildMissionsTab()),
@@ -84,6 +82,7 @@ class _AdminScreenState extends State<AdminScreen> {
       _AdminGridItem(title: 'Preguntas', icon: Icons.question_answer, contentBuilder: () => _buildQuestionsTab()),
       _AdminGridItem(title: 'Recompensas', icon: Icons.star, contentBuilder: () => _buildRewardsTab()),
       _AdminGridItem(title: 'Logros', icon: Icons.emoji_events, contentBuilder: () => _buildAchievementsTab()),
+      _AdminGridItem(title: 'Logs de Errores', icon: Icons.error_outline, contentBuilder: () => _buildErrorLogsTab()),
     ];
     // _tabController = TabController(length: 8, vsync: this); // Removed
     // _tabController.addListener(() { // Removed
@@ -932,11 +931,42 @@ class _AdminScreenState extends State<AdminScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error al guardar misión: $e')),
                 );
-              }
-            },
+              }            },
             child: const Text('Guardar'),
           ),
         ],
+      ),
+    );
+  }
+
+  // Método para construir la pestaña de logs de errores
+  Widget _buildErrorLogsTab() {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 20),
+            const Text(
+              'Registro de Errores',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Accede a los logs detallados de errores de la aplicación',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/error-logs');
+              },
+              style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15)),
+              child: const Text('Ver Logs de Errores'),
+            ),
+          ],
+        ),
       ),
     );
   }
