@@ -8,9 +8,7 @@ import 'services/auth_service.dart';
 import 'theme/pixel_theme.dart';
 import 'screens/admin/admin_screen.dart';
 import 'services/user_service.dart';
-import 'screens/missions/mission_list_screen.dart';
 import 'screens/game/character_creation_screen.dart';
-import 'screens/achievements_screen.dart';
 import 'widgets/reward_notification_manager.dart';
 import 'package:codequest/screens/auth/password_recovery_screen.dart';
 
@@ -159,7 +157,7 @@ class _AuthCheckScreenState extends State<AuthCheckScreen> with SingleTickerProv
               if (userSnapshot.hasError) {
                 // Error al cargar datos del usuario (ej. problemas de red)
                 // Podrías ir a una pantalla de error o reintentar. Por ahora, a /auth.
-                print("Error al cargar datos del usuario: ${userSnapshot.error}");
+                // print("Error al cargar datos del usuario: ${userSnapshot.error}"); // Comentado: avoid_print
                 routeToGo = '/auth'; 
               } else {
                 // No hay error en FutureBuilder, procesar userData

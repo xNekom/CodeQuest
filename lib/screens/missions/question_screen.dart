@@ -21,7 +21,7 @@ class _QuestionScreenState extends State<QuestionScreen> {  final AuthService _a
   int _currentIndex = 0;
   bool _isLoading = true;
   String _missionName = "";
-  int _experiencePoints = 50; // Puntos base por completar una misión
+  final int _experiencePoints = 50; // Puntos base por completar una misión
 
   @override
   void initState() {

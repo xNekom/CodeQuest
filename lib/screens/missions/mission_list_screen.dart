@@ -33,12 +33,10 @@ class _MissionListScreenState extends State<MissionListScreen> {
               // Intentar convertir cada elemento a String, filtrando nulos si los hubiera
               completed = completedData.whereType<String>().toList();
             } catch (e) {
-              print('Error al procesar completedMissions: $e. Data: $completedData');
               // Mantener completed como lista vacía en caso de error inesperado en la conversión
             }
           } else if (completedData != null) {
             // Si completedMissions existe pero no es una lista, loguear y usar lista vacía.
-            print('El campo completedMissions no es una lista para el usuario ${_uid}. Data: $completedData');
           }
           // Si completedData es null, 'completed' ya es [] por defecto.
 

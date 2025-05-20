@@ -121,12 +121,10 @@ class RewardService {
           ...achievement.toMap(), // Guarda una copia del logro
           'unlockedDate': FieldValue.serverTimestamp(),
         });
-    print('Logro ${achievement.name} desbloqueado para el usuario $userId');
   }
   Future<void> _grantRewardToUser(String userId, String rewardId) async {
     Reward? reward = await getRewardById(rewardId);
     if (reward == null) {
-      print('Error: Recompensa con ID $rewardId no encontrada.');
       return;
     }
 
@@ -140,7 +138,6 @@ class RewardService {
         await userDocRef.update({
           'experiencePoints': FieldValue.increment(reward.value), // O gameCurrency, etc.
         });
-        print('Otorgados ${reward.value} puntos al usuario $userId');
         break;
       case RewardType.item:
         // Asume que tienes una subcolección de inventario para el usuario
@@ -149,7 +146,6 @@ class RewardService {
           'itemName': reward.name, // Podrías guardar más detalles del item
           'acquiredDate': FieldValue.serverTimestamp(),
         });
-        print('Otorgado item ${reward.name} al usuario $userId');
         break;
       case RewardType.badge:
         // Asume que tienes un campo o subcolección para las insignias del usuario
@@ -159,7 +155,6 @@ class RewardService {
           'iconUrl': reward.iconUrl,
           'acquiredDate': FieldValue.serverTimestamp(),
         });
-        print('Otorgada insignia ${reward.name} al usuario $userId');
         break;
     }
     // Notificar al servicio de notificaciones para mostrar la alerta de recompensa

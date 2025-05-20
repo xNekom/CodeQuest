@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import '../models/reward_model.dart';
 import '../theme/pixel_theme.dart';
@@ -8,10 +10,10 @@ class RewardNotification extends StatefulWidget {
   final VoidCallback? onDismiss;
 
   const RewardNotification({
-    Key? key,
+    super.key,
     required this.reward,
     this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   State<RewardNotification> createState() => _RewardNotificationState();
