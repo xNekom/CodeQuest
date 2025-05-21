@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
 import '../../services/mission_service.dart';
 import '../../models/mission_model.dart';
-import './theory_screen.dart';
+// import './theory_screen.dart'; // TODO: Create theory_screen.dart
 import '../game/enemy_encounter_screen.dart';
 import '../../widgets/pixel_widgets.dart';
 import '../../utils/custom_page_route.dart'; // Import FadePageRoute
@@ -145,17 +145,20 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                                 ),
                               );
                             } else {
-                              // Navegar a la pantalla de teoría tradicional
-                              Navigator.push(
-                                context,
-                                FadePageRoute(
-                                  builder: (_) => TheoryScreen(
-                                    missionId: widget.missionId,
-                                    theoryText: theory,
-                                    examples: examples,
-                                    isReplay: true, // Indicar que es una repetición
-                                  ),
-                                ),
+                              // TODO: Navegar a la pantalla de teoría tradicional
+                              // Navigator.push(
+                              //   context,
+                              //   FadePageRoute(
+                              //     builder: (_) => TheoryScreen(
+                              //       missionId: widget.missionId,
+                              //       theoryText: theory,
+                              //       examples: examples,
+                              //       isReplay: true, // Indicar que es una repetición
+                              //     ),
+                              //   ),
+                              // );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Pantalla de teoría en desarrollo')),
                               );
                             }
                           },
@@ -190,17 +193,20 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                             ),
                           );
                         } else {
-                          // Navegar a la pantalla de teoría tradicional
-                          Navigator.push(
-                            context,
-                            FadePageRoute(
-                              builder: (_) => TheoryScreen(
-                                missionId: widget.missionId,
-                                theoryText: theory,
-                                examples: examples,
-                                isReplay: false,
-                              ),
-                            ),
+                          // TODO: Navegar a la pantalla de teoría tradicional
+                          // Navigator.push(
+                          //   context,
+                          //   FadePageRoute(
+                          //     builder: (_) => TheoryScreen(
+                          //       missionId: widget.missionId,
+                          //       theoryText: theory,
+                          //       examples: examples,
+                          //       isReplay: false,
+                          //     ),
+                          //   ),
+                          // );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Pantalla de teoría en desarrollo')),
                           );
                         }
                       },
