@@ -9,11 +9,13 @@ import '../../services/enemy_service.dart';
 import '../../services/user_service.dart';
 import '../../services/reward_service.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../mission_completed_screen.dart';
 
 class BattleScreen extends StatefulWidget {
   final BattleConfigModel battleConfig;
+  final bool isReplay;
 
-  const BattleScreen({super.key, required this.battleConfig});
+  const BattleScreen({super.key, required this.battleConfig, this.isReplay = false});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -144,10 +146,12 @@ class _BattleScreenState extends State<BattleScreen> {  EnemyModel? _currentEnem
   }
   void _finishBattle() async {
     bool victory = _totalCorrectAnswers >= (_questionIds.length * 0.6);
+    String? completedMissionId;
+    String missionName = 'Batalla contra ${_currentEnemy?.name ?? "Enemigo"}';
 
     if (victory) {
       final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId != null) {
+      if (userId != null && !widget.isReplay) {
         try {
           // Actualizar estadísticas de batalla
           await _userService.updateStatsAfterBattle(userId, true);
@@ -162,16 +166,27 @@ class _BattleScreenState extends State<BattleScreen> {  EnemyModel? _currentEnem
           final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
           final currentMissionId = userDoc.data()?['currentMissionId'] as String?;
           if (currentMissionId != null && currentMissionId.isNotEmpty) {
-            await _userService.completeMission(userId, currentMissionId);
+            await _userService.completeMission(userId, currentMissionId, isBattleMission: true);
+            completedMissionId = currentMissionId;
+            
+            // Obtener el nombre real de la misión
+            try {
+              final missionDoc = await FirebaseFirestore.instance.collection('missions').doc(currentMissionId).get();
+              if (missionDoc.exists) {
+                missionName = missionDoc.data()?['name'] ?? missionName;
+              }
+            } catch (e) {
+              debugPrint('[BattleScreen] Error al obtener nombre de misión: $e');
+            }
           }
         } catch (e) {
           debugPrint('[BattleScreen] Error al completar misión: $e');
         }
       }
     } else {
-      // En caso de derrota, solo actualizar estadísticas de batalla
+      // En caso de derrota, solo actualizar estadísticas de batalla si no es repetición
       final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId != null) {
+      if (userId != null && !widget.isReplay) {
         try {
           await _userService.updateStatsAfterBattle(userId, false);
         } catch (e) {
@@ -248,7 +263,46 @@ class _BattleScreenState extends State<BattleScreen> {  EnemyModel? _currentEnem
           PixelButton(
             onPressed: () {
               Navigator.of(context).pop(); // Cerrar dialog
-              Navigator.of(context).pop(); // Volver a la pantalla anterior
+              
+              if (widget.isReplay) {
+                // Si es repetición, mostrar mensaje y volver al home
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(victory ? "Batalla completada. No se otorgaron recompensas por repetición." : "Batalla perdida. Intenta de nuevo.")),
+                );
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  (route) => false,
+                );
+              } else if (victory && completedMissionId != null) {
+                // Si ganó y completó una misión, mostrar pantalla de misión completada
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MissionCompletedScreen(
+                      missionId: completedMissionId!,
+                      missionName: missionName,
+                      experiencePoints: 50, // Experiencia por batalla
+                      coinsEarned: 50, // Monedas por batalla
+                      isBattleMission: true,
+                      onContinue: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                          (route) => false,
+                        );
+                      },
+                    ),
+                  ),
+                );
+              } else {
+                // Si no completó misión o perdió, volver al home directamente
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  (route) => false,
+                );
+              }
             },
             child: const Text('CONTINUAR'),
           ),

@@ -16,6 +16,7 @@ import 'screens/achievements_screen.dart'; // Importar AchievementsScreen
 import 'screens/missions/missions_screen.dart'; // Importar MissionsScreen
 import 'screens/shop_screen.dart'; // Importar ShopScreen
 import 'screens/inventory_screen.dart'; // Importar InventoryScreen
+import 'screens/leaderboard_screen.dart'; // Importar LeaderboardScreen
 import 'screens/error_log_screen.dart'; // Importar ErrorLogScreen
 import 'utils/error_handler.dart'; // Importar ErrorHandler
 import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
@@ -222,6 +223,7 @@ class MyApp extends StatelessWidget {
         '/missions': (context) => const RewardNotificationManager(child: MissionsScreen()),
         '/shop': (context) => const RewardNotificationManager(child: ShopScreen()),
         '/inventory': (context) => const RewardNotificationManager(child: InventoryScreen()),
+        '/leaderboard': (context) => const RewardNotificationManager(child: LeaderboardScreen()),
         '/error-logs': (context) => const ErrorLogScreen(), // Nueva ruta para ver los logs
       },
     );

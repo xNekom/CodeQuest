@@ -8,10 +8,12 @@ import './battle_screen.dart';
 
 class EnemyEncounterScreen extends StatefulWidget {
   final BattleConfigModel battleConfig;
+  final bool isReplay;
 
   const EnemyEncounterScreen({
     super.key,
     required this.battleConfig,
+    this.isReplay = false,
   });
 
   @override
@@ -76,7 +78,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => BattleScreen(battleConfig: widget.battleConfig),
+        builder: (_) => BattleScreen(battleConfig: widget.battleConfig, isReplay: widget.isReplay),
       ),
     );
   }

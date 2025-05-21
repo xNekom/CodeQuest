@@ -135,24 +135,20 @@ class _ShopScreenState extends State<ShopScreen> {
                                 return Card(
                                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   child: ListTile(
-                                    leading: Image.asset(
-                                      'assets/images/${item.icon}',
-                                      width: 40,
-                                      height: 40,
-                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.image_not_supported),
-                                    ),
+                                    leading: const Icon(Icons.shopping_bag, size: 40),
                                     title: Text(item.name, style: const TextStyle(fontFamily: 'PixelFont')),
                                     subtitle: Text(item.description),
                                     trailing: SizedBox(
-                                      width: 100,
+                                      width: 120,
                                       child: PixelButton(
                                         onPressed: canBuy ? () => _buyItem(item) : null,
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             const Icon(Icons.monetization_on, size: 16),
                                             const SizedBox(width: 4),
-                                            Text(hasPrice ? '$price' : 'Gratis'),
+                                            Text(hasPrice ? '$price' : 'Gratis'),
                                           ],
                                         ),
                                       ),

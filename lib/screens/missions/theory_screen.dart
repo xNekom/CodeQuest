@@ -12,12 +12,14 @@ class TheoryScreen extends StatefulWidget {
   final String missionId;
   final String theoryText;
   final List<String> examples;
+  final bool isReplay;
 
   const TheoryScreen({
     super.key,
     required this.missionId,
     required this.theoryText,
     required this.examples,
+    this.isReplay = false,
   });
 
   @override
@@ -123,7 +125,7 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => QuestionScreen(missionId: widget.missionId),
+          builder: (_) => QuestionScreen(missionId: widget.missionId, isReplay: widget.isReplay),
         ),
       );
     } else {
@@ -133,7 +135,7 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => QuestionScreen(missionId: widget.missionId),
+          builder: (_) => QuestionScreen(missionId: widget.missionId, isReplay: widget.isReplay),
         ),
       );
     }

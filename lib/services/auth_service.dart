@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'leaderboard_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final LeaderboardService _leaderboardService = LeaderboardService();
 
   // Usuario actual
   User? get currentUser => _auth.currentUser;
@@ -93,25 +95,28 @@ class AuthService {
     }
   }
   
-  // Verificar si un nombre de usuario ya existe
+  // Verificar si un nombre de usuario ya existe - Método alternativo sin consultas
   Future<bool> _checkUsernameExists(String username) async {
     try {
-      final QuerySnapshot result = await _firestore
-          .collection('users')
-          .where('username', isEqualTo: username)
-          .limit(1)
+      // Método alternativo: crear un documento temporal con el username como ID
+      // y verificar si ya existe
+      final DocumentSnapshot usernameDoc = await _firestore
+          .collection('usernames')
+          .doc(username.toLowerCase())
           .get();
           
-      return result.docs.isNotEmpty;
+      return usernameDoc.exists;
     } catch (e) {
       debugPrint('Error al verificar nombre de usuario: $e');
-      rethrow;
+      // Si hay error, permitir continuar para no bloquear el registro
+      return false;
     }
   }
   
   // Crear documento de usuario en Firestore
   Future<void> _createUserDocument(String uid, String email, String username) async {
     try {
+      // Crear documento de usuario
       await _firestore.collection('users').doc(uid).set({
         'email': email,
         'username': username,
@@ -127,7 +132,7 @@ class AuthService {
         'inventory': {'items': []},
         'unlockedAbilities': [],
         'equippedItems': {},
-        'unlockedAchievements': [], // AÑADIR ESTA LÍNEA
+        'unlockedAchievements': [],
         'skinTone': 'Claro',
         'hairStyle': 'Corto',
         'outfit': 'Aventurero',
@@ -141,16 +146,30 @@ class AuthService {
           'totalEnemiesDefeated': 0,
         },
         'characterStats': {
-          'questionsAnswered': 0,
-          'correctAnswers': 0,
-          'battlesWon': 0,
-          'battlesLost': 0,
+          'health': 100,
+          'attack': 10,
+          'defense': 5,
+          'speed': 8,
         },
-        'difficultConcepts': {},
-        'settings': {},
+        'createdAt': FieldValue.serverTimestamp(),
         'lastLogin': FieldValue.serverTimestamp(),
-        'creationDate': FieldValue.serverTimestamp(),
       });
+      
+      // Registrar username en colección separada para verificación
+      await _firestore.collection('usernames').doc(username.toLowerCase()).set({
+        'uid': uid,
+        'username': username,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      
+      // Crear entrada inicial en el leaderboard
+      await _leaderboardService.updateLeaderboardEntry(
+        userId: uid,
+        username: username,
+        score: 1000, // Puntuación inicial (nivel 1 * 1000)
+      );
+      
+      debugPrint('Usuario creado exitosamente: $uid');
     } catch (e) {
       debugPrint('Error al crear documento de usuario: $e');
       rethrow;

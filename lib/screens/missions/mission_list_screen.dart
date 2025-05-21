@@ -133,24 +133,48 @@ class _MissionListScreenState extends State<MissionListScreen> {
             }
             final mission = missions[index];
             final bool isUnlocked = _isMissionUnlocked(mission, _userData);
+            final List<String> completedMissions = List<String>.from(_userData?['completedMissions'] ?? []);
+            final bool isCompleted = completedMissions.contains(mission.missionId);
+            
             String subtitleText = '${mission.description}\nZona: ${mission.zone} - Nivel Requerido: ${mission.levelRequired}';
             if (!isUnlocked) {
               subtitleText += '\nBloqueada: ${_getLockReason(mission, _userData)}';
+            } else if (isCompleted) {
+              subtitleText += '\n✅ ¡Completada!';
+            }
+
+            Color? cardColor;
+            if (isCompleted) {
+              cardColor = Colors.green[100]; // Verde claro para misiones completadas
+            } else if (!isUnlocked) {
+              cardColor = Colors.grey[350]; // Gris para misiones bloqueadas
             }
 
             return Card(
               elevation: 2,
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              color: isUnlocked ? null : Colors.grey[350], // Color de fondo si está bloqueada
+              color: cardColor,
               child: ListTile(
                 key: index == 0 ? widget.filterButtonKey : null, // Usar filterButtonKey para la primera misión como ejemplo
                 leading: Icon(
-                  isUnlocked ? Icons.explore : Icons.lock, // Icono de candado si está bloqueada
-                  color: isUnlocked ? Theme.of(context).colorScheme.secondary : Colors.grey,
+                  isCompleted ? Icons.check_circle : (isUnlocked ? Icons.explore : Icons.lock),
+                  color: isCompleted ? Colors.green : (isUnlocked ? Theme.of(context).colorScheme.secondary : Colors.grey),
                 ),
-                title: Text(mission.name, style: TextStyle(fontWeight: FontWeight.bold, color: isUnlocked ? null : Colors.black54)),
-                subtitle: Text(subtitleText, style: TextStyle(color: isUnlocked ? null : Colors.black54)),
-                trailing: isUnlocked ? const Icon(Icons.arrow_forward_ios) : null,
+                title: Text(
+                  mission.name, 
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold, 
+                    color: isCompleted ? Colors.green[800] : (isUnlocked ? null : Colors.black54),
+                    decoration: isCompleted ? TextDecoration.lineThrough : null,
+                  )
+                ),
+                subtitle: Text(
+                  subtitleText, 
+                  style: TextStyle(
+                    color: isCompleted ? Colors.green[700] : (isUnlocked ? null : Colors.black54)
+                  )
+                ),
+                trailing: isCompleted ? const Icon(Icons.check_circle, color: Colors.green) : (isUnlocked ? const Icon(Icons.arrow_forward_ios) : null),
                 onTap: isUnlocked
                     ? () {
                         Navigator.push(
@@ -161,7 +185,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
                           ),
                         );
                       }
-                    : null, // Deshabilitar onTap si está bloqueada
+                    : null, // Deshabilitar onTap solo si está bloqueada
               ),
             );
           },
