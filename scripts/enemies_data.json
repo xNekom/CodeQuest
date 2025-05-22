@@ -1,0 +1,362 @@
+[
+  {
+    "id": "b3106d03-7f85-4d87-aed4-0d428b07dbee",
+    "name": "Bug del Punto y Coma",
+    "level": 2,
+    "health": 20,
+    "attack": 4,
+    "defense": 1,
+    "speed": 8,
+    "abilities": [
+      "ocultar_error",
+      "confundir_compilador"
+    ],
+    "lootTable": [
+      {
+        "itemId": "43622d39-2c10-4d74-b7f0-c8886d051173",
+        "dropChance": 0.7
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Te olvidaste el punto y coma!",
+      "victory": "¡Error de sintaxis!",
+      "defeat": "¡Me encontraste!"
+    }
+  },
+  {
+    "id": "db4badc7-f5c7-42e6-89f2-9be8a1b6e88d",
+    "name": "NullPointerException",
+    "level": 5,
+    "health": 40,
+    "attack": 10,
+    "defense": 3,
+    "speed": 7,
+    "abilities": [
+      "crash_app",
+      "ocultar_referencia"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_manual_excepciones",
+        "dropChance": 0.5
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Referencia nula detectada!",
+      "victory": "¡Tu programa ha dejado de funcionar!",
+      "defeat": "¡Has manejado la excepción!"
+    }
+  },
+  {
+    "id": "a0754abd-f732-44aa-908b-52af5378aa80",
+    "name": "Bug de Bucle Infinito",
+    "level": 4,
+    "health": 35,
+    "attack": 6,
+    "defense": 2,
+    "speed": 5,
+    "abilities": [
+      "repetir_accion",
+      "ralentizar_jugador"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_break_bucle",
+        "dropChance": 0.6
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Nunca terminarás este ciclo!",
+      "victory": "¡Te quedaste atrapado para siempre!",
+      "defeat": "¡Has roto el bucle!"
+    }
+  },
+  {
+    "id": "29cbf42a-7b35-458d-820e-ce0e30f7c2e6",
+    "name": "StackOverflowError",
+    "level": 6,
+    "health": 45,
+    "attack": 11,
+    "defense": 4,
+    "speed": 6,
+    "abilities": [
+      "desbordar_pila",
+      "reiniciar_hilo"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_pila_debug",
+        "dropChance": 0.5
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Desbordamiento de pila!",
+      "victory": "¡Tu programa está en un bucle infinito!",
+      "defeat": "¡He sido detenido por un depurador!"
+    }
+  },
+  {
+    "id": "b94a06a1-9663-4b08-b325-8b71ff9094c9",
+    "name": "Error de Java",
+    "level": 7,
+    "health": 60,
+    "attack": 13,
+    "defense": 5,
+    "speed": 5,
+    "abilities": [
+      "error_critico",
+      "reiniciar_sistema"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_error_java",
+        "dropChance": 0.4
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Un error de Java ha ocurrido!",
+      "victory": "¡El sistema ha sido reiniciado!",
+      "defeat": "¡No puedo creer que me hayas vencido!"
+    }
+  },
+  {
+    "id": "0a026b38-ad03-4612-9b69-f4b5ac5d0308",
+    "name": "Manejador de Excepciones",
+    "level": 3,
+    "health": 25,
+    "attack": 7,
+    "defense": 3,
+    "speed": 9,
+    "abilities": [
+      "manejar_excepcion",
+      "volver_a_intentar"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_excepcion_manejada",
+        "dropChance": 0.6
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Voy a manejar tu excepción!",
+      "victory": "¡Excepción manejada con éxito!",
+      "defeat": "¡Tu código es demasiado para mí!"
+    }
+  },
+  {
+    "id": "25bddc93-ff05-4092-809b-82779d8e6ec5",
+    "name": "Bug de Variable No Inicializada",
+    "level": 2,
+    "health": 15,
+    "attack": 5,
+    "defense": 1,
+    "speed": 10,
+    "abilities": [
+      "inicializar_variable",
+      "ocultar_error"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_variable_debug",
+        "dropChance": 0.7
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Variable no inicializada!",
+      "victory": "¡Error resuelto!",
+      "defeat": "¡No era un error, era una característica!"
+    }
+  },
+  {
+    "id": "0b25d305-0814-40c6-8f5e-aef2d43736eb",
+    "name": "ArrayIndexOutOfBoundsException",
+    "level": 4,
+    "health": 30,
+    "attack": 8,
+    "defense": 2,
+    "speed": 7,
+    "abilities": [
+      "acceso_fuera_de_rango",
+      "ralentizar_jugador"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_array_debug",
+        "dropChance": 0.5
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Acceso a índice de array fuera de límites!",
+      "victory": "¡Has sido atrapado en un bucle!",
+      "defeat": "¡He aprendido de mi error!"
+    }
+  },
+  {
+    "id": "4d6c449f-3660-4310-b837-60f4ebb0122f",
+    "name": "ClassNotFoundException",
+    "level": 5,
+    "health": 35,
+    "attack": 9,
+    "defense": 3,
+    "speed": 6,
+    "abilities": [
+      "ocultar_clase",
+      "error_critico"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_clase_no_encontrada",
+        "dropChance": 0.4
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Clase no encontrada!",
+      "victory": "¡El programa no puede continuar!",
+      "defeat": "¡He sido recompensado con experiencia!"
+    }
+  },
+  {
+    "id": "5917d97d-d40b-45b3-b894-9812c33508e6",
+    "name": "IllegalArgumentException",
+    "level": 3,
+    "health": 20,
+    "attack": 6,
+    "defense": 2,
+    "speed": 8,
+    "abilities": [
+      "argumento_invalido",
+      "ralentizar_jugador"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_argumento_illegal",
+        "dropChance": 0.6
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Argumento ilegal en la llamada!",
+      "victory": "¡Has pasado el test de argumentos!",
+      "defeat": "¡Mis argumentos eran sólidos!"
+    }
+  },
+  {
+    "id": "da350e43-d10d-4b22-a79b-5c2f6d8be342",
+    "name": "SecurityException",
+    "level": 6,
+    "health": 50,
+    "attack": 10,
+    "defense": 4,
+    "speed": 7,
+    "abilities": [
+      "acceso_denegado",
+      "error_critico"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_excepcion_seguridad",
+        "dropChance": 0.5
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Acceso denegado!",
+      "victory": "¡He burlado la seguridad!",
+      "defeat": "¡La seguridad es impenetrable!"
+    }
+  },
+  {
+    "id": "c126776e-98d1-4793-9329-2c636557393c",
+    "name": "NoClassDefFoundError",
+    "level": 7,
+    "health": 55,
+    "attack": 12,
+    "defense": 5,
+    "speed": 6,
+    "abilities": [
+      "error_critico",
+      "reiniciar_clase"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_no_class_def_found",
+        "dropChance": 0.4
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Error crítico! Clase no definida.",
+      "victory": "¡He restaurado la clase!",
+      "defeat": "¡No puedo ser detenido por un simple error!"
+    }
+  },
+  {
+    "id": "efd8870e-cbce-4835-9b89-75ec757ef326",
+    "name": "Error de JVM",
+    "level": 8,
+    "health": 70,
+    "attack": 14,
+    "defense": 6,
+    "speed": 5,
+    "abilities": [
+      "error_jvm",
+      "reiniciar_maquina"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_error_jvm",
+        "dropChance": 0.3
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Error en la Máquina Virtual de Java!",
+      "victory": "¡La máquina ha sido reiniciada!",
+      "defeat": "¡El error es parte de la ejecución!"
+    }
+  },
+  {
+    "id": "75a95190-2568-4929-86ce-bc684ab04781",
+    "name": "OutOfMemoryError",
+    "level": 9,
+    "health": 80,
+    "attack": 16,
+    "defense": 7,
+    "speed": 4,
+    "abilities": [
+      "agotar_memoria",
+      "error_critico"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_fuera_de_memoria",
+        "dropChance": 0.3
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Error de memoria!",
+      "victory": "¡He liberado memoria!",
+      "defeat": "¡La memoria es finita!"
+    }
+  },
+  {
+    "id": "c5d9e453-bcd8-4b92-b392-46df5a64ecae",
+    "name": "InternalError",
+    "level": 10,
+    "health": 90,
+    "attack": 18,
+    "defense": 8,
+    "speed": 3,
+    "abilities": [
+      "error_interno",
+      "reiniciar_sistema"
+    ],
+    "lootTable": [
+      {
+        "itemId": "item_error_interno",
+        "dropChance": 0.2
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Error interno en el sistema!",
+      "victory": "¡El sistema ha sido restaurado!",
+      "defeat": "¡El error es inevitable!"
+    }
+  }
+]

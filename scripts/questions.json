@@ -1,16 +1,254 @@
 [
   {
-    "id": "q1",
-    "text": "¿Qué es una variable en Java?",
-    "options": ["Un valor almacenado", "Una función", "Una clase", "Un comentario"],
-    "correctAnswerIndex": 0,
-    "explanation": "Una variable almacena datos que pueden cambiar durante la ejecución."
+    "id": "8bdf7700-b2f3-4a53-bd63-781492f5c89a",
+    "text": "¿Qué es un 'programa' en el contexto de la programación?",
+    "options": [
+      "Un dibujo de un ordenador.",
+      "Un conjunto de instrucciones para que el ordenador realice una tarea.",
+      "Un tipo de música.",
+      "Un juego de mesa."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "La respuesta correcta es b) Un conjunto de instrucciones para que el ordenador realice una tarea. Un programa es precisamente eso: una serie de pasos detallados que le decimos a una máquina para que la ejecute y logre un objetivo, como mostrar un mensaje en pantalla o procesar información."
   },
   {
-    "id": "q2",
-    "text": "¿Cuál es la salida de `System.out.println(2 + 3);`?",
-    "options": ["23", "5", "Error", "`2 + 3`"],
+    "id": "2726262d-7f30-4736-aa0b-d37b60b6ce50",
+    "text": "Una característica clave de Java es que sus programas pueden ejecutarse en diferentes sistemas operativos (como Windows, macOS o Linux) sin cambios importantes. ¿Cómo se describe esta característica?",
+    "options": [
+      "Monoplataforma",
+      "Multiplataforma",
+      "Hiperplataforma",
+      "Uniplataforma"
+    ],
     "correctAnswerIndex": 1,
-    "explanation": "El operador + suma dos números enteros, dando 5."
+    "explanation": "La respuesta correcta es b) Multiplataforma. El prefijo 'multi-' significa 'muchos', y 'plataforma' se refiere al sistema donde el programa se ejecuta. Por lo tanto, 'multiplataforma' significa que funciona en muchas plataformas."
+  },
+  {
+    "id": "fea94d78-75d6-4262-8cb1-97cb005fb475",
+    "text": "En Java, ¿dentro de qué estructura principal se organiza casi todo el código y dónde se encuentra el método main (el punto de inicio de un programa)?",
+    "options": [
+      "Un archivo de texto.",
+      "Una carpeta.",
+      "Una clase.",
+      "Una función."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) Una clase. En Java, la programación es 'orientada a objetos', y las clases son los bloques de construcción fundamentales. Todo el código que escribimos, incluyendo el método main (que es el primer lugar donde el programa comienza a ejecutarse), debe estar encapsulado dentro de una clase."
+  },
+  {
+    "id": "6ec401aa-e6ca-4b2a-9151-903f2c24b746",
+    "text": "¿Cuál es la instrucción correcta en Java para mostrar el mensaje 'Hola Mundo' en la consola, y luego saltar a la siguiente línea?",
+    "options": [
+      "print(\"Hola Mundo\");",
+      "System.in.println(\"Hola Mundo\");",
+      "System.out.println(\"Hola Mundo\");",
+      "console.log(\"Hola Mundo\");"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) System.out.println(\"Hola Mundo\");. Esta es la sintaxis estándar en Java para imprimir texto en la consola de salida y añadir un salto de línea al final, lo que es muy útil para depurar o mostrar información al usuario. Las otras opciones son incorrectas para Java: print no es el comando completo, System.in es para la entrada, y console.log es de otros lenguajes."
+  },
+  {
+    "id": "e6918ce5-3f12-456e-921f-41bb1187c844",
+    "text": "En programación, ¿qué es una 'variable'?",
+    "options": [
+      "Un error en el código.",
+      "Una caja de almacenamiento en la memoria del ordenador que guarda un valor que puede cambiar.",
+      "Un programa completo.",
+      "Un tipo de teclado."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "La respuesta correcta es b) Una caja de almacenamiento en la memoria del ordenador que guarda un valor que puede cambiar. Las variables son esenciales en programación porque nos permiten almacenar y manipular información mientras el programa se ejecuta, como la puntuación de un juego o el nombre de un usuario."
+  },
+  {
+    "id": "7f181a1e-156e-4ff6-8f74-99e1e182035e",
+    "text": "Si necesitas guardar la edad de una persona (por ejemplo, 25) en una variable en Java, ¿cuál es el tipo de dato más adecuado para esa variable?",
+    "options": [
+      "double",
+      "boolean",
+      "int",
+      "String"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) int. El tipo int (de 'integer') se utiliza para números enteros, y la edad de una persona es típicamente un número entero sin decimales. double sería para números con decimales, boolean para verdadero/falso, y String para texto."
+  },
+  {
+    "id": "01fe6fb9-259d-4682-b1ce-3673ca8d918a",
+    "text": "¿Cuál de los siguientes nombres de variable es válido en Java?",
+    "options": [
+      "1puntuacion",
+      "nombre jugador",
+      "mi_nombre",
+      "public"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) mi_nombre. a) 1puntuacion es inválido porque un nombre de variable no puede empezar con un número. b) nombre jugador es inválido porque no puede contener espacios. d) public es inválido porque es una palabra reservada del lenguaje Java. mi_nombre sigue las reglas: no empieza con número, no tiene espacios y no es una palabra reservada."
+  },
+  {
+    "id": "eeb55542-d66b-484b-b36a-ff58dbc7af1d",
+    "text": "¿Cuál de las siguientes líneas de código declara correctamente una variable entera llamada puntuacion y le asigna un valor inicial de 100 en Java?",
+    "options": [
+      "puntuacion = 100;",
+      "int puntuacion;",
+      "int puntuacion = 100;",
+      "Puntuacion int = 100;"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) int puntuacion = 100;. Esta línea declara una variable de tipo entero (int), la nombra puntuacion, y le asigna el valor 100 en el mismo momento. a) Solo asigna un valor, la variable no está declarada. b) Declara la variable, pero no le asigna un valor inicial. d) La sintaxis es incorrecta; el tipo de dato siempre va antes del nombre de la variable."
+  },
+  {
+    "id": "9ccb1613-87c2-4c34-a0bf-d69f1cfa7b28",
+    "text": "Si tienes dos variables, vidas = 5 y daño = 2, ¿qué expresión Java usarías para calcular cuántas vidas te quedan si te quitan el daño?",
+    "options": [
+      "vidas + daño",
+      "vidas * daño",
+      "vidas - daño",
+      "vidas / daño"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) vidas - daño. Para saber cuántas vidas te quedan después de recibir daño, debes restar el daño a tus vidas actuales. El operador - realiza la resta."
+  },
+  {
+    "id": "81291468-08af-4b88-8a47-9fc251bf1147",
+    "text": "Considerando las variables monedas = 10 y precioObjeto = 3. ¿Qué valor obtendría la variable objetosComprados si ejecutas la siguiente línea de código en Java? int objetosComprados = monedas / precioObjeto;",
+    "options": [
+      "3.33",
+      "3",
+      "4",
+      "10"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "La respuesta correcta es b) 3. Cuando divides dos números enteros (int) en Java usando el operador /, el resultado también es un entero y se trunca la parte decimal (se elimina, no se redondea). Entonces, 10 / 3 da como resultado 3."
+  },
+  {
+    "id": "7631b12e-3593-4326-8170-43a1ef480460",
+    "text": "Si quieres que un mensaje '¡Has ganado!' solo se muestre si la puntuacion del jugador es mayor que 100, ¿cuál es la estructura correcta de un if en Java?",
+    "options": [
+      "if puntuacion > 100 { System.out.println(\"¡Has ganado!\"); }",
+      "if (puntuacion > 100) System.out.println(\"¡Has ganado!\");",
+      "if (puntuacion > 100) { System.out.println(\"¡Has ganado!\"); }",
+      "if (puntuacion es mayor que 100) { System.out.println(\"¡Has ganado!\"); }"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) if (puntuacion > 100) { System.out.println(\"¡Has ganado!\"); }. En Java, la condición de un if siempre debe ir entre paréntesis (), y el bloque de código a ejecutar si la condición es verdadera debe ir entre llaves {}. La opción b) es técnicamente válida para una sola línea, pero la c) es la forma estándar y recomendada para claridad y cuando hay múltiples líneas de código."
+  },
+  {
+    "id": "e118a3a0-bce9-4cb4-aca3-c2335ced79f0",
+    "text": "Considera el siguiente código Java: int nivel = 7; if (nivel >= 10) { System.out.println(\"Eres un héroe legendario.\"); } else { System.out.println(\"Sigue entrenando.\"); } ¿Qué mensaje se imprimirá en la consola cuando se ejecute este código?",
+    "options": [
+      "Eres un héroe legendario.",
+      "Sigue entrenando.",
+      "Ambos mensajes.",
+      "Ningún mensaje."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "La respuesta correcta es b) 'Sigue entrenando.'. La variable nivel tiene un valor de 7. La condición nivel >= 10 (7 es mayor o igual que 10) es false (falsa). Por lo tanto, el código dentro del bloque if no se ejecuta, y en su lugar se ejecuta el código dentro del bloque else."
+  },
+  {
+    "id": "628cee95-798c-4cf9-a044-b95538dc306c",
+    "text": "¿Cuántas veces se ejecutará el mensaje 'Ataque!' el siguiente código Java? for (int i = 0; i < 3; i++) { System.out.println(\"Ataque!\"); }",
+    "options": [
+      "0 veces",
+      "1 vez",
+      "3 veces",
+      "4 veces"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) 3 veces. Cuando i es 0, 0 < 3 es true, se imprime 'Ataque!'. i se convierte en 1. Cuando i es 1, 1 < 3 es true, se imprime 'Ataque!'. i se convierte en 2. Cuando i es 2, 2 < 3 es true, se imprime 'Ataque!'. i se convierte en 3. Cuando i es 3, 3 < 3 es false, el bucle termina."
+  },
+  {
+    "id": "1929bf76-6262-44b3-9646-0caa42d4d4bd",
+    "text": "¿Cuál de las siguientes es una buena razón para usar un 'método' en programación?",
+    "options": [
+      "Para hacer el código más difícil de entender.",
+      "Para repetir la misma instrucción muchas veces seguidas sin control.",
+      "Para organizar el código en tareas específicas y reutilizarlo, evitando la repetición.",
+      "Para hacer que el programa se ejecute más lento."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) Para organizar el código en tareas específicas y reutilizarlo, evitando la repetición. Los métodos son una herramienta fundamental para mantener el código limpio, modular y fácil de mantener. Al encapsular una tarea en un método, puedes llamarlo desde cualquier lugar del programa sin tener que reescribir el mismo conjunto de instrucciones."
+  },
+  {
+    "id": "a35895dc-13f6-44ee-aef9-cf5be7748ebf",
+    "text": "Dado el siguiente método en Java: public void mostrarMensaje() { System.out.println(\"¡Bienvenido a CodeQuest!\"); } ¿Cómo llamarías a este método para que imprima el mensaje?",
+    "options": [
+      "System.out.println(mostrarMensaje);",
+      "mostrarMensaje();",
+      "call mostrarMensaje();",
+      "run mostrarMensaje;"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "La respuesta correcta es b) mostrarMensaje();. Para llamar a un método sin parámetros, simplemente escribes su nombre seguido de paréntesis vacíos y un punto y coma. Las otras opciones usan sintaxis incorrecta o comandos que no existen en Java para llamar a un método."
+  },
+  {
+    "id": "5d6c66e2-0c7e-4d5c-8780-6644b2e1d264",
+    "text": "¿Cuál es la función principal de un Array en programación Java?",
+    "options": [
+      "Realizar operaciones matemáticas complejas.",
+      "Almacenar un único valor de texto.",
+      "Almacenar una colección de elementos del mismo tipo de dato, organizados por un índice.",
+      "Dibujar gráficos en la pantalla."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) Almacenar una colección de elementos del mismo tipo de dato, organizados por un índice. Los arrays son estructuras de datos que nos permiten guardar múltiples valores (como una lista de puntuaciones, nombres de enemigos o habilidades) bajo un solo nombre de variable, facilitando su manejo y acceso mediante posiciones numéricas."
+  },
+  {
+    "id": "4a7f23ab-830e-4a73-8f59-f154162afbb4",
+    "text": "Dado el siguiente array en Java: String[] nombresEnemigos = {\"Goblin\", \"Orco\", \"Esqueleto\"}; ¿Qué código imprimiría 'Orco' en la consola?",
+    "options": [
+      "System.out.println(nombresEnemigos[1]);",
+      "System.out.println(nombresEnemigos[2]);",
+      "System.out.println(nombresEnemigos[0]);",
+      "System.out.println(nombresEnemigos[\"Orco\"]);"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "La respuesta correcta es a) System.out.println(nombresEnemigos[1]);. 'Goblin' está en el índice 0. 'Orco' está en el índice 1. 'Esqueleto' está en el índice 2. Para acceder a 'Orco', necesitamos el índice 1."
+  },
+  {
+    "id": "ad0fcc5a-c44d-4e17-ae5f-b9c9dfdeaf77",
+    "text": "¿Cuál es la idea central de la Programación Orientada a Objetos (POO) en Java?",
+    "options": [
+      "Escribir todo el código en una sola línea.",
+      "Organizar el código alrededor de 'objetos' que tienen atributos (características) y métodos (acciones).",
+      "Usar solo números en el programa.",
+      "Programar solo para computadoras muy antiguas."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "La respuesta correcta es b) Organizar el código alrededor de 'objetos' que tienen atributos (características) y métodos (acciones). La POO es un paradigma de programación que nos permite modelar el mundo real en el código, facilitando la creación de programas complejos, modulares y fáciles de mantener."
+  },
+  {
+    "id": "88cafbfc-a18a-46cc-b66c-a7ab765ca1fb",
+    "text": "En Java, si una Clase es como un plano o molde (ej: Clase Jugador), ¿qué representa un 'objeto' (ej: jugador1)?",
+    "options": [
+      "Otra clase diferente.",
+      "Un error en el programa.",
+      "Una instancia concreta creada a partir de ese plano, con sus propios valores para los atributos.",
+      "Un tipo de dato primitivo."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) Una instancia concreta creada a partir de ese plano, con sus propios valores para los atributos. Un objeto es la materialización de una clase. Si la clase Jugador define que los jugadores tienen un nombre y una vida, jugador1 y jugador2 serían dos objetos diferentes, cada uno con su propio nombre y valor de vida, pero ambos creados siguiendo el molde de la clase Jugador."
+  },
+  {
+    "id": "d082fae6-0a16-422d-b0d9-56f87224d71f",
+    "text": "¿Qué es una 'excepción' en Java?",
+    "options": [
+      "Un tipo de variable que guarda texto.",
+      "Un método especial para imprimir mensajes.",
+      "Un evento inesperado o un problema que ocurre durante la ejecución de un programa y que interrumpe su flujo normal.",
+      "Una forma de hacer que el programa sea más rápido."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) Un evento inesperado o un problema que ocurre durante la ejecución de un programa y que interrumpe su flujo normal. Las excepciones son como alarmas que suenan cuando algo va mal. Java nos permite 'capturar' estas alarmas para poder gestionarlas y evitar que el programa se bloquee, mostrando un mensaje de error al usuario o intentando una acción alternativa."
+  },
+  {
+    "id": "f7d38433-83be-4ccb-97fd-e5b45813932b",
+    "text": "Si necesitas una lista en Java que pueda cambiar de tamaño (añadir o eliminar elementos dinámicamente) para, por ejemplo, gestionar el inventario de un jugador, ¿cuál de las siguientes opciones es la más adecuada?",
+    "options": [
+      "Un array (String[] inventario)",
+      "Un int",
+      "Un ArrayList<String>",
+      "Un boolean"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "La respuesta correcta es c) Un ArrayList<String>. Mientras que un array (String[]) tiene un tamaño fijo una vez creado, un ArrayList es una colección dinámica que puede crecer y encogerse. Es perfecto para situaciones como un inventario donde el número de objetos cambia constantemente. El <String> entre > indica que es un ArrayList que guarda elementos de tipo String."
   }
 ]

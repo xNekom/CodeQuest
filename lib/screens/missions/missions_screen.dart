@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'mission_list_screen.dart';
 
-class MissionsScreen extends StatelessWidget {
+class MissionsScreen extends StatefulWidget {
   const MissionsScreen({super.key});
 
   @override
+  State<MissionsScreen> createState() => _MissionsScreenState();
+}
+
+class _MissionsScreenState extends State<MissionsScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Misiones'),
-      ),
-      body: const Center(
-        child: Text('Pantalla de Misiones'),
-      ),
-    );
+    return const MissionListScreen();
   }
 }
