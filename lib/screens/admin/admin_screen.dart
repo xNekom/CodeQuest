@@ -8,6 +8,42 @@ import '../../models/reward_model.dart';
 import '../../models/achievement_model.dart'; 
 import '../../services/reward_service.dart'; 
 
+// Helper class for Grid items
+class _AdminGridItem {
+  final String title;
+  final IconData icon;
+  final Widget Function() contentBuilder; // Function that returns the widget for the section
+
+  _AdminGridItem({
+    required this.title,
+    required this.icon,
+    required this.contentBuilder,
+  });
+}
+
+// Helper StatelessWidget to display individual admin sections
+class _SectionDetailScreen extends StatelessWidget {
+  final String title;
+  final Widget contentWidget;
+
+  const _SectionDetailScreen({
+    // Key? key, // Not needed if not passing a key
+    required this.title,
+    required this.contentWidget,
+  }); // : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: contentWidget,
+    );
+  }
+}
+
+
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
 
@@ -15,10 +51,11 @@ class AdminScreen extends StatefulWidget {
   State<AdminScreen> createState() => _AdminScreenState();
 }
 
-class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStateMixin {
+// Remove SingleTickerProviderStateMixin
+class _AdminScreenState extends State<AdminScreen> {
   final AuthService _authService = AuthService();
   final RewardService _rewardService = RewardService();
-  late final TabController _tabController;
+  // TabController _tabController; // Removed
 
   final CollectionReference _usersCol = FirebaseFirestore.instance.collection('users');
   final CollectionReference _missionsCol = FirebaseFirestore.instance.collection('missions');
@@ -26,21 +63,34 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   final CollectionReference _enemiesCol = FirebaseFirestore.instance.collection('enemies');
   final CollectionReference _leaderboardsCol = FirebaseFirestore.instance.collection('leaderboards');
   final CollectionReference _questionsCol = FirebaseFirestore.instance.collection('questions');
-  final CollectionReference _rewardsCol = FirebaseFirestore.instance.collection('rewards'); // Añadido
-  final CollectionReference _achievementsCol = FirebaseFirestore.instance.collection('achievements'); // Añadido
+  final CollectionReference _rewardsCol = FirebaseFirestore.instance.collection('rewards'); 
+  final CollectionReference _achievementsCol = FirebaseFirestore.instance.collection('achievements'); 
   
   Future<DocumentSnapshot?>? _userDataFuture;
+  late List<_AdminGridItem> _adminGridItems; // For GridView
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 8, vsync: this);
-    _tabController.addListener(() {
-      if (mounted) { // Asegurar que el widget esté montado antes de llamar a setState
-        setState(() {});
-      }
-    });
     _loadUserData();
+
+    // Initialize grid items
+    _adminGridItems = [
+      _AdminGridItem(title: 'Usuarios', icon: Icons.person, contentBuilder: () => _buildUsersTab()),
+      _AdminGridItem(title: 'Misiones', icon: Icons.flag, contentBuilder: () => _buildMissionsTab()),
+      _AdminGridItem(title: 'Items', icon: Icons.inventory, contentBuilder: () => _buildItemsTab()),
+      _AdminGridItem(title: 'Enemigos', icon: Icons.shield, contentBuilder: () => _buildEnemiesTab()),
+      _AdminGridItem(title: 'Clasificación', icon: Icons.leaderboard, contentBuilder: () => _buildLeaderboardsTab()),
+      _AdminGridItem(title: 'Preguntas', icon: Icons.question_answer, contentBuilder: () => _buildQuestionsTab()),
+      _AdminGridItem(title: 'Recompensas', icon: Icons.star, contentBuilder: () => _buildRewardsTab()),
+      _AdminGridItem(title: 'Logros', icon: Icons.emoji_events, contentBuilder: () => _buildAchievementsTab()),
+    ];
+    // _tabController = TabController(length: 8, vsync: this); // Removed
+    // _tabController.addListener(() { // Removed
+    //   if (mounted) { 
+    //     setState(() {});
+    //   }
+    // });
   }
 
   void _loadUserData() {
@@ -48,15 +98,13 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     if (user != null) {
       _userDataFuture = _usersCol.doc(user.uid).get();
     } else {
-      // Si no hay usuario, se podría redirigir o manejar como no autorizado
-      // Por ahora, FutureBuilder lo manejará como si no tuviera datos o error
       _userDataFuture = Future.value(null); 
     }
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    // _tabController.dispose(); // Removed
     super.dispose();
   }
 
@@ -118,7 +166,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     return Scaffold(
       appBar: AppBar(
         title: const Text('Acceso Denegado'),
-        automaticallyImplyLeading: false, // Para no mostrar el botón de atrás por defecto
+        automaticallyImplyLeading: false, 
       ),
       body: Center(
         child: Column(
@@ -157,7 +205,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         }
 
         if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
-          // Error al cargar datos del usuario o usuario no logueado
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted && ModalRoute.of(context)?.isCurrent == true) {
                  Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
@@ -173,7 +220,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           return _buildUnauthorizedScreen(context);
         }
 
-        // Si es admin, construir la UI normal del AdminScreen
         return Scaffold(
           appBar: AppBar(
             title: const Text('Panel de Administrador'),
@@ -188,42 +234,60 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                 },
               ),
             ],
-            bottom: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabs: const [ // Asegúrate de que sean const si no cambian
-                Tab(icon: Icon(Icons.person), text: 'Usuarios'),
-                Tab(icon: Icon(Icons.flag), text: 'Misiones'),
-                Tab(icon: Icon(Icons.inventory), text: 'Items'),
-                Tab(icon: Icon(Icons.shield), text: 'Enemigos'),
-                Tab(icon: Icon(Icons.leaderboard), text: 'Clasificación'),
-                Tab(icon: Icon(Icons.question_answer), text: 'Preguntas'),
-                Tab(icon: Icon(Icons.star), text: 'Recompensas'),
-                Tab(icon: Icon(Icons.emoji_events), text: 'Logros'),
-              ],
+            // bottom: TabBar(...) // Removed
+          ),
+          body: Padding( // Added padding around GridView
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Number of columns
+                crossAxisSpacing: 8.0, // Spacing between columns
+                mainAxisSpacing: 8.0, // Spacing between rows
+                childAspectRatio: 1.2, // Aspect ratio of the cards
+              ),
+              itemCount: _adminGridItems.length,
+              itemBuilder: (context, index) {
+                final item = _adminGridItems[index];
+                return Card(
+                  elevation: 4.0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (newContext) => _SectionDetailScreen(
+                            title: item.title,
+                            contentWidget: item.contentBuilder(),
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(item.icon, size: 48.0, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(height: 12.0),
+                        Text(
+                          item.title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              // Pestaña Usuarios
-              _buildUsersTab(), // Asumiendo que tienes este método
-              _buildMissionsTab(),
-              _buildItemsTab(), // Asumiendo que tienes este método
-              _buildEnemiesTab(), // Asumiendo que tienes este método
-              _buildLeaderboardsTab(), // Asumiendo que tienes este método
-              _buildQuestionsTab(), // Asumiendo que tienes este método
-              _buildRewardsTab(),
-              _buildAchievementsTab(),
-            ],
-          ),
-          floatingActionButton: _buildFloatingActionButton(), // Asumiendo que tienes este método
+          // floatingActionButton: _buildFloatingActionButton(), // Removed
         );
       },
     );
   }
 
-  // Métodos de construcción de pestañas (ejemplos, asegúrate de tenerlos definidos)
   Widget _buildUsersTab() {
     return StreamBuilder<QuerySnapshot>(
             stream: _usersCol.snapshots(),
@@ -527,147 +591,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               );
             },
           );
-  }
-  
-  Widget _buildFloatingActionButton() {
-    // El FAB se mostrará solo si el usuario es admin y la UI principal está construida.
-    // La lógica del switch (_tabController.index) permanece igual.
-    switch (_tabController.index) {
-      case 0: // Usuarios
-        return const SizedBox.shrink();
-      case 1: // Misiones
-        return FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => _showMissionDialog(),
-        );
-      case 2: // Items
-        return FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            final nameCtrl = TextEditingController();
-            final descCtrl = TextEditingController();
-            final typeCtrl = TextEditingController();
-            showDialog(context: context, builder: (_) => AlertDialog(
-              title: const Text('Crear Item'),
-              content: Column(mainAxisSize: MainAxisSize.min, children: [
-                TextFormField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
-                TextFormField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Descripción')),
-                TextFormField(controller: typeCtrl, decoration: const InputDecoration(labelText: 'Tipo')),
-              ]),
-              actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-                TextButton(onPressed: () async {
-                  await FirebaseFirestore.instance.collection('items').add({'name': nameCtrl.text, 'description': descCtrl.text, 'type': typeCtrl.text});
-                  if (!mounted) return; 
-                  Navigator.pop(context);
-                }, child: const Text('Crear'))],
-            ));
-          },
-        );
-      case 3: // Enemigos
-        return FloatingActionButton(onPressed: () {
-          final formKey = GlobalKey<FormState>();
-          final n = TextEditingController(); final d = TextEditingController(); final t = TextEditingController(); final v = TextEditingController(); final pool = TextEditingController();
-          showDialog(context: context, builder: (_) => AlertDialog(
-            title: const Text('Crear Enemigo'),
-            content: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  TextFormField(controller: n, decoration: const InputDecoration(labelText: 'Nombre'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                  TextFormField(controller: d, decoration: const InputDecoration(labelText: 'Descripción')),
-                  TextFormField(controller: t, decoration: const InputDecoration(labelText: 'Tipo'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                  TextFormField(controller: v, decoration: const InputDecoration(labelText: 'Asset URL'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                  TextFormField(controller: pool, decoration: const InputDecoration(labelText: 'Question IDs (coma)'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                ]),
-              ),
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-              TextButton(onPressed: () async {
-                if (!formKey.currentState!.validate()) return;
-                final list = pool.text.split(',').map((e) => e.trim()).toList();
-                await FirebaseFirestore.instance.collection('enemies').add({'name': n.text, 'description': d.text, 'type': t.text, 'visualAssetUrl': v.text, 'questionPool': list});
-                if (!mounted) return; 
-                Navigator.pop(context);
-              }, child: const Text('Crear'))
-            ],
-          ));
-        }, child: const Icon(Icons.add));
-      case 4: // Leaderboards
-        return FloatingActionButton(onPressed: () {
-          final formKey = GlobalKey<FormState>();
-          final userCtrl = TextEditingController(); final uname = TextEditingController(); final score = TextEditingController();
-          showDialog(context: context, builder: (_) => AlertDialog(
-            title: const Text('Crear Entrada de Clasificación'),
-            content: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  TextFormField(controller: userCtrl, decoration: const InputDecoration(labelText: 'User ID'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                  TextFormField(controller: uname, decoration: const InputDecoration(labelText: 'Username'), validator: (v) => v == null || v.isEmpty ? 'Requerido' : null),
-                  TextFormField(controller: score, decoration: const InputDecoration(labelText: 'Puntuación'), keyboardType: TextInputType.number, validator: (v) => v == null || int.tryParse(v) == null ? 'Número inválido' : null),
-                ]),
-              ),
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
-              TextButton(onPressed: () async {
-                if (!formKey.currentState!.validate()) return;
-                final sc = int.parse(score.text);
-                await FirebaseFirestore.instance.collection('leaderboards').add({'userId': userCtrl.text, 'username': uname.text, 'score': sc, 'lastUpdated': FieldValue.serverTimestamp()});
-                if (!mounted) return; 
-                Navigator.pop(context);
-              }, child: const Text('Crear'))
-            ],
-          ));
-        }, child: const Icon(Icons.add));
-      case 5: // Preguntas
-        return FloatingActionButton(
-          onPressed: () {
-            final formKey = GlobalKey<FormState>();
-            final textCtrl = TextEditingController();
-            final optsCtrl = TextEditingController();
-            final correctCtrl = TextEditingController();
-            final explCtrl = TextEditingController();
-            showDialog(context: context, builder: (_) => AlertDialog(
-              title: const Text('Crear Pregunta'),
-              content: Form(key: formKey, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
-                TextFormField(controller: textCtrl, decoration: const InputDecoration(labelText: 'Texto'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
-                TextFormField(controller: optsCtrl, decoration: const InputDecoration(labelText: 'Opciones (separadas por ||)'), validator: (v)=>v==null||v.isEmpty?'Requerido':null),
-                TextFormField(controller: correctCtrl, decoration: const InputDecoration(labelText: 'Índice correcto'), keyboardType: TextInputType.number, validator: (v)=>v==null||int.tryParse(v)==null?'Número inválido':null),
-                TextFormField(controller: explCtrl, decoration: const InputDecoration(labelText: 'Explicación')),
-              ]))),
-              actions: [
-                TextButton(onPressed: ()=>Navigator.pop(context), child: const Text('Cancelar')),
-                TextButton(onPressed: () async {
-                  if (!formKey.currentState!.validate()) return;
-                  await _questionsCol.add({ 
-                    'text': textCtrl.text,
-                    'options': optsCtrl.text.split('||'),
-                    'correctAnswerIndex': int.parse(correctCtrl.text),
-                    'explanation': explCtrl.text,
-                  });
-                  if (!mounted) return; 
-                  Navigator.pop(context);
-                }, child: const Text('Crear'))
-              ],
-            ));
-          },
-          child: const Icon(Icons.add),
-        );
-      case 6: // Recompensas
-        return FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => _showRewardDialog(),
-        );
-      case 7: // Logros
-        return FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => _showAchievementDialog(),
-        );
-      default:
-        return const SizedBox.shrink();
-    }
   }
   
   // --- Widgets para las nuevas pestañas (Recompensas y Logros) ---
