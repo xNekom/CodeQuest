@@ -12,8 +12,9 @@ import '../mission_completed_screen.dart'; // Importar MissionCompletedScreen
 /// Pantalla de preguntas de una misión
 class QuestionScreen extends StatefulWidget {
   final String missionId;
+  final bool isReplay;
 
-  const QuestionScreen({super.key, required this.missionId});
+  const QuestionScreen({super.key, required this.missionId, this.isReplay = false});
 
   @override
   State<QuestionScreen> createState() => _QuestionScreenState();
@@ -30,7 +31,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool _isLoading = true;
   String _missionName = "";
   String _errorMessage = "";
-  final int _experiencePoints = 50;
+  final int _experiencePoints = 25;
 
   int? _selectedOptionIndex; // Para rastrear la opción seleccionada
   bool _answerSubmitted = false; // Para saber si el usuario ya respondió la pregunta actual
@@ -120,20 +121,32 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _isCurrentAnswerCorrect = null;
   }
 
-  void _submitAnswer(int selectedIndex) {
+  void _submitAnswer(int selectedIndex) async {
     if (_answerSubmitted) return; // No hacer nada si ya se respondió
 
     final QuestionModel currentQuestion = _questions[_currentIndex];
+    final bool isCorrect = currentQuestion.correctAnswerIndex == selectedIndex;
+    
     setState(() {
       _selectedOptionIndex = selectedIndex;
       _answerSubmitted = true;
-      _isCurrentAnswerCorrect = currentQuestion.correctAnswerIndex == selectedIndex;
+      _isCurrentAnswerCorrect = isCorrect;
       if (_isCurrentAnswerCorrect == true) {
         _totalCorrectAnswers++; // Incrementar si la respuesta es correcta
       } else {
         _totalIncorrectAnswers++; // Incrementar si la respuesta es incorrecta
       }
     });
+    
+    // Actualizar estadísticas de preguntas
+    final String? userId = _authService.currentUser?.uid;
+    if (userId != null) {
+      try {
+        await _userService.updateStatsAfterQuestion(userId, isCorrect);
+      } catch (e) {
+        debugPrint('Error al actualizar estadísticas de pregunta: $e');
+      }
+    }
   }
 
   void _moveToNextQuestionOrComplete() {
@@ -175,28 +188,47 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
     setState(() { _isLoading = true; });
     try {
-      await _userService.addExperience(userId, _experiencePoints);
-      await _userService.completeMission(userId, widget.missionId);
+      // Solo otorgar recompensas si no es una repetición
+      if (!widget.isReplay) {
+        await _userService.addExperience(userId, _experiencePoints, missionId: widget.missionId);
+        await _userService.completeMission(userId, widget.missionId, isBattleMission: false);
+      }
 
       setState(() { _isLoading = false; });
 
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => MissionCompletedScreen(
-              missionId: widget.missionId,
-              missionName: _missionName,
-              experiencePoints: _experiencePoints,
-              onContinue: () {
-                // Navegar de vuelta a la lista de misiones o a la pantalla principal
-                // Esto asume que MissionListScreen es la ruta raíz o una ruta principal a la que quieres volver
-                Navigator.of(context).popUntil((route) => route.isFirst); 
-              },
-              // unlockedAchievement: ..., // Opcional
-              // earnedReward: ..., // Opcional
+        if (widget.isReplay) {
+          // Si es repetición, mostrar mensaje y volver al home
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Lección completada. No se otorgaron recompensas por repetición.")),
+          );
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/home',
+            (route) => false,
+          );
+        } else {
+          // Si no es repetición, mostrar pantalla de misión completada
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => MissionCompletedScreen(
+                missionId: widget.missionId,
+                missionName: _missionName,
+                experiencePoints: _experiencePoints,
+                coinsEarned: 10, // Monedas por misión de teoría
+                isBattleMission: false,
+                onContinue: () {
+                  // Navegar directamente al home con reemplazo completo
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/home',
+                    (route) => false,
+                  );
+                },
+                // unlockedAchievement: ..., // Opcional
+                // earnedReward: ..., // Opcional
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     } catch (e) {
       setState(() { _isLoading = false; });

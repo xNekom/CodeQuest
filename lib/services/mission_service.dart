@@ -18,12 +18,12 @@ class MissionService {
           try {
             missions.add(MissionModel.fromFirestore(doc));
           } catch (e) {
-            // print('[MissionService] Error parsing mission with ID ${doc.id}: $e');
-            // print('[MissionService] Data for mission ${doc.id}: ${doc.data()}');
+            print('[MissionService] Error parsing mission with ID ${doc.id}: $e');
+            print('[MissionService] Data for mission ${doc.id}: ${doc.data()}');
           }
         }
         if (missions.isEmpty && snapshot.docs.isNotEmpty) {
-          // print('[MissionService] All mission documents failed to parse.');
+          print('[MissionService] All mission documents failed to parse.');
         }
         return missions;
       });
@@ -43,7 +43,7 @@ class MissionService {
           return MissionModel.fromFirestore(doc);
         }
       } catch (e) {
-        // print('Error al obtener misión por ID desde Firebase: $e');
+        print('Error al obtener misión por ID desde Firebase: $e');
       }
       return null;
     } else {

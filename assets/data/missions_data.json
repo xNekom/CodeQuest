@@ -20,8 +20,8 @@
       }
     ],
     "rewards": {
-      "experience": 50,
-      "coins": 20,
+      "experience": 25,
+      "coins": 10,
       "items": [],
       "unlocks": ["mision_teoria_2"]
     },
@@ -52,8 +52,8 @@
       }
     ],
     "rewards": {
-      "experience": 50,
-      "coins": 20,
+      "experience": 25,
+      "coins": 10,
       "items": [],
       "unlocks": ["mision_teoria_3"]
     },
@@ -83,8 +83,8 @@
       }
     ],
     "rewards": {
-      "experience": 50,
-      "coins": 20,
+      "experience": 25,
+      "coins": 10,
       "items": [],
       "unlocks": ["mision_batalla_final"]
     },
@@ -95,13 +95,86 @@
     ]
   },
   {
+    "id": "mision_batalla_1",
+    "title": "Batalla 1: Cazando Bugs Básicos",
+    "description": "Tu primera batalla contra los bugs de programación. Derrota al Bug del Punto y Coma.",
+    "zone": "Campo de Batalla",
+    "levelRequired": 1,
+    "status": "disponible",
+    "isRepeatable": true,
+    "objectives": [
+      {
+        "type": "batalla",
+        "description": "Derrota al Bug del Punto y Coma respondiendo preguntas.",
+        "target": 1,
+        "battleConfig": {
+          "enemyId": "enemigo_bug_del_punto_y_coma",
+          "questionIds": [
+            "pregunta_que_es_un_programa",
+            "pregunta_multiplataforma_java",
+            "pregunta_estructura_principal_java_clase_main"
+          ],
+          "playerHealthMultiplier": 1.0,
+          "enemyAttackMultiplier": 0.8,
+          "environment": "campo_bug"
+        }
+      }
+    ],
+    "rewards": {
+      "experience": 30,
+      "coins": 25,
+      "items": [],
+      "unlocks": ["mision_batalla_2"]
+    }
+  },
+  {
+    "id": "mision_batalla_2",
+    "title": "Batalla 2: Excepciones Peligrosas",
+    "description": "Enfrenta al temido NullPointerException en esta batalla intermedia.",
+    "zone": "Campo de Batalla",
+    "levelRequired": 1,
+    "status": "bloqueada",
+    "isRepeatable": true,
+    "requirements": {
+      "completedMissionId": "mision_batalla_1"
+    },
+    "objectives": [
+      {
+        "type": "batalla",
+        "description": "Derrota al NullPointerException con tus conocimientos.",
+        "target": 1,
+        "battleConfig": {
+          "enemyId": "enemigo_nullpointerexception",
+          "questionIds": [
+            "pregunta_instruccion_hola_mundo_java",
+            "pregunta_que_es_una_variable",
+            "pregunta_tipo_dato_edad_java",
+            "pregunta_que_es_un_programa"
+          ],
+          "playerHealthMultiplier": 1.0,
+          "enemyAttackMultiplier": 1.0,
+          "environment": "campo_bug"
+        }
+      }
+    ],
+    "rewards": {
+      "experience": 40,
+      "coins": 35,
+      "items": [],
+      "unlocks": ["mision_batalla_final"]
+    }
+  },
+  {
     "id": "mision_batalla_final",
     "title": "Batalla Final: Bug Supremo",
     "description": "Derrota al Bug Supremo respondiendo preguntas de toda la teoría.",
     "zone": "Campo de Batalla",
     "levelRequired": 1,
-    "status": "disponible",
+    "status": "bloqueada",
     "isRepeatable": false,
+    "requirements": {
+      "completedMissionId": "mision_batalla_2"
+    },
     "objectives": [
       {
         "type": "batalla",
@@ -118,14 +191,14 @@
             "pregunta_tipo_dato_edad_java"
           ],
           "playerHealthMultiplier": 1.0,
-          "enemyAttackMultiplier": 1.0,
+          "enemyAttackMultiplier": 1.2,
           "environment": "campo_bug"
         }
       }
     ],
     "rewards": {
-      "experience": 200,
-      "coins": 100,
+      "experience": 60,
+      "coins": 50,
       "items": [],
       "unlocks": []
     }
