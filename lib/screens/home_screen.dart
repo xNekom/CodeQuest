@@ -10,6 +10,7 @@ import '../widgets/character_pixelart.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../widgets/test_error_widget.dart';
+import 'code_exercises_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,9 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey _achievementsKey = GlobalKey();
   final GlobalKey _leaderboardKey = GlobalKey();
   final GlobalKey _adminKey = GlobalKey();
-  final GlobalKey _adventureButtonKey = GlobalKey(); // Nueva key para el botón de aventura
-  final GlobalKey _shopButtonKey = GlobalKey(); // Nueva key para el botón de tienda
-  final GlobalKey _inventoryButtonKey = GlobalKey(); // Nueva key para el botón de inventario
+  final GlobalKey _adventureButtonKey =
+      GlobalKey(); // Nueva key para el botón de aventura
+  final GlobalKey _shopButtonKey =
+      GlobalKey(); // Nueva key para el botón de tienda
+  final GlobalKey _inventoryButtonKey =
+      GlobalKey(); // Nueva key para el botón de inventario
+  final GlobalKey _codeExercisesButtonKey =
+      GlobalKey(); // Nueva key para el botón de ejercicios de código
 
   @override
   void initState() {
@@ -52,10 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _checkAndStartTutorial() async {
     // Esperar a que la UI se construya completamente, pero con un tiempo menor
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     // Verificar si el widget sigue montado antes de continuar
     if (!mounted) return;
-    
+
     try {
       TutorialService.startTutorialIfNeeded(
         context,
@@ -85,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //     _isLoading = true;
     //   });
     // }
-      try {
+    try {
       User? user = _authService.currentUser;
       if (user != null) {
         final userData = await _userService.getUserData(user.uid);
@@ -104,29 +110,32 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       // Registrar el error de manera global
       ErrorHandler.logError(e, StackTrace.current);
-      
+
       // Mostrar mensaje de error al usuario
       if (mounted) {
-        ErrorHandler.showError(context, 'No se pudieron cargar los datos del usuario. Inténtalo nuevamente.');
+        ErrorHandler.showError(
+          context,
+          'No se pudieron cargar los datos del usuario. Inténtalo nuevamente.',
+        );
         setState(() {
           _isLoading = false;
         });
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : _userData == null
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _userData == null
                 ? const Center(
-                    child: Text('No se encontraron datos del usuario'),
-                  )
+                  child: Text('No se encontraron datos del usuario'),
+                )
                 : _buildUserDataContent(),
       ),
       floatingActionButton: TutorialFloatingButton(
@@ -143,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   Widget _buildUserDataContent() {
     return SafeArea(
       child: Column(
@@ -157,7 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildUserHeader(),
                   const SizedBox(height: 24),
                   _buildStatsSection(),
-                  const SizedBox(height: 24),                  _buildAdventureButton(),
+                  const SizedBox(height: 24),
+                  _buildAdventureButton(),
+                  const SizedBox(height: 16),
+                  _buildCodeExercisesButton(),
                   const SizedBox(height: 16),
                   _buildShopButton(),
                   const SizedBox(height: 16),
@@ -185,28 +198,37 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
-        color: Theme.of(context).colorScheme.surface.withAlpha(230), // 0.9 * 255 ≈ 230
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2,2))],
+        color: Theme.of(
+          context,
+        ).colorScheme.surface.withAlpha(230), // 0.9 * 255 ≈ 230
+        boxShadow: [
+          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2, 2)),
+        ],
       ),
       child: Row(
         children: [
           const Text(
             'CODEQUEST',
             style: TextStyle(fontWeight: FontWeight.bold),
-          ),          Spacer(),
+          ),
+          Spacer(),
           if (isAdmin) // Mostrar botones de admin solo si el usuario es admin
-            Row(
-              children: [
-                // Widget para probar errores (solo visible para administradores)
-                const TestErrorWidget(),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.admin_panel_settings),
-                  tooltip: 'Panel de Administrador',
-                  onPressed: () {
-                  Navigator.pushNamed(context, '/admin');                },
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Widget para probar errores (solo visible para administradores)
+                  const TestErrorWidget(),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.admin_panel_settings),
+                    tooltip: 'Panel de Administrador',
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/admin');
+                    },
+                  ),
+                ],
               ),
-              ],
             ),
           IconButton(
             icon: const Icon(Icons.logout),
@@ -235,51 +257,65 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildUserHeader() {
     return PixelCard(
       key: _profileKey, // Asignar la key al perfil
-      child: LayoutBuilder(builder: (context, constraints) {
-        final isWide = constraints.maxWidth > 400;
-        return Column(
-          children: [
-            isWide
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Hero(tag: 'avatar_${_userData!['username']}', child: CharacterPixelArt(
-                      skinTone: _userData!['skinTone'] as String,
-                      hairStyle: _userData!['hairStyle'] as String,
-                      outfit: _userData!['outfit'] as String,
-                      size: 80,
-                    )),
-                    const SizedBox(width: 16),
-                    Expanded(child: _buildUserInfo()),
-                  ],
-                )
-              : Column(
-                  children: [
-                    Hero(tag: 'avatar_${_userData!['username']}', child: CharacterPixelArt(
-                      skinTone: _userData!['skinTone'] as String,
-                      hairStyle: _userData!['hairStyle'] as String,
-                      outfit: _userData!['outfit'] as String,
-                      size: 80,
-                    )),
-                    const SizedBox(height: 8),
-                    _buildUserInfo(),
-                  ],
-                ),
-            const SizedBox(height: 16),
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: _calculateExpProgress()),
-              duration: const Duration(seconds: 1),
-              builder: (context, value, child) {
-                return Column(children: [
-                  const Text('Experiencia'),
-                  const SizedBox(height: 4),
-                  PixelProgressBar(value: value, label: '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP'),
-                ]);
-              },
-            ),
-          ],
-        );
-      }),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth > 400;
+          return Column(
+            children: [
+              isWide
+                  ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Hero(
+                        tag: 'avatar_${_userData!['username']}',
+                        child: CharacterPixelArt(
+                          skinTone: _userData!['skinTone'] as String,
+                          hairStyle: _userData!['hairStyle'] as String,
+                          outfit: _userData!['outfit'] as String,
+                          size: 80,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(child: _buildUserInfo()),
+                    ],
+                  )
+                  : Column(
+                    children: [
+                      Hero(
+                        tag: 'avatar_${_userData!['username']}',
+                        child: CharacterPixelArt(
+                          skinTone: _userData!['skinTone'] as String,
+                          hairStyle: _userData!['hairStyle'] as String,
+                          outfit: _userData!['outfit'] as String,
+                          size: 80,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildUserInfo(),
+                    ],
+                  ),
+              const SizedBox(height: 16),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: _calculateExpProgress()),
+                duration: const Duration(seconds: 1),
+                builder: (context, value, child) {
+                  return Column(
+                    children: [
+                      const Text('Experiencia'),
+                      const SizedBox(height: 4),
+                      PixelProgressBar(
+                        value: value,
+                        label:
+                            '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP',
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -293,9 +329,21 @@ class _HomeScreenState extends State<HomeScreen> {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 8),
-        Row(children: [Icon(Icons.star, size: 18), const SizedBox(width: 8), Text('Nivel: ${_userData!['level'] ?? 1}')]),
+        Row(
+          children: [
+            Icon(Icons.star, size: 18),
+            const SizedBox(width: 8),
+            Text('Nivel: ${_userData!['level'] ?? 1}'),
+          ],
+        ),
         const SizedBox(height: 4),
-        Row(children: [Icon(Icons.monetization_on, size: 18, color: Colors.amber), const SizedBox(width: 8), Text('${_userData!['coins'] ?? 0} monedas')]),
+        Row(
+          children: [
+            Icon(Icons.monetization_on, size: 18, color: Colors.amber),
+            const SizedBox(width: 8),
+            Text('${_userData!['coins'] ?? 0} monedas'),
+          ],
+        ),
         const SizedBox(height: 8),
         TextButton.icon(
           icon: const Icon(Icons.lock_reset),
@@ -308,9 +356,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showChangePasswordDialog() async {
-    final TextEditingController currentPasswordController = TextEditingController();
+    final TextEditingController currentPasswordController =
+        TextEditingController();
     final TextEditingController newPasswordController = TextEditingController();
-    final TextEditingController confirmPasswordController = TextEditingController();
+    final TextEditingController confirmPasswordController =
+        TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return showDialog<void>(
@@ -326,7 +376,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   TextFormField(
                     controller: currentPasswordController,
-                    decoration: const InputDecoration(labelText: 'Contraseña Actual'),
+                    decoration: const InputDecoration(
+                      labelText: 'Contraseña Actual',
+                    ),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -338,7 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 10),
                   TextFormField(
                     controller: newPasswordController,
-                    decoration: const InputDecoration(labelText: 'Nueva Contraseña'),
+                    decoration: const InputDecoration(
+                      labelText: 'Nueva Contraseña',
+                    ),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -353,7 +407,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 10),
                   TextFormField(
                     controller: confirmPasswordController,
-                    decoration: const InputDecoration(labelText: 'Confirmar Nueva Contraseña'),
+                    decoration: const InputDecoration(
+                      labelText: 'Confirmar Nueva Contraseña',
+                    ),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -382,30 +438,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (formKey.currentState!.validate()) {
                   try {
                     // Reautenticar al usuario es necesario para cambiar la contraseña
-                    bool reauthenticated = await _authService.reauthenticateUser(
-                      currentPasswordController.text,
-                    );
+                    bool reauthenticated = await _authService
+                        .reauthenticateUser(currentPasswordController.text);
 
                     if (reauthenticated) {
-                      await _authService.changePassword(newPasswordController.text);
+                      await _authService.changePassword(
+                        newPasswordController.text,
+                      );
                       if (mounted) {
                         Navigator.of(dialogContext).pop(); // Cerrar el diálogo
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Contraseña cambiada con éxito.')),
+                          const SnackBar(
+                            content: Text('Contraseña cambiada con éxito.'),
+                          ),
                         );
                       }
                     } else {
-                       if (mounted) {
+                      if (mounted) {
                         // No cerrar el diálogo, mostrar error dentro del diálogo o con SnackBar
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Error: La contraseña actual es incorrecta.')),
+                          const SnackBar(
+                            content: Text(
+                              'Error: La contraseña actual es incorrecta.',
+                            ),
+                          ),
                         );
                       }
                     }
                   } catch (e) {
                     if (mounted) {
-                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error al cambiar la contraseña: $e')),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error al cambiar la contraseña: $e'),
+                        ),
                       );
                     }
                   }
@@ -424,19 +489,34 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'ESTADÍSTICAS',
-            style: Theme.of(context).textTheme.titleMedium,
+          Text('ESTADÍSTICAS', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 16),
+          _buildStatItem(
+            Icons.help_outline,
+            'Preguntas contestadas',
+            '${_userData!['stats']?['questionsAnswered'] ?? 0}',
           ),
+          _buildStatItem(
+            Icons.check_circle,
+            'Respuestas correctas',
+            '${_userData!['stats']?['correctAnswers'] ?? 0}',
+          ),
+          _buildStatItem(
+            Icons.emoji_events,
+            'Batallas ganadas',
+            '${_userData!['stats']?['battlesWon'] ?? 0}',
+          ),
+          _buildStatItem(
+            Icons.mood_bad,
+            'Batallas perdidas',
+            '${_userData!['stats']?['battlesLost'] ?? 0}',
+          ),
+
           const SizedBox(height: 16),
-          _buildStatItem(Icons.help_outline, 'Preguntas contestadas', '${_userData!['stats']?['questionsAnswered'] ?? 0}'),
-          _buildStatItem(Icons.check_circle, 'Respuestas correctas', '${_userData!['stats']?['correctAnswers'] ?? 0}'),
-          _buildStatItem(Icons.emoji_events, 'Batallas ganadas', '${_userData!['stats']?['battlesWon'] ?? 0}'),
-          _buildStatItem(Icons.mood_bad, 'Batallas perdidas', '${_userData!['stats']?['battlesLost'] ?? 0}'),
-          
-          const SizedBox(height: 16),
-          Text('Misiones completadas: ${_userData!['completedMissions']?.length ?? 0}'),
-          
+          Text(
+            'Misiones completadas: ${_userData!['completedMissions']?.length ?? 0}',
+          ),
+
           if (_userData!['completedMissions']?.isNotEmpty ?? false)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -449,7 +529,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
-                      disabledBackgroundColor: Colors.green.withAlpha(179), // Reemplazado .withOpacity(0.7)
+                      disabledBackgroundColor: Colors.green.withAlpha(
+                        179,
+                      ), // Reemplazado .withOpacity(0.7)
                       disabledForegroundColor: Colors.white,
                     ),
                     child: Text('Misión ${index + 1}'),
@@ -471,10 +553,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 12),
           Text(label),
           const Spacer(),
-          Text(
-            value,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -483,7 +562,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildAdventureButton() {
     return Center(
       child: PixelButton(
-        key: _adventureButtonKey, // Usar la key correcta para el botón de aventura
+        key:
+            _adventureButtonKey, // Usar la key correcta para el botón de aventura
         onPressed: () {
           Navigator.pushNamed(context, '/missions');
         },
@@ -545,6 +625,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Botón para acceder a los Ejercicios de Código
+  Widget _buildCodeExercisesButton() {
+    return Center(
+      child: PixelButton(
+        key: _codeExercisesButtonKey, // Asignar la key al botón de ejercicios
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CodeExercisesScreen(),
+            ),
+          );
+        },
+        color: Colors.purple[600] ?? Colors.purple,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.code, size: 20),
+            SizedBox(width: 8),
+            Text('EJERCICIOS DE CÓDIGO'),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildAchievementsSection() {
     return PixelCard(
       key: _achievementsKey, // Asignar la key a la sección de logros
@@ -554,10 +661,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'LOGROS',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text('LOGROS', style: Theme.of(context).textTheme.titleMedium),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/achievements');
@@ -567,23 +671,32 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          Center( // Usar Center para posicionar el botón
+          Center(
+            // Usar Center para posicionar el botón
             child: PixelButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/achievements');
               },
               color: Theme.of(context).colorScheme.tertiary,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // Mantener un padding adecuado
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 8.0,
+                ), // Mantener un padding adecuado
                 child: Row(
-                  mainAxisSize: MainAxisSize.min, // Clave para que el botón se ajuste al contenido
+                  mainAxisSize:
+                      MainAxisSize
+                          .min, // Clave para que el botón se ajuste al contenido
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.emoji_events, size: 20),
                     const SizedBox(width: 8),
-                    Text( // Texto simplificado, sin Flexible ni softWrap
+                    Text(
+                      // Texto simplificado, sin Flexible ni softWrap
                       'VER MIS LOGROS',
-                      textAlign: TextAlign.center, // Opcional, útil si el texto llegara a envolverse
+                      textAlign:
+                          TextAlign
+                              .center, // Opcional, útil si el texto llegara a envolverse
                     ),
                   ],
                 ),

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "i1vSzNSm7pdiQqBtedH2kkHvlH43",
+    "email": "test@gmail.com",
+    "username": "test",
+    "role": "user",
+    "progressInMission": {},
+    "level": 1,
+    "experiencePoints": 0,
+    "gameCurrency": 0,
+    "inventory": {
+      "items": []
+    },
+    "unlockedAbilities": [],
+    "equippedItems": {},
+    "unlockedAchievements": [],
+    "skinTone": "Claro",
+    "hairStyle": "Corto",
+    "outfit": "Aventurero",
+    "characterCreated": false,
+    "characterStats": {
+      "health": 100,
+      "attack": 10,
+      "defense": 5,
+      "speed": 8
+    },
+    "createdAt": {
+      "_seconds": 1748732425,
+      "_nanoseconds": 800000000
+    },
+    "stats": {
+      "battlesWon": 0,
+      "battlesLost": 0,
+      "enemiesDefeated": {},
+      "totalEnemiesDefeated": 0,
+      "questionsAnswered": 3,
+      "correctAnswers": 3
+    },
+    "experience": 25,
+    "completedMissions": [
+      "mision_1_1"
+    ],
+    "coins": 10,
+    "currentMissionId": "",
+    "lastLogin": {
+      "_seconds": 1748734101,
+      "_nanoseconds": 591000000
+    }
+  }
+]

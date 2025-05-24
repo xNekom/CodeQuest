@@ -9,6 +9,15 @@
     "conditions": {}
   },
   {
+    "id": "reward_004",
+    "name": "Objeto Misterioso",
+    "description": "Un objeto especial que podrás usar en tu aventura.",
+    "iconUrl": "https://example.com/icon_mystery_item.png",
+    "type": "item",
+    "value": 1,
+    "conditions": {}
+  },
+  {
     "id": "reward_002",
     "name": "Experiencia Extra",
     "description": "Puntos de experiencia adicionales para subir de nivel más rápido.",
@@ -23,15 +32,6 @@
     "description": "Una insignia especial que muestra tu progreso inicial.",
     "iconUrl": "https://example.com/icon_badge_beginner.png",
     "type": "badge",
-    "value": 1,
-    "conditions": {}
-  },
-  {
-    "id": "reward_004",
-    "name": "Objeto Misterioso",
-    "description": "Un objeto especial que podrás usar en tu aventura.",
-    "iconUrl": "https://example.com/icon_mystery_item.png",
-    "type": "item",
     "value": 1,
     "conditions": {}
   }

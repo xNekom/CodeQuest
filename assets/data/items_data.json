@@ -1,35 +1,5 @@
 [
   {
-    "id": "item_rubi_pequeno_tallado",
-    "name": "Rubí Pequeño Tallado",
-    "description": "Un pequeño rubí tallado de calidad media, perfecto para joyería.",
-    "icon": "ruby_small_carved.png",
-    "type": "material",
-    "valor_monetario": 100,
-    "in_shop": true,
-    "rareza": "Común"
-  },
-  {
-    "id": "item_pasta_termica",
-    "name": "Pasta Térmica",
-    "description": "Pasta térmica de alta conductividad para disipar el calor de componentes.",
-    "icon": "pasta_termica.png",
-    "type": "material",
-    "valor_monetario": 40,
-    "in_shop": true,
-    "rareza": "Poco Común"
-  },
-  {
-    "id": "item_cable_usb",
-    "name": "Cable USB",
-    "description": "Cable USB estándar para conexión de dispositivos.",
-    "icon": "cable_usb.png",
-    "type": "material",
-    "valor_monetario": 25,
-    "in_shop": true,
-    "rareza": "Común"
-  },
-  {
     "id": "item_cable_oro",
     "name": "Cable USB de oro",
     "description": "Cable USB de oro para conexión de dispositivos.",
@@ -60,34 +30,14 @@
     "rareza": "Raro"
   },
   {
-    "id": "recompensa_null_hunter",
-    "name": "Detector de Nulls",
-    "description": "Un dispositivo especial para detectar referencias nulas.",
+    "id": "recompensa_array_expert",
+    "name": "Libro de Arrays",
+    "description": "Un manual completo sobre el manejo de arrays y sus índices.",
     "icon": "cable_usb.png",
-    "type": "tool",
-    "valor_monetario": 200,
+    "type": "book",
+    "valor_monetario": 180,
     "in_shop": false,
     "rareza": "Raro"
-  },
-  {
-    "id": "recompensa_loop_breaker",
-    "name": "Rompe-Bucles Digital",
-    "description": "Una herramienta especializada para romper bucles infinitos.",
-    "icon": "ruby_small_carved.png",
-    "type": "tool",
-    "valor_monetario": 300,
-    "in_shop": false,
-    "rareza": "Épico"
-  },
-  {
-    "id": "recompensa_stack_master",
-    "name": "Medalla de Maestro del Stack",
-    "description": "Una medalla prestigiosa para maestros del manejo de stack.",
-    "icon": "pasta_termica.png",
-    "type": "trophy",
-    "valor_monetario": 400,
-    "in_shop": false,
-    "rareza": "Épico"
   },
   {
     "id": "recompensa_exception_handler",
@@ -100,13 +50,63 @@
     "rareza": "Épico"
   },
   {
-    "id": "recompensa_array_expert",
-    "name": "Libro de Arrays",
-    "description": "Un manual completo sobre el manejo de arrays y sus índices.",
+    "id": "recompensa_loop_breaker",
+    "name": "Rompe-Bucles Digital",
+    "description": "Una herramienta especializada para romper bucles infinitos.",
+    "icon": "ruby_small_carved.png",
+    "type": "tool",
+    "valor_monetario": 300,
+    "in_shop": false,
+    "rareza": "Épico"
+  },
+  {
+    "id": "recompensa_null_hunter",
+    "name": "Detector de Nulls",
+    "description": "Un dispositivo especial para detectar referencias nulas.",
     "icon": "cable_usb.png",
-    "type": "book",
-    "valor_monetario": 180,
+    "type": "tool",
+    "valor_monetario": 200,
     "in_shop": false,
     "rareza": "Raro"
+  },
+  {
+    "id": "item_pasta_termica",
+    "name": "Pasta Térmica",
+    "description": "Pasta térmica de alta conductividad para disipar el calor de componentes.",
+    "icon": "pasta_termica.png",
+    "type": "material",
+    "valor_monetario": 40,
+    "in_shop": true,
+    "rareza": "Poco Común"
+  },
+  {
+    "id": "item_rubi_pequeno_tallado",
+    "name": "Rubí Pequeño Tallado",
+    "description": "Un pequeño rubí tallado de calidad media, perfecto para joyería.",
+    "icon": "ruby_small_carved.png",
+    "type": "material",
+    "valor_monetario": 100,
+    "in_shop": true,
+    "rareza": "Común"
+  },
+  {
+    "id": "recompensa_stack_master",
+    "name": "Medalla de Maestro del Stack",
+    "description": "Una medalla prestigiosa para maestros del manejo de stack.",
+    "icon": "pasta_termica.png",
+    "type": "trophy",
+    "valor_monetario": 400,
+    "in_shop": false,
+    "rareza": "Épico"
+  },
+  {
+    "id": "item_cable_usb",
+    "name": "Cable USB",
+    "description": "Cable USB estándar para conexión de dispositivos.",
+    "icon": "cable_usb.png",
+    "type": "material",
+    "valor_monetario": 25,
+    "in_shop": true,
+    "rareza": "Común"
   }
 ]

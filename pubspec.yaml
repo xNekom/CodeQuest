@@ -42,11 +42,13 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  shared_preferences: ^2.1.1
-  
-  # Utilidades para el manejador de errores
-  path_provider: ^2.1.1
+  shared_preferences: ^2.2.3
+  path_provider: ^2.1.3
   intl: ^0.19.0
+  # Dependencias para el playground de código
+  flutter_code_editor: ^0.3.0
+  flutter_highlight: ^0.7.0
+  highlight: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +78,13 @@ flutter:
   assets:
     - assets/images/
     - assets/backgrounds/
-    - assets/data/ # Asegura que todos los archivos en assets/data/ estén disponibles
+    - assets/data/questions.json
+    - assets/data/code_exercises.json
+    - assets/data/items_data.json
+    - assets/data/missions_data.json
+    - assets/data/achievements_data.json
+    - assets/data/enemies_data.json
+    - assets/data/rewards_data.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
