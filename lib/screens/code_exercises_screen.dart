@@ -24,6 +24,17 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
     _loadExercises();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        _loadExercises();
+      }
+    });
+  }
+
   /// Carga los ejercicios desde el servicio
   Future<void> _loadExercises() async {
     try {

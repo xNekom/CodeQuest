@@ -1,0 +1,35 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#228B22" stroke="#006400" stroke-width="2"/>
+  
+  <!-- Hunter hat -->
+  <ellipse cx="32" cy="20" rx="12" ry="6" fill="#8B4513"/>
+  <rect x="20" y="18" width="24" height="4" fill="#654321"/>
+  
+  <!-- Semicolon bugs (5 small ones) -->
+  <g fill="#8B0000">
+    <circle cx="20" cy="30" r="2"/>
+    <rect x="19" y="32" width="2" height="3"/>
+    
+    <circle cx="28" cy="35" r="2"/>
+    <rect x="27" y="37" width="2" height="3"/>
+    
+    <circle cx="36" cy="35" r="2"/>
+    <rect x="35" y="37" width="2" height="3"/>
+    
+    <circle cx="44" cy="30" r="2"/>
+    <rect x="43" y="32" width="2" height="3"/>
+    
+    <circle cx="32" cy="42" r="2"/>
+    <rect x="31" y="44" width="2" height="3"/>
+  </g>
+  
+  <!-- Hunter weapon (net) -->
+  <rect x="30" y="25" width="4" height="12" fill="#8B4513"/>
+  <circle cx="32" cy="25" r="6" fill="none" stroke="#654321" stroke-width="2"/>
+  <line x1="26" y1="25" x2="38" y2="25" stroke="#654321" stroke-width="1"/>
+  <line x1="32" y1="19" x2="32" y2="31" stroke="#654321" stroke-width="1"/>
+  
+  <!-- Text -->
+  <text x="32" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#FFD700">CAZADOR</text>
+</svg>

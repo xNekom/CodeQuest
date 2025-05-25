@@ -33,11 +33,22 @@ service cloud.firestore {
                       request.auth.uid == resource.data.userId;
       allow create: if request.auth != null && 
                        request.auth.uid == request.resource.data.userId;
+      // Permitir a administradores escribir cualquier entrada
+      allow write, delete: if request.auth != null && 
+                              exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow create: if request.auth != null && 
+                       exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
     // Permitir lectura de toda la colección leaderboard para rankings
     match /leaderboard {
       allow read: if request.auth != null;
+      // Permitir a administradores listar todas las entradas
+      allow list: if request.auth != null && 
+                     exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
     // Reglas para preguntas
