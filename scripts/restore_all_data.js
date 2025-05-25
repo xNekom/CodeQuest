@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Inicializar Firebase Admin
-const serviceAccount = require('./assets/data/serviceAccountKey.json');
+const serviceAccount = require('../assets/data/serviceAccountKey.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -14,7 +14,7 @@ const db = admin.firestore();
 async function uploadData(collectionName, dataFile) {
   try {
     console.log(`Subiendo datos a la colección: ${collectionName}`);
-    const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets/data', dataFile), 'utf8'));
+    const data = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/data', dataFile), 'utf8'));
     
     const batch = db.batch();
     let count = 0;

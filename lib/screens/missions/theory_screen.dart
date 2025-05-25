@@ -5,6 +5,7 @@ import '../../models/story_page_model.dart';
 import '../../services/user_service.dart';
 import '../../services/mission_service.dart';
 import '../../utils/custom_page_route.dart';
+import '../../utils/overflow_utils.dart';
 import '../../widgets/pixel_widgets.dart';
 import 'story_screen.dart';
 import 'question_screen.dart';
@@ -174,17 +175,18 @@ class _TheoryScreenState extends State<TheoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          OverflowUtils.safeRow(
             children: [
               Icon(Icons.school, color: Colors.purple[700], size: 28),
               const SizedBox(width: 12),
               Flexible(
-                child: Text(
+                child: OverflowUtils.safeText(
                   'Teoría de la Misión',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.purple[700],
                   ),
+                  maxLines: 2,
                 ),
               ),
             ],
@@ -192,7 +194,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
           const SizedBox(height: 16),
           // Botones para alternar entre explicación narrativa y técnica
           if (mission?.technicalExplanation != null) ...[
-            Row(
+            OverflowUtils.safeRow(
               children: [
                 Expanded(
                   child: ElevatedButton(
@@ -202,12 +204,16 @@ class _TheoryScreenState extends State<TheoryScreen> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: !_showTechnicalExplanation 
-                          ? Colors.purple[700] 
-                          : Colors.grey[400],
+                      backgroundColor:
+                          !_showTechnicalExplanation
+                              ? Colors.purple[700]
+                              : Colors.grey[400],
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Explicación Narrativa'),
+                    child: OverflowUtils.safeText(
+                      'Explicación Narrativa',
+                      maxLines: 1,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -219,12 +225,16 @@ class _TheoryScreenState extends State<TheoryScreen> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _showTechnicalExplanation 
-                          ? Colors.purple[700] 
-                          : Colors.grey[400],
+                      backgroundColor:
+                          _showTechnicalExplanation
+                              ? Colors.purple[700]
+                              : Colors.grey[400],
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Explicación Técnica'),
+                    child: OverflowUtils.safeText(
+                      'Explicación Técnica',
+                      maxLines: 1,
+                    ),
                   ),
                 ),
               ],
@@ -232,6 +242,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
             const SizedBox(height: 16),
           ],
           Expanded(
+            flex: 3,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -240,15 +251,27 @@ class _TheoryScreenState extends State<TheoryScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.purple[300]!),
               ),
-              child: SingleChildScrollView(
-                child: Text(
-                  _showTechnicalExplanation && mission?.technicalExplanation != null
-                      ? mission!.technicalExplanation!
-                      : widget.theoryText!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(height: 1.6, fontSize: 16),
-                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Text(
+                          _showTechnicalExplanation &&
+                                  mission?.technicalExplanation != null
+                              ? mission!.technicalExplanation!
+                              : widget.theoryText!,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(height: 1.6, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -265,17 +288,18 @@ class _TheoryScreenState extends State<TheoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          OverflowUtils.safeRow(
             children: [
               Icon(Icons.code, color: Colors.blue[700], size: 28),
               const SizedBox(width: 12),
               Flexible(
-                child: Text(
+                child: OverflowUtils.safeText(
                   'Ejemplos de Código',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue[700],
                   ),
+                  maxLines: 2,
                 ),
               ),
             ],
@@ -340,6 +364,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
           ),
           const SizedBox(height: 24),
           Expanded(
+            flex: 3,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -348,13 +373,24 @@ class _TheoryScreenState extends State<TheoryScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.purple[200]!),
               ),
-              child: SingleChildScrollView(
-                child: Text(
-                  storyPage.text,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(height: 1.6, fontSize: 16),
-                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Text(
+                          storyPage.text,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(height: 1.6, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -428,15 +464,16 @@ class _TheoryScreenState extends State<TheoryScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                Row(
+                OverflowUtils.safeRow(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Flexible(
-                      child: Text(
+                      child: OverflowUtils.safeText(
                         'Página ${_currentPage + 1} de $_totalPages',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
+                        maxLines: 1,
                       ),
                     ),
                   ],
@@ -490,23 +527,24 @@ class _TheoryScreenState extends State<TheoryScreen> {
           if (_totalPages > 0)
             Container(
               padding: const EdgeInsets.all(16),
-              child: Row(
+              child: OverflowUtils.safeRow(
                 children: [
                   if (_currentPage > 0)
                     Flexible(
                       child: PixelButton(
                         onPressed: _previousPage,
-                        child: const Text('Anterior'),
+                        child: OverflowUtils.safeText('Anterior', maxLines: 1),
                       ),
                     ),
                   const Expanded(child: SizedBox()),
                   Flexible(
                     child: PixelButton(
                       onPressed: _nextPage,
-                      child: Text(
+                      child: OverflowUtils.safeText(
                         _currentPage < _totalPages - 1
                             ? 'Siguiente'
                             : 'Finalizar',
+                        maxLines: 1,
                       ),
                     ),
                   ),

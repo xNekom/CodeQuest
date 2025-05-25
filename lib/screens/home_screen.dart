@@ -152,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
           adventureButtonKey: _adventureButtonKey,
           shopButtonKey: _shopButtonKey,
           inventoryButtonKey: _inventoryButtonKey,
+          codeExercisesButtonKey: _codeExercisesButtonKey,
         ),
       ),
     );

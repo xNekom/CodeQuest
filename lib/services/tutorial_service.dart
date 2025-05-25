@@ -51,6 +51,7 @@ class TutorialService {
     GlobalKey? adventureButtonKey,
     GlobalKey? shopButtonKey,
     GlobalKey? inventoryButtonKey,
+    GlobalKey? codeExercisesButtonKey,
   }) {
     return [
       InteractiveTutorialStep(
@@ -87,6 +88,15 @@ class TutorialService {
           targetKey: adventureButtonKey,
           showPulse: true,
         ),
+      if (codeExercisesButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Ejercicios de Código',
+          description:
+              'Practica tus habilidades de programación con ejercicios interactivos y desafíos de código.',
+          icon: Icons.code,
+          targetKey: codeExercisesButtonKey,
+          showPulse: true,
+        ),
       if (shopButtonKey != null)
         InteractiveTutorialStep(
           title: 'Tienda',
@@ -105,6 +115,15 @@ class TutorialService {
           targetKey: inventoryButtonKey,
           showPulse: true,
         ),
+      if (leaderboardKey != null)
+        InteractiveTutorialStep(
+          title: 'Tabla de Clasificación',
+          description:
+              'Compite con otros jugadores y ve tu posición en la tabla de clasificación global.',
+          icon: Icons.leaderboard,
+          targetKey: leaderboardKey,
+          showPulse: true,
+        ),
       if (achievementsKey != null)
         InteractiveTutorialStep(
           title: 'Logros',
@@ -112,15 +131,6 @@ class TutorialService {
               'Consulta todos los logros que has desbloqueado y los que aún puedes conseguir.',
           icon: Icons.emoji_events,
           targetKey: achievementsKey,
-          showPulse: true,
-        ),
-      if (leaderboardKey != null)
-        InteractiveTutorialStep(
-          title: 'Tabla de Clasificación',
-          description:
-              'Compara tu progreso con otros jugadores y compite por los primeros puestos.',
-          icon: Icons.leaderboard,
-          targetKey: leaderboardKey,
           showPulse: true,
         ),
       InteractiveTutorialStep(
