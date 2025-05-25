@@ -211,47 +211,70 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Text(
-            'CODEQUEST',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          const Expanded(
+            flex: 2,
+            child: Text(
+              'CODEQUEST',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          const Spacer(),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (isAdmin) ...[
-                // Mostrar botones de admin solo si el usuario es admin
-                // Widget para probar errores (solo visible para administradores)
-                const TestErrorWidget(),
-                const SizedBox(width: 8),
+          const SizedBox(width: 8),
+          Expanded(
+            flex: 3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isAdmin) ...[
+                  // Mostrar botones de admin solo si el usuario es admin
+                  // Widget para probar errores (solo visible para administradores)
+                  const Flexible(child: TestErrorWidget()),
+                  const SizedBox(width: 4),
+                  IconButton(
+                    icon: const Icon(Icons.admin_panel_settings, size: 20),
+                    tooltip: 'Panel de Administrador',
+                    padding: const EdgeInsets.all(4),
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/admin');
+                    },
+                  ),
+                ],
                 IconButton(
-                  icon: const Icon(Icons.admin_panel_settings),
-                  tooltip: 'Panel de Administrador',
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/admin');
+                  icon: const Icon(Icons.logout, size: 20),
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  onPressed: () async {
+                    await _authService.signOut();
+                    if (mounted) {
+                      Navigator.pushReplacementNamed(context, '/auth');
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit, size: 20),
+                  tooltip: 'Editar Personaje',
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  onPressed: () async {
+                    // Navegar a selección/edición de personaje
+                    await Navigator.pushNamed(context, '/character');
+                    // Recargar datos del usuario para reflejar cambios
+                    await _loadUserData();
                   },
                 ),
               ],
-              IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: () async {
-                  await _authService.signOut();
-                  if (mounted) {
-                    Navigator.pushReplacementNamed(context, '/auth');
-                  }
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                tooltip: 'Editar Personaje',
-                onPressed: () async {
-                  // Navegar a selección/edición de personaje
-                  await Navigator.pushNamed(context, '/character');
-                  // Recargar datos del usuario para reflejar cambios
-                  await _loadUserData();
-                },
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -335,7 +358,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.star, size: 18),
             const SizedBox(width: 8),
-            Text('Nivel: ${_userData!['level'] ?? 1}'),
+            Flexible(
+              child: Text(
+                'Nivel: ${_userData!['level'] ?? 1}',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 4),
@@ -343,7 +371,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.monetization_on, size: 18, color: Colors.amber),
             const SizedBox(width: 8),
-            Text('${_userData!['coins'] ?? 0} monedas'),
+            Flexible(
+              child: Text(
+                '${_userData!['coins'] ?? 0} monedas',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -553,9 +586,12 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon),
           const SizedBox(width: 12),
-          Text(label),
-          const Spacer(),
-          Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
+          Text(
+            value,
+            style: TextStyle(fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
@@ -576,7 +612,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.sports_esports, size: 20),
             SizedBox(width: 8),
-            Text('COMENZAR AVENTURA'),
+            Flexible(
+              child: Text('COMENZAR AVENTURA', overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),
@@ -598,7 +636,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.store, size: 20),
             SizedBox(width: 8),
-            Text('TIENDA'),
+            Flexible(child: Text('TIENDA', overflow: TextOverflow.ellipsis)),
           ],
         ),
       ),
@@ -620,7 +658,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.inventory_2, size: 20),
             SizedBox(width: 8),
-            Text('INVENTARIO'),
+            Flexible(
+              child: Text('INVENTARIO', overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),
@@ -647,7 +687,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.code, size: 20),
             SizedBox(width: 8),
-            Text('EJERCICIOS DE CÓDIGO'),
+            Flexible(
+              child: Text(
+                'EJERCICIOS DE CÓDIGO',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ),
@@ -663,12 +708,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('LOGROS', style: Theme.of(context).textTheme.titleMedium),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/achievements');
-                },
-                child: Text('Ver todos'),
+              Expanded(
+                child: Text(
+                  'LOGROS',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -693,12 +738,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Icon(Icons.emoji_events, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      // Texto simplificado, sin Flexible ni softWrap
-                      'VER MIS LOGROS',
-                      textAlign:
-                          TextAlign
-                              .center, // Opcional, útil si el texto llegara a envolverse
+                    Flexible(
+                      child: Text(
+                        'VER MIS LOGROS',
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
@@ -725,7 +770,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.leaderboard, size: 20),
             SizedBox(width: 8),
-            Text('CLASIFICACIÓN'),
+            Flexible(
+              child: Text('CLASIFICACIÓN', overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),

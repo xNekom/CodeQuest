@@ -394,53 +394,79 @@ class _AdminScreenState extends State<AdminScreen> {
             final data = doc.data() as Map<String, dynamic>;
             final role = data['role'] as String? ?? 'user';
             return ExpansionTile(
-              title: Text(data['username'] ?? doc.id),
-              subtitle: Text(data['email'] ?? ''),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButton<String>(
-                    value: role,
-                    items: const [
-                      DropdownMenuItem(value: 'user', child: Text('User')),
-                      DropdownMenuItem(value: 'admin', child: Text('Admin')),
-                    ],
-                    onChanged: (val) async {
-                      if (val == null) return;
-                      await _usersCol.doc(doc.id).update({'role': val});
-                      _loadUserData(); // Recargar datos
-                      setState(() {}); // Actualizar interfaz
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text('Eliminar usuario'),
-                              content: Text(
-                                '¿Seguro que deseas eliminar a ${data['username'] ?? doc.id}?',
+              title: Text(
+                data['username'] ?? doc.id,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                data['email'] ?? '',
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: SizedBox(
+                width: 120,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: DropdownButton<String>(
+                        value: role,
+                        isExpanded: false,
+                        items: const [
+                          DropdownMenuItem(value: 'user', child: Text('User')),
+                          DropdownMenuItem(
+                            value: 'admin',
+                            child: Text('Admin'),
+                          ),
+                        ],
+                        onChanged: (val) async {
+                          if (val == null) return;
+                          await _usersCol.doc(doc.id).update({'role': val});
+                          _loadUserData(); // Recargar datos
+                          setState(() {}); // Actualizar interfaz
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (_) => AlertDialog(
+                                title: const Text('Eliminar usuario'),
+                                content: Text(
+                                  '¿Seguro que deseas eliminar a ${data['username'] ?? doc.id}?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    child: const Text('Eliminar'),
+                                  ),
+                                ],
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed:
-                                      () => Navigator.pop(context, false),
-                                  child: const Text('Cancelar'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Eliminar'),
-                                ),
-                              ],
-                            ),
-                      );
-                      if (!context.mounted) return;
-                      if (confirm == true) await _usersCol.doc(doc.id).delete();
-                    },
-                  ),
-                ],
+                        );
+                        if (!context.mounted) return;
+                        if (confirm == true)
+                          await _usersCol.doc(doc.id).delete();
+                      },
+                    ),
+                  ],
+                ),
               ),
               children: [
                 Padding(
@@ -450,9 +476,19 @@ class _AdminScreenState extends State<AdminScreen> {
                     children: [
                       Row(
                         children: [
-                          Expanded(child: Text('Nivel: ${data['level'] ?? 0}')),
+                          Expanded(
+                            child: Text(
+                              'Nivel: ${data['level'] ?? 0}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           IconButton(
-                            icon: const Icon(Icons.edit),
+                            icon: const Icon(Icons.edit, size: 20),
+                            padding: const EdgeInsets.all(4),
+                            constraints: const BoxConstraints(
+                              minWidth: 32,
+                              minHeight: 32,
+                            ),
                             onPressed:
                                 () => _editField(
                                   doc.id,
@@ -465,10 +501,18 @@ class _AdminScreenState extends State<AdminScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text('Exp: ${data['experience'] ?? 0}'),
+                            child: Text(
+                              'Exp: ${data['experience'] ?? 0}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.edit),
+                            icon: const Icon(Icons.edit, size: 20),
+                            padding: const EdgeInsets.all(4),
+                            constraints: const BoxConstraints(
+                              minWidth: 32,
+                              minHeight: 32,
+                            ),
                             onPressed:
                                 () => _editField(
                                   doc.id,
@@ -481,10 +525,18 @@ class _AdminScreenState extends State<AdminScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text('Monedas: ${data['coins'] ?? 0}'),
+                            child: Text(
+                              'Monedas: ${data['coins'] ?? 0}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.edit),
+                            icon: const Icon(Icons.edit, size: 20),
+                            padding: const EdgeInsets.all(4),
+                            constraints: const BoxConstraints(
+                              minWidth: 32,
+                              minHeight: 32,
+                            ),
                             onPressed:
                                 () => _editField(
                                   doc.id,
