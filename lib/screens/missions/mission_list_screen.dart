@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'mission_detail_screen.dart';
+import '../../utils/custom_page_route.dart'; // Import FadePageRoute
 
 /// Pantalla que muestra todas las misiones disponibles
 class MissionListScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
         // Stream simple de la colección 'missions' sin ordenar por campos inexistentes
         stream: FirebaseFirestore.instance
             .collection('missions')
+            .orderBy('difficultyLevel')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) return Center(child: Text('Error misiones: ${snapshot.error}'));
@@ -72,7 +74,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
                   ),
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      FadePageRoute( // Use FadePageRoute
                         builder: (_) => MissionDetailScreen(missionId: doc.id),
                       ),
                     );

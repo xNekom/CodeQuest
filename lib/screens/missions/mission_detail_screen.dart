@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
 import './theory_screen.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../utils/custom_page_route.dart'; // Import FadePageRoute
 
 /// Pantalla de detalle de misión y primer paso de aventura
 class MissionDetailScreen extends StatelessWidget {
@@ -55,7 +56,7 @@ class MissionDetailScreen extends StatelessWidget {
                       if (!context.mounted) return;
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        FadePageRoute( // Use FadePageRoute
                           builder: (_) => TheoryScreen(
                             missionId: missionId,
                             theoryText: data['theory'] ?? 'Sin teoría disponible.',
