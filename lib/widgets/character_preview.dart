@@ -34,10 +34,10 @@ class CharacterPreview extends StatelessWidget {
 
   IconData _outfitIcon() {
     switch (outfit) {
-      case 'Aventurero': return Icons.backpack;
-      case 'Mago': return Icons.auto_fix_high;
-      case 'Sigiloso': return Icons.nightlight_round;
-      default: return Icons.checkroom;
+      case 'Desarrollador Backend': return Icons.storage;
+      case 'Desarrollador Frontend': return Icons.web;
+      case 'Hacker Ético': return Icons.security;
+      default: return Icons.person;
     }
   }
 

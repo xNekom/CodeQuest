@@ -9,7 +9,7 @@ import 'services/auth_service.dart';
 import 'theme/pixel_theme.dart';
 import 'screens/admin/admin_screen.dart';
 import 'services/user_service.dart';
-import 'screens/game/character_creation_screen.dart';
+import 'screens/game/character_selection_screen.dart';
 import 'widgets/reward_notification_manager.dart';
 import 'package:codequest/screens/auth/password_recovery_screen.dart';
 import 'screens/achievements_screen.dart'; // Importar AchievementsScreen
@@ -24,106 +24,108 @@ import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigator
 import 'utils/platform_utils.dart'; // Importar PlatformUtils
 
 void main() async {
-  // Asegura que Flutter esté inicializado
-  WidgetsFlutterBinding.ensureInitialized();
+  // Ejecutar la app dentro de una zona que captura errores
+  runZonedGuarded(
+    () async {
+      // Asegura que Flutter esté inicializado
+      WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    // Configurar el manejador global de errores
-    await ErrorHandler.setupGlobalErrorHandling();
-    // Configurar timeouts más largos para operaciones de red en modo de desarrollo
-    // Solo en plataformas que soportan HttpClient (no web)
-    if (PlatformUtils.supportsHttpClient) {
-      // Los timeouts de HTTP se configuran por cliente específico según sea necesario
-      // No se necesita configuración global aquí
-    }
+      try {
+        // Configurar el manejador global de errores
+        await ErrorHandler.setupGlobalErrorHandling();
+        // Configurar timeouts más largos para operaciones de red en modo de desarrollo
+        // Solo en plataformas que soportan HttpClient (no web)
+        if (PlatformUtils.supportsHttpClient) {
+          // Los timeouts de HTTP se configuran por cliente específico según sea necesario
+          // No se necesita configuración global aquí
+        }
 
-    // Configurar ajustes específicos de plataforma
-    PlatformUtils.configurePlatform();
+        // Configurar ajustes específicos de plataforma
+        PlatformUtils.configurePlatform();
 
-    // Inicializar Firebase
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+        // Inicializar Firebase
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
 
-    // Ejecutar la app dentro de una zona que captura errores
-    runZonedGuarded(
-      () {
         runApp(const MyApp());
-      },
-      (error, stackTrace) {
-        ErrorHandler.logError(error, stackTrace);
-      },
-    );
-  } catch (e, stack) {
-    // Manejar errores durante la inicialización
-    debugPrint('Error crítico durante la inicialización: $e');
-    debugPrint(stack.toString());
+      } catch (e, stack) {
+        // Manejar errores durante la inicialización
+        debugPrint('Error crítico durante la inicialización: $e');
+        debugPrint(stack.toString());
 
-    // Intenta ejecutar una versión mínima de la app que permite reintentar
-    runApp(
-      MaterialApp(
-        title: 'CodeQuest - Modo de emergencia',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.light,
+        // Intenta ejecutar una versión mínima de la app que permite reintentar
+        runApp(_buildEmergencyApp(e, stack));
+      }
+    },
+    (error, stackTrace) {
+      ErrorHandler.logError(error, stackTrace);
+    },
+  );
+}
+
+Widget _buildEmergencyApp(dynamic error, StackTrace stack) {
+  return MaterialApp(
+    title: 'CodeQuest - Modo de emergencia',
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.blue,
+        brightness: Brightness.light,
+      ),
+    ),
+    home: Scaffold(
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.red, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
-        ),
-        home: Scaffold(
-          body: Center(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.red, width: 2),
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text(
+                'Error crítico de inicialización',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Error crítico de inicialización',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No se pudo iniciar la aplicación: $e',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => main(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text('Reintentar'),
-                  ),
-                ],
+              const SizedBox(height: 16),
+              Text(
+                'No se pudo iniciar la aplicación: ${error.toString()}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
               ),
-            ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => main(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text('Reintentar'),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -231,7 +233,11 @@ class MyApp extends StatelessWidget {
             (context) => const RewardNotificationManager(child: AuthWrapper()),
         '/character':
             (context) => const RewardNotificationManager(
-              child: CharacterCreationScreen(),
+              child: CharacterSelectionScreen(),
+            ),
+        '/character-selection':
+            (context) => const RewardNotificationManager(
+              child: CharacterSelectionScreen(),
             ),
         '/home':
             (context) => const RewardNotificationManager(child: HomeScreen()),
@@ -364,7 +370,7 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
         final User? user = authSnapshot.data;
 
         if (user != null) {
-          // Usuario autenticado, verificar characterCreated
+          // Usuario autenticado, verificar characterSelected
           return FutureBuilder<Map<String, dynamic>?>(
             future: _userService.getUserData(
               user.uid,
@@ -387,19 +393,19 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
                     userSnapshot
                         .data; // Puede ser null si el documento no existe
                 final role = userData?['role'] as String? ?? 'user';
-                // Si userData es null (doc no existe) o characterCreated no está, se asume false.
-                final characterCreated =
-                    userData?['characterCreated'] as bool? ?? false;
+                // Si userData es null (doc no existe) o characterSelected no está, se asume false.
+                final characterSelected =
+                    userData?['characterSelected'] as bool? ?? false;
 
                 if (role == 'admin') {
                   // Los administradores siempre van a /home después del login.
                   // Accederán a /admin a través del botón en HomeScreen.
                   routeToGo = '/home';
-                } else if (!characterCreated) {
-                  // Si no es admin y el personaje no está creado, va a /character
+                } else if (!characterSelected) {
+                  // Si no es admin y el personaje no está seleccionado, va a /character
                   routeToGo = '/character';
                 } else {
-                  // Si no es admin y el personaje SÍ está creado, va a /home
+                  // Si no es admin y el personaje SÍ está seleccionado, va a /home
                   routeToGo = '/home';
                 }
               }

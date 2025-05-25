@@ -19,7 +19,9 @@ void main() {
         const tutorialKey = 'test_tutorial';
 
         // Verificar que inicialmente no está completado
-        bool isCompleted = await tutorialService.isTutorialCompleted(tutorialKey);
+        bool isCompleted = await tutorialService.isTutorialCompleted(
+          tutorialKey,
+        );
         expect(isCompleted, false);
 
         // Marcar como completado
@@ -31,18 +33,43 @@ void main() {
       });
 
       test('should reset all tutorials', () async {
-        final tutorialService = TutorialService();        // Marcar algunos tutoriales como completados
-        await tutorialService.markTutorialCompleted(TutorialService.homeScreenTutorial);
-        await tutorialService.markTutorialCompleted(TutorialService.missionScreenTutorial);
+        final tutorialService =
+            TutorialService(); // Marcar algunos tutoriales como completados
+        await tutorialService.markTutorialCompleted(
+          TutorialService.homeScreenTutorial,
+        );
+        await tutorialService.markTutorialCompleted(
+          TutorialService.missionScreenTutorial,
+        );
 
         // Verificar que están completados
-        expect(await tutorialService.isTutorialCompleted(TutorialService.homeScreenTutorial), true);
-        expect(await tutorialService.isTutorialCompleted(TutorialService.missionScreenTutorial), true);        // Resetear todos
+        expect(
+          await tutorialService.isTutorialCompleted(
+            TutorialService.homeScreenTutorial,
+          ),
+          true,
+        );
+        expect(
+          await tutorialService.isTutorialCompleted(
+            TutorialService.missionScreenTutorial,
+          ),
+          true,
+        ); // Resetear todos
         await tutorialService.resetAllTutorials();
 
         // Verificar que ya no están completados
-        expect(await tutorialService.isTutorialCompleted(TutorialService.homeScreenTutorial), false);
-        expect(await tutorialService.isTutorialCompleted(TutorialService.missionScreenTutorial), false);
+        expect(
+          await tutorialService.isTutorialCompleted(
+            TutorialService.homeScreenTutorial,
+          ),
+          false,
+        );
+        expect(
+          await tutorialService.isTutorialCompleted(
+            TutorialService.missionScreenTutorial,
+          ),
+          false,
+        );
       });
 
       test('should return correct tutorial steps for home screen', () {
@@ -52,15 +79,17 @@ void main() {
         expect(steps.last.title, contains('Listo'));
       });
 
-      test('should return correct tutorial steps for character creation', () {
-        final steps = TutorialService.getCharacterCreationTutorial();
+      test('should return correct tutorial steps for character selection', () {
+        final steps = TutorialService.getCharacterSelectionTutorial();
         expect(steps, isNotEmpty);
         expect(steps.first.title, contains('Crea tu Aventurero'));
-      });      test('should return correct tutorial steps for missions', () {
+      });
+      test('should return correct tutorial steps for missions', () {
         final steps = TutorialService.getMissionScreenTutorial();
         expect(steps, isNotEmpty);
         expect(steps.first.title, contains('Bienvenido a las Misiones'));
-      });      test('should return correct tutorial steps for achievements', () {
+      });
+      test('should return correct tutorial steps for achievements', () {
         final steps = TutorialService.getAchievementsTutorial();
         expect(steps, isNotEmpty);
         expect(steps.first.title, contains('Galería de Logros'));
@@ -98,13 +127,11 @@ void main() {
     });
 
     group('Widget Tests', () {
-      testWidgets('TutorialFloatingButton should render correctly', (WidgetTester tester) async {
+      testWidgets('TutorialFloatingButton should render correctly', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: const TutorialFloatingButton(),
-            ),
-          ),
+          MaterialApp(home: Scaffold(body: const TutorialFloatingButton())),
         );
 
         // Verificar que el botón se renderiza
@@ -112,13 +139,11 @@ void main() {
         expect(find.byIcon(Icons.help_outline), findsOneWidget);
       });
 
-      testWidgets('TutorialFloatingButton menu should expand on tap', (WidgetTester tester) async {
+      testWidgets('TutorialFloatingButton menu should expand on tap', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: const TutorialFloatingButton(),
-            ),
-          ),
+          MaterialApp(home: Scaffold(body: const TutorialFloatingButton())),
         );
 
         // Tocar el botón
@@ -129,7 +154,9 @@ void main() {
         expect(find.byType(FloatingActionButton), findsWidgets);
       });
 
-      testWidgets('TutorialManager should render child widget', (WidgetTester tester) async {
+      testWidgets('TutorialManager should render child widget', (
+        WidgetTester tester,
+      ) async {
         const testWidget = Text('Test Child');
         const tutorialKey = 'test_key';
         const tutorialSteps = <InteractiveTutorialStep>[
@@ -155,7 +182,9 @@ void main() {
         expect(find.text('Test Child'), findsOneWidget);
       });
 
-      testWidgets('InteractiveTutorial should show tutorial steps', (WidgetTester tester) async {
+      testWidgets('InteractiveTutorial should show tutorial steps', (
+        WidgetTester tester,
+      ) async {
         const tutorialSteps = <InteractiveTutorialStep>[
           InteractiveTutorialStep(
             title: 'Step 1',
@@ -190,7 +219,9 @@ void main() {
     });
 
     group('Integration Tests', () {
-      testWidgets('Complete tutorial flow should work', (WidgetTester tester) async {
+      testWidgets('Complete tutorial flow should work', (
+        WidgetTester tester,
+      ) async {
         // Mock SharedPreferences
         SharedPreferences.setMockInitialValues({});
 
@@ -231,8 +262,9 @@ void main() {
         expect(find.text('Integration Test'), findsNothing);
       });
 
-      test('Tutorial service constants should be accessible', () {        expect(TutorialService.homeScreenTutorial, isNotEmpty);
-        expect(TutorialService.characterCreationTutorial, isNotEmpty);
+      test('Tutorial service constants should be accessible', () {
+        expect(TutorialService.homeScreenTutorial, isNotEmpty);
+        expect(TutorialService.characterSelectionTutorial, isNotEmpty);
         expect(TutorialService.missionScreenTutorial, isNotEmpty);
         expect(TutorialService.achievementScreenTutorial, isNotEmpty);
       });
@@ -241,7 +273,7 @@ void main() {
     group('Error Handling Tests', () {
       test('should handle invalid tutorial keys gracefully', () async {
         final tutorialService = TutorialService();
-        
+
         // Probar con clave vacía
         bool isCompleted = await tutorialService.isTutorialCompleted('');
         expect(isCompleted, false);
@@ -252,7 +284,9 @@ void main() {
         expect(isCompleted, true);
       });
 
-      testWidgets('should handle empty tutorial steps', (WidgetTester tester) async {
+      testWidgets('should handle empty tutorial steps', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -285,7 +319,9 @@ void main() {
 
         // Verificar que todos fueron marcados
         for (int i = 0; i < 100; i++) {
-          bool isCompleted = await tutorialService.isTutorialCompleted('${tutorialKey}_$i');
+          bool isCompleted = await tutorialService.isTutorialCompleted(
+            '${tutorialKey}_$i',
+          );
           expect(isCompleted, true);
         }
       });
