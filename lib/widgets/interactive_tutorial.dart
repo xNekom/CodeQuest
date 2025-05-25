@@ -264,7 +264,7 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
       color: Colors.transparent,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: 320,
+          maxWidth: screenSize.width * 0.9,
           minWidth: 280,
           maxHeight: screenSize.height * 0.6,
         ),
@@ -311,6 +311,8 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
                       ),
                     ),
                     IconButton(
@@ -330,6 +332,8 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
                     color: Colors.black87,
                     height: 1.4,
                   ),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
                 ),
 
                 const SizedBox(height: 16),
