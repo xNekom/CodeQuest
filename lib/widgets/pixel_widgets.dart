@@ -73,7 +73,7 @@ class _PixelButtonState extends State<PixelButton> {
                   ? Theme.of(context).colorScheme.primary
                   : Colors.white,
               side: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3), // Updated border color
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(77), // Replaced withOpacity
                 width: 2.0,
               ),
               padding: EdgeInsets.zero,
@@ -186,7 +186,7 @@ class PixelCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).colorScheme.surface,
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5), width: 2), // Updated border
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(128), width: 2), // Replaced withOpacity
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(51), // Reemplazado .withOpacity(0.2)
@@ -219,7 +219,7 @@ class PixelDialog extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5), width: 2), // Updated border
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(128), width: 2), // Replaced withOpacity
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(51), // Reemplazado .withOpacity(0.2)

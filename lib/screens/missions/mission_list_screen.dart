@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart'; // REMOVED
 import 'mission_detail_screen.dart';
 import '../../utils/custom_page_route.dart'; // Import FadePageRoute
 
@@ -61,7 +61,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
                   trailing: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      color: Theme.of(context).colorScheme.primary.withAlpha(26), // Replaced withOpacity
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(

@@ -59,7 +59,7 @@ class MissionCompletedScreen extends StatelessWidget {
                   fontFamily: 'PixelFont',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: PixelTheme.textColor,
+                  color: Theme.of(context).colorScheme.onPrimary,
                   shadows: [
                     Shadow(
                       offset: const Offset(2, 2),
@@ -76,7 +76,7 @@ class MissionCompletedScreen extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'PixelFont',
                   fontSize: 18,
-                  color: PixelTheme.textColor.withOpacity(0.9),
+                  color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.9),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -123,7 +123,7 @@ class MissionCompletedScreen extends StatelessWidget {
                     fontFamily: 'PixelFont',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: PixelTheme.textColor,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -142,7 +142,7 @@ class MissionCompletedScreen extends StatelessWidget {
                     fontFamily: 'PixelFont',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: PixelTheme.textColor,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -199,7 +199,7 @@ class MissionCompletedScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: PixelTheme.backgroundColor.withOpacity(0.8),
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: rewardColor,
@@ -245,7 +245,7 @@ class MissionCompletedScreen extends StatelessWidget {
                     fontFamily: 'PixelFont',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: PixelTheme.textColor,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -253,7 +253,7 @@ class MissionCompletedScreen extends StatelessWidget {
                   reward.description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: PixelTheme.textColor.withOpacity(0.8),
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                   ),
                 ),
                 const SizedBox(height: 4),

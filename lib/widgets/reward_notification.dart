@@ -128,7 +128,7 @@ class _RewardNotificationState extends State<RewardNotification> with SingleTick
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: PixelTheme.backgroundColor,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(40),
                       border: Border.all(
                         color: PixelTheme.accentColor,

@@ -25,12 +25,12 @@ class PixelTheme {
       primary: primaryColor,
       secondary: secondaryColor,
       surface: lightSurfaceColor, // Superficie más clara
-      background: const Color(0xFFF0F0F0), // Fondo general
+      // background: const Color(0xFFF0F0F0), // Fondo general - REMOVED
       error: errorColor,
       onPrimary: Colors.white, // Texto/iconos sobre color primario
       onSecondary: Colors.black, // Texto/iconos sobre color secundario
       onSurface: lightTextColor, // Texto/iconos sobre color de superficie
-      onBackground: lightTextColor, // Texto/iconos sobre color de fondo
+      // onBackground: lightTextColor, // Texto/iconos sobre color de fondo - REMOVED
       onError: Colors.black, // Texto/iconos sobre color de error
     ),
     scaffoldBackgroundColor: const Color(0xFFF0F0F0),
@@ -53,11 +53,11 @@ class PixelTheme {
       filled: true,
       fillColor: Colors.white, // Fondo de inputs claro
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withOpacity(0.5), width: 2),
+        borderSide: BorderSide(color: lightTextColor.withAlpha(128), width: 2), // Replaced withOpacity
         borderRadius: BorderRadius.zero,
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withOpacity(0.5), width: 2),
+        borderSide: BorderSide(color: lightTextColor.withAlpha(128), width: 2), // Replaced withOpacity
         borderRadius: BorderRadius.zero,
       ),
       focusedBorder: OutlineInputBorder(
@@ -75,12 +75,12 @@ class PixelTheme {
       primary: primaryColor,
       secondary: secondaryColor,
       surface: darkBackgroundColor, // Superficie oscura
-      background: darkBackgroundColor, // Fondo oscuro
+      // background: darkBackgroundColor, // Fondo oscuro - REMOVED
       error: errorColor,
       onPrimary: Colors.white, // Texto/iconos sobre color primario
       onSecondary: Colors.black, // Texto/iconos sobre color secundario
       onSurface: darkTextColor, // Texto/iconos sobre color de superficie
-      onBackground: darkTextColor, // Texto/iconos sobre color de fondo
+      // onBackground: darkTextColor, // Texto/iconos sobre color de fondo - REMOVED
       onError: Colors.black, // Texto/iconos sobre color de error
     ),
     scaffoldBackgroundColor: darkBackgroundColor,
@@ -103,11 +103,11 @@ class PixelTheme {
       filled: true,
       fillColor: const Color(0xFF303134), // Fondo de inputs oscuro
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withOpacity(0.7), width: 2),
+        borderSide: BorderSide(color: darkTextColor.withAlpha(179), width: 2), // Replaced withOpacity
         borderRadius: BorderRadius.zero,
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withOpacity(0.7), width: 2),
+        borderSide: BorderSide(color: darkTextColor.withAlpha(179), width: 2), // Replaced withOpacity
         borderRadius: BorderRadius.zero,
       ),
       focusedBorder: OutlineInputBorder(
