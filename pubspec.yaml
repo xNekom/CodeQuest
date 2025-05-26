@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/images/
     - assets/backgrounds/
+    - assets/data/ # Asegura que todos los archivos en assets/data/ estén disponibles
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
