@@ -39,10 +39,11 @@ class _MissionListScreenState extends State<MissionListScreen> {
               final zone = data['zone'] as String? ?? '';
               return Card(
                 elevation: 4,
+                color: Theme.of(context).colorScheme.surface, // Explicitly set card color
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  leading: Icon(Icons.assignment, color: Theme.of(context).colorScheme.primary),
+                  leading: Icon(Icons.assignment, color: Theme.of(context).colorScheme.primary), // Kept as primary
                   title: Text(
                     data['name'] as String? ?? '',
                     style: const TextStyle(fontWeight: FontWeight.w600),
@@ -61,13 +62,13 @@ class _MissionListScreenState extends State<MissionListScreen> {
                   trailing: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withAlpha(26), // Replaced withOpacity
+                      color: Theme.of(context).colorScheme.secondary.withAlpha(50), // Changed background to secondary.withAlpha(50)
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
                       'Nivel $level',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primary, // Kept text color as primary
                         fontSize: 12,
                       ),
                     ),

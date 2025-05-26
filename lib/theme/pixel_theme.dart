@@ -11,12 +11,18 @@ class PixelTheme {
   // Definiciones de colores base
   static const Color primaryColor = pixel1;
   static const Color secondaryColor = pixel2;
-  static const Color accentColor = pixel3;
-  static const Color darkBackgroundColor = Color(0xFF202124); // Negro/gris oscuro
-  static const Color lightSurfaceColor = Color(0xFFE0E0E0); // Gris claro para superficies en tema claro
-  static const Color lightTextColor = Colors.black;         // Texto negro para tema claro
-  static const Color darkTextColor = Colors.white;          // Texto blanco para tema oscuro
+  static const Color accentColor = pixel3; // Usado como tertiary
   static const Color errorColor = Color(0xFFFF5252);     // Rojo
+
+  // Colores para Light Theme
+  static const Color lightScaffoldBackgroundColor = Color(0xFFE4F4E4); // Muy light green (de pixel2)
+  static const Color lightSurfaceColor = Color(0xFFFFF9C4);          // Muy light yellow (de pixel3)
+  static const Color lightTextColor = Colors.black;
+
+  // Colores para Dark Theme
+  static const Color darkBackgroundColor = Color(0xFF202124); // Negro/gris oscuro (para scaffold)
+  static const Color darkDialogSurfaceColor = Color(0xFF303134); // Gris más claro (para cards/dialogs)
+  static const Color darkTextColor = Colors.white;
 
   // Tema claro (principal)
   static ThemeData lightTheme = ThemeData(
@@ -24,16 +30,18 @@ class PixelTheme {
     colorScheme: ColorScheme.light(
       primary: primaryColor,
       secondary: secondaryColor,
-      surface: lightSurfaceColor, // Superficie más clara
-      // background: const Color(0xFFF0F0F0), // Fondo general - REMOVED
+      tertiary: accentColor, // Amarillo
+      surface: lightSurfaceColor, // Muy light yellow
+      background: lightScaffoldBackgroundColor, // Muy light green
       error: errorColor,
-      onPrimary: Colors.white, // Texto/iconos sobre color primario
-      onSecondary: Colors.black, // Texto/iconos sobre color secundario
-      onSurface: lightTextColor, // Texto/iconos sobre color de superficie
-      // onBackground: lightTextColor, // Texto/iconos sobre color de fondo - REMOVED
-      onError: Colors.black, // Texto/iconos sobre color de error
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      onTertiary: Colors.black,
+      onSurface: lightTextColor, // Negro sobre light yellow
+      onBackground: lightTextColor, // Negro sobre light green
+      onError: Colors.black,
     ),
-    scaffoldBackgroundColor: const Color(0xFFF0F0F0),
+    scaffoldBackgroundColor: lightScaffoldBackgroundColor, // Muy light green
     textTheme: GoogleFonts.pressStart2pTextTheme(
       ThemeData.light().textTheme.copyWith(
             bodyLarge: const TextStyle(fontSize: 14, color: lightTextColor),
@@ -44,24 +52,24 @@ class PixelTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
-        foregroundColor: Colors.white, // Texto blanco sobre botones primarios
+        foregroundColor: Colors.white,
         shape: const BeveledRectangleBorder(),
         elevation: 0,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.white, // Fondo de inputs claro
+      fillColor: const Color(0xFFFFFFE0), // Lighter yellow para inputs
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withAlpha(128), width: 2), // Replaced withOpacity
+        borderSide: BorderSide(color: lightTextColor.withAlpha(128), width: 2),
         borderRadius: BorderRadius.zero,
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withAlpha(128), width: 2), // Replaced withOpacity
+        borderSide: BorderSide(color: lightTextColor.withAlpha(128), width: 2),
         borderRadius: BorderRadius.zero,
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: secondaryColor, width: 2), // Borde enfocado con color secundario
+        borderSide: const BorderSide(color: secondaryColor, width: 2),
         borderRadius: BorderRadius.zero,
       ),
       labelStyle: const TextStyle(color: lightTextColor),
@@ -74,16 +82,18 @@ class PixelTheme {
     colorScheme: ColorScheme.dark(
       primary: primaryColor,
       secondary: secondaryColor,
-      surface: darkBackgroundColor, // Superficie oscura
-      // background: darkBackgroundColor, // Fondo oscuro - REMOVED
+      tertiary: accentColor, // Amarillo
+      surface: darkDialogSurfaceColor, // Gris más claro para surfaces
+      background: darkBackgroundColor, // Gris oscuro para scaffold background
       error: errorColor,
-      onPrimary: Colors.white, // Texto/iconos sobre color primario
-      onSecondary: Colors.black, // Texto/iconos sobre color secundario
-      onSurface: darkTextColor, // Texto/iconos sobre color de superficie
-      // onBackground: darkTextColor, // Texto/iconos sobre color de fondo - REMOVED
-      onError: Colors.black, // Texto/iconos sobre color de error
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      onTertiary: Colors.black,
+      onSurface: darkTextColor, // Blanco sobre gris más claro
+      onBackground: darkTextColor, // Blanco sobre gris oscuro
+      onError: Colors.black,
     ),
-    scaffoldBackgroundColor: darkBackgroundColor,
+    scaffoldBackgroundColor: darkBackgroundColor, // Gris oscuro
     textTheme: GoogleFonts.pressStart2pTextTheme(
       ThemeData.dark().textTheme.copyWith(
             bodyLarge: const TextStyle(fontSize: 14, color: darkTextColor),
@@ -94,24 +104,24 @@ class PixelTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
-        foregroundColor: Colors.white, // Texto blanco sobre botones primarios
+        foregroundColor: Colors.white,
         shape: const BeveledRectangleBorder(),
         elevation: 0,
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFF303134), // Fondo de inputs oscuro
+      fillColor: const Color(0xFF303134), // Mantenido como darkDialogSurfaceColor
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withAlpha(179), width: 2), // Replaced withOpacity
+        borderSide: BorderSide(color: darkTextColor.withAlpha(179), width: 2),
         borderRadius: BorderRadius.zero,
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withAlpha(179), width: 2), // Replaced withOpacity
+        borderSide: BorderSide(color: darkTextColor.withAlpha(179), width: 2),
         borderRadius: BorderRadius.zero,
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: secondaryColor, width: 2), // Borde enfocado con color secundario
+        borderSide: const BorderSide(color: secondaryColor, width: 2),
         borderRadius: BorderRadius.zero,
       ),
       labelStyle: const TextStyle(color: darkTextColor),
