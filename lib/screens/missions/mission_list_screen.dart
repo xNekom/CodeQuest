@@ -21,9 +21,23 @@ class _MissionListScreenState extends State<MissionListScreen> {
         // Stream simple de la colección 'missions' sin ordenar por campos inexistentes
         stream: FirebaseFirestore.instance
             .collection('missions')
-            .orderBy('difficultyLevel')
+            .orderBy('levelRequired') // Updated orderBy field
             .snapshots(),
         builder: (context, snapshot) {
+          // Added logging
+          if (snapshot.hasError) {
+            print('[MissionListScreen] StreamBuilder error: ${snapshot.error}');
+          }
+          if (!snapshot.hasData) {
+            print('[MissionListScreen] StreamBuilder: No data yet.');
+          } else {
+            final docs = snapshot.data!.docs;
+            print('[MissionListScreen] StreamBuilder: Received ${docs.length} documents.');
+            if (docs.isEmpty) {
+              print('[MissionListScreen] StreamBuilder: Document list is empty.');
+            }
+          }
+
           if (snapshot.hasError) return Center(child: Text('Error misiones: ${snapshot.error}'));
           if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
           final docs = snapshot.data!.docs;
@@ -35,7 +49,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
             itemBuilder: (context, index) {
               final doc = docs[index];
               final data = doc.data() as Map<String, dynamic>;
-              final level = data['difficultyLevel'] as int? ?? 0;
+              final level = data['levelRequired'] as int? ?? 0; // Updated field name
               final zone = data['zone'] as String? ?? '';
               return Card(
                 elevation: 4,
