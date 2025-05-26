@@ -322,5 +322,77 @@
     ],
     "correctAnswerIndex": 2,
     "explanation": "Un bucle infinito a menudo hace que el programa parezca colgado, use mucha CPU porque está constantemente ejecutando el cuerpo del bucle, o si hay una instrucción de impresión dentro, la verás repetirse sin parar en la consola."
+  },
+  {
+    "id": "q_constructor_1",
+    "text": "¿Qué es un constructor en Java?",
+    "options": [
+        "Un método para destruir objetos",
+        "Un método especial para inicializar objetos",
+        "Una variable que almacena el nombre de un objeto",
+        "Un tipo de bucle para la creación de objetos"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Un constructor es un bloque de código similar a un método que se llama cuando se crea una instancia de un objeto (se inicializa)."
+  },
+  {
+    "id": "q_constructor_2",
+    "text": "Si no defines ningún constructor en tu clase Java, ¿qué sucede?",
+    "options": [
+        "El código no compilará",
+        "Java proporciona un constructor por defecto sin argumentos",
+        "Se produce un error en tiempo de ejecución al crear un objeto",
+        "Debes llamar a un método 'crearObjeto' especial"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Si una clase no tiene constructores explícitamente definidos, el compilador de Java añade automáticamente un constructor público por defecto sin argumentos."
+  },
+  {
+    "id": "q_constructor_3",
+    "text": "¿Cuál es la palabra clave utilizada para crear una instancia de un objeto e invocar su constructor?",
+    "options": [
+        "create",
+        "instance",
+        "new",
+        "build"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. La palabra clave `new` se usa para crear nuevas instancias de objetos, lo que implica llamar al constructor de la clase."
+  },
+  {
+    "id": "q_constructor_4",
+    "text": "Observa: `public class Robot { String nombre; public Robot(String n) { nombre = n; } }`. ¿Cómo crearías un objeto Robot llamado 'WallE'?",
+    "options": [
+        "Robot wallE = Robot(\"WallE\");",
+        "Robot wallE = new Robot(\"WallE\");",
+        "new Robot wallE = (\"WallE\");",
+        "Robot wallE.Robot(\"WallE\");"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Se usa `new Robot(\"WallE\")`. `new` crea el objeto, `Robot` es el tipo y `(\"WallE\")` pasa el argumento al constructor."
+  },
+  {
+    "id": "q_constructor_5",
+    "text": "¿Puede un constructor en Java tener un tipo de retorno (por ejemplo, `void` o `int`)?",
+    "options": [
+        "Sí, siempre debe devolver un booleano",
+        "Sí, puede devolver cualquier tipo de dato",
+        "No, los constructores no tienen un tipo de retorno explícito",
+        "Solo si es un constructor privado"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Los constructores no tienen un tipo de retorno explícito, ni siquiera `void`. Su 'retorno' implícito es la instancia del objeto que crean."
+  },
+  {
+    "id": "q_constructor_6",
+    "text": "¿Cuál es el propósito principal de un constructor parametrizado?",
+    "options": [
+        "Crear objetos siempre con los mismos valores iniciales",
+        "Inicializar un nuevo objeto con valores específicos pasados como argumentos",
+        "Evitar la creación de objetos",
+        "Solo se usa para herencia"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Un constructor parametrizado permite pasar valores al momento de la creación del objeto para inicializar sus atributos con esos valores específicos, ofreciendo flexibilidad."
   }
 ]

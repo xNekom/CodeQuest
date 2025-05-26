@@ -1024,5 +1024,63 @@
     "requirements": {
       "items": []
     }
+  },
+  {
+    "id": "mision_constructor_golem",
+    "title": "El Arte de la Construcción: Gólems de Java",
+    "description": "Un viejo artesano te enseñará a dar vida a la materia inerte usando los secretos de los constructores en Java. Crea tu propio gólem asistente.",
+    "zone": "Taller del Artesano",
+    "levelRequired": 4,
+    "status": "disponible",
+    "prerequisiteMissionId": null,
+    "isRepeatable": false,
+    "storyContent": {
+      "introduction": "Entras al taller de un viejo artesano, conocido por sus creaciones animadas. Te ofrece enseñarte el antiguo arte de la 'construcción' para crear un ayudante gólem, una habilidad invaluable para cualquier aventurero de código.",
+      "conclusion": "Con tu nuevo gólem ensamblado y funcionando, el artesano sonríe. Has dominado los principios de los constructores y ahora tienes un leal compañero de código.",
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "En Java, un constructor es un método especial usado para inicializar objetos. Imagina que es el manual de instrucciones para ensamblar tu gólem. Cada vez que creas un nuevo 'Golem', el constructor define sus características iniciales: su material, su nombre, sus puntos de vida. Por ejemplo: `public Golem(String nombre, String material) { this.nombre = nombre; this.material = material; this.vida = 100; }`.",
+          "imageUrl": "assets/story/artesano_taller.png"
+        },
+        {
+          "pageNumber": 2,
+          "text": "Hay diferentes tipos de constructores. Un constructor por defecto no tiene parámetros: `public Golem() { this.nombre = \"GolemSiervo\"; this.material = \"Piedra\"; }`. Este crea un gólem estándar. Un constructor parametrizado, como viste antes, permite personalizar el gólem al crearlo: `Golem miGolemFuerte = new Golem(\"Roco\", \"Acero\");`. Aquí 'Roco' y 'Acero' son los argumentos pasados al constructor.",
+          "imageUrl": "assets/story/golem_planos.png"
+        },
+        {
+          "pageNumber": 3,
+          "text": "Para invocar un constructor y crear tu gólem, usas la palabra clave `new` seguida del nombre de la clase y los argumentos (si los hay) entre paréntesis: `Golem miAyudante = new Golem(\"Chip\", \"Bronce\");`. ¡Ahora 'Chip' está listo para ayudarte! Recuerda, si no defines ningún constructor, Java provee uno por defecto (sin argumentos) que inicializa las variables de instancia con valores predeterminados.",
+          "imageUrl": "assets/story/golem_activado.png"
+        }
+      ]
+    },
+    "objectives": [
+      {
+        "type": "batalla",
+        "description": "Demuestra tu maestría en constructores derrotando al 'Espíritu del Código Incompleto' que intenta corromper a tu gólem.",
+        "target": 1,
+        "battleConfig": {
+          "enemyId": "enemigo_espiritu_codigo_incompleto",
+          "questionIds": [
+            "q_constructor_1",
+            "q_constructor_2",
+            "q_constructor_3",
+            "q_constructor_4",
+            "q_constructor_5",
+            "q_constructor_6"
+          ],
+          "playerHealthMultiplier": 1.0,
+          "enemyAttackMultiplier": 1.0,
+          "environment": "taller_magico"
+        }
+      }
+    ],
+    "rewards": {
+      "experience": 200,
+      "coins": 100,
+      "items": [ { "itemId": "item_nucleo_golem", "quantity": 1 } ],
+      "unlocks": []
+    }
   }
 ]
