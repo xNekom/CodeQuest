@@ -49,45 +49,98 @@ class MissionModel {
   }
 
   factory MissionModel.fromJson(Map<String, dynamic> json, String missionId) {
-    print('[MissionModel] Attempting to parse missionId: $missionId');
     try {
+      // Parseo robusto de Objectives
       var objectivesData = json['objectives'] as List<dynamic>? ?? [];
       List<Objective> objectivesList = objectivesData
-          .map((objData) => Objective.fromJson(objData as Map<String, dynamic>))
+          .map((objData) {
+            try {
+              if (objData is Map<String, dynamic>) {
+                return Objective.fromJson(objData);
+              }
+              // print('[MissionModel] Invalid objective data type for mission $missionId: $objData');
+              return null;
+            } catch (e) {
+              // print('[MissionModel] Failed to parse an objective for mission $missionId: $e. Data: $objData');
+              return null;
+            }
+          })
+          .whereType<Objective>() // Filtra los nulls si Objective.fromJson puede devolver null o fallar
           .toList();
+
+      // Parseo robusto de Rewards
+      var rewardsData = json['rewards'] as Map<String, dynamic>?;
+      Rewards rewardsInstance;
+      if (rewardsData != null) {
+        try {
+          rewardsInstance = Rewards.fromJson(rewardsData);
+        } catch (e) {
+          // print('[MissionModel] Failed to parse rewards for mission $missionId: $e. Data: $rewardsData');
+          // Asumimos que Rewards tiene un constructor .empty() o uno que puede manejar un mapa vacío.
+          // Si no, necesitarías definir Rewards.empty() o ajustar esto.
+          rewardsInstance = Rewards.fromJson({}); // Intenta con un mapa vacío como fallback
+        }
+      } else {
+        // Si rewardsData es null, intenta crear una instancia de Rewards con un mapa vacío.
+        // Esto requiere que Rewards.fromJson pueda manejar un mapa vacío y asignar valores por defecto.
+        rewardsInstance = Rewards.fromJson({}); 
+      }
+      
+      // Parseo robusto de StoryPages
+      List<StoryPageModel>? storyPagesList;
+      if (json['storyPages'] is List<dynamic>) {
+        storyPagesList = (json['storyPages'] as List<dynamic>)
+            .map((pageJson) {
+                try {
+                  if (pageJson is Map<String, dynamic>) {
+                    return StoryPageModel.fromJson(pageJson);
+                  }
+                  // print('[MissionModel] Invalid story page data type for mission $missionId: $pageJson');
+                  return null;
+                } catch(e) {
+                    // print('[MissionModel] Failed to parse a story page for mission $missionId: $e. Data: $pageJson');
+                    return null;
+                }
+            })
+            .whereType<StoryPageModel>()
+            .toList();
+        if (storyPagesList.isEmpty) storyPagesList = null; // Si la lista queda vacía después de filtrar, asignar null
+      }
+
 
       return MissionModel(
         missionId: missionId,
-        name: json['name'] as String? ?? json['title'] as String, // Handle old 'title' field
-        description: json['description'] as String,
-        zone: json['zone'] as String,
-        levelRequired: json['levelRequired'] as int,
-        status: json['status'] as String,
-        // prerequisiteMissionId: json['prerequisiteMissionId'] as String?, // Removed
-        isRepeatable: json['isRepeatable'] as bool,
+        name: json['name'] as String? ?? json['title'] as String? ?? 'Misión sin nombre',
+        description: json['description'] as String? ?? 'Sin descripción.',
+        zone: json['zone'] as String? ?? 'Zona Desconocida',
+        levelRequired: (json['levelRequired'] as num?)?.toInt() ?? 0,
+        status: json['status'] as String? ?? 'bloqueada',
+        isRepeatable: json['isRepeatable'] as bool? ?? false,
         objectives: objectivesList,
-        rewards: Rewards.fromJson(json['rewards'] as Map<String, dynamic>),
-        dialogue: json['dialogue'] != null
+        rewards: rewardsInstance,
+        
+        dialogue: json['dialogue'] != null && json['dialogue'] is Map<String, dynamic>
             ? Dialogue.fromJson(json['dialogue'] as Map<String, dynamic>)
             : null,
-        storyContent: json['storyContent'] != null
+        storyContent: json['storyContent'] != null && json['storyContent'] is Map<String, dynamic>
             ? StoryContent.fromJson(json['storyContent'] as Map<String, dynamic>)
             : null,
         originalId: json['id'] as String?,
         type: json['type'] as String?,
-        storyPages: (json['storyPages'] as List<dynamic>?)
-            ?.map((pageJson) => StoryPageModel.fromJson(pageJson as Map<String, dynamic>))
-            .toList(),
-        battleConfig: json['battleConfig'] != null
+        storyPages: storyPagesList,
+            
+        battleConfig: json['battleConfig'] != null && json['battleConfig'] is Map<String, dynamic>
             ? BattleConfigModel.fromJson(json['battleConfig'] as Map<String, dynamic>)
             : null,
-        requirements: json['requirements'] != null
+            
+        requirements: json['requirements'] != null && json['requirements'] is Map<String, dynamic>
             ? RequirementsModel.fromJson(json['requirements'] as Map<String, dynamic>)
             : null,
       );
     } catch (e) {
-      print('[MissionModel] ERROR parsing missionId: $missionId. Data: $json');
-      print('[MissionModel] Parser exception: $e');
+      // print('[MissionModel] CRITICAL ERROR parsing missionId: $missionId. Data: $json. Exception: $e');
+      // Este rethrow es para errores que no se pudieron manejar con valores por defecto,
+      // lo que hará que MissionService omita esta misión.
       rethrow;
     }
   }
