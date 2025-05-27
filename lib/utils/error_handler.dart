@@ -6,6 +6,7 @@ import '../widgets/error_widgets.dart';
 import '../screens/error_screen.dart';
 import 'error_logger.dart';
 import 'web_platform_handler.dart';
+import '../main.dart' show scaffoldMessengerKey;
 
 /// Clase que maneja los errores de forma global en la aplicación.
 /// Proporciona métodos para mostrar mensajes de error de forma consistente
@@ -15,16 +16,50 @@ class ErrorHandler {
   static void showError(BuildContext context, String message) {
     if (!context.mounted) return;
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+    try {
+      // Intentar usar el ScaffoldMessenger del contexto actual
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.fixed,
+        ),
+      );
+    } catch (e) {
+      // Si falla, intentar con el contexto del Navigator root
+      try {
+        final navigatorContext = Navigator.of(context, rootNavigator: true).context;
+        if (navigatorContext.mounted) {
+          ScaffoldMessenger.of(navigatorContext).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: Theme.of(navigatorContext).colorScheme.error,
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.fixed,
+            ),
+          );
+        }
+      } catch (e2) {
+         // Intentar con el ScaffoldMessenger global como último recurso
+         try {
+           scaffoldMessengerKey.currentState?.showSnackBar(
+             SnackBar(
+               content: Text(message),
+               backgroundColor: Colors.red,
+               duration: const Duration(seconds: 3),
+               behavior: SnackBarBehavior.fixed,
+             ),
+           );
+         } catch (e3) {
+           // Como último recurso, mostrar un diálogo simple
+           debugPrint('Error mostrando SnackBar: $e2');
+           debugPrint('Error con ScaffoldMessenger global: $e3');
+           debugPrint('Mensaje de error original: $message');
+           showErrorDialog(context, 'Error', message);
+         }
+       }
+    }
   }
   /// Muestra un diálogo con información detallada sobre un error
   static Future<void> showErrorDialog(BuildContext context, String title, String message) async {
@@ -232,6 +267,29 @@ class ErrorHandler {
           // Por ejemplo, reiniciar la página actual
           Navigator.of(context).pop();
         },
+        onBack: () {
+          // Para errores críticos, navegar al inicio en lugar de solo hacer pop
+          try {
+            Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+              '/home',
+              (route) => false,
+            );
+          } catch (e) {
+            // Si falla la navegación, intentar con el contexto normal
+            debugPrint('Error en navegación con rootNavigator, intentando navegación normal: $e');
+            try {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/home',
+                (route) => false,
+              );
+            } catch (e2) {
+              debugPrint('Error en navegación normal: $e2');
+              // Como último recurso, hacer pop
+              Navigator.of(context).pop();
+            }
+          }
+        },
+        backButtonText: 'Volver al inicio',
       );
     }
   }
