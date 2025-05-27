@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/code_exercise_model.dart';
 import '../services/code_exercise_service.dart';
 import '../widgets/code_playground.dart';
-import '../utils/error_handler.dart';
 import '../utils/overflow_utils.dart';
 
 /// Pantalla que muestra la lista de ejercicios de código disponibles
@@ -29,11 +28,14 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadExercises();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadExercises();
+        }
+      });
+    }
   }
 
   /// Carga los ejercicios desde el servicio

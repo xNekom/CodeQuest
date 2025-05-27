@@ -29,11 +29,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadInventoryData();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadInventoryData();
+        }
+      });
+    }
   }
 
   Future<void> _loadInventoryData() async {

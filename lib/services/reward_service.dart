@@ -251,7 +251,7 @@ class RewardService {
       debugPrint("Array de logros actualizado correctamente");
     } catch (e) {
       debugPrint("Error al actualizar array de logros: $e");
-      throw e; // Propagamos este error ya que es crítico
+      rethrow; // Propagamos este error ya que es crítico
     }
   }
 

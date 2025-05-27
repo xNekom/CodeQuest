@@ -375,9 +375,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
             final isCorrectOpt =
                 _questions[_currentIndex].correctAnswerIndex == idx;
             if (_answerSubmitted) {
-              if (isSelected)
+              if (isSelected) {
                 btnColor = _isCurrentAnswerCorrect! ? Colors.green : Colors.red;
-              else if (isCorrectOpt)
+              } else if (isCorrectOpt)
                 btnColor = Colors.green;
             }
             return Padding(

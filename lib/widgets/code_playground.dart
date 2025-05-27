@@ -87,10 +87,10 @@ class _CodePlaygroundState extends State<CodePlayground> {
   String _generateJavaError(String userInput) {
     final errors = [
       'Error: cannot find symbol\n  symbol:   variable ${userInput.split(' ').last}\n  location: class Main',
-      'Error: \';\' expected\n  ${userInput}\n           ^',
-      'Error: incompatible types: String cannot be converted to int\n  ${userInput}\n  ^',
+      'Error: \';\' expected\n  $userInput\n           ^',
+      'Error: incompatible types: String cannot be converted to int\n  $userInput\n  ^',
       'Error: method ${userInput.split('(').first} in class Main cannot be applied to given types\n  required: no arguments\n  found: String',
-      'Error: variable ${userInput.split(' ').first} might not have been initialized\n  ${userInput}\n  ^',
+      'Error: variable ${userInput.split(' ').first} might not have been initialized\n  $userInput\n  ^',
     ];
     return errors[userInput.length % errors.length];
   }
@@ -459,7 +459,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                                       ),
                                     ),
                                   )
-                                  .toList(),
+                                  ,
                               const SizedBox(height: 12),
                               Container(
                                 padding: const EdgeInsets.all(12),
@@ -712,7 +712,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           // Número de línea
-                                          Container(
+                                          SizedBox(
                                             width: 30,
                                             child: Text(
                                               '$lineNumber',

@@ -55,6 +55,7 @@ dev_dependencies:
     sdk: flutter
   mockito: ^5.4.4
   build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.14.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -78,6 +79,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/characters/
+    - assets/images/logo/
     - assets/backgrounds/
     - assets/data/questions.json
     - assets/data/code_exercises.json
@@ -112,3 +114,24 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo/logo_app.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/logo/logo_app.png"
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/images/logo/logo_app.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/images/logo/logo_app.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/logo/logo_app.png"

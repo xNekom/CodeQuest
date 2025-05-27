@@ -16,7 +16,7 @@ class LeaderboardService {
         .map((snapshot) {
       return snapshot.docs.map((doc) {
         return LeaderboardEntryModel.fromJson(
-          doc.data() as Map<String, dynamic>,
+          doc.data(),
           doc.id,
         );
       }).toList();

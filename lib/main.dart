@@ -91,7 +91,7 @@ Widget _buildEmergencyApp(dynamic error, StackTrace stack) {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
+                color: Colors.black.withAlpha(51), // 0.2 * 255 ≈ 51
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -142,10 +142,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Capturar errores durante la construcción de widgets
     ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-      ErrorHandler.logError(errorDetails.exception, errorDetails.stack);
+      // Registrar el error de forma segura sin usar contexto
+      try {
+        ErrorHandler.logError(errorDetails.exception, errorDetails.stack);
+      } catch (e) {
+        // Si falla el logging, al menos imprimir en consola
+        debugPrint('Error logging failed: $e');
+        debugPrint('Original error: ${errorDetails.exception}');
+      }
+      
+      // Crear un widget de error simple sin usar Theme.of(context) para evitar bucles infinitos
       return Material(
         child: Container(
-          color: Colors.red[900],
+          color: const Color(0xFF8B0000), // Colors.red[900] hardcodeado
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -153,28 +162,34 @@ class MyApp extends StatelessWidget {
               children: [
                 const Icon(Icons.error_outline, size: 60, color: Colors.white),
                 const SizedBox(height: 16),
-                Text(
+                const Text(
                   'Oops! Algo salió mal',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  style: TextStyle(
                     color: Colors.white,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   '${errorDetails.exception}',
-                  style: TextStyle(color: Colors.white70),
+                  style: const TextStyle(color: Color(0xFFB3B3B3)), // Colors.white70 hardcodeado
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     // Usar el navigatorKey global para navegar desde el contexto de error
-                    navigatorKey.currentState?.pushNamedAndRemoveUntil('/home', (route) => false);
+                    try {
+                      navigatorKey.currentState?.pushNamedAndRemoveUntil('/home', (route) => false);
+                    } catch (e) {
+                      debugPrint('Error en navegación desde ErrorWidget: $e');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: Colors.red[900],
+                    foregroundColor: const Color(0xFF8B0000),
                   ),
                   child: const Text('Volver al inicio'),
                 ),
@@ -306,7 +321,28 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
     _animation = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    _animationController.repeat(reverse: true);
+    // Limitar la animación a 3 repeticiones para evitar bucles infinitos
+    _startLimitedAnimation();
+  }
+
+  void _startLimitedAnimation() {
+    int repeatCount = 0;
+    const maxRepeats = 3;
+    
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        repeatCount++;
+        if (repeatCount < maxRepeats * 2) { // *2 porque cada ciclo tiene completed y dismissed
+          if (status == AnimationStatus.completed) {
+            _animationController.reverse();
+          } else {
+            _animationController.forward();
+          }
+        }
+      }
+    });
+    
+    _animationController.forward();
   }
 
   @override
@@ -420,21 +456,20 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
                 }
               }
 
-              // Navegar después de que el frame actual se construya
-              WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Navegar usando Future.microtask para evitar infinite rebuilds
+              Future.microtask(() {
                 if (mounted) {
                   // Asegurarse que el widget sigue montado antes de navegar
                   Navigator.pushReplacementNamed(context, routeToGo);
                 }
               });
-              // Muestra el splash screen mientras la navegación ocurre en el siguiente frame.
-              // Esto evita parpadeos o construir la UI de la pantalla anterior brevemente.
+              // Muestra el splash screen mientras la navegación ocurre
               return _buildSplashScreen();
             },
           );
         } else {
           // Usuario no autenticado
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          Future.microtask(() {
             if (mounted) {
               Navigator.pushReplacementNamed(context, '/auth');
             }

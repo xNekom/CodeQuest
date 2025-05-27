@@ -7,7 +7,7 @@ import '../models/item_model.dart';
 import '../widgets/pixel_widgets.dart';
 
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({Key? key}) : super(key: key);
+  const ShopScreen({super.key});
 
   @override
   _ShopScreenState createState() => _ShopScreenState();
@@ -34,11 +34,14 @@ class _ShopScreenState extends State<ShopScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadData();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadData();
+        }
+      });
+    }
   }
 
   Future<void> _loadData() async {

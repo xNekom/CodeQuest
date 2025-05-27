@@ -6,7 +6,7 @@ import '../widgets/pixel_widgets.dart';
 import '../theme/pixel_theme.dart';
 
 class LeaderboardScreen extends StatefulWidget {
-  const LeaderboardScreen({Key? key}) : super(key: key);
+  const LeaderboardScreen({super.key});
 
   @override
   State<LeaderboardScreen> createState() => _LeaderboardScreenState();
@@ -28,17 +28,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadCurrentUserRanking();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadCurrentUserRanking();
+        }
+      });
+    }
   }
 
   Future<void> _loadCurrentUserRanking() async {
     if (_currentUser != null) {
       final ranking = await _leaderboardService.getUserRanking(
-        _currentUser!.uid,
+        _currentUser.uid,
       );
       setState(() {
         _currentUserRanking = ranking;

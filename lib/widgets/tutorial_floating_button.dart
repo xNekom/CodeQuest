@@ -212,7 +212,7 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
               child: InkWell(
                 onTap: _toggleMenu,
                 borderRadius: BorderRadius.circular(4),
-                child: Container(
+                child: SizedBox(
                   width: 56,
                   height: 56,
                   child: AnimatedBuilder(
@@ -260,7 +260,7 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   child: InkWell(
                     onTap: _startTutorial,
                     borderRadius: BorderRadius.circular(4),
-                    child: Container(
+                    child: SizedBox(
                       width: 48,
                       height: 48,
                       child: const Icon(
@@ -298,7 +298,7 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   child: InkWell(
                     onTap: _showAllTutorials,
                     borderRadius: BorderRadius.circular(4),
-                    child: Container(
+                    child: SizedBox(
                       width: 48,
                       height: 48,
                       child: const Icon(

@@ -109,7 +109,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text('Registro'),
       ),
-      body: Padding(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/background_login_auth.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -182,6 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ],
           ),
+        ),
         ),
       ),
     );

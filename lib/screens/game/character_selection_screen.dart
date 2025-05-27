@@ -54,11 +54,14 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadExistingData();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadExistingData();
+        }
+      });
+    }
   }
 
   /// Inicia el tutorial si es necesario
@@ -131,7 +134,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Vista previa del personaje con navegación
-                    Container(
+                    SizedBox(
                       key: _characterPreviewKey,
                       height: isPortrait ? 260 : 280,
                       child: Row(
@@ -232,8 +235,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             );
                           }).toList(),
                       onChanged: (v) {
-                        if (v != null)
+                        if (v != null) {
                           setState(() => _selectedProgrammingRole = v);
+                        }
                       },
                     ),
                     SizedBox(height: isPortrait ? 8 : 16),

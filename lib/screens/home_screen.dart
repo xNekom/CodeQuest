@@ -24,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final UserService _userService = UserService();
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
+  bool _hasInitialized = false; // Bandera para evitar inicializaciones múltiples
+  bool _tutorialChecked = false; // Bandera para evitar verificaciones múltiples del tutorial
 
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _profileKey = GlobalKey();
@@ -50,21 +52,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadUserData();
-      }
-    });
+    // Solo recargar datos si no se ha inicializado y la ruta está activa
+    if (!_hasInitialized && mounted && ModalRoute.of(context)?.isCurrent == true) {
+      _hasInitialized = true;
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadUserData();
+        }
+      });
+    }
   }
 
   /// Inicia el tutorial si es necesario
   Future<void> _checkAndStartTutorial() async {
+    // Verificar si ya se ejecutó la verificación del tutorial
+    if (_tutorialChecked) return;
+    
     // Esperar a que la UI se construya completamente, pero con un tiempo menor
     await Future.delayed(const Duration(milliseconds: 500));
 
     // Verificar si el widget sigue montado antes de continuar
     if (!mounted) return;
+
+    // Marcar como verificado para evitar llamadas múltiples
+    _tutorialChecked = true;
 
     try {
       TutorialService.startTutorialIfNeeded(
@@ -78,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           adventureButtonKey: _adventureButtonKey,
           shopButtonKey: _shopButtonKey,
           inventoryButtonKey: _inventoryButtonKey,
+          codeExercisesButtonKey: _codeExercisesButtonKey,
         ),
       );
     } catch (e) {
@@ -131,7 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedSwitcher(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
         child:
             _isLoading
@@ -141,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text('No se encontraron datos del usuario'),
                 )
                 : _buildUserDataContent(),
+        ),
       ),
       floatingActionButton: TutorialFloatingButton(
         tutorialKey: TutorialService.homeScreenTutorial,
@@ -212,12 +233,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             flex: 2,
-            child: Text(
-              'CODEQUEST',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              overflow: TextOverflow.ellipsis,
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/images/logo/logo_no_background.png',
+                  height: 32,
+                  width: 32,
+                ),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'CODEQUEST',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(width: 8),
