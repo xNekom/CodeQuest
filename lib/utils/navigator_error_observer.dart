@@ -21,12 +21,20 @@ class ErrorHandlingNavigatorObserver extends NavigatorObserver {
     if (previousRoute != null) _handleRoute(previousRoute);
     super.didPop(route, previousRoute);
   }
+
   void _handleRoute(Route<dynamic> route) {
     try {
-      // Registrar navegación para depuración y análisis
-      final routeName = route.settings.name ?? 'desconocido';
-      final routeArguments = route.settings.arguments != null ? ' con argumentos' : ' sin argumentos';
-      ErrorLogger.log('Navegación a ruta: $routeName$routeArguments');
+      // Solo registrar rutas problemáticas o errores, no navegaciones normales
+      final routeName = route.settings.name;
+      if (routeName != null && routeName.startsWith('/error')) {
+        final routeArguments =
+            route.settings.arguments != null
+                ? ' con argumentos'
+                : ' sin argumentos';
+        ErrorLogger.log(
+          'Navegación a ruta de error: $routeName$routeArguments',
+        );
+      }
     } catch (error, stack) {
       ErrorHandler.logError(error, stack);
     }

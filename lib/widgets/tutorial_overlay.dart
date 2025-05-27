@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'pixel_widgets.dart';
 
@@ -39,12 +38,12 @@ class _TutorialOverlayState extends State<TutorialOverlay>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -53,7 +52,6 @@ class _TutorialOverlayState extends State<TutorialOverlay>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
-
 
     _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
@@ -65,7 +63,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
   void _startStepAnimation() {
     _fadeController.reset();
     _slideController.reset();
-    
+
     _fadeController.forward();
     _slideController.forward();
   }
@@ -117,7 +115,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
   @override
   Widget build(BuildContext context) {
     final currentStep = widget.steps[_currentStep];
-    
+
     return AnimatedBuilder(
       animation: _fadeAnimation,
       builder: (context, child) {
@@ -129,7 +127,7 @@ class _TutorialOverlayState extends State<TutorialOverlay>
               children: [
                 // Spotlight effect
                 if (currentStep.targetRect != null)
-                  _buildSpotlight(currentStep.targetRect!),                // Tutorial content
+                  _buildSpotlight(currentStep.targetRect!), // Tutorial content
                 Positioned.fill(
                   child: SafeArea(
                     child: Center(
@@ -143,15 +141,11 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                     ),
                   ),
                 ),
-                
+
                 // Skip button
                 if (widget.showSkipButton)
-                  Positioned(
-                    top: 50,
-                    right: 20,
-                    child: _buildSkipButton(),
-                  ),
-                
+                  Positioned(top: 50, right: 20, child: _buildSkipButton()),
+
                 // Pulse indicator on target
                 if (currentStep.targetRect != null && currentStep.showPulse)
                   _buildPulseIndicator(currentStep.targetRect!),
@@ -168,7 +162,9 @@ class _TutorialOverlayState extends State<TutorialOverlay>
       painter: SpotlightPainter(targetRect),
       size: Size.infinite,
     );
-  }  Widget _buildTutorialCard(TutorialStep step) {
+  }
+
+  Widget _buildTutorialCard(TutorialStep step) {
     return PixelCard(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -180,7 +176,11 @@ class _TutorialOverlayState extends State<TutorialOverlay>
             Row(
               children: [
                 if (step.icon != null) ...[
-                  Icon(step.icon, size: 24, color: Theme.of(context).colorScheme.primary),
+                  Icon(
+                    step.icon,
+                    size: 24,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                   const SizedBox(width: 12),
                 ],
                 Expanded(
@@ -189,26 +189,30 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Description
             Text(
               step.description,
               style: Theme.of(context).textTheme.bodyMedium,
+              softWrap: true,
+              overflow: TextOverflow.visible,
             ),
-            
+
             // Additional content
             if (step.content != null) ...[
               const SizedBox(height: 16),
               step.content!,
             ],
-            
+
             const SizedBox(height: 20),
-            
+
             // Navigation buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,36 +220,40 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                 // Previous button
                 _currentStep > 0
                     ? PixelButton(
-                        onPressed: _previousStep,
-                        isSecondary: true,
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.arrow_back, size: 16),
-                            SizedBox(width: 8),
-                            Text('Anterior'),
-                          ],
-                        ),
-                      )
+                      onPressed: _previousStep,
+                      isSecondary: true,
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.arrow_back, size: 16),
+                          SizedBox(width: 8),
+                          Text('Anterior'),
+                        ],
+                      ),
+                    )
                     : const SizedBox.shrink(),
-                
+
                 // Step indicator
                 Text(
                   '${_currentStep + 1} / ${widget.steps.length}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                
+
                 // Next/Finish button
                 PixelButton(
                   onPressed: _nextStep,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(_currentStep == widget.steps.length - 1 ? 'Finalizar' : 'Siguiente'),
+                      Text(
+                        _currentStep == widget.steps.length - 1
+                            ? 'Finalizar'
+                            : 'Siguiente',
+                      ),
                       const SizedBox(width: 8),
                       Icon(
-                        _currentStep == widget.steps.length - 1 
-                            ? Icons.check 
+                        _currentStep == widget.steps.length - 1
+                            ? Icons.check
                             : Icons.arrow_forward,
                         size: 16,
                       ),
@@ -293,7 +301,9 @@ class _TutorialOverlayState extends State<TutorialOverlay>
                   color: Theme.of(context).colorScheme.primary,
                   width: 3,
                 ),
-                color: Theme.of(context).colorScheme.primary.withAlpha(51), // Reemplazado .withOpacity(0.2)
+                color: Theme.of(context).colorScheme.primary.withAlpha(
+                  51,
+                ), // Reemplazado .withOpacity(0.2)
               ),
             ),
           );
@@ -310,20 +320,25 @@ class SpotlightPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint backgroundPaint = Paint()
-      ..color = Colors.black.withAlpha(204); // Reemplazado .withOpacity(0.8)
+    final Paint backgroundPaint =
+        Paint()
+          ..color = Colors.black.withAlpha(
+            204,
+          ); // Reemplazado .withOpacity(0.8)
 
-    final Paint spotlightPaint = Paint()
-      ..blendMode = BlendMode.clear;
+    final Paint spotlightPaint = Paint()..blendMode = BlendMode.clear;
 
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-    
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      backgroundPaint,
+    );
+
     // Create rounded spotlight
     final RRect spotlightRRect = RRect.fromRectAndRadius(
       targetRect.inflate(10),
       const Radius.circular(12),
     );
-    
+
     canvas.drawRRect(spotlightRRect, spotlightPaint);
   }
 

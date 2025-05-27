@@ -97,8 +97,10 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     );
 
     if (widget.autoStart && widget.steps.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _startTutorial();
+      Future.microtask(() {
+        if (mounted) {
+          _startTutorial();
+        }
       });
     }
   }
@@ -264,7 +266,7 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
       color: Colors.transparent,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: 320,
+          maxWidth: screenSize.width * 0.9,
           minWidth: 280,
           maxHeight: screenSize.height * 0.6,
         ),
@@ -311,6 +313,8 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
                       ),
                     ),
                     IconButton(
@@ -330,6 +334,8 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
                     color: Colors.black87,
                     height: 1.4,
                   ),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
                 ),
 
                 const SizedBox(height: 16),
@@ -417,12 +423,7 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: Container(
-              color: Colors.black.withValues(
-                alpha: 128,
-                red: 0,
-                green: 0,
-                blue: 0,
-              ),
+              color: Colors.black.withAlpha(128),
             ),
           ),
         ),
@@ -450,12 +451,7 @@ class HolePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.black.withValues(
-            alpha: 128,
-            red: 0,
-            green: 0,
-            blue: 0,
-          )
+          ..color = Colors.black.withAlpha(128)
           ..style = PaintingStyle.fill;
 
     final path =

@@ -24,7 +24,7 @@ class AuthService {
         email: email,
         password: password,
       );
-      
+
       // Actualizar la fecha del último inicio de sesión
       if (result.user != null) {
         final uid = result.user!.uid;
@@ -38,7 +38,7 @@ class AuthService {
           await _createUserDocument(uid, result.user!.email!, defaultUsername);
         }
       }
-      
+
       return result;
     } catch (e) {
       debugPrint('Error en inicio de sesión: $e');
@@ -60,14 +60,12 @@ class AuthService {
       }
 
       // Crear usuario en Firebase Auth
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
       // Crear documento del usuario en Firestore
       await _createUserDocument(userCredential.user!.uid, email, username);
-      
+
       return userCredential;
     } catch (e) {
       debugPrint('Error en registro: $e');
@@ -84,7 +82,7 @@ class AuthService {
       rethrow;
     }
   }
-  
+
   // Enviar email de restablecimiento de contraseña
   Future<void> sendPasswordResetEmail({required String email}) async {
     try {
@@ -94,17 +92,18 @@ class AuthService {
       rethrow;
     }
   }
-  
+
   // Verificar si un nombre de usuario ya existe - Método alternativo sin consultas
   Future<bool> _checkUsernameExists(String username) async {
     try {
       // Método alternativo: crear un documento temporal con el username como ID
       // y verificar si ya existe
-      final DocumentSnapshot usernameDoc = await _firestore
-          .collection('usernames')
-          .doc(username.toLowerCase())
-          .get();
-          
+      final DocumentSnapshot usernameDoc =
+          await _firestore
+              .collection('usernames')
+              .doc(username.toLowerCase())
+              .get();
+
       return usernameDoc.exists;
     } catch (e) {
       debugPrint('Error al verificar nombre de usuario: $e');
@@ -112,9 +111,13 @@ class AuthService {
       return false;
     }
   }
-  
+
   // Crear documento de usuario en Firestore
-  Future<void> _createUserDocument(String uid, String email, String username) async {
+  Future<void> _createUserDocument(
+    String uid,
+    String email,
+    String username,
+  ) async {
     try {
       // Crear documento de usuario
       await _firestore.collection('users').doc(uid).set({
@@ -133,10 +136,10 @@ class AuthService {
         'unlockedAbilities': [],
         'equippedItems': {},
         'unlockedAchievements': [],
-        'skinTone': 'Claro',
-        'hairStyle': 'Corto',
-        'outfit': 'Aventurero',
-        'characterCreated': false,
+        'characterAssetIndex': 0,
+        'programmingRole': 'Desarrollador Full Stack',
+        'adminRole': 'user',
+        'characterSelected': false,
         'stats': {
           'questionsAnswered': 0,
           'correctAnswers': 0,
@@ -154,21 +157,21 @@ class AuthService {
         'createdAt': FieldValue.serverTimestamp(),
         'lastLogin': FieldValue.serverTimestamp(),
       });
-      
+
       // Registrar username en colección separada para verificación
       await _firestore.collection('usernames').doc(username.toLowerCase()).set({
         'uid': uid,
         'username': username,
         'createdAt': FieldValue.serverTimestamp(),
       });
-      
+
       // Crear entrada inicial en el leaderboard
       await _leaderboardService.updateLeaderboardEntry(
         userId: uid,
         username: username,
         score: 1000, // Puntuación inicial (nivel 1 * 1000)
       );
-      
+
       debugPrint('Usuario creado exitosamente: $uid');
     } catch (e) {
       debugPrint('Error al crear documento de usuario: $e');
@@ -181,7 +184,9 @@ class AuthService {
     try {
       User? user = _auth.currentUser;
       if (user == null || user.email == null) {
-        throw Exception("Usuario no encontrado o email no disponible para reautenticación.");
+        throw Exception(
+          "Usuario no encontrado o email no disponible para reautenticación.",
+        );
       }
 
       AuthCredential credential = EmailAuthProvider.credential(

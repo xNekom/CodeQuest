@@ -1,0 +1,16 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#4B0082" stroke="#301934" stroke-width="2"/>
+  
+  <!-- Stack layers -->
+  <rect x="16" y="40" width="32" height="6" fill="#FFD700" stroke="#FFA500" stroke-width="1" rx="1"/>
+  <rect x="18" y="34" width="28" height="6" fill="#FFD700" stroke="#FFA500" stroke-width="1" rx="1"/>
+  <rect x="20" y="28" width="24" height="6" fill="#FFD700" stroke="#FFA500" stroke-width="1" rx="1"/>
+  <rect x="22" y="22" width="20" height="6" fill="#FFD700" stroke="#FFA500" stroke-width="1" rx="1"/>
+  
+  <!-- Master crown -->
+  <polygon points="26,16 32,12 38,16 36,20 34,18 32,20 30,18 28,20" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+  
+  <!-- Overflow symbol -->
+  <text x="32" y="52" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#FFD700">MASTER</text>
+</svg>
