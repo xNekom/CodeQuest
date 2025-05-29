@@ -6,6 +6,8 @@ import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/character_pixelart.dart';
+import '../utils/error_handler.dart';
+import '../widgets/test_error_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,12 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
     //     _isLoading = true;
     //   });
     // }
-    
-    try {
+      try {
       User? user = _authService.currentUser;
       if (user != null) {
         final userData = await _userService.getUserData(user.uid);
-        if (mounted) { // <--- AÑADIR ESTA COMPROBACIÓN
+        if (mounted) {
           setState(() {
             _userData = userData;
             _isLoading = false;
@@ -52,9 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     } catch (e) {
-      // Usar logger en lugar de print en producción
-      debugPrint('Error al cargar datos del usuario: $e');
-      if (mounted) { // <--- Comprobación ya existente, pero buena práctica revisarla
+      // Registrar el error de manera global
+      ErrorHandler.logError(e, StackTrace.current);
+      
+      // Mostrar mensaje de error al usuario
+      if (mounted) {
+        ErrorHandler.showError(context, 'No se pudieron cargar los datos del usuario. Inténtalo nuevamente.');
         setState(() {
           _isLoading = false;
         });
@@ -127,18 +131,20 @@ class _HomeScreenState extends State<HomeScreen> {
           const Text(
             'CODEQUEST',
             style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Spacer(),
-          if (isAdmin) // Mostrar botón de admin solo si el usuario es admin
-            Padding( // Envuelve el IconButton con Padding
-              padding: const EdgeInsets.only(right: 8.0), // Añade espacio a la derecha
-              child: IconButton(
-                icon: const Icon(Icons.admin_panel_settings),
-                tooltip: 'Panel de Administrador',
-                onPressed: () {
-                  Navigator.pushNamed(context, '/admin');
-                },
+          ),          Spacer(),
+          if (isAdmin) // Mostrar botones de admin solo si el usuario es admin
+            Row(
+              children: [
+                // Widget para probar errores (solo visible para administradores)
+                const TestErrorWidget(),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.admin_panel_settings),
+                  tooltip: 'Panel de Administrador',
+                  onPressed: () {
+                  Navigator.pushNamed(context, '/admin');                },
               ),
+              ],
             ),
           IconButton(
             icon: const Icon(Icons.logout),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
 import 'firebase_options.dart';
 import 'screens/auth/auth_wrapper.dart';
 import 'screens/home_screen.dart';
@@ -15,27 +16,202 @@ import 'screens/achievements_screen.dart'; // Importar AchievementsScreen
 import 'screens/missions/missions_screen.dart'; // Importar MissionsScreen
 import 'screens/shop_screen.dart'; // Importar ShopScreen
 import 'screens/inventory_screen.dart'; // Importar InventoryScreen
+import 'screens/error_log_screen.dart'; // Importar ErrorLogScreen
+import 'utils/error_handler.dart'; // Importar ErrorHandler
+import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
+import 'utils/platform_utils.dart'; // Importar PlatformUtils
 
 void main() async {
+  // Asegura que Flutter esté inicializado
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+  
+  try {    // Configurar el manejador global de errores
+    await ErrorHandler.setupGlobalErrorHandling();
+      // Configurar timeouts más largos para operaciones de red en modo de desarrollo
+    // Solo en plataformas que soportan HttpClient (no web)
+    if (PlatformUtils.supportsHttpClient) {
+      // Los timeouts de HTTP se configuran por cliente específico según sea necesario
+      // No se necesita configuración global aquí
+    }
+    
+    // Configurar ajustes específicos de plataforma
+    PlatformUtils.configurePlatform();
+    
+    // Inicializar Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    
+    // Ejecutar la app dentro de una zona que captura errores
+    runZonedGuarded(
+      () {
+        runApp(const MyApp());
+      },
+      (error, stackTrace) {
+        ErrorHandler.logError(error, stackTrace);
+      },
+    );
+  } catch (e, stack) {
+    // Manejar errores durante la inicialización
+    debugPrint('Error crítico durante la inicialización: $e');
+    debugPrint(stack.toString());
+    
+    // Intenta ejecutar una versión mínima de la app que permite reintentar
+    runApp(
+      MaterialApp(
+        title: 'CodeQuest - Modo de emergencia',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.light,
+          ),
+        ),
+        home: Scaffold(
+          body: Center(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 2),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Error crítico de inicialización',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No se pudo iniciar la aplicación: $e',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => main(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                    ),
+                    child: const Text('Reintentar'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CodeQuest',
+    // Capturar errores durante la construcción de widgets
+    ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+      ErrorHandler.logError(errorDetails.exception, errorDetails.stack);
+      return Material(
+        child: Container(
+          color: Colors.red[900],
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 60,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Oops! Algo salió mal',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${errorDetails.exception}',
+                  style: TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.red[900],
+                  ),
+                  child: const Text('Volver al inicio'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    };
+    
+    return MaterialApp(      title: 'CodeQuest',
       debugShowCheckedModeBanner: false,
       theme: PixelTheme.lightTheme,
       darkTheme: PixelTheme.darkTheme,
       themeMode: ThemeMode.light,
-      initialRoute: '/',
-      routes: {
+      initialRoute: '/',      // Configurar el manejador de errores a nivel de navegación
+      navigatorObservers: [
+        ErrorHandlingNavigatorObserver(),
+      ],
+      // Página que se muestra cuando se navega a una ruta que no existe
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (context) => Scaffold(
+            appBar: AppBar(title: const Text('Ruta no encontrada')),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 60, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Oops! Ruta no encontrada',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Text('No pudimos encontrar: ${settings.name}'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                    },
+                    child: const Text('Volver al inicio'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },      routes: {
         '/': (context) => const RewardNotificationManager(child: AuthCheckScreen()),
         '/auth': (context) => const RewardNotificationManager(child: AuthWrapper()),
         '/character': (context) => const RewardNotificationManager(child: CharacterCreationScreen()),
@@ -46,6 +222,7 @@ class MyApp extends StatelessWidget {
         '/missions': (context) => const RewardNotificationManager(child: MissionsScreen()),
         '/shop': (context) => const RewardNotificationManager(child: ShopScreen()),
         '/inventory': (context) => const RewardNotificationManager(child: InventoryScreen()),
+        '/error-logs': (context) => const ErrorLogScreen(), // Nueva ruta para ver los logs
       },
     );
   }
