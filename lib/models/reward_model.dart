@@ -2,9 +2,10 @@ class Reward {
   final String id;
   final String name;
   final String description;
-  final String iconUrl; // URL al icono visual de la recompensa
-  final RewardType type;
-  final int value; // Por ejemplo, cantidad de puntos, ID de un item, etc.
+  final String iconUrl;
+  final String type; // Solo String, no RewardType
+  final int value;
+  final Map<String, dynamic> conditions;
 
   Reward({
     required this.id,
@@ -13,6 +14,7 @@ class Reward {
     required this.iconUrl,
     required this.type,
     required this.value,
+    this.conditions = const {},
   });
 
   Map<String, dynamic> toMap() {
@@ -21,25 +23,63 @@ class Reward {
       'name': name,
       'description': description,
       'iconUrl': iconUrl,
-      'type': type.toString(),
+      'type': type,
       'value': value,
+      'conditions': conditions,
     };
   }
 
   factory Reward.fromMap(Map<String, dynamic> map) {
     return Reward(
-      id: map['id'],
-      name: map['name'],
-      description: map['description'],
-      iconUrl: map['iconUrl'],
-      type: RewardType.values.firstWhere((e) => e.toString() == map['type']),
-      value: map['value'],
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      iconUrl: map['iconUrl'] ?? '',
+      type: map['type'] ?? 'points',
+      value: map['value'] ?? 0,
+      conditions: Map<String, dynamic>.from(map['conditions'] ?? {}),
     );
   }
 }
 
+// Mantener enum para referencia pero usar String en la práctica
 enum RewardType {
   points, // Puntos de experiencia o de juego
   item,   // Un item específico del juego
   badge,  // Una insignia o título
+  coins,  // Monedas del juego
+  experience, // Experiencia
+}
+
+// Helper para convertir string a enum si es necesario
+RewardType stringToRewardType(String type) {
+  switch (type.toLowerCase()) {
+    case 'points':
+      return RewardType.points;
+    case 'item':
+      return RewardType.item;
+    case 'badge':
+      return RewardType.badge;
+    case 'coins':
+      return RewardType.coins;
+    case 'experience':
+      return RewardType.experience;
+    default:
+      return RewardType.points;
+  }
+}
+
+String rewardTypeToString(RewardType type) {
+  switch (type) {
+    case RewardType.points:
+      return 'points';
+    case RewardType.item:
+      return 'item';
+    case RewardType.badge:
+      return 'badge';
+    case RewardType.coins:
+      return 'coins';
+    case RewardType.experience:
+      return 'experience';
+  }
 }

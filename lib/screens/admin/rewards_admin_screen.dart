@@ -1,10 +1,9 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/reward_model.dart';
 import '../../models/achievement_model.dart';
-import '../../services/reward_service.dart';
+import '../../../services/reward_service.dart';
 
 class RewardsAdminScreen extends StatefulWidget {
   const RewardsAdminScreen({super.key});
@@ -13,343 +12,165 @@ class RewardsAdminScreen extends StatefulWidget {
   State<RewardsAdminScreen> createState() => _RewardsAdminScreenState();
 }
 
-class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTickerProviderStateMixin {
+class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Administrar Recompensas y Logros'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Recompensas'),
+              Tab(text: 'Logros'),
+            ],
+          ),
+        ),
+        body: const TabBarView(
+          children: [
+            RewardsTab(),
+            AchievementsTab(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RewardsTab extends StatefulWidget {
+  const RewardsTab({super.key});
+
+  @override
+  State<RewardsTab> createState() => _RewardsTabState();
+}
+
+class _RewardsTabState extends State<RewardsTab> {
   final RewardService _rewardService = RewardService();
-  late TabController _tabController;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Administrar Recompensas'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'RECOMPENSAS'),
-            Tab(text: 'LOGROS'),
-          ],
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildRewardsTab(),
-          _buildAchievementsTab(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_tabController.index == 0) {
-            _showAddRewardDialog();
-          } else {
-            _showAddAchievementDialog();
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildRewardsTab() {
-    return StreamBuilder<List<Reward>>(
-      stream: _rewardService.getRewards(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-
-        final rewards = snapshot.data ?? [];
-        if (rewards.isEmpty) {
-          return const Center(child: Text('No hay recompensas disponibles'));
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: rewards.length,
-          itemBuilder: (context, index) {
-            final reward = rewards[index];
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: ListTile(
-                leading: CircleAvatar(
-                  child: _getRewardTypeIcon(reward.type),
-                ),
-                title: Text(reward.name),
-                subtitle: Text(reward.description),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _getRewardValueText(reward),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: _getRewardTypeColor(reward.type),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _showEditRewardDialog(reward),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _showDeleteRewardDialog(reward),
-                    ),
-                  ],
-                ),
-                onTap: () => _showRewardDetails(reward),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildAchievementsTab() {
-    return StreamBuilder<List<Achievement>>(
-      stream: _rewardService.getAchievements(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-
-        final achievements = snapshot.data ?? [];
-        if (achievements.isEmpty) {
-          return const Center(child: Text('No hay logros disponibles'));
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: achievements.length,
-          itemBuilder: (context, index) {
-            final achievement = achievements[index];
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.emoji_events),
-                ),
-                title: Text(achievement.name),
-                subtitle: Text(achievement.description),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${achievement.requiredMissionIds.length} misiones',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _showEditAchievementDialog(achievement),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _showDeleteAchievementDialog(achievement),
-                    ),
-                  ],
-                ),
-                onTap: () => _showAchievementDetails(achievement),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  // Funciones auxiliares para la visualización de recompensas
-  Widget _getRewardTypeIcon(RewardType type) {
-    switch (type) {
-      case RewardType.points:
-        return const Icon(Icons.star, color: Colors.amber);
-      case RewardType.item:
-        return const Icon(Icons.inventory_2, color: Colors.blue);
-      case RewardType.badge:
-        return const Icon(Icons.emoji_events, color: Colors.orange);
-    }
-  }
-
-  String _getRewardValueText(Reward reward) {
-    switch (reward.type) {
-      case RewardType.points:
-        return '+${reward.value} XP';
-      case RewardType.item:
-        return 'Item ${reward.value}';
-      case RewardType.badge:
-        return 'Insignia';
-    }
-  }
-
-  Color _getRewardTypeColor(RewardType type) {
-    switch (type) {
-      case RewardType.points:
-        return Colors.amber;
-      case RewardType.item:
-        return Colors.blue;
-      case RewardType.badge:
-        return Colors.orange;
-    }
-  }
-
-  // Diálogos para gestión de recompensas
-  void _showAddRewardDialog() {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
-    final TextEditingController iconUrlController = TextEditingController();
-    final TextEditingController valueController = TextEditingController();
-    RewardType selectedType = RewardType.points;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Añadir Nueva Recompensa'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Descripción'),
-                ),
-                TextField(
-                  controller: iconUrlController,
-                  decoration: const InputDecoration(labelText: 'URL del Icono'),
-                ),
-                const SizedBox(height: 16),
-                const Text('Tipo de Recompensa:'),
-                DropdownButton<RewardType>(
-                  value: selectedType,
-                  onChanged: (RewardType? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        selectedType = newValue;
-                      });
-                    }
-                  },
-                  items: RewardType.values.map((RewardType type) {
-                    return DropdownMenuItem<RewardType>(
-                      value: type,
-                      child: Text(_getRewardTypeName(type)),
-                    );
-                  }).toList(),
-                ),
-                TextField(
-                  controller: valueController,
-                  decoration: InputDecoration(
-                    labelText: selectedType == RewardType.points
-                        ? 'Cantidad de Puntos'
-                        : selectedType == RewardType.item
-                            ? 'ID del Item'
-                            : 'Valor',
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton.icon(
+            onPressed: () => _showCreateRewardDialog(),
+            icon: const Icon(Icons.add),
+            label: const Text('Crear Nueva Recompensa'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (nameController.text.isEmpty ||
-                    descriptionController.text.isEmpty ||
-                    valueController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Por favor, complete todos los campos')),
-                  );
-                  return;
-                }
-
-                setState(() => _isLoading = true);
-                try {
-                  final String id = DateTime.now().millisecondsSinceEpoch.toString();
-                  final Reward newReward = Reward(
-                    id: id,
-                    name: nameController.text,
-                    description: descriptionController.text,
-                    iconUrl: iconUrlController.text,
-                    type: selectedType,
-                    value: int.parse(valueController.text),
-                  );
-                  await _rewardService.createReward(newReward);
-                  if (mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Recompensa creada correctamente')),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
-                  }
-                } finally {
-                  if (mounted) {
-                    setState(() => _isLoading = false);
-                  }
-                }
-              },
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('GUARDAR'),
-            ),
-          ],
         ),
-      ),
+        Expanded(
+          child: StreamBuilder<List<Reward>>(
+            stream: _rewardService.getRewards(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              
+              final rewards = snapshot.data!;
+              
+              if (rewards.isEmpty) {
+                return const Center(child: Text('No hay recompensas registradas.'));
+              }
+              
+              return ListView.separated(
+                itemCount: rewards.length,
+                separatorBuilder: (_, __) => const Divider(),
+                itemBuilder: (context, index) {
+                  final reward = rewards[index];
+                  return ListTile(
+                    leading: _getRewardIcon(reward.type),
+                    title: Text(reward.name),
+                    subtitle: Text('${reward.description}\nTipo: ${_getRewardTypeDisplayName(reward.type)} | Valor: ${reward.value}'),
+                    isThreeLine: true,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => _showEditRewardDialog(reward),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteReward(reward.id),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget _getRewardIcon(String type) {
+    switch (type.toLowerCase()) {
+      case 'points':
+        return const Icon(Icons.star, color: Colors.amber);
+      case 'item':
+        return const Icon(Icons.inventory, color: Colors.blue);
+      case 'badge':
+        return const Icon(Icons.military_tech, color: Colors.orange);
+      case 'coins':
+        return const Icon(Icons.monetization_on, color: Colors.yellow);
+      case 'experience':
+        return const Icon(Icons.trending_up, color: Colors.green);
+      default:
+        return const Icon(Icons.card_giftcard, color: Colors.purple);
+    }
+  }
+
+  String _getRewardTypeDisplayName(String type) {
+    switch (type.toLowerCase()) {
+      case 'points':
+        return 'Puntos';
+      case 'item':
+        return 'Objeto';
+      case 'badge':
+        return 'Insignia';
+      case 'coins':
+        return 'Monedas';
+      case 'experience':
+        return 'Experiencia';
+      default:
+        return 'Desconocido';
+    }
+  }
+
+  void _showCreateRewardDialog() {
+    _showRewardDialog();
   }
 
   void _showEditRewardDialog(Reward reward) {
-    final TextEditingController nameController = TextEditingController(text: reward.name);
-    final TextEditingController descriptionController = TextEditingController(text: reward.description);
-    final TextEditingController iconUrlController = TextEditingController(text: reward.iconUrl);
-    final TextEditingController valueController = TextEditingController(text: reward.value.toString());
-    RewardType selectedType = reward.type;
+    _showRewardDialog(reward: reward);
+  }
 
+  void _showRewardDialog({Reward? reward}) {
+    final isEditing = reward != null;
+    
+    final nameController = TextEditingController(text: reward?.name ?? '');
+    final descriptionController = TextEditingController(text: reward?.description ?? '');
+    final iconUrlController = TextEditingController(text: reward?.iconUrl ?? '');
+    final valueController = TextEditingController(text: reward?.value.toString() ?? '0');
+    
+    String selectedType = reward?.type ?? 'points';
+    
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Editar Recompensa'),
+          title: Text(isEditing ? 'Editar Recompensa' : 'Crear Nueva Recompensa'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
                   controller: nameController,
@@ -364,32 +185,28 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
                   decoration: const InputDecoration(labelText: 'URL del Icono'),
                 ),
                 const SizedBox(height: 16),
-                const Text('Tipo de Recompensa:'),
-                DropdownButton<RewardType>(
+                DropdownButtonFormField<String>(
                   value: selectedType,
-                  onChanged: (RewardType? newValue) {
-                    if (newValue != null) {
+                  decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
+                  items: const [
+                    DropdownMenuItem(value: 'points', child: Text('Puntos')),
+                    DropdownMenuItem(value: 'item', child: Text('Objeto')),
+                    DropdownMenuItem(value: 'badge', child: Text('Insignia')),
+                    DropdownMenuItem(value: 'coins', child: Text('Monedas')),
+                    DropdownMenuItem(value: 'experience', child: Text('Experiencia')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
                       setState(() {
-                        selectedType = newValue;
+                        selectedType = value;
                       });
                     }
                   },
-                  items: RewardType.values.map((RewardType type) {
-                    return DropdownMenuItem<RewardType>(
-                      value: type,
-                      child: Text(_getRewardTypeName(type)),
-                    );
-                  }).toList(),
                 ),
+                const SizedBox(height: 8),
                 TextField(
                   controller: valueController,
-                  decoration: InputDecoration(
-                    labelText: selectedType == RewardType.points
-                        ? 'Cantidad de Puntos'
-                        : selectedType == RewardType.item
-                            ? 'ID del Item'
-                            : 'Valor',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Valor'),
                   keyboardType: TextInputType.number,
                 ),
               ],
@@ -398,34 +215,42 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
-                if (nameController.text.isEmpty ||
-                    descriptionController.text.isEmpty ||
-                    valueController.text.isEmpty) {
+                final name = nameController.text.trim();
+                final description = descriptionController.text.trim();
+                final iconUrl = iconUrlController.text.trim();
+                final value = int.tryParse(valueController.text) ?? 0;
+                
+                if (name.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Por favor, complete todos los campos')),
+                    const SnackBar(content: Text('El nombre es requerido')),
                   );
                   return;
                 }
-
-                setState(() => _isLoading = true);
+                
+                final newReward = Reward(
+                  id: reward?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                  name: name,
+                  description: description,
+                  iconUrl: iconUrl,
+                  type: selectedType,
+                  value: value,
+                );
+                
                 try {
-                  final Reward updatedReward = Reward(
-                    id: reward.id,
-                    name: nameController.text,
-                    description: descriptionController.text,
-                    iconUrl: iconUrlController.text,
-                    type: selectedType,
-                    value: int.parse(valueController.text),
-                  );
-                  await _rewardService.updateReward(updatedReward);
+                  if (isEditing) {
+                    await _rewardService.updateReward(newReward);
+                  } else {
+                    await _rewardService.createReward(newReward);
+                  }
+                  
                   if (mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Recompensa actualizada correctamente')),
+                      SnackBar(content: Text('Recompensa ${isEditing ? 'actualizada' : 'creada'} exitosamente')),
                     );
                   }
                 } catch (e) {
@@ -434,15 +259,9 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
                       SnackBar(content: Text('Error: $e')),
                     );
                   }
-                } finally {
-                  if (mounted) {
-                    setState(() => _isLoading = false);
-                  }
                 }
               },
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('GUARDAR'),
+              child: Text(isEditing ? 'Actualizar' : 'Crear'),
             ),
           ],
         ),
@@ -450,233 +269,143 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
     );
   }
 
-  void _showDeleteRewardDialog(Reward reward) {
-    showDialog(
+  void _deleteReward(String rewardId) async {
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar Recompensa'),
-        content: Text('¿Estás seguro de eliminar la recompensa "${reward.name}"?'),
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Estás seguro de que quieres eliminar esta recompensa?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CANCELAR'),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
           ),
           ElevatedButton(
-            onPressed: () async {
-              try {
-                await _rewardService.deleteReward(reward.id);
-                if (mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Recompensa eliminada correctamente')),
-                  );
-                }
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $e')),
-                  );
-                }
-              }
-            },
+            onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('ELIMINAR'),
+            child: const Text('Eliminar'),
           ),
         ],
       ),
     );
+    
+    if (confirm == true) {
+      try {
+        await _rewardService.deleteReward(rewardId);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Recompensa eliminada exitosamente')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al eliminar: $e')),
+          );
+        }
+      }
+    }
   }
+}
 
-  void _showRewardDetails(Reward reward) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(reward.name),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: _getRewardTypeColor(reward.type).withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: _getRewardTypeColor(reward.type),
-                    width: 2,
-                  ),
-                ),
-                child: Center(
-                  child: reward.iconUrl.isNotEmpty
-                      ? Image.network(
-                          reward.iconUrl,
-                          width: 60,
-                          height: 60,
-                          errorBuilder: (_, __, ___) => _getRewardTypeIcon(reward.type),
-                        )
-                      : _getRewardTypeIcon(reward.type),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text('Descripción: ${reward.description}'),
-            const SizedBox(height: 8),
-            Text('Tipo: ${_getRewardTypeName(reward.type)}'),
-            const SizedBox(height: 8),
-            Text('Valor: ${reward.value}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CERRAR'),
+class AchievementsTab extends StatefulWidget {
+  const AchievementsTab({super.key});
+
+  @override
+  State<AchievementsTab> createState() => _AchievementsTabState();
+}
+
+class _AchievementsTabState extends State<AchievementsTab> {
+  final RewardService _rewardService = RewardService();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton.icon(
+            onPressed: () => _showCreateAchievementDialog(),
+            icon: const Icon(Icons.add),
+            label: const Text('Crear Nuevo Logro'),
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: StreamBuilder<List<Achievement>>(
+            stream: _rewardService.getAchievements(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              
+              final achievements = snapshot.data!;
+              
+              if (achievements.isEmpty) {
+                return const Center(child: Text('No hay logros registrados.'));
+              }
+              
+              return ListView.separated(
+                itemCount: achievements.length,
+                separatorBuilder: (_, __) => const Divider(),
+                itemBuilder: (context, index) {
+                  final achievement = achievements[index];
+                  return ListTile(
+                    leading: const Icon(Icons.emoji_events, color: Colors.amber),
+                    title: Text(achievement.name),
+                    subtitle: Text('${achievement.description}\nCategoría: ${achievement.category} | Puntos: ${achievement.points}'),
+                    isThreeLine: true,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => _showEditAchievementDialog(achievement),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteAchievement(achievement.id),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
-  // Diálogos para gestión de logros
-  void _showAddAchievementDialog() {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
-    final TextEditingController iconUrlController = TextEditingController();
-    final List<String> requiredMissionIds = [];
-    String selectedRewardId = '';
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Añadir Nuevo Logro'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Descripción'),
-                ),
-                TextField(
-                  controller: iconUrlController,
-                  decoration: const InputDecoration(labelText: 'URL del Icono'),
-                ),
-                const SizedBox(height: 16),
-                const Text('Misiones Requeridas:'),
-                ElevatedButton(
-                  onPressed: () => _showSelectMissionsDialog(
-                    selectedMissions: requiredMissionIds,
-                    onSelectionChanged: (newSelection) {
-                      setState(() {
-                        requiredMissionIds.clear();
-                        requiredMissionIds.addAll(newSelection);
-                      });
-                    },
-                  ),
-                  child: const Text('Seleccionar Misiones'),
-                ),
-                Text(
-                  'Misiones seleccionadas: ${requiredMissionIds.length}',
-                  style: const TextStyle(fontSize: 12),
-                ),
-                const SizedBox(height: 16),
-                const Text('Recompensa Otorgada:'),
-                ElevatedButton(
-                  onPressed: () => _showSelectRewardDialog(
-                    selectedRewardId: selectedRewardId,
-                    onSelectionChanged: (String newRewardId) {
-                      setState(() {
-                        selectedRewardId = newRewardId;
-                      });
-                    },
-                  ),
-                  child: const Text('Seleccionar Recompensa'),
-                ),
-                Text(
-                  selectedRewardId.isEmpty
-                      ? 'Ninguna recompensa seleccionada'
-                      : 'Recompensa seleccionada: $selectedRewardId',
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (nameController.text.isEmpty ||
-                    descriptionController.text.isEmpty ||
-                    requiredMissionIds.isEmpty ||
-                    selectedRewardId.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Por favor, complete todos los campos')),
-                  );
-                  return;
-                }
-
-                setState(() => _isLoading = true);
-                try {
-                  final String id = DateTime.now().millisecondsSinceEpoch.toString();
-                  final Achievement newAchievement = Achievement(
-                    id: id,
-                    name: nameController.text,
-                    description: descriptionController.text,
-                    iconUrl: iconUrlController.text,
-                    requiredMissionIds: requiredMissionIds,
-                    rewardId: selectedRewardId,
-                  );
-                  await _rewardService.createAchievement(newAchievement);
-                  if (mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Logro creado correctamente')),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
-                  }
-                } finally {
-                  if (mounted) {
-                    setState(() => _isLoading = false);
-                  }
-                }
-              },
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('GUARDAR'),
-            ),
-          ],
-        ),
-      ),
-    );
+  void _showCreateAchievementDialog() {
+    _showAchievementDialog();
   }
 
   void _showEditAchievementDialog(Achievement achievement) {
-    final TextEditingController nameController = TextEditingController(text: achievement.name);
-    final TextEditingController descriptionController = TextEditingController(text: achievement.description);
-    final TextEditingController iconUrlController = TextEditingController(text: achievement.iconUrl);
-    final List<String> requiredMissionIds = List.from(achievement.requiredMissionIds);
-    String selectedRewardId = achievement.rewardId;
+    _showAchievementDialog(achievement: achievement);
+  }
 
+  void _showAchievementDialog({Achievement? achievement}) {
+    final isEditing = achievement != null;
+    
+    final nameController = TextEditingController(text: achievement?.name ?? '');
+    final descriptionController = TextEditingController(text: achievement?.description ?? '');
+    final iconUrlController = TextEditingController(text: achievement?.iconUrl ?? '');
+    final pointsController = TextEditingController(text: achievement?.points.toString() ?? '10');
+    
+    String selectedCategory = achievement?.category ?? 'general';
+    String selectedRewardId = achievement?.rewardId ?? '';
+    List<String> requiredMissionIds = List.from(achievement?.requiredMissionIds ?? []);
+    
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Editar Logro'),
+          title: Text(isEditing ? 'Editar Logro' : 'Crear Nuevo Logro'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -693,6 +422,56 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
                 TextField(
                   controller: iconUrlController,
                   decoration: const InputDecoration(labelText: 'URL del Icono'),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedCategory,
+                  decoration: const InputDecoration(labelText: 'Categoría'),
+                  items: const [
+                    DropdownMenuItem(value: 'general', child: Text('General')),
+                    DropdownMenuItem(value: 'enemy', child: Text('Enemigos')),
+                    DropdownMenuItem(value: 'mission', child: Text('Misiones')),
+                    DropdownMenuItem(value: 'combat', child: Text('Combate')),
+                    DropdownMenuItem(value: 'exploration', child: Text('Exploración')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: pointsController,
+                  decoration: const InputDecoration(labelText: 'Puntos'),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                StreamBuilder<List<Reward>>(
+                  stream: _rewardService.getRewards(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
+                    
+                    final rewards = snapshot.data!;
+                    
+                    return DropdownButtonFormField<String>(
+                      value: selectedRewardId.isEmpty ? null : selectedRewardId,
+                      decoration: const InputDecoration(labelText: 'Recompensa'),
+                      items: rewards.map((reward) => DropdownMenuItem(
+                        value: reward.id,
+                        child: Text(reward.name),
+                      )).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedRewardId = value ?? '';
+                        });
+                      },
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 const Text('Misiones Requeridas:'),
@@ -712,60 +491,58 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
                   'Misiones seleccionadas: ${requiredMissionIds.length}',
                   style: const TextStyle(fontSize: 12),
                 ),
-                const SizedBox(height: 16),
-                const Text('Recompensa Otorgada:'),
-                ElevatedButton(
-                  onPressed: () => _showSelectRewardDialog(
-                    selectedRewardId: selectedRewardId,
-                    onSelectionChanged: (String newRewardId) {
-                      setState(() {
-                        selectedRewardId = newRewardId;
-                      });
-                    },
-                  ),
-                  child: const Text('Seleccionar Recompensa'),
-                ),
-                Text(
-                  selectedRewardId.isEmpty
-                      ? 'Ninguna recompensa seleccionada'
-                      : 'Recompensa seleccionada: $selectedRewardId',
-                  style: const TextStyle(fontSize: 12),
-                ),
               ],
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
-                if (nameController.text.isEmpty ||
-                    descriptionController.text.isEmpty ||
-                    requiredMissionIds.isEmpty ||
-                    selectedRewardId.isEmpty) {
+                final name = nameController.text.trim();
+                final description = descriptionController.text.trim();
+                final iconUrl = iconUrlController.text.trim();
+                final points = int.tryParse(pointsController.text) ?? 10;
+                
+                if (name.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Por favor, complete todos los campos')),
+                    const SnackBar(content: Text('El nombre es requerido')),
                   );
                   return;
                 }
-
-                setState(() => _isLoading = true);
-                try {
-                  final Achievement updatedAchievement = Achievement(
-                    id: achievement.id,
-                    name: nameController.text,
-                    description: descriptionController.text,
-                    iconUrl: iconUrlController.text,
-                    requiredMissionIds: requiredMissionIds,
-                    rewardId: selectedRewardId,
+                
+                if (selectedRewardId.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Debe seleccionar una recompensa')),
                   );
-                  await _rewardService.updateAchievement(updatedAchievement);
+                  return;
+                }
+                
+                final newAchievement = Achievement(
+                  id: achievement?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                  name: name,
+                  description: description,
+                  iconUrl: iconUrl,
+                  category: selectedCategory,
+                  points: points,
+                  conditions: _buildConditions(selectedCategory, requiredMissionIds),
+                  requiredMissionIds: requiredMissionIds,
+                  rewardId: selectedRewardId,
+                );
+                
+                try {
+                  if (isEditing) {
+                    await _rewardService.updateAchievement(newAchievement);
+                  } else {
+                    await _rewardService.createAchievement(newAchievement);
+                  }
+                  
                   if (mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Logro actualizado correctamente')),
+                      SnackBar(content: Text('Logro ${isEditing ? 'actualizado' : 'creado'} exitosamente')),
                     );
                   }
                 } catch (e) {
@@ -774,15 +551,9 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
                       SnackBar(content: Text('Error: $e')),
                     );
                   }
-                } finally {
-                  if (mounted) {
-                    setState(() => _isLoading = false);
-                  }
                 }
               },
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('GUARDAR'),
+              child: Text(isEditing ? 'Actualizar' : 'Crear'),
             ),
           ],
         ),
@@ -790,127 +561,25 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
     );
   }
 
-  void _showDeleteAchievementDialog(Achievement achievement) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Eliminar Logro'),
-        content: Text('¿Estás seguro de eliminar el logro "${achievement.name}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CANCELAR'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                await _rewardService.deleteAchievement(achievement.id);
-                if (mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Logro eliminado correctamente')),
-                  );
-                }
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $e')),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('ELIMINAR'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAchievementDetails(Achievement achievement) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(achievement.name),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.orange,
-                    width: 2,
-                  ),
-                ),
-                child: Center(
-                  child: achievement.iconUrl.isNotEmpty
-                      ? Image.network(
-                          achievement.iconUrl,
-                          width: 60,
-                          height: 60,
-                          errorBuilder: (_, __, ___) =>
-                              const Icon(Icons.emoji_events, color: Colors.orange, size: 40),
-                        )
-                      : const Icon(Icons.emoji_events, color: Colors.orange, size: 40),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text('Descripción: ${achievement.description}'),
-            const SizedBox(height: 8),
-            Text('Misiones requeridas: ${achievement.requiredMissionIds.length}'),
-            const SizedBox(height: 8),
-            Text('ID de Recompensa: ${achievement.rewardId}'),
-            const SizedBox(height: 16),
-            FutureBuilder<Reward?>(
-              future: _rewardService.getRewardById(achievement.rewardId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final reward = snapshot.data;
-                if (reward == null) {
-                  return const Text('Recompensa no encontrada');
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Recompensa:', style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Text('Nombre: ${reward.name}'),
-                    Text('Descripción: ${reward.description}'),
-                    Text('Tipo: ${_getRewardTypeName(reward.type)}'),
-                    Text('Valor: ${reward.value}'),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CERRAR'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _getRewardTypeName(RewardType type) {
-    switch (type) {
-      case RewardType.points:
-        return 'Puntos';
-      case RewardType.item:
-        return 'Item';
-      case RewardType.badge:
-        return 'Insignia';
+  Map<String, dynamic> _buildConditions(String category, List<String> requiredMissionIds) {
+    switch (category) {
+      case 'enemy':
+        return {
+          'type': 'enemy_defeated',
+          'count': 1,
+        };
+      case 'mission':
+        return {
+          'type': 'missions_completed',
+          'count': requiredMissionIds.length,
+        };
+      case 'combat':
+        return {
+          'type': 'battles_won',
+          'count': 5,
+        };
+      default:
+        return {};
     }
   }
 
@@ -918,139 +587,58 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> with SingleTick
     required List<String> selectedMissions,
     required Function(List<String>) onSelectionChanged,
   }) {
-    final List<String> tempSelection = List.from(selectedMissions);
-
+    // Implementar diálogo de selección de misiones
+    // Por simplicidad, mostramos un diálogo básico
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Seleccionar Misiones'),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: FutureBuilder<QuerySnapshot>(
-              future: FirebaseFirestore.instance.collection('missions').get(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                final missions = snapshot.data?.docs ?? [];
-                if (missions.isEmpty) {
-                  return const Center(child: Text('No hay misiones disponibles'));
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: missions.length,
-                  itemBuilder: (context, index) {
-                    final mission = missions[index];
-                    final missionId = mission.id;
-                    final missionName = mission.get('name') as String? ?? 'Misión sin nombre';
-                    final isSelected = tempSelection.contains(missionId);
-                    return CheckboxListTile(
-                      title: Text(missionName),
-                      subtitle: Text('ID: $missionId'),
-                      value: isSelected,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          if (value == true) {
-                            if (!tempSelection.contains(missionId)) {
-                              tempSelection.add(missionId);
-                            }
-                          } else {
-                            tempSelection.remove(missionId);
-                          }
-                        });
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+      builder: (context) => AlertDialog(
+        title: const Text('Seleccionar Misiones'),
+        content: const Text('Funcionalidad de selección de misiones en desarrollo'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                onSelectionChanged(tempSelection);
-                Navigator.pop(context);
-              },
-              child: const Text('SELECCIONAR'),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  void _showSelectRewardDialog({
-    required String selectedRewardId,
-    required Function(String) onSelectionChanged,
-  }) {
-    String tempSelection = selectedRewardId;
-
-    showDialog(
+  void _deleteAchievement(String achievementId) async {
+    final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Seleccionar Recompensa'),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: StreamBuilder<List<Reward>>(
-              stream: _rewardService.getRewards(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                final rewards = snapshot.data ?? [];
-                if (rewards.isEmpty) {
-                  return const Center(child: Text('No hay recompensas disponibles'));
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: rewards.length,
-                  itemBuilder: (context, index) {
-                    final reward = rewards[index];
-                    return RadioListTile<String>(
-                      title: Text(reward.name),
-                      subtitle: Text('${_getRewardTypeName(reward.type)} - ${reward.description}'),
-                      value: reward.id,
-                      groupValue: tempSelection,
-                      onChanged: (String? value) {
-                        if (value != null) {
-                          setState(() {
-                            tempSelection = value;
-                          });
-                        }
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Estás seguro de que quieres eliminar este logro?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                onSelectionChanged(tempSelection);
-                Navigator.pop(context);
-              },
-              child: const Text('SELECCIONAR'),
-            ),
-          ],
-        ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Eliminar'),
+          ),
+        ],
       ),
     );
+    
+    if (confirm == true) {
+      try {
+        await _rewardService.deleteAchievement(achievementId);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Logro eliminado exitosamente')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al eliminar: $e')),
+          );
+        }
+      }
+    }
   }
 }

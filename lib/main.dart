@@ -13,6 +13,8 @@ import 'widgets/reward_notification_manager.dart';
 import 'package:codequest/screens/auth/password_recovery_screen.dart';
 import 'screens/achievements_screen.dart'; // Importar AchievementsScreen
 import 'screens/missions/missions_screen.dart'; // Importar MissionsScreen
+import 'screens/shop_screen.dart'; // Importar ShopScreen
+import 'screens/inventory_screen.dart'; // Importar InventoryScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,28 +26,27 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return RewardNotificationManager(
-      child: MaterialApp(
-        title: 'CodeQuest',
-        debugShowCheckedModeBanner: false,
-        theme: PixelTheme.lightTheme,
-        darkTheme: PixelTheme.darkTheme,
-        themeMode: ThemeMode.light,
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const AuthCheckScreen(),
-          '/auth': (context) => const AuthWrapper(),
-          '/character': (context) => const CharacterCreationScreen(),
-          '/home': (context) => const HomeScreen(),
-          '/admin': (context) => const AdminScreen(),
-          '/password-recovery': (context) => const PasswordRecoveryScreen(), // Nueva ruta
-          '/achievements': (context) => const AchievementsScreen(), // Nueva ruta para logros
-          '/missions': (context) => const MissionsScreen(), // Nueva ruta para misiones
-        },
-      ),
+    return MaterialApp(
+      title: 'CodeQuest',
+      debugShowCheckedModeBanner: false,
+      theme: PixelTheme.lightTheme,
+      darkTheme: PixelTheme.darkTheme,
+      themeMode: ThemeMode.light,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const RewardNotificationManager(child: AuthCheckScreen()),
+        '/auth': (context) => const RewardNotificationManager(child: AuthWrapper()),
+        '/character': (context) => const RewardNotificationManager(child: CharacterCreationScreen()),
+        '/home': (context) => const RewardNotificationManager(child: HomeScreen()),
+        '/admin': (context) => const RewardNotificationManager(child: AdminScreen()),
+        '/password-recovery': (context) => const RewardNotificationManager(child: PasswordRecoveryScreen()),
+        '/achievements': (context) => const RewardNotificationManager(child: AchievementsScreen()),
+        '/missions': (context) => const RewardNotificationManager(child: MissionsScreen()),
+        '/shop': (context) => const RewardNotificationManager(child: ShopScreen()),
+        '/inventory': (context) => const RewardNotificationManager(child: InventoryScreen()),
+      },
     );
   }
 }

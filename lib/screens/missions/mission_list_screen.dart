@@ -22,6 +22,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
 
   User? _currentUser;
   Map<String, dynamic>? _userData;
+  bool _isLoadingUser = true;
 
   @override
   void initState() {
@@ -30,12 +31,13 @@ class _MissionListScreenState extends State<MissionListScreen> {
   }
 
   Future<void> _loadCurrentUserAndData() async {
+    setState(() { _isLoadingUser = true; });
     _currentUser = _authService.currentUser;
     if (_currentUser != null) {
       _userData = await _userService.getUserData(_currentUser!.uid);
     }
     if (mounted) {
-      setState(() {});
+      setState(() { _isLoadingUser = false; });
     }
   }
 
@@ -80,25 +82,14 @@ class _MissionListScreenState extends State<MissionListScreen> {
     return "Requisitos no cumplidos";
   }
 
-
   @override
   Widget build(BuildContext context) {
-    if (_currentUser == null && _authService.currentUser == null) {
-      // Aún no se ha intentado cargar o no hay usuario. Podrías mostrar un login o un mensaje.
-      // Si AuthService.currentUser es null persistentemente, indica que nadie ha iniciado sesión.
-      return const Center(child: Text("Por favor, inicia sesión para ver las misiones."));
+    if (_authService.currentUser == null) {
+      return const Center(child: Text('Por favor, inicia sesión para ver las misiones.'));
     }
-    if (_currentUser != null && _userData == null) {
-      // Usuario cargado, pero datos pendientes
-      return const Center(child: CircularProgressIndicator());
+    if (_isLoadingUser) {
+      return const Center(child: CircularProgressIndicator(key: Key('loading_user_data')));
     }
-    // Si _currentUser es null pero _authService.currentUser no lo es, significa que initState está en proceso o falló al setear _currentUser
-    // Esta condición es para el caso en que _loadCurrentUserAndData no haya completado la asignación de _userData aún.
-    if (_authService.currentUser != null && _userData == null) {
-        return const Center(child: CircularProgressIndicator(key: Key('loading_user_data')));
-    }
-
-
     return StreamBuilder<List<MissionModel>>(
       stream: _missionService.getMissions(), // Corregido: getMissions y MissionModel
       builder: (context, snapshot) {
@@ -116,9 +107,22 @@ class _MissionListScreenState extends State<MissionListScreen> {
         }
 
         return ListView.separated(
-          itemCount: missions.length,
+          // Mostrar misiones + 1 casilla fija al final
+          itemCount: missions.length + 1,
           separatorBuilder: (context, index) => const Divider(),
           itemBuilder: (context, index) {
+            // Entrada final fija
+            if (index == missions.length) {
+              return Card(
+                elevation: 2,
+                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                color: Colors.grey[300],
+                child: const ListTile(
+                  leading: Icon(Icons.upcoming, color: Colors.black45),
+                  title: Text('Más misiones en camino...', style: TextStyle(color: Colors.black54)),
+                ),
+              );
+            }
             final mission = missions[index];
             final bool isUnlocked = _isMissionUnlocked(mission, _userData);
             String subtitleText = '${mission.description}\nZona: ${mission.zone} - Nivel Requerido: ${mission.levelRequired}';

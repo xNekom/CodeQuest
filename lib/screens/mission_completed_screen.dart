@@ -174,25 +174,38 @@ class MissionCompletedScreen extends StatelessWidget {
   }
 
   Widget _buildRewardItem(BuildContext context, Reward reward) {
-    Color rewardColor;
-    IconData rewardIcon;
-    String rewardText;
+    Color rewardColor = Colors.purple; // Inicializar con valor por defecto
+    IconData rewardIcon = Icons.card_giftcard; // Inicializar con valor por defecto
+    String rewardText = 'Recompensa'; // Inicializar con valor por defecto
 
-    switch (reward.type) {
-      case RewardType.points:
+    switch (reward.type.toLowerCase()) {
+      case 'points':
         rewardColor = Colors.amber;
         rewardIcon = Icons.star;
         rewardText = '+${reward.value} puntos';
         break;
-      case RewardType.item:
+      case 'item':
         rewardColor = Colors.blue;
         rewardIcon = Icons.inventory_2;
         rewardText = 'Nuevo item';
         break;
-      case RewardType.badge:
+      case 'badge':
         rewardColor = Colors.orange;
         rewardIcon = Icons.emoji_events;
         rewardText = 'Nueva insignia';
+        break;
+      case 'coins':
+        rewardColor = Colors.yellow;
+        rewardIcon = Icons.monetization_on;
+        rewardText = '+${reward.value} monedas';
+        break;
+      case 'experience':
+        rewardColor = Colors.green;
+        rewardIcon = Icons.trending_up;
+        rewardText = '+${reward.value} experiencia';
+        break;
+      default:
+        // Ya inicializados arriba
         break;
     }
 

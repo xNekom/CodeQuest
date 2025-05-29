@@ -22,6 +22,8 @@ class MissionModel {
   final List<StoryPageModel>? storyPages;
   final BattleConfigModel? battleConfig;
   final RequirementsModel? requirements;
+  final String? theory;
+  final List<String>? examples;
 
   MissionModel({
     required this.missionId,
@@ -41,6 +43,8 @@ class MissionModel {
     this.storyPages,
     this.battleConfig,
     this.requirements,
+    this.theory,
+    this.examples,
   });
 
   factory MissionModel.fromFirestore(DocumentSnapshot doc) {
@@ -129,6 +133,8 @@ class MissionModel {
         requirements: json['requirements'] != null && json['requirements'] is Map<String, dynamic>
             ? RequirementsModel.fromJson(json['requirements'] as Map<String, dynamic>)
             : null,
+        theory: json['theory'] as String?,
+        examples: (json['examples'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
       );
     } catch (e) {
       // print('[MissionModel] CRITICAL ERROR parsing missionId: $missionId. Data: $json. Exception: $e');
@@ -153,6 +159,8 @@ class MissionModel {
       if (storyPages != null) 'storyPages': storyPages!.map((page) => page.toJson()).toList(),
       if (battleConfig != null) 'battleConfig': battleConfig!.toJson(),
       if (requirements != null) 'requirements': requirements!.toJson(),
+      if (theory != null) 'theory': theory,
+      if (examples != null) 'examples': examples,
     };
   }
 }
