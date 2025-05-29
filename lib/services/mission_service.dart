@@ -6,11 +6,10 @@ import 'package:codequest/config/app_config.dart'; // Importar AppConfig
 
 class MissionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   // Obtener todas las misiones
   Stream<List<MissionModel>> getMissions() {
     if (AppConfig.shouldUseFirebase) {
-      return _firestore.collection('missions').orderBy('levelRequired').snapshots().map((snapshot) {
+      return _firestore.collection('missions').orderBy('order').snapshots().map((snapshot) {
         List<MissionModel> missions = [];
         if (snapshot.docs.isEmpty) {
           return missions;

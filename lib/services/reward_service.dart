@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/reward_model.dart';
-import '../models/achievement_model.dart';
 import 'reward_notification_service.dart';
 import '../config/app_config.dart';
+import '../models/reward_model.dart';
+import '../models/achievement_model.dart';
 
 class RewardService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -108,98 +107,65 @@ class RewardService {
     if (!AppConfig.shouldUseFirebase) return;
     await _achievementsCol.doc(achievementId).delete();
   }
-
   // --- Lógica de Desbloqueo de Logros y Entrega de Recompensas (Juego) ---
   Future<void> checkAndUnlockAchievement(String userId, String missionId) async {
-    List<Achievement> achievementsToCheck;
+  debugPrint("Verificando logros para misión: $missionId");
+  
+  // Obtener logros que dependen de la misión - usar achievementType y requiredMissionIds juntos
+  final snap = await _achievementsCol
+      .where('achievementType', isEqualTo: 'mission')
+      .where('requiredMissionIds', arrayContains: missionId)
+      .get();
+  
+  debugPrint("Encontrados ${snap.docs.length} logros por misión");
+  
+  final achievementsToCheck = snap.docs
+      .map((doc) => Achievement.fromMap(doc.data() as Map<String, dynamic>))
+      .toList();
+  
+  for (var achievement in achievementsToCheck) {
+    debugPrint("Procesando logro: ${achievement.id} - ${achievement.name}");
     
-    if (!AppConfig.shouldUseFirebase) {
-      final all = await _loadAchievementsFromLocalJson();
-      achievementsToCheck = all.where((a) => a.requiredMissionIds.contains(missionId)).toList();
-      
-      if (achievementsToCheck.isNotEmpty) {
-        final prefs = await SharedPreferences.getInstance();
-        final key = 'unlocked_$userId';
-        final unlocked = prefs.getStringList(key) ?? <String>[];
-        
-        for (var achievement in achievementsToCheck) {
-          if (!unlocked.contains(achievement.id)) {
-            unlocked.add(achievement.id);
-            // Notificar recompensa local
-            final fakeReward = Reward(
-              id: achievement.rewardId,
-              name: achievement.name,
-              description: achievement.description,
-              iconUrl: achievement.iconUrl,
-              type: 'badge',
-              value: 0,
-            );
-            _notificationService.showRewardNotification(fakeReward);
-          }
-        }
-        await prefs.setStringList(key, unlocked);
-      }
-      return;
+    if (await _isAchievementUnlocked(userId, achievement.id)) {
+      debugPrint("Logro ya desbloqueado: ${achievement.id}");
+      continue;
     }
     
-    final snap = await _achievementsCol.where('requiredMissionIds', arrayContains: missionId).get();
-    achievementsToCheck = snap.docs
+    // Registrar en la subcolección y en users/{userId}.unlockedAchievements
+    debugPrint("Desbloqueando logro: ${achievement.id}");
+    await _unlockAchievementForUser(userId, achievement);
+    
+    // Otorgar recompensa según configuración Firebase
+    debugPrint("Otorgando recompensa: ${achievement.rewardId}");
+    await _grantRewardToUser(userId, achievement.rewardId);
+  }
+}
+
+  // Lógica de desbloqueo de logros de enemigos (solo Firebase)
+  Future<void> checkAndUnlockEnemyAchievements(String userId, String enemyId) async {
+    // Consultar logros de tipo enemy para este enemigo
+    final snap = await _achievementsCol
+        .where('achievementType', isEqualTo: 'enemy')
+        .where('requiredEnemyId', isEqualTo: enemyId)
+        .get();
+    final achievementsToCheck = snap.docs
         .map((doc) => Achievement.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
-    
+
     for (var achievement in achievementsToCheck) {
-      if (await _isAchievementUnlocked(userId, achievement.id)) {
-        continue;
-      }
-
-      bool allMissionsCompleted = await _checkAllRequiredMissionsCompleted(userId, achievement.requiredMissionIds);
-
-      if (allMissionsCompleted) {
+      // Verificar si ya está desbloqueado
+      if (await _isAchievementUnlocked(userId, achievement.id)) continue;
+      // Obtener conteo de derrotas
+      final count = await _getEnemyDefeatCount(userId, enemyId);
+      if (count >= (achievement.requiredEnemyDefeats ?? 1)) {
         await _unlockAchievementForUser(userId, achievement);
         await _grantRewardToUser(userId, achievement.rewardId);
       }
     }
   }
-
-  Future<void> checkAndUnlockEnemyAchievements(String userId, String enemyId) async {
-    List<Achievement> achievementsToCheck;
-    
-    if (!AppConfig.shouldUseFirebase) {
-      final all = await _loadAchievementsFromLocalJson();
-      achievementsToCheck = all.where((a) => 
-          a.achievementType == 'enemy' && a.requiredEnemyId == enemyId).toList();
-    } else {
-      final snap = await _achievementsCol
-          .where('achievementType', isEqualTo: 'enemy')
-          .where('requiredEnemyId', isEqualTo: enemyId)
-          .get();
-      achievementsToCheck = snap.docs
-          .map((doc) => Achievement.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
-    }
-
-    for (var achievement in achievementsToCheck) {
-      if (!AppConfig.shouldUseFirebase) {
-        final prefs = await SharedPreferences.getInstance();
-        final key = 'unlocked_$userId';
-        final unlocked = prefs.getStringList(key) ?? <String>[];
-        if (unlocked.contains(achievement.id)) continue;
-        
-        // En modo local, simplemente desbloqueamos después de derrotar el enemigo
-        unlocked.add(achievement.id);
-        await prefs.setStringList(key, unlocked);
-      } else {
-        if (await _isAchievementUnlocked(userId, achievement.id)) continue;
-        
-        final enemyDefeatCount = await _getEnemyDefeatCount(userId, enemyId);
-        if (enemyDefeatCount >= (achievement.requiredEnemyDefeats ?? 1)) {
-          await _unlockAchievementForUser(userId, achievement);
-          await _grantRewardToUser(userId, achievement.rewardId);
-        }
-      }
-    }
-  }
-
+  // Esta función puede ser útil en futuras mejoras para verificación previa
+  // de requisitos completos para desbloquear logros
+  /* 
   Future<bool> _checkAllRequiredMissionsCompleted(String userId, List<String> requiredMissionIds) async {
     final userDoc = await _firestore.collection('users').doc(userId).get();
     if (!userDoc.exists) return false;
@@ -213,37 +179,51 @@ class RewardService {
     }
     return true;
   }
+  */  Future<void> _unlockAchievementForUser(String userId, Achievement achievement) async {
+    try {
+      // Primero, intentar almacenar en la colección separada
+      debugPrint("Guardando logro en subcolección user_achievements");
+      await _userAchievementsCol
+          .doc(userId)
+          .collection('achievements')
+          .doc(achievement.id)
+          .set({
+        'achievementId': achievement.id,
+        'name': achievement.name,
+        'description': achievement.description,
+        'iconUrl': achievement.iconUrl,
+        'unlockedDate': FieldValue.serverTimestamp(),
+        'category': achievement.category,
+        'points': achievement.points,
+      });
+      
+      debugPrint("Logro guardado en subcolección correctamente");
+    } catch (e) {
+      debugPrint("Error al guardar logro en subcolección: $e");
+      // No propagamos el error para continuar con la siguiente operación
+    }
 
-  Future<void> _unlockAchievementForUser(String userId, Achievement achievement) async {
-    await _userAchievementsCol
-        .doc(userId)
-        .collection('achievements')
-        .doc(achievement.id)
-        .set({
-      'achievementId': achievement.id,
-      'name': achievement.name,
-      'description': achievement.description,
-      'iconUrl': achievement.iconUrl,
-      'unlockedDate': FieldValue.serverTimestamp(),
-      'category': achievement.category,
-      'points': achievement.points,
-    });
+    try {
+      // Segundo, intentar actualizar el array en el documento del usuario
+      debugPrint("Actualizando array unlockedAchievements en documento de usuario");
+      await _firestore.collection('users').doc(userId).update({
+        'unlockedAchievements': FieldValue.arrayUnion([achievement.id]),
+      });
+      
+      debugPrint("Array de logros actualizado correctamente");
+    } catch (e) {
+      debugPrint("Error al actualizar array de logros: $e");
+      throw e; // Propagamos este error ya que es crítico
+    }
   }
 
   Future<bool> _isAchievementUnlocked(String userId, String achievementId) async {
-    if (!AppConfig.shouldUseFirebase) {
-      final prefs = await SharedPreferences.getInstance();
-      final key = 'unlocked_$userId';
-      final unlocked = prefs.getStringList(key) ?? <String>[];
-      return unlocked.contains(achievementId);
-    }
-    
-    final userAchievementDoc = await _userAchievementsCol
-        .doc(userId)
-        .collection('achievements')
-        .doc(achievementId)
-        .get();
-    return userAchievementDoc.exists;
+    // Leer directamente el arreglo unlockedAchievements desde el documento de usuario
+    final userDoc = await _firestore.collection('users').doc(userId).get();
+    if (!userDoc.exists) return false;
+    final data = userDoc.data();
+    final ids = List<String>.from((data?['unlockedAchievements'] as List<dynamic>?) ?? []);
+    return ids.contains(achievementId);
   }
 
   Future<void> _grantRewardToUser(String userId, String rewardId) async {
@@ -303,43 +283,25 @@ class RewardService {
       return 0;
     }
   }
-
   Stream<List<Achievement>> getUnlockedAchievements(String userId) {
-    if (!AppConfig.shouldUseFirebase) {
-      return Stream.fromFuture(_loadLocalUnlocked(userId));
-    }
-    
-    return _userAchievementsCol
+    // Leer siempre desde el campo unlockedAchievements del documento de usuario
+    return _firestore
+        .collection('users')
         .doc(userId)
-        .collection('achievements')
-        .orderBy('unlockedDate', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Achievement.fromMap(doc.data()))
-            .toList());
-  }
-
-  Future<List<Achievement>> _loadLocalUnlocked(String userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = 'unlocked_$userId';
-    final ids = prefs.getStringList(key) ?? <String>[];
-    
-    final all = await _loadAchievementsFromLocalJson();
-    
-    return all.where((a) => ids.contains(a.id)).map((a) => Achievement(
-      id: a.id,
-      name: a.name,
-      description: a.description,
-      iconUrl: a.iconUrl,
-      requiredMissionIds: a.requiredMissionIds,
-      rewardId: a.rewardId,
-      category: a.category,
-      points: a.points,
-      conditions: a.conditions,
-      unlockedDate: Timestamp.fromDate(DateTime.now()),
-      requiredEnemyId: a.requiredEnemyId,
-      requiredEnemyDefeats: a.requiredEnemyDefeats,
-      achievementType: a.achievementType,
-    )).toList();
+        .asyncMap((doc) async {
+      final data = doc.data();
+      final ids = data == null
+          ? <String>[]
+          : List<String>.from((data['unlockedAchievements'] as List<dynamic>?) ?? []);
+      if (ids.isEmpty) return <Achievement>[];
+      // Obtener detalles de logros por IDs
+      final snap = await _achievementsCol
+          .where(FieldPath.documentId, whereIn: ids)
+          .get();
+      return snap.docs
+          .map((d) => Achievement.fromMap(d.data() as Map<String, dynamic>))
+          .toList();
+    });
   }
 }
