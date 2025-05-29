@@ -1,0 +1,25 @@
+<svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo del enemigo -->
+  <rect width="120" height="120" fill="#ff4444" stroke="#000" stroke-width="2" rx="10"/>
+  
+  <!-- Cuerpo del bug -->
+  <circle cx="60" cy="60" r="35" fill="#cc0000" stroke="#000" stroke-width="2"/>
+  
+  <!-- Ojos -->
+  <circle cx="50" cy="50" r="6" fill="#000"/>
+  <circle cx="70" cy="50" r="6" fill="#000"/>
+  <circle cx="51" cy="48" r="2" fill="#fff"/>
+  <circle cx="71" cy="48" r="2" fill="#fff"/>
+  
+  <!-- Boca -->
+  <path d="M 45 70 Q 60 80 75 70" stroke="#000" stroke-width="3" fill="none"/>
+  
+  <!-- Antenas -->
+  <line x1="45" y1="25" x2="40" y2="15" stroke="#000" stroke-width="2"/>
+  <line x1="75" y1="25" x2="80" y2="15" stroke="#000" stroke-width="2"/>
+  <circle cx="40" cy="15" r="3" fill="#ff4444"/>
+  <circle cx="80" cy="15" r="3" fill="#ff4444"/>
+  
+  <!-- Símbolo de error -->
+  <text x="60" y="85" font-family="monospace" font-size="12" text-anchor="middle" fill="#fff">ERROR</text>
+</svg>

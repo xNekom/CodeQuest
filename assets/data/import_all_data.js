@@ -1,4 +1,3 @@
-// filepath: c:\Users\Pedro\Documents\GitHub\CodeQuest\scripts\import_all_data.js
 const admin = require('firebase-admin');
 const fs = require('fs');
 const path = require('path');
@@ -16,12 +15,23 @@ const questionsFilePath = path.join(__dirname, 'questions.json');
 const itemsFilePath = path.join(__dirname, 'items_data.json');
 const missionsFilePath = path.join(__dirname, 'missions_data.json');
 const enemiesFilePath = path.join(__dirname, 'enemies_data.json');
+const achievementsFilePath = path.join(__dirname, 'achievements_data.json');
+const rewardsFilePath = path.join(__dirname, 'rewards_data.json');
 
 async function uploadGenericData(filePath, collectionName) {
   try {
     const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     const collectionRef = db.collection(collectionName);
     const batch = db.batch();
+
+    // Si estamos importando misiones, añadimos un campo 'order' si no existe
+    if (collectionName === 'missions') {
+      data.forEach((item, index) => {
+        if (!item.hasOwnProperty('order')) {
+          item.order = index + 1; // Asignamos un orden basado en la posición en el array
+        }
+      });
+    }
 
     data.forEach(item => {
       if (!item.id) {
@@ -71,11 +81,12 @@ async function importAllData() {
   } catch (error) {
     console.error(`Error importando preguntas de ${path.basename(questionsFilePath)}:`, error);
   }
-
   // Importar otros datos
   await uploadGenericData(itemsFilePath, 'items');
   await uploadGenericData(missionsFilePath, 'missions');
   await uploadGenericData(enemiesFilePath, 'enemies');
+  await uploadGenericData(achievementsFilePath, 'achievements');
+  await uploadGenericData(rewardsFilePath, 'rewards');
 
   console.log('--------------------------------------------------------------------');
   console.log('Proceso de población de la base de datos finalizado.');

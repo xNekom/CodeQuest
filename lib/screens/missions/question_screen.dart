@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart'; // No se usa directamente aquí
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
-import '../../widgets/pixel_widgets.dart';
-import '../../screens/mission_completed_screen.dart';
+import '../../services/mission_service.dart';
+import '../../services/question_service.dart'; // Importar QuestionService
+import '../../models/mission_model.dart'; // Incluye Objective
+import '../../models/question_model.dart'; // Importar QuestionModel
+import '../../widgets/pixel_widgets.dart'; // Asegúrate de que esta importación esté presente y sea correcta
+import '../mission_completed_screen.dart'; // Importar MissionCompletedScreen
 
 /// Pantalla de preguntas de una misión
 class QuestionScreen extends StatefulWidget {
@@ -15,138 +19,348 @@ class QuestionScreen extends StatefulWidget {
   State<QuestionScreen> createState() => _QuestionScreenState();
 }
 
-class _QuestionScreenState extends State<QuestionScreen> {  final AuthService _authService = AuthService();
+class _QuestionScreenState extends State<QuestionScreen> {
+  final AuthService _authService = AuthService();
   final UserService _userService = UserService();
-  List<String> _questionIds = [];
+  final MissionService _missionService = MissionService();
+  final QuestionService _questionService = QuestionService();
+
+  List<QuestionModel> _questions = [];
   int _currentIndex = 0;
   bool _isLoading = true;
   String _missionName = "";
-  final int _experiencePoints = 50; // Puntos base por completar una misión
+  String _errorMessage = "";
+  final int _experiencePoints = 50;
+
+  int? _selectedOptionIndex; // Para rastrear la opción seleccionada
+  bool _answerSubmitted = false; // Para saber si el usuario ya respondió la pregunta actual
+  bool? _isCurrentAnswerCorrect; // Para saber si la respuesta seleccionada fue correcta
+  int _totalCorrectAnswers = 0; // Contador para respuestas correctas
+  int _totalIncorrectAnswers = 0; // Contador para respuestas incorrectas
 
   @override
   void initState() {
     super.initState();
     _loadMissionStructure();
   }
+
   Future<void> _loadMissionStructure() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('missions')
-        .doc(widget.missionId)
-        .get();
-    final data = doc.exists ? doc.data() as Map<String, dynamic> : null;
     setState(() {
-      _questionIds = data != null ? List<String>.from(data['structure'] ?? []) : [];
-      _missionName = data != null ? data['name'] as String? ?? 'Misión' : 'Misión';
-      _isLoading = false;
+      _isLoading = true;
+      _errorMessage = "";
+      _questions = []; 
+    });
+    try {
+      print('[QS] Loading mission structure for ID: ${widget.missionId}');
+      final MissionModel? mission = await _missionService.getMissionById(widget.missionId);
+      
+      if (mission != null) {
+        _missionName = mission.name;
+        print('[QS] Mission loaded: ${mission.name}. Objectives count: ${mission.objectives.length}');
+        mission.objectives.asMap().forEach((idx, obj) {
+          print('[QS] Objective $idx: type=${obj.type}, description=${obj.description}, questionIds=${obj.questionIds}');
+        });
+
+        Objective? questionObjective;
+        try {
+          // Simplificado: Objective.fromJson ahora asegura que questionIds no sea null.
+          questionObjective = mission.objectives.firstWhere(
+            (obj) => obj.type == 'questions' && obj.questionIds.isNotEmpty, 
+          );
+          print('[QS] Found question objective: ${questionObjective.description}, questionIds: ${questionObjective.questionIds}');
+        } catch (e) {
+          questionObjective = null; // No se encontró un objetivo de tipo 'questions' con questionIds no vacíos
+          print('[QS] No question objective with non-empty questionIds found for mission ${mission.name}. Error: $e');
+        }
+
+        // questionObjective.questionIds != null ya no es necesario debido al cambio en Objective.fromJson
+        if (questionObjective != null && questionObjective.questionIds.isNotEmpty) { 
+          print('[QS] Objective has questionIds: ${questionObjective.questionIds}');
+          final List<QuestionModel> loadedQuestions = await _questionService.getQuestionsByIds(questionObjective.questionIds);
+          print('[QS] Loaded ${loadedQuestions.length} questions from QuestionService.');
+          
+          if (loadedQuestions.isNotEmpty) {
+            setState(() {
+              _questions = loadedQuestions; // Asignar las preguntas cargadas
+              _isLoading = false;
+            });
+          } else {
+            print("[QS] Warning: QuestionService returned no questions for IDs: ${questionObjective.questionIds}. Mission: ${widget.missionId}.");
+            setState(() {
+              _isLoading = false;
+              _errorMessage = "No se pudieron cargar los detalles de las preguntas.";
+            });
+          }
+        } else {
+          print("[QS] Mission ${mission.name} (ID: ${widget.missionId}) has no valid questionIds in its objectives or no objectives of type 'questions' with IDs.");
+          setState(() {
+            _isLoading = false;
+            _errorMessage = "No se encontraron preguntas para esta misión.";
+          });
+        }
+      } else {
+        print("[QS] Error: Mission with ID ${widget.missionId} not found by MissionService.");
+        setState(() {
+          _isLoading = false;
+          _errorMessage = "Misión no encontrada.";
+        });
+      }
+    } catch (e) {
+      print("[QS] CRITICAL Error loading mission structure for ${widget.missionId}: $e");
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Error al cargar la estructura de la misión: ${e.toString()}";
+      });
+    }
+  }
+
+  void _resetAnswerState() {
+    _selectedOptionIndex = null;
+    _answerSubmitted = false;
+    _isCurrentAnswerCorrect = null;
+  }
+
+  void _submitAnswer(int selectedIndex) {
+    if (_answerSubmitted) return; // No hacer nada si ya se respondió
+
+    final QuestionModel currentQuestion = _questions[_currentIndex];
+    setState(() {
+      _selectedOptionIndex = selectedIndex;
+      _answerSubmitted = true;
+      _isCurrentAnswerCorrect = currentQuestion.correctAnswerIndex == selectedIndex;
+      if (_isCurrentAnswerCorrect == true) {
+        _totalCorrectAnswers++; // Incrementar si la respuesta es correcta
+      } else {
+        _totalIncorrectAnswers++; // Incrementar si la respuesta es incorrecta
+      }
     });
   }
 
-  Future<DocumentSnapshot> _loadQuestion(String qId) {
-    return FirebaseFirestore.instance.collection('questions').doc(qId).get();
+  void _moveToNextQuestionOrComplete() {
+    if (_currentIndex < _questions.length - 1) {
+      setState(() {
+        _currentIndex++;
+        _resetAnswerState(); // Resetear estado para la nueva pregunta
+      });
+    } else {
+      // Es la última pregunta, verificar si todas fueron correctas
+      if (_totalCorrectAnswers == _questions.length) {
+        _completeMission();
+      } else {
+        // No todas las respuestas fueron correctas
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Misión fallida. No todas las respuestas fueron correctas."),
+              backgroundColor: Colors.red,
+            ),
+          );
+          // Volver a la pantalla anterior (lista de misiones, por ejemplo)
+          Navigator.of(context).pop(); 
+        }
+      }
+    }
   }
 
-  Future<void> _showExplanationAndProceed(String qId, int selectedIndex, int correctIndex, String explanation) async {
-    final user = _authService.currentUser;
-    if (user == null) return;
-    final isCorrect = selectedIndex == correctIndex;
-    await _userService.updateStatsAfterQuestion(user.uid, isCorrect);
-    if (!mounted) return;
-    await _userService.updateProgressInMission(user.uid, qId, isCorrect);
-    if (!mounted) return;
-    // Diálogo con explicación
-    await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(isCorrect ? '¡Correcto!' : 'Incorrecto'),
-        content: Text(explanation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Continuar'),
-          ),
-        ],
-      ),
-    );
-    if (!mounted) return;
-    // Solo avanzar o completar si la respuesta es correcta
-    if (isCorrect) {
-      if (_currentIndex + 1 < _questionIds.length) {
-        setState(() {
-          _currentIndex++;
-        });      } else {
-        await _userService.completeMission(user.uid, widget.missionId);
-        await _userService.addExperience(user.uid, _experiencePoints);
-        
-        if (!mounted) return;
-        
-        // En lugar de mostrar un diálogo simple, navegar a la pantalla de misión completada
-        Navigator.pushReplacement(
-          context,
+  Future<void> _completeMission() async {
+    final String? userId = _authService.currentUser?.uid;
+    if (userId == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Usuario no autenticado.")), 
+        );
+      }
+      return;
+    }
+
+    setState(() { _isLoading = true; });
+    try {
+      await _userService.addExperience(userId, _experiencePoints);
+      await _userService.completeMission(userId, widget.missionId);
+
+      setState(() { _isLoading = false; });
+
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => MissionCompletedScreen(
+            builder: (context) => MissionCompletedScreen(
               missionId: widget.missionId,
               missionName: _missionName,
               experiencePoints: _experiencePoints,
-              onContinue: () => Navigator.popUntil(context, (route) => route.isFirst),
+              onContinue: () {
+                // Navegar de vuelta a la lista de misiones o a la pantalla principal
+                // Esto asume que MissionListScreen es la ruta raíz o una ruta principal a la que quieres volver
+                Navigator.of(context).popUntil((route) => route.isFirst); 
+              },
+              // unlockedAchievement: ..., // Opcional
+              // earnedReward: ..., // Opcional
             ),
           ),
         );
       }
+    } catch (e) {
+      setState(() { _isLoading = false; });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al completar la misión: ${e.toString()}")),
+        );
+      }
     }
-    // En caso de error, mantener la misma pregunta para reintentar
-    // (ya se mostró explicación)
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-    if (_questionIds.isEmpty) {
-      return Scaffold(body: Center(child: Text('Estructura de misión vacía.')));
-    }
-    final qId = _questionIds[_currentIndex];
-    return FutureBuilder<DocumentSnapshot>(
-      future: _loadQuestion(qId),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Scaffold(body: Center(child: Text('Error: ${snapshot.error}')));
-        }
-        if (!snapshot.hasData) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        }
-        if (!snapshot.data!.exists) {
-          return Scaffold(body: Center(child: Text('Pregunta no encontrada: $qId')));
-        }
-        final data = snapshot.data!.data() as Map<String, dynamic>;
-        final options = List<String>.from(data['options'] ?? []);
-        final correctIndex = data['correctAnswerIndex'] ?? 0;
-        final explanation = data['explanation'] as String? ?? 'No hay explicación disponible.';
+    return Scaffold(
+      appBar: AppBar( // Reemplazado PixelAppBar con AppBar estándar por ahora
+        title: Text(_isLoading ? "Cargando Misión..." : (_missionName.isNotEmpty ? _missionName : "Misión")),
+        // Si tienes una fuente pixelada, aplícala aquí:
+        // style: TextStyle(fontFamily: 'PixelFont'), 
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: _buildContent(),
+      ),
+    );
+  }
 
-        return Scaffold(
-          appBar: AppBar(title: Text('Pregunta ${_currentIndex + 1}/${_questionIds.length}')),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(data['text'] ?? '', style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 24),
-                ...List.generate(options.length, (i) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: PixelButton(
-                      onPressed: () => _showExplanationAndProceed(qId, i, correctIndex, explanation),
-                      color: Theme.of(context).colorScheme.primary,
-                      child: Text(options[i]),
-                    ),
-                  );
-                }),
-              ],
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorMessage.isNotEmpty) {
+      return Center(child: Text(_errorMessage, style: const TextStyle(fontSize: 18, color: Colors.red)));
+    }
+
+    final total = _questions.length;
+    final current = _currentIndex + 1;
+    final incorrect = _totalIncorrectAnswers;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Barra de progreso similar a BattleScreen
+          LinearProgressIndicator(
+            value: current / total,
+            backgroundColor: Colors.grey[300],
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Pregunta $current/$total',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, fontFamily: 'PixelFont'),
+          ),
+          const SizedBox(height: 16),
+          // Pregunta
+          Card(
+            color: Colors.yellow[100],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                _questions[_currentIndex].text,
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-        );
-      },
+          const SizedBox(height: 20),
+          // Opciones con PixelButton
+          ..._questions[_currentIndex].options.asMap().entries.map((entry) {
+            final idx = entry.key;
+            final text = entry.value;
+            Color? btnColor;
+            final isSelected = _selectedOptionIndex == idx;
+            final isCorrectOpt = _questions[_currentIndex].correctAnswerIndex == idx;
+            if (_answerSubmitted) {
+              if (isSelected) btnColor = _isCurrentAnswerCorrect! ? Colors.green : Colors.red;
+              else if (isCorrectOpt) btnColor = Colors.green;
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: PixelButton(
+                onPressed: _answerSubmitted ? null : () => _submitAnswer(idx),
+                color: btnColor,
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  style: TextStyle(color: btnColor != null ? Colors.white : null),
+                ),
+              ),
+            );
+          }),
+          if (_answerSubmitted && _questions[_currentIndex].explanation.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            Card(
+              color: _isCurrentAnswerCorrect! ? Colors.green[50] : Colors.red[50],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isCurrentAnswerCorrect! ? '¡Correcto!' : '¡Incorrecto!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: _isCurrentAnswerCorrect! ? Colors.green[800] : Colors.red[800],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(_questions[_currentIndex].explanation),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+          // Estadísticas
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        '$_totalCorrectAnswers',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text('Correctas'),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        '$incorrect',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Text('Incorrectas'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          if (_answerSubmitted)
+            PixelButton(
+              onPressed: _moveToNextQuestionOrComplete,
+              child: Text(
+                _currentIndex < _questions.length - 1 ? 'Siguiente Pregunta' : 'Finalizar',
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

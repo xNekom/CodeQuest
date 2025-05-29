@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../utils/error_handler.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function? toggleView;
@@ -31,12 +31,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _usernameController.dispose();
     super.dispose();
   }
-
   // Método para manejar el registro
   Future<void> _handleSignUp() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
+        _error = ''; // Limpiar errores anteriores
       });
       
       try {
@@ -49,31 +49,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (!mounted) return;
         
         Navigator.pushReplacementNamed(context, '/home');
-      } on FirebaseAuthException catch (e) {
-        String errorMessage;
-        switch (e.code) {
-          case 'email-already-in-use':
-            errorMessage = 'Este correo ya está registrado';
-            break;
-          case 'invalid-email':
-            errorMessage = 'Correo electrónico inválido';
-            break;
-          case 'weak-password':
-            errorMessage = 'La contraseña es demasiado débil';
-            break;
-          default:
-            errorMessage = 'Error en el registro: ${e.message}';
-        }
-        
-        if (!mounted) return;
-        setState(() {
-          _error = errorMessage;
-          _isLoading = false;
-        });
       } catch (e) {
         if (!mounted) return;
+        
+        // Registrar el error para análisis
+        ErrorHandler.logError(e, StackTrace.current);
+        
+        // Obtener un mensaje amigable para el usuario
+        final errorMessage = ErrorHandler.handleError(e);
+        
+        // Mostrar el error en la interfaz
+        ErrorHandler.showError(context, errorMessage);
+        
         setState(() {
-          _error = 'Error en el registro: $e';
+          _error = errorMessage;
           _isLoading = false;
         });
       }

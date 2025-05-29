@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'reward_service.dart';
+import '../services/reward_service.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -90,20 +90,37 @@ class UserService {
       rethrow;
     }
   }
+
+  // Actualizar estadísticas de enemigos derrotados
+  Future<void> updateEnemyDefeatedStats(String uid, String enemyId) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        'stats.enemiesDefeated.$enemyId': FieldValue.increment(1),
+        'stats.totalEnemiesDefeated': FieldValue.increment(1),
+      });
+    } catch (e) {
+      debugPrint('Error al actualizar estadísticas de enemigos: $e');
+      rethrow;
+    }
+  }
+
   // Marcar una misión como completada
   Future<void> completeMission(String uid, String missionId) async {
+    // Marcar misión como completada en Firestore
     try {
       await _firestore.collection('users').doc(uid).update({
         'completedMissions': FieldValue.arrayUnion([missionId]),
         'currentMissionId': '',
         'progressInMission': {},
       });
-      
-      // Verificar si se desbloquean logros al completar esta misión
+    } catch (e) {
+      debugPrint('[UserService] Error al actualizar misión en usuario: $e');
+    }
+    // Intentar desbloquear logros y otorgar recompensas sin propagar errores
+    try {
       await _rewardService.checkAndUnlockAchievement(uid, missionId);
     } catch (e) {
-      debugPrint('Error al completar misión: $e');
-      rethrow;
+      debugPrint('[UserService] Error al desbloquear logros: $e');
     }
   }
 
@@ -142,5 +159,42 @@ class UserService {
       debugPrint('Error al actualizar progreso en misión: $e');
       rethrow;
     }
+  }
+
+  /// Marks the theory part of a mission as completed for the user.
+  /// This would typically update a specific field in the user's progress for that mission.
+  Future<void> markTheoryAsComplete(String uid, String missionId) async {
+    // TODO: Implement actual Firestore update logic.
+    // Example structure in Firestore: users/{uid}/missionProgress/{missionId}/theoryCompleted = true
+    // Or add to a subcollection: users/{uid}/completedTheories/{missionId} = {completedAt: Timestamp}
+    // print('[UserService] TODO: Implement markTheoryAsComplete for user $uid, mission $missionId');
+    // For now, this is a placeholder.
+    await Future.value(); 
+  }
+
+  /// Checks if the theory part of a mission has been completed by the user.
+  /// This would read the corresponding status from Firestore.
+  Future<bool> isTheoryCompleted(String uid, String missionId) async {
+    // TODO: Implement actual Firestore read logic.
+    // Example: Check users/{uid}/missionProgress/{missionId}/theoryCompleted
+    // print('[UserService] TODO: Implement isTheoryCompleted for user $uid, mission $missionId');
+    // For ahora, por defecto es falso.
+    return Future.value(false);
+  }
+
+  Future<void> updateUserProgress(String userId, Map<String, dynamic> progressData) async {
+    // TODO: Implement actual Firestore update logic.
+    // print("Actualizando progreso del usuario $userId con: $progressData");
+    // Ejemplo:
+    // await _firestore.collection('users').doc(userId).update({'progress': progressData});
+  }
+
+  Future<Map<String, dynamic>?> getUserProgress(String userId) async {
+    // TODO: Implement actual Firestore read logic.
+    // print("Obteniendo progreso del usuario $userId");
+    // Ejemplo:
+    // DocumentSnapshot doc = await _firestore.collection('users').doc(userId).get();
+    // return doc.exists ? doc.data() as Map<String, dynamic> : null;
+    return null;
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../utils/error_handler.dart';
 
 class SignInScreen extends StatefulWidget {
   final Function? toggleView;
@@ -29,7 +29,6 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-
   // Método para manejar el inicio de sesión
   Future<void> _handleSignIn() async {
     if (_formKey.currentState!.validate()) {
@@ -50,41 +49,14 @@ class _SignInScreenState extends State<SignInScreen> {
       } catch (e) {
         if (!mounted) return;
         
-        String errorMessage;
-        debugPrint('Error completo: $e');
+        // Registrar el error para análisis
+        ErrorHandler.logError(e, StackTrace.current);
         
-        if (e is FirebaseAuthException) {
-          switch (e.code) {
-            case 'user-not-found':
-              errorMessage = 'No existe una cuenta con este correo electrónico';
-              break;
-            case 'wrong-password':
-              errorMessage = 'La contraseña es incorrecta';
-              break;
-            case 'invalid-email':
-              errorMessage = 'El formato del correo electrónico no es válido';
-              break;
-            case 'user-disabled':
-              errorMessage = 'Esta cuenta ha sido desactivada';
-              break;
-            case 'too-many-requests':
-              errorMessage = 'Demasiados intentos fallidos. Inténtalo más tarde';
-              break;
-            case 'operation-not-allowed':
-              errorMessage = 'El inicio de sesión con correo y contraseña no está habilitado';
-              break;
-            case 'network-request-failed':
-              errorMessage = 'Error de red. Comprueba tu conexión a internet';
-              break;
-            case 'invalid-credential':
-              errorMessage = 'El correo o la contraseña son incorrectos';
-              break;
-            default:
-              errorMessage = 'Error de autenticación: Credenciales incorrectas';
-          }
-        } else {
-          errorMessage = 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
-        }
+        // Obtener un mensaje amigable para el usuario
+        final errorMessage = ErrorHandler.handleError(e);
+        
+        // Mostrar el error en la interfaz
+        ErrorHandler.showError(context, errorMessage);
         
         setState(() {
           _error = errorMessage;
