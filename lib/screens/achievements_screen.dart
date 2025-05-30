@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/reward_notification_service.dart';
 import '../services/reward_service.dart';
+import '../services/tutorial_service.dart';
 import '../models/achievement_model.dart';
 import '../models/reward_model.dart'; // Importar Reward
 import '../widgets/achievement_card.dart';
 import '../widgets/pixel_art_background.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/tutorial_floating_button.dart';
 
 class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
@@ -28,7 +30,11 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   StreamSubscription<List<Achievement>>? _allSub;
   StreamSubscription<List<Achievement>>? _unlockedAchievementsSub;
   StreamSubscription<Reward>? _rewardSubscription; // Usar Reward importado
-  @override
+
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _progressBarKey = GlobalKey();
+  final GlobalKey _achievementListKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();  @override
   void initState() {
     super.initState();
     _currentUser = _authService.currentUser;
@@ -62,6 +68,25 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
         _isLoading = false;
       });
     }
+    _checkAndStartTutorial();
+  }
+
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.achievementScreenTutorial,
+        TutorialService.getAchievementsTutorial(
+          progressKey: _progressBarKey,
+          achievementGridKey: _achievementListKey,
+          rewardsKey: _backButtonKey,
+        ),
+      );
+    }
   }
 
   @override
@@ -74,11 +99,11 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
 
   bool _isAchievementUnlocked(String id) =>
       _unlockedAchievements.any((a) => a.id == id);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: _backButtonKey,
         title: const Text('LOGROS', style: TextStyle(fontFamily: 'PixelFont', fontWeight: FontWeight.bold)),
         elevation: 0,
       ),
@@ -87,9 +112,16 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
             ? Center(child: CircularProgressIndicator())
             : _buildContent(),
       ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.achievementScreenTutorial,
+        tutorialSteps: TutorialService.getAchievementsTutorial(
+          progressKey: _progressBarKey,
+          achievementGridKey: _achievementListKey,
+          rewardsKey: _backButtonKey,
+        ),
+      ),
     );
   }
-
   Widget _buildContent() {
     final pct = _allAchievements.isEmpty
         ? 0.0
@@ -101,6 +133,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
           child: _allAchievements.isEmpty
               ? _buildEmptyState()
               : ListView.builder(
+                  key: _achievementListKey,
                   itemCount: _allAchievements.length,
                   itemBuilder: (ctx, i) {
                     final a = _allAchievements[i];
@@ -116,9 +149,9 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
       ],
     );
   }
-
   Widget _buildProgressSection(double progressPercentage) {
     return Container(
+      key: _progressBarKey,
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
