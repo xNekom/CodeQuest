@@ -30,7 +30,7 @@ void main() {
 
   setUp(() {
     // Mock asset bundle for loadString
-    ServicesBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
       'flutter/assets',
       (ByteData? message) async {
         if (message == null) return null;
@@ -45,7 +45,7 @@ void main() {
   });
 
   tearDown(() {
-    ServicesBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
   });
 
   test('ItemService loads items and parses JSON correctly', () async {

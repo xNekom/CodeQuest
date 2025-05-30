@@ -5,6 +5,8 @@ import './question_screen.dart';
 import '../game/battle_screen.dart';
 import '../../models/mission_model.dart';
 import '../../services/mission_service.dart';
+import '../../services/tutorial_service.dart';
+import '../../widgets/tutorial_floating_button.dart';
 
 class TheoryScreen extends StatefulWidget {
   final String missionId;
@@ -29,6 +31,13 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
   MissionModel? _mission;
   bool _isLoadingMission = false;
 
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _theoryTitleKey = GlobalKey();
+  final GlobalKey _theoryContentKey = GlobalKey();
+  final GlobalKey _examplesKey = GlobalKey();
+  final GlobalKey _startExercisesButtonKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +48,25 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
     _fadeInAnim = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
     _loadMissionData();
+
+    // Verificar si debemos mostrar el tutorial
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAndStartTutorial();
+    });
+  }
+
+  void _checkAndStartTutorial() {
+    TutorialService.startTutorialIfNeeded(
+      context,
+      TutorialService.theoryScreenTutorial,
+      TutorialService.getTheoryScreenTutorial(
+        theoryTitleKey: _theoryTitleKey,
+        theoryContentKey: _theoryContentKey,
+        examplesKey: _examplesKey,
+        startExercisesButtonKey: _startExercisesButtonKey,
+        backButtonKey: _backButtonKey,
+      ),
+    );
   }
 
   Future<void> _loadMissionData() async {
@@ -139,6 +167,7 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                key: _theoryTitleKey,
                 children: [
                   PixelIcon(Pixel.list, size: 32),
                   const SizedBox(width: 8),
@@ -147,10 +176,12 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
               ),
               const SizedBox(height: 12),
               PixelCard(
+                key: _theoryContentKey,
                 child: Text(widget.theoryText, style: Theme.of(context).textTheme.bodyLarge),
               ),
               const SizedBox(height: 24),
               Row(
+                key: _examplesKey,
                 children: [
                   PixelIcon(Pixel.code, size: 32),
                   const SizedBox(width: 8),
@@ -167,7 +198,9 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
               const Spacer(),
               Center(
                 child: Column(
-                  children: [                    PixelButton(
+                  children: [                    
+                    PixelButton(
+                      key: _startExercisesButtonKey,
                       onPressed: _isLoadingMission ? null : _navigateToNextScreen,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -180,6 +213,7 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
                     ),
                     const SizedBox(height: 12),
                     PixelButton(
+                      key: _backButtonKey,
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -199,6 +233,20 @@ class _TheoryScreenState extends State<TheoryScreen> with SingleTickerProviderSt
             ],
           ),
         ),
+      ),
+      floatingActionButton: TutorialFloatingButton(
+        onTutorialStart: () {
+          TutorialService.showTutorialDialog(
+            context,
+            TutorialService.getTheoryScreenTutorial(
+              theoryTitleKey: _theoryTitleKey,
+              theoryContentKey: _theoryContentKey,
+              examplesKey: _examplesKey,
+              startExercisesButtonKey: _startExercisesButtonKey,
+              backButtonKey: _backButtonKey,
+            ),
+          );
+        },
       ),
     );
   }

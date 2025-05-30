@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'mission_list_screen.dart';
+import '../../services/tutorial_service.dart';
+import '../../widgets/tutorial_floating_button.dart';
 
 class MissionsScreen extends StatefulWidget {
   const MissionsScreen({super.key});
@@ -9,10 +11,40 @@ class MissionsScreen extends StatefulWidget {
 }
 
 class _MissionsScreenState extends State<MissionsScreen> {
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _missionListKey = GlobalKey();
+  final GlobalKey _filterButtonKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAndStartTutorial();
+  }
+
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.missionScreenTutorial,
+        TutorialService.getMissionScreenTutorial(
+          missionListKey: _missionListKey,
+          filterButtonKey: _filterButtonKey,
+          backButtonKey: _backButtonKey,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: _backButtonKey,
         title: const Text(
           'MISIÓN',
           style: TextStyle(fontFamily: 'PixelFont', fontWeight: FontWeight.bold),
@@ -23,7 +55,18 @@ class _MissionsScreenState extends State<MissionsScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: const MissionListScreen(),
+          child: MissionListScreen(
+            missionListKey: _missionListKey,
+            filterButtonKey: _filterButtonKey,
+          ),
+        ),
+      ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.missionScreenTutorial,
+        tutorialSteps: TutorialService.getMissionScreenTutorial(
+          missionListKey: _missionListKey,
+          filterButtonKey: _filterButtonKey,
+          backButtonKey: _backButtonKey,
         ),
       ),
     );

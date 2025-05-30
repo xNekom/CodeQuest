@@ -1,0 +1,347 @@
+import 'package:flutter/material.dart';
+import '../services/tutorial_service.dart';
+import 'interactive_tutorial.dart';
+
+/// Widget del botón flotante para tutoriales
+class TutorialFloatingButton extends StatefulWidget {
+  /// Lista de pasos del tutorial para esta pantalla
+  final List<InteractiveTutorialStep>? tutorialSteps;
+  
+  /// Clave única del tutorial para esta pantalla
+  final String? tutorialKey;
+  
+  /// Callback adicional cuando se inicia un tutorial
+  final VoidCallback? onTutorialStart;
+  
+  const TutorialFloatingButton({
+    super.key,
+    this.tutorialSteps,
+    this.tutorialKey,
+    this.onTutorialStart,
+  });
+
+  @override
+  State<TutorialFloatingButton> createState() => _TutorialFloatingButtonState();
+}
+
+class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
+    with SingleTickerProviderStateMixin {
+  bool _isMenuOpen = false;
+  late AnimationController _animationController;
+  late Animation<double> _rotationAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.5,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+    
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.elasticOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+      if (_isMenuOpen) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  void _startTutorial() {
+    if (widget.tutorialSteps != null && widget.tutorialKey != null) {
+      widget.onTutorialStart?.call();
+      TutorialService.showTutorialDialog(
+        context,
+        widget.tutorialSteps!,
+        tutorialKey: widget.tutorialKey,
+      );
+      _toggleMenu(); // Cerrar menú después de iniciar tutorial
+    }
+  }
+
+  void _showAllTutorials() {
+    _showTutorialSelectionDialog();
+    _toggleMenu();
+  }
+
+  void _showTutorialSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.school, color: Colors.blue),
+            SizedBox(width: 8),
+            Text('Selecciona un Tutorial'),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _TutorialOption(
+                title: 'Tutorial de Inicio',
+                description: 'Aprende los conceptos básicos de la aplicación',
+                icon: Icons.home,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  TutorialService.showTutorialDialog(
+                    context,
+                    TutorialService.getHomeScreenTutorial(),
+                    tutorialKey: TutorialService.homeScreenTutorial,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              _TutorialOption(
+                title: 'Creación de Personaje',
+                description: 'Cómo personalizar tu avatar',
+                icon: Icons.person_add,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  TutorialService.showTutorialDialog(
+                    context,
+                    TutorialService.getCharacterCreationTutorial(),
+                    tutorialKey: TutorialService.characterCreationTutorial,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              _TutorialOption(
+                title: 'Sistema de Misiones',
+                description: 'Explora y completa misiones',
+                icon: Icons.assignment,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  TutorialService.showTutorialDialog(
+                    context,
+                    TutorialService.getMissionScreenTutorial(),
+                    tutorialKey: TutorialService.missionScreenTutorial,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              _TutorialOption(
+                title: 'Logros y Recompensas',
+                description: 'Descubre cómo ganar logros',
+                icon: Icons.emoji_events,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  TutorialService.showTutorialDialog(
+                    context,
+                    TutorialService.getAchievementsTutorial(),
+                    tutorialKey: TutorialService.achievementScreenTutorial,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              _TutorialOption(
+                title: 'Detalle de Misión',
+                description: 'Aprende a entender los detalles de una misión',
+                icon: Icons.assignment_outlined,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  TutorialService.showTutorialDialog(
+                    context,
+                    TutorialService.getMissionDetailTutorial(),
+                    tutorialKey: TutorialService.missionDetailTutorial,
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+              _TutorialOption(
+                title: 'Pantalla de Teoría',
+                description: 'Cómo estudiar la teoría de programación',
+                icon: Icons.menu_book,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  TutorialService.showTutorialDialog(
+                    context,
+                    TutorialService.getTheoryScreenTutorial(),
+                    tutorialKey: TutorialService.theoryScreenTutorial,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Solo mostrar el FAB si hay tutoriales disponibles
+    final hasTutorials = widget.tutorialSteps != null && widget.tutorialSteps!.isNotEmpty;
+    
+    if (!hasTutorials) {
+      return const SizedBox.shrink();
+    }
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // Botón principal
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton(
+            heroTag: "tutorial_main",
+            onPressed: _toggleMenu,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            child: AnimatedBuilder(
+              animation: _rotationAnimation,
+              builder: (context, child) {
+                return Transform.rotate(
+                  angle: _rotationAnimation.value * 3.14159,
+                  child: Icon(
+                    _isMenuOpen ? Icons.close : Icons.help,
+                    color: Colors.white,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        
+        // Menú de opciones
+        if (_isMenuOpen) ...[          
+          // Tutorial de esta pantalla
+          Positioned(
+            right: 16,
+            bottom: 130,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: FloatingActionButton(
+                heroTag: "current_tutorial",
+                onPressed: _startTutorial,
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.play_arrow, color: Colors.white),
+              ),
+            ),
+          ),
+          // Todos los tutoriales
+          Positioned(
+            right: 16,
+            bottom: 80,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: FloatingActionButton(
+                heroTag: "all_tutorials",
+                onPressed: _showAllTutorials,
+                backgroundColor: Colors.blue,
+                child: const Icon(Icons.list, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Widget para una opción de tutorial en el diálogo de selección
+class _TutorialOption extends StatelessWidget {
+  final String title;
+  final String description;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _TutorialOption({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.withAlpha((0.3 * 255).round())),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withAlpha((0.1 * 255).round()),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(
+                icon,
+                color: Theme.of(context).colorScheme.primary,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey[400],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
