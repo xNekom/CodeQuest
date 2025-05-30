@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Reglas para usuarios - Permitir todas las operaciones sin autenticación para registro
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null; // Permitir lectura para leaderboard
+      allow create: if true; // Permitir creación durante registro sin autenticación
+      allow read: if true; // Permitir lectura sin autenticación para verificación de username
+    }
+    
+    // Permitir todas las operaciones en la colección users para verificación de usernames
+    match /users {
+      allow read, list, get: if true; // Permitir todas las operaciones de lectura sin autenticación
+    }
+    
+    // Reglas para la colección usernames (verificación de disponibilidad)
+    match /usernames/{username} {
+      allow read: if true; // Permitir lectura para verificar disponibilidad
+      allow create: if true; // Permitir creación durante registro
+      allow write: if request.auth != null; // Solo usuarios autenticados pueden modificar
+    }
+    
+    // Reglas para leaderboard
+    match /leaderboard/{entryId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+                      request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Permitir lectura de toda la colección leaderboard para rankings
+    match /leaderboard {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para preguntas
+    match /questions/{questionId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para misiones
+    match /missions/{missionId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para enemigos
+    match /enemies/{enemyId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para items
+    match /items/{itemId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para recompensas
+    match /rewards/{rewardId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para logros
+    match /achievements/{achievementId} {
+      allow read: if request.auth != null;
+    }
+  }
+}

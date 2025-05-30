@@ -5,7 +5,7 @@
     "description": "Un pequeño rubí tallado de calidad media, perfecto para joyería.",
     "icon": "ruby_small_carved.png",
     "type": "material",
-    "valor_monetario": 50,
+    "valor_monetario": 100,
     "in_shop": true,
     "rareza": "Común"
   },
@@ -15,7 +15,7 @@
     "description": "Pasta térmica de alta conductividad para disipar el calor de componentes.",
     "icon": "pasta_termica.png",
     "type": "material",
-    "valor_monetario": 20,
+    "valor_monetario": 40,
     "in_shop": true,
     "rareza": "Poco Común"
   },
@@ -25,7 +25,7 @@
     "description": "Cable USB estándar para conexión de dispositivos.",
     "icon": "cable_usb.png",
     "type": "material",
-    "valor_monetario": 10,
+    "valor_monetario": 25,
     "in_shop": true,
     "rareza": "Común"
   },
@@ -35,7 +35,7 @@
     "description": "Cable USB de oro para conexión de dispositivos.",
     "icon": "cable_usb.png",
     "type": "material",
-    "valor_monetario": 20,
+    "valor_monetario": 40,
     "in_shop": true,
     "rareza": "Común"
   },

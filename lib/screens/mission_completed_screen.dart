@@ -13,6 +13,8 @@ class MissionCompletedScreen extends StatelessWidget {
   final Achievement? unlockedAchievement;
   final Reward? earnedReward;
   final int experiencePoints;
+  final int coinsEarned;
+  final bool isBattleMission;
   final VoidCallback onContinue;
 
   const MissionCompletedScreen({
@@ -22,6 +24,8 @@ class MissionCompletedScreen extends StatelessWidget {
     this.unlockedAchievement,
     this.earnedReward,
     required this.experiencePoints,
+    this.coinsEarned = 100,
+    this.isBattleMission = false,
     required this.onContinue,
   });
 
@@ -82,35 +86,108 @@ class MissionCompletedScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               
-              // Experiencia ganada
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.amber,
-                    width: 2,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 30,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      '+$experiencePoints XP',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+              // Recompensas obtenidas
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Experiencia ganada
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
                         color: Colors.amber,
+                        width: 2,
                       ),
                     ),
-                  ],
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 30,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '+$experiencePoints',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber,
+                          ),
+                        ),
+                        const Text(
+                          'XP',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Monedas ganadas
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.yellow.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.yellow.shade700,
+                        width: 2,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.monetization_on,
+                          color: Colors.yellow.shade700,
+                          size: 30,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '+$coinsEarned',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.yellow.shade700,
+                          ),
+                        ),
+                        Text(
+                          'Monedas',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.yellow.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              
+              // Tipo de misión completada
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: isBattleMission ? Colors.red.withOpacity(0.2) : Colors.blue.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isBattleMission ? Colors.red : Colors.blue,
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  isBattleMission ? '🗡️ Misión de Batalla' : '📚 Misión de Teoría',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: isBattleMission ? Colors.red : Colors.blue,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
