@@ -22,6 +22,7 @@ import 'screens/debug_firebase_screen.dart'; // Importar DebugFirebaseScreen
 import 'utils/error_handler.dart'; // Importar ErrorHandler
 import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
 import 'utils/platform_utils.dart'; // Importar PlatformUtils
+import 'utils/overflow_utils.dart'; // Importar OverflowUtils y NavigationService
 
 // Clave global para ScaffoldMessenger
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -35,6 +36,9 @@ void main() async {
     () async {
       // Asegura que Flutter esté inicializado
       WidgetsFlutterBinding.ensureInitialized();
+      
+      // Configurar el NavigationService con la clave global
+      NavigationService.navigatorKey = navigatorKey;
 
       try {
         // Configurar el manejador global de errores

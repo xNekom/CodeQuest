@@ -124,8 +124,6 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
 
           final name = mission.name;
           final description = mission.description;
-          final theory = mission.theory ?? 'Sin teoría disponible.';
-          final examples = mission.examples ?? <String>[];
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),

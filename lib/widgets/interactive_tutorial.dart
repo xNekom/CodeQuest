@@ -72,7 +72,6 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     with TickerProviderStateMixin {
   int _currentStep = 0;
   bool _isVisible = false;
-  bool _isScrolling = false;
   Rect? _targetRect;
   late AnimationController _fadeController;
   late AnimationController _pulseController;
@@ -176,7 +175,6 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
 
     if (targetKey?.currentContext != null) {
       setState(() {
-        _isScrolling = true;
         _targetRect = null; // Limpiar el rect antes del scroll
       });
 
@@ -222,12 +220,10 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
           size.width,
           size.height,
         );
-        _isScrolling = false;
       });
     } else {
       setState(() {
         _targetRect = null;
-        _isScrolling = false;
       });
     }
   }
@@ -409,9 +405,6 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     if (widget.steps.isEmpty || !_isVisible) {
       return widget.child;
     }
-
-    final currentStepData = widget.steps[_currentStep];
-    final targetKey = currentStepData.targetKey;
 
     return Stack(
       children: [
