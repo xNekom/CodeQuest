@@ -1,41 +1,43 @@
-/// Modelo para ejercicios de programación interactivos
+/// Modelo para ejercicios de programación interactivos.
+/// Contiene la estructura y datos para un desafío de codificación.
 class CodeExerciseModel {
-  /// ID único del ejercicio
+  /// ID único del ejercicio. Usado para referenciarlo internamente.
   final String exerciseId;
 
-  /// Título del ejercicio
+  /// Título del ejercicio. Se muestra al usuario.
   final String title;
 
-  /// Descripción del problema a resolver
+  /// Descripción del problema a resolver. Explica la tarea al usuario.
   final String description;
 
-  /// Código inicial que se muestra al usuario
+  /// Código inicial que se muestra al usuario. Puede ser un esqueleto o un punto de partida.
   final String initialCode;
 
-  /// Output esperado cuando el código se ejecuta correctamente
+  /// Output esperado cuando el código se ejecuta correctamente con el input principal (si aplica).
   final String expectedOutput;
 
-  /// Lista de pistas que se pueden mostrar al usuario
+  /// Lista de pistas que se pueden mostrar al usuario si se atasca.
   final List<String> hints;
 
-  /// Patrones que el código debe contener para ser válido
+  /// Patrones (regex o strings) que el código debe contener para ser considerado una solución válida (ej. uso de un bucle `for`).
   final List<String> requiredPatterns;
 
-  /// Patrones que el código NO debe contener
+  /// Patrones (regex o strings) que el código NO debe contener (ej. evitar funciones específicas no permitidas).
   final List<String> forbiddenPatterns;
 
-  /// Casos de prueba con diferentes inputs y outputs esperados
+  /// Casos de prueba con diferentes inputs y outputs esperados para validar la corrección del código.
   final List<TestCase> testCases;
 
-  /// Nivel de dificultad (1-5)
+  /// Nivel de dificultad del ejercicio, típicamente en una escala (ej. 1-5).
   final int difficulty;
 
-  /// Conceptos de programación que se practican
+  /// Conceptos de programación que se practican con este ejercicio (ej. "bucles", "condicionales").
   final List<String> concepts;
 
   /// Contenido teórico del ejercicio (opcional)
   final String? theory;
 
+  // Constructor para un CodeExerciseModel.
   const CodeExerciseModel({
     required this.exerciseId,
     required this.title,

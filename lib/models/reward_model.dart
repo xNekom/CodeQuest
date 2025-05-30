@@ -1,12 +1,14 @@
+// Representa una recompensa que el jugador puede obtener.
 class Reward {
-  final String id;
-  final String name;
-  final String description;
-  final String iconUrl;
-  final String type; // Solo String, no RewardType
-  final int value;
-  final Map<String, dynamic> conditions;
+  final String id; // ID único de la recompensa.
+  final String name; // Nombre de la recompensa.
+  final String description; // Descripción de la recompensa.
+  final String iconUrl; // URL o ruta al icono de la recompensa.
+  final String type; // Tipo de recompensa (ej. 'points', 'item', 'badge'). Se usa String para flexibilidad con Firestore.
+  final int value; // Valor numérico de la recompensa (ej. cantidad de puntos, ID del ítem si type es 'item').
+  final Map<String, dynamic> conditions; // Condiciones adicionales para recibir la recompensa.
 
+  // Constructor para crear una instancia de Reward.
   Reward({
     required this.id,
     required this.name,
