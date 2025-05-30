@@ -130,36 +130,54 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(2, 2),
-                        blurRadius: 4,
-                        color: Colors.black.withOpacity(0.8),
-                      ),
-                    ],
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
                   ),
-                  key: _missionTitleKey,
+                  child: Text(
+                    name,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(2, 2),
+                          blurRadius: 4,
+                          color: Colors.black.withOpacity(0.9),
+                        ),
+                      ],
+                    ),
+                    key: _missionTitleKey,
+                  ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(1, 1),
-                        blurRadius: 3,
-                        color: Colors.black.withOpacity(0.7),
-                      ),
-                    ],
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  key: _missionDescriptionKey,
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(1, 1),
+                          blurRadius: 3,
+                          color: Colors.black.withOpacity(0.9),
+                        ),
+                      ],
+                    ),
+                    key: _missionDescriptionKey,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 if (isMissionCompleted)
@@ -182,13 +200,29 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'Ya has completado esta misión y recibido las recompensas.',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey[600]),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Ya has completado esta misión y recibido las recompensas.',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  offset: const Offset(1, 1),
+                                  blurRadius: 2,
+                                  color: Colors.black.withOpacity(0.8),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                         ),
+                         const SizedBox(height: 16),
                         PixelButton(
                           onPressed: () {
                             // Permitir repetir la lección sin recompensas
