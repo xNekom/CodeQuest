@@ -274,8 +274,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       minWidth: 32,
                       minHeight: 32,
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/admin');
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(context, '/admin');
+                      // Si regresa true, significa que hubo cambios en el admin
+                      if (result == true) {
+                        await _loadUserData();
+                      }
                     },
                   ),
                 ],

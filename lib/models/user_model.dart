@@ -39,6 +39,9 @@ class UserModel {
   // Campos de auditoría
   Timestamp? lastLogin;
   Timestamp? creationDate;
+
+  // Getter para verificar si el usuario es admin
+  bool get isAdmin => adminRole == 'admin';
   UserModel({
     required this.userId,
     required this.username,
