@@ -11,7 +11,8 @@ class UserService {
   // Obtener datos del usuario actual
   Future<Map<String, dynamic>?> getUserData(String uid) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection('users').doc(uid).get();
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(uid).get();
       return doc.exists ? doc.data() as Map<String, dynamic> : null;
     } catch (e) {
       debugPrint('Error al obtener datos del usuario: $e');
@@ -30,59 +31,75 @@ class UserService {
   }
 
   // Añadir experiencia al usuario
-  Future<void> addExperience(String uid, int experiencePoints, {String? missionId}) async {
+  Future<void> addExperience(
+    String uid,
+    int experiencePoints, {
+    String? missionId,
+  }) async {
     // Si se proporciona un missionId, verificar que no esté ya completada
     if (missionId != null) {
       try {
         final userDoc = await _firestore.collection('users').doc(uid).get();
         if (userDoc.exists) {
           final userData = userDoc.data() as Map<String, dynamic>;
-          final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
-          
+          final List<String> completedMissions = List<String>.from(
+            userData['completedMissions'] ?? [],
+          );
+
           // Si la misión ya está completada, no otorgar experiencia adicional
           if (completedMissions.contains(missionId)) {
-            debugPrint('[UserService] No se otorga experiencia adicional para misión ya completada: $missionId');
+            debugPrint(
+              '[UserService] No se otorga experiencia adicional para misión ya completada: $missionId',
+            );
             return;
           }
         }
       } catch (e) {
-        debugPrint('[UserService] Error al verificar misión completada antes de otorgar experiencia: $e');
+        debugPrint(
+          '[UserService] Error al verificar misión completada antes de otorgar experiencia: $e',
+        );
         return;
       }
     }
-    
+
     try {
       // Obtener datos actuales del usuario
       final userDoc = await _firestore.collection('users').doc(uid).get();
       if (!userDoc.exists) return;
-      
+
       final userData = userDoc.data() as Map<String, dynamic>;
       int currentExp = userData['experience'] ?? 0;
       int currentLevel = userData['level'] ?? 1;
-      
+
       // Calcular experiencia máxima para el nivel actual
       int maxExpForCurrentLevel = currentLevel * 100;
-      
+
       // Calcular nueva experiencia
       int newExp = currentExp + experiencePoints;
-      
+
       Map<String, dynamic> updateData = {};
-      
+
       // Verificar si excede la experiencia máxima del nivel actual
       if (newExp >= maxExpForCurrentLevel) {
         // No se puede ganar más experiencia hasta subir de nivel por misiones
         // Mantener la experiencia en el máximo del nivel actual
         updateData['experience'] = maxExpForCurrentLevel;
-        
-        debugPrint('[UserService] Experiencia limitada al máximo del nivel $currentLevel: $maxExpForCurrentLevel XP');
-        debugPrint('[UserService] Para subir de nivel, completa 3 misiones de teoría y 1 de batalla');
+
+        debugPrint(
+          '[UserService] Experiencia limitada al máximo del nivel $currentLevel: $maxExpForCurrentLevel XP',
+        );
+        debugPrint(
+          '[UserService] Para subir de nivel, completa 3 misiones de teoría y 1 de batalla',
+        );
       } else {
         updateData['experience'] = newExp;
-        debugPrint('[UserService] Experiencia actualizada: $newExp/$maxExpForCurrentLevel XP');
+        debugPrint(
+          '[UserService] Experiencia actualizada: $newExp/$maxExpForCurrentLevel XP',
+        );
       }
-      
+
       await _firestore.collection('users').doc(uid).update(updateData);
-      
+
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
@@ -97,13 +114,13 @@ class UserService {
       Map<String, dynamic> updateData = {
         'stats.questionsAnswered': FieldValue.increment(1),
       };
-      
+
       if (isCorrect) {
         updateData['stats.correctAnswers'] = FieldValue.increment(1);
       }
-      
+
       await _firestore.collection('users').doc(uid).update(updateData);
-      
+
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
@@ -111,37 +128,41 @@ class UserService {
       rethrow;
     }
   }
-  
+
   // Verificar progreso de nivel basado en misiones completadas
   Future<void> _checkLevelProgression(String uid, bool isBattleMission) async {
     try {
       final userDoc = await _firestore.collection('users').doc(uid).get();
       if (!userDoc.exists) return;
-      
+
       final userData = userDoc.data() as Map<String, dynamic>;
-      final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
+      final List<String> completedMissions = List<String>.from(
+        userData['completedMissions'] ?? [],
+      );
       int currentLevel = userData['level'] ?? 1;
-      
+
       // Obtener información de todas las misiones para clasificarlas
       final missionsSnapshot = await _firestore.collection('missions').get();
-      
+
       // Clasificar misiones completadas por tipo
       int theoryMissionsCompleted = 0;
       int battleMissionsCompleted = 0;
-      
+
       for (String missionId in completedMissions) {
         final missionDoc = missionsSnapshot.docs.firstWhere(
           (doc) => doc.id == missionId,
           orElse: () => throw Exception('Misión no encontrada'),
         );
-        
+
         if (missionDoc.exists) {
           final missionData = missionDoc.data() as Map<String, dynamic>;
-          final objectives = List<Map<String, dynamic>>.from(missionData['objectives'] ?? []);
-          
+          final objectives = List<Map<String, dynamic>>.from(
+            missionData['objectives'] ?? [],
+          );
+
           // Verificar si es una misión de batalla
           bool isBattle = objectives.any((obj) => obj['type'] == 'batalla');
-          
+
           if (isBattle) {
             battleMissionsCompleted++;
           } else {
@@ -149,12 +170,17 @@ class UserService {
           }
         }
       }
-      
+
       // Calcular cuántos niveles completos ha alcanzado el usuario
       // Cada nivel requiere 3 misiones de teoría + 1 de batalla
-      int completeLevels = (theoryMissionsCompleted ~/ 3).clamp(0, battleMissionsCompleted);
-      int newLevel = completeLevels + 1; // El nivel actual es el siguiente al último completo
-      
+      int completeLevels = (theoryMissionsCompleted ~/ 3).clamp(
+        0,
+        battleMissionsCompleted,
+      );
+      int newLevel =
+          completeLevels +
+          1; // El nivel actual es el siguiente al último completo
+
       // Verificar si debe subir de nivel basado en misiones completadas
       if (newLevel > currentLevel) {
         // Calcular experiencia redistribuida para el nuevo nivel
@@ -162,33 +188,40 @@ class UserService {
         int remainingTheoryMissions = theoryMissionsCompleted % 3;
         // Experiencia base: 25 XP por misión de teoría restante, 50 XP por misión de batalla extra
         int redistributedExp = (remainingTheoryMissions * 25);
-        
+
         // Si hay misiones de batalla extra (más allá de las necesarias para el nivel)
         int extraBattleMissions = battleMissionsCompleted - completeLevels;
         if (extraBattleMissions > 0) {
           redistributedExp += (extraBattleMissions * 50);
         }
-        
+
         // Limitar la experiencia al máximo del nuevo nivel
         int maxExpForNewLevel = newLevel * 100;
         redistributedExp = redistributedExp.clamp(0, maxExpForNewLevel);
-        
+
         Map<String, dynamic> updateData = {
           'level': newLevel,
           'experience': redistributedExp, // Resetear y redistribuir experiencia
-          'coins': FieldValue.increment((newLevel - currentLevel) * 200), // Bonificación por subir de nivel
+          'coins': FieldValue.increment(
+            (newLevel - currentLevel) * 200,
+          ), // Bonificación por subir de nivel
         };
-        
+
         await _firestore.collection('users').doc(uid).update(updateData);
-        
-        debugPrint('[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel por misiones completadas!');
-        debugPrint('[UserService] Misiones completadas: $theoryMissionsCompleted teoría, $battleMissionsCompleted batalla');
-        debugPrint('[UserService] Experiencia redistribuida: $redistributedExp/$maxExpForNewLevel XP');
-        
+
+        debugPrint(
+          '[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel por misiones completadas!',
+        );
+        debugPrint(
+          '[UserService] Misiones completadas: $theoryMissionsCompleted teoría, $battleMissionsCompleted batalla',
+        );
+        debugPrint(
+          '[UserService] Experiencia redistribuida: $redistributedExp/$maxExpForNewLevel XP',
+        );
+
         // Actualizar puntuación en el leaderboard
         await _leaderboardService.updateUserScore(uid);
       }
-      
     } catch (e) {
       debugPrint('[UserService] Error al verificar progreso de nivel: $e');
     }
@@ -198,9 +231,11 @@ class UserService {
   Future<void> updateStatsAfterBattle(String uid, bool isWinner) async {
     try {
       await _firestore.collection('users').doc(uid).update({
-        isWinner ? 'stats.battlesWon' : 'stats.battlesLost': FieldValue.increment(1),
+        isWinner
+            ? 'stats.battlesWon'
+            : 'stats.battlesLost': FieldValue.increment(1),
       });
-      
+
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
@@ -223,17 +258,25 @@ class UserService {
   }
 
   // Marcar una misión como completada
-  Future<void> completeMission(String uid, String missionId, {bool isBattleMission = false}) async {
+  Future<void> completeMission(
+    String uid,
+    String missionId, {
+    bool isBattleMission = false,
+  }) async {
     // Verificar si la misión ya está completada
     try {
       final userDoc = await _firestore.collection('users').doc(uid).get();
       if (userDoc.exists) {
         final userData = userDoc.data() as Map<String, dynamic>;
-        final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
-        
+        final List<String> completedMissions = List<String>.from(
+          userData['completedMissions'] ?? [],
+        );
+
         // Si la misión ya está completada, no hacer nada
         if (completedMissions.contains(missionId)) {
-          debugPrint('[UserService] Misión $missionId ya está completada para el usuario $uid');
+          debugPrint(
+            '[UserService] Misión $missionId ya está completada para el usuario $uid',
+          );
           return;
         }
       }
@@ -241,7 +284,7 @@ class UserService {
       debugPrint('[UserService] Error al verificar misiones completadas: $e');
       return;
     }
-    
+
     // Marcar misión como completada en Firestore
     try {
       Map<String, dynamic> updateData = {
@@ -249,30 +292,33 @@ class UserService {
         'currentMissionId': '',
         'progressInMission': {},
       };
-      
+
       // Otorgar monedas según el tipo de misión
       if (isBattleMission) {
-        updateData['coins'] = FieldValue.increment(50); // Más monedas por misiones de batalla
+        updateData['coins'] = FieldValue.increment(
+          50,
+        ); // Más monedas por misiones de batalla
       } else {
-        updateData['coins'] = FieldValue.increment(10); // Monedas estándar por misiones de teoría
+        updateData['coins'] = FieldValue.increment(
+          10,
+        ); // Monedas estándar por misiones de teoría
       }
-      
+
       await _firestore.collection('users').doc(uid).update(updateData);
-      
+
       // Verificar progreso de nivel después de completar la misión
       await _checkLevelProgression(uid, isBattleMission);
-      
     } catch (e) {
       debugPrint('[UserService] Error al actualizar misión en usuario: $e');
     }
-    
+
     // Intentar desbloquear logros y otorgar recompensas sin propagar errores
     try {
       await _rewardService.checkAndUnlockAchievement(uid, missionId);
     } catch (e) {
       debugPrint('[UserService] Error al desbloquear logros: $e');
     }
-    
+
     // Actualizar puntuación en el leaderboard
     try {
       await _leaderboardService.updateUserScore(uid);
@@ -307,7 +353,11 @@ class UserService {
   }
 
   // Actualizar progreso dentro de una misión (mapa de progresoInMission)
-  Future<void> updateProgressInMission(String uid, String questionId, bool isCorrect) async {
+  Future<void> updateProgressInMission(
+    String uid,
+    String questionId,
+    bool isCorrect,
+  ) async {
     try {
       await _firestore.collection('users').doc(uid).update({
         'progressInMission.$questionId': isCorrect,
@@ -321,25 +371,57 @@ class UserService {
   /// Marks the theory part of a mission as completed for the user.
   /// This would typically update a specific field in the user's progress for that mission.
   Future<void> markTheoryAsComplete(String uid, String missionId) async {
-    // TODO: Implement actual Firestore update logic.
-    // Example structure in Firestore: users/{uid}/missionProgress/{missionId}/theoryCompleted = true
-    // Or add to a subcollection: users/{uid}/completedTheories/{missionId} = {completedAt: Timestamp}
-    // print('[UserService] TODO: Implement markTheoryAsComplete for user $uid, mission $missionId');
-    // For now, this is a placeholder.
-    await Future.value(); 
+    try {
+      // Actualizar el progreso de la misión en Firestore
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('missionProgress')
+          .doc(missionId)
+          .set({
+            'theoryCompleted': true,
+            'completedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
+
+      debugPrint(
+        '[UserService] Teoría marcada como completada para usuario $uid, misión $missionId',
+      );
+    } catch (e) {
+      debugPrint('[UserService] Error al marcar teoría como completada: $e');
+      rethrow;
+    }
   }
 
   /// Checks if the theory part of a mission has been completed by the user.
   /// This would read the corresponding status from Firestore.
   Future<bool> isTheoryCompleted(String uid, String missionId) async {
-    // TODO: Implement actual Firestore read logic.
-    // Example: Check users/{uid}/missionProgress/{missionId}/theoryCompleted
-    // print('[UserService] TODO: Implement isTheoryCompleted for user $uid, mission $missionId');
-    // For ahora, por defecto es falso.
-    return Future.value(false);
+    try {
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(uid)
+              .collection('missionProgress')
+              .doc(missionId)
+              .get();
+
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        return data['theoryCompleted'] ?? false;
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint(
+        '[UserService] Error al verificar si teoría está completada: $e',
+      );
+      return false;
+    }
   }
 
-  Future<void> updateUserProgress(String userId, Map<String, dynamic> progressData) async {
+  Future<void> updateUserProgress(
+    String userId,
+    Map<String, dynamic> progressData,
+  ) async {
     // TODO: Implement actual Firestore update logic.
     // print("Actualizando progreso del usuario $userId con: $progressData");
     // Ejemplo:

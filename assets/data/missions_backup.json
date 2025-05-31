@@ -7,6 +7,23 @@
     "levelRequired": 1,
     "status": "disponible",
     "isRepeatable": false,
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Completa la lección teórica sobre programación básica.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas sobre programación.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_que_es_un_programa",
+          "pregunta_multiplataforma_java",
+          "pregunta_estructura_principal_java_clase_main"
+        ]
+      }
+    ],
     "rewards": {
       "experience": 30,
       "coins": 20,
@@ -15,6 +32,12 @@
         "mision_1_2"
       ]
     },
+    "theory": "En el reino mágico de Algorithmia, donde los datos fluyen como ríos cristalinos y los algoritmos danzan en armonía, existe una antigua sabiduría conocida como 'Programación'. Esta arte milenaria permite a los Guardianes del Código comunicarse con las máquinas místicas y dar vida a sus ideas más extraordinarias.\n\nUn programa es como un hechizo escrito en un lenguaje especial que las máquinas pueden entender. Así como los magos usan varitas para canalizar su magia, los programadores usan lenguajes de programación para crear software que puede resolver problemas, automatizar tareas y crear experiencias increíbles.\n\nJava, uno de los lenguajes más poderosos de Algorithmia, fue forjado con la promesa de 'escribir una vez, ejecutar en cualquier lugar'. Esto significa que un programa escrito en Java puede funcionar en diferentes tipos de computadoras sin necesidad de modificaciones, como si fuera un hechizo universal que funciona en cualquier reino.",
+    "technicalExplanation": "Un programa es un conjunto de instrucciones escritas en un lenguaje de programación que una computadora puede ejecutar para realizar tareas específicas. Java es un lenguaje de programación orientado a objetos, multiplataforma y de alto nivel.\n\nCaracterísticas principales de Java:\n• Multiplataforma: Se ejecuta en cualquier sistema que tenga la JVM (Java Virtual Machine)\n• Orientado a objetos: Organiza el código en clases y objetos\n• Fuertemente tipado: Requiere declaración explícita de tipos de datos\n• Gestión automática de memoria: Garbage collector maneja la liberación de memoria\n• Sintaxis similar a C/C++: Facilita la transición desde otros lenguajes",
+    "examples": [
+      "// Estructura básica de un programa Java\npublic class MiPrimerPrograma {\n    public static void main(String[] args) {\n        System.out.println(\"¡Hola Mundo!\");\n    }\n}",
+      "// Programa interactivo con entrada del usuario\nimport java.util.Scanner;\n\npublic class Saludo {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Ingresa tu nombre: \");\n        String nombre = scanner.nextLine();\n        System.out.println(\"Hola, \" + nombre + \"!\");\n        scanner.close();\n    }\n}"
+    ],
     "storyPages": [
       {
         "pageNumber": 1,
@@ -29,30 +52,7 @@
         "imageUrl": ""
       }
     ],
-    "order": 1,
-    "examples": [
-      "// Mi primer mensaje en Java\nSystem.out.println(\"¡Hola, mundo de la programación!\");",
-      "// Mostrando diferentes mensajes\nSystem.out.println(\"Bienvenido a Java\");\nSystem.out.println(\"La programación es divertida\");\nSystem.out.println(\"¡Vamos a aprender juntos!\");"
-    ],
-    "objectives": [
-      {
-        "type": "theory",
-        "description": "Completa la lección teórica sobre programación básica.",
-        "target": 1
-      },
-      {
-        "type": "questions",
-        "description": "Responde correctamente 3 preguntas sobre programación.",
-        "target": 3,
-        "questionIds": [
-          "pregunta_que_es_programar",
-          "pregunta_por_que_java",
-          "pregunta_que_hace_programa"
-        ]
-      }
-    ],
-    "technicalExplanation": "La programación es el proceso de crear instrucciones que un ordenador puede seguir para resolver problemas o realizar tareas.\n\nConceptos fundamentales:\n• Programa: Conjunto de instrucciones escritas en un lenguaje que el ordenador entiende\n• Lenguaje de programación: Sistema de comunicación entre humanos y máquinas\n• Java: Lenguaje popular, fácil de aprender y multiplataforma\n• Multiplataforma: Capacidad de ejecutarse en diferentes sistemas operativos\n\nJava es ideal para principiantes porque:\n• Sintaxis clara y legible\n• Amplia comunidad y recursos de aprendizaje\n• Usado en aplicaciones web, móviles y empresariales",
-    "theory": "En el reino mágico de Algorithmia, donde la tecnología y la magia se entrelazan, existe un arte ancestral llamado 'Programación'. Imagina que eres un mago que puede hablar con los ordenadores y darles órdenes para que hagan cosas increíbles.\n\nUn programa es como una receta de cocina muy detallada: una lista de pasos que le decimos al ordenador para que realice una tarea. Por ejemplo, podríamos crear un programa que calcule cuánto dinero necesitas ahorrar cada mes para comprar algo especial.\n\nJava es uno de los lenguajes de programación más populares del mundo. Lo especial de Java es que es como un idioma universal: un programa escrito en Java puede funcionar en casi cualquier ordenador, ya sea Windows, Mac o Linux. ¡Es como tener un hechizo que funciona en cualquier reino!"
+    "order": 1
   },
   {
     "id": "mision_1_2",
@@ -65,37 +65,15 @@
     "requirements": {
       "completedMissionId": "mision_1_1"
     },
-    "rewards": {
-      "experience": 35,
-      "coins": 25,
-      "items": [],
-      "unlocks": [
-        "mision_1_3"
-      ]
-    },
-    "storyPages": [
-      {
-        "pageNumber": 1,
-        "title": "La Biblioteca de los Contenedores",
-        "text": "Siguiendo las indicaciones del Oráculo, llegas a una majestuosa biblioteca construida en el corazón de un árbol milenario. Sus estantes están llenos de contenedores cristalinos de diferentes formas y colores, cada uno etiquetado con runas misteriosas.\n\nUn anciano bibliotecario, con barba que brilla como código binario, se acerca a ti: 'Bienvenido, joven Guardián. Estos son los Contenedores de Información, conocidos en el mundo mortal como variables. Cada uno puede guardar un tipo específico de dato, y son esenciales para cualquier hechizo de programación.'",
-        "imageUrl": ""
-      }
-    ],
-    "order": 2,
-    "examples": [
-      "// Creando variables básicas\nint miEdad = 18;\nString miNombre = \"Ana\";\nSystem.out.println(\"Hola, soy \" + miNombre);\nSystem.out.println(\"Tengo \" + miEdad + \" años\");",
-      "// Diferentes tipos de variables\nint puntaje = 100;\nString juego = \"CodeQuest\";\ndouble tiempo = 45.5;\nboolean completado = true;\n\nSystem.out.println(\"Juego: \" + juego);\nSystem.out.println(\"Puntaje: \" + puntaje);"
-    ],
-    "theory": "En Algorithmia, los magos programadores descubrieron que necesitaban cajas especiales para guardar información. Estas cajas mágicas se llaman 'variables' y pueden contener diferentes tipos de tesoros.\n\nImagina que tienes diferentes tipos de cajas:\n• Una caja para números enteros (como tu edad: 15, 20, 100)\n• Una caja para palabras y frases (como tu nombre: \"María\", \"Hola mundo\")\n• Una caja para números con decimales (como tu altura: 1.65, 3.14)\n• Una caja para respuestas de sí o no (como: verdadero, falso)\n\nEn Java, antes de usar una caja (variable), debemos decirle qué tipo de tesoro va a guardar. Es como poner una etiqueta en la caja que dice \"Solo números\" o \"Solo palabras\".",
     "objectives": [
       {
         "type": "theory",
-        "description": "Completa la lección teórica sobre programación básica.",
+        "description": "Aprende sobre variables y tipos de datos.",
         "target": 1
       },
       {
         "type": "questions",
-        "description": "Responde correctamente 3 preguntas sobre programación.",
+        "description": "Responde correctamente 3 preguntas sobre variables.",
         "target": 3,
         "questionIds": [
           "pregunta_que_es_una_variable",
@@ -104,7 +82,29 @@
         ]
       }
     ],
-    "technicalExplanation": "Una variable es un contenedor que almacena datos en la memoria del ordenador. Cada variable tiene un nombre único y un tipo de dato específico.\n\nTipos de datos básicos en Java:\n• int: números enteros (ej: 42, -10, 0)\n• String: texto entre comillas (ej: \"Hola\", \"Java\")\n• double: números decimales (ej: 3.14, -2.5)\n• boolean: verdadero o falso (true/false)\n\nSintaxis básica:\ntipo nombreVariable = valor;\n\nEjemplo: int edad = 20;"
+    "rewards": {
+      "experience": 35,
+      "coins": 25,
+      "items": [],
+      "unlocks": [
+        "mision_1_3"
+      ]
+    },
+    "theory": "En los antiguos archivos de Algorithmia, los sabios descubrieron que para crear hechizos poderosos, necesitaban contenedores especiales llamados 'variables'. Estas entidades místicas pueden almacenar diferentes tipos de información: números enteros como cofres de monedas, números decimales como pociones de precisión, texto como pergaminos de sabiduría, y valores de verdad como cristales de decisión.\n\nCada variable en Java debe ser declarada con un tipo específico, como si fuera un contrato mágico que define qué tipo de energía puede contener. Los tipos primitivos más comunes son int para números enteros, double para números decimales, String para texto, y boolean para valores verdadero/falso.",
+    "technicalExplanation": "Una variable es un espacio de memoria identificado por un nombre que almacena un valor de un tipo específico. En Java, las variables deben ser declaradas antes de usarse, especificando su tipo de dato.\n\nTipos de datos primitivos en Java:\n• int: números enteros (-2,147,483,648 a 2,147,483,647)\n• double: números decimales de doble precisión\n• boolean: valores true o false\n• char: un solo carácter Unicode\n• String: secuencia de caracteres (clase, no primitivo)\n\nSintaxis de declaración: tipo nombreVariable = valor;",
+    "examples": [
+      "// Declaración y asignación de variables\nint edad = 25;\ndouble altura = 1.75;\nString nombre = \"Juan\";\nboolean esEstudiante = true;\nchar inicial = 'J';",
+      "// Uso de variables en operaciones\nint a = 10;\nint b = 5;\nint suma = a + b;\nSystem.out.println(\"La suma es: \" + suma);"
+    ],
+    "storyPages": [
+      {
+        "pageNumber": 1,
+        "title": "La Biblioteca de los Contenedores",
+        "text": "Siguiendo las indicaciones del Oráculo, llegas a una majestuosa biblioteca construida en el corazón de un árbol milenario. Sus estantes están llenos de contenedores cristalinos de diferentes formas y colores, cada uno etiquetado con runas misteriosas.\n\nUn anciano bibliotecario, con barba que brilla como código binario, se acerca a ti: 'Bienvenido, joven Guardián. Estos son los Contenedores de Información, conocidos en el mundo mortal como variables. Cada uno puede guardar un tipo específico de dato, y son esenciales para cualquier hechizo de programación.'",
+        "imageUrl": ""
+      }
+    ],
+    "order": 2
   },
   {
     "id": "mision_1_3",

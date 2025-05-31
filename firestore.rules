@@ -7,6 +7,11 @@ service cloud.firestore {
       allow read: if request.auth != null; // Permitir lectura para leaderboard
       allow create: if true; // Permitir creación durante registro sin autenticación
       allow read: if true; // Permitir lectura sin autenticación para verificación de username
+      
+      // Reglas para progreso de misiones
+      match /missionProgress/{missionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
     
     // Permitir todas las operaciones en la colección users para verificación de usernames
@@ -62,6 +67,11 @@ service cloud.firestore {
     
     // Reglas para logros
     match /achievements/{achievementId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para ejercicios de código
+    match /code_exercises/{exerciseId} {
       allow read: if request.auth != null;
     }
   }
