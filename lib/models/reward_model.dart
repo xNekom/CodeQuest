@@ -83,3 +83,17 @@ String rewardTypeToString(RewardType type) {
       return 'experience';
   }
 }
+
+// Alias para compatibilidad con mission_model.dart
+typedef RewardModel = Reward;
+
+// Factory methods para RewardModel
+extension RewardModelExtension on Reward {
+  static Reward fromJson(Map<String, dynamic> json) {
+    return Reward.fromMap(json);
+  }
+  
+  Map<String, dynamic> toJson() {
+    return toMap();
+  }
+}

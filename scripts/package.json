@@ -1,0 +1,22 @@
+{
+  "name": "codequest-scripts",
+  "version": "1.0.0",
+  "description": "Scripts para análisis y mantenimiento de datos de CodeQuest",
+  "main": "verify_and_enhance_missions.js",
+  "scripts": {
+    "analyze": "node verify_and_enhance_missions.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.11.0"
+  },
+  "keywords": [
+    "firebase",
+    "education",
+    "programming",
+    "java",
+    "analysis"
+  ],
+  "author": "CodeQuest Team",
+  "license": "MIT"
+}

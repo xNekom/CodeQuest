@@ -149,8 +149,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           
                           const SizedBox(height: 16.0),
                           
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Wrap(
+                            alignment: WrapAlignment.center,
                             children: [
                               const Text('¿No tienes cuenta? '),
                               GestureDetector(

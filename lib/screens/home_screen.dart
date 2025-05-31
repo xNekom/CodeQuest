@@ -41,6 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _checkAndStartTutorial();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos cuando se regrese a esta pantalla
+    _loadUserData();
+  }
+
   /// Inicia el tutorial si es necesario
   Future<void> _checkAndStartTutorial() async {
     // Esperar a que la UI se construya completamente, pero con un tiempo menor
@@ -155,6 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildShopButton(),
                   const SizedBox(height: 16),
                   _buildInventoryButton(),
+                  const SizedBox(height: 16),
+                  _buildLeaderboardButton(),
                   const SizedBox(height: 24),
                   _buildAchievementsSection(),
                 ],
@@ -582,6 +591,28 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Botón para acceder a la Tabla de Clasificación
+  Widget _buildLeaderboardButton() {
+    return Center(
+      child: PixelButton(
+        key: _leaderboardKey, // Asignar la key al botón de leaderboard
+        onPressed: () {
+          Navigator.pushNamed(context, '/leaderboard');
+        },
+        color: Theme.of(context).colorScheme.tertiary,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.leaderboard, size: 20),
+            SizedBox(width: 8),
+            Text('CLASIFICACIÓN'),
+          ],
+        ),
       ),
     );
   }

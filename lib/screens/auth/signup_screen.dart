@@ -149,8 +149,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           
                           const SizedBox(height: 16.0),
                           
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Wrap(
+                            alignment: WrapAlignment.center,
                             children: [
                               const Text('¿Ya tienes cuenta? '),
                               GestureDetector(
