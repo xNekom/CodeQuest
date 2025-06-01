@@ -211,46 +211,30 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Expanded(
-            flex: 2,
-            child: Text(
-              'CODEQUEST',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              overflow: TextOverflow.ellipsis,
-            ),
+          const Text(
+            'CODEQUEST',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
+          const Spacer(),
+          Flexible(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isAdmin) ...[
                   // Mostrar botones de admin solo si el usuario es admin
                   // Widget para probar errores (solo visible para administradores)
-                  const Flexible(child: TestErrorWidget()),
-                  const SizedBox(width: 4),
+                  const TestErrorWidget(),
+                  const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.admin_panel_settings, size: 20),
+                    icon: const Icon(Icons.admin_panel_settings),
                     tooltip: 'Panel de Administrador',
-                    padding: const EdgeInsets.all(4),
-                    constraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
-                    ),
                     onPressed: () {
                       Navigator.pushNamed(context, '/admin');
                     },
                   ),
                 ],
                 IconButton(
-                  icon: const Icon(Icons.logout, size: 20),
-                  padding: const EdgeInsets.all(4),
-                  constraints: const BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
+                  icon: const Icon(Icons.logout),
                   onPressed: () async {
                     await _authService.signOut();
                     if (mounted) {
@@ -259,13 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.edit, size: 20),
+                  icon: const Icon(Icons.edit),
                   tooltip: 'Editar Personaje',
-                  padding: const EdgeInsets.all(4),
-                  constraints: const BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
                   onPressed: () async {
                     // Navegar a selección/edición de personaje
                     await Navigator.pushNamed(context, '/character');
