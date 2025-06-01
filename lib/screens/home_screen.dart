@@ -6,7 +6,7 @@ import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
 import '../widgets/pixel_widgets.dart';
-import '../widgets/character_pixelart.dart';
+import '../widgets/character_asset.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../widgets/test_error_widget.dart';
@@ -243,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.edit),
             tooltip: 'Editar Personaje',
             onPressed: () async {
-              // Navegar a creación/edición de personaje
+              // Navegar a selección/edición de personaje
               await Navigator.pushNamed(context, '/character');
               // Recargar datos del usuario para reflejar cambios
               await _loadUserData();
@@ -268,10 +268,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Hero(
                         tag: 'avatar_${_userData!['username']}',
-                        child: CharacterPixelArt(
-                          skinTone: _userData!['skinTone'] as String,
-                          hairStyle: _userData!['hairStyle'] as String,
-                          outfit: _userData!['outfit'] as String,
+                        child: CharacterAsset(
+                          assetIndex:
+                              _userData!['characterAssetIndex'] as int? ?? 0,
                           size: 80,
                         ),
                       ),
@@ -283,10 +282,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Hero(
                         tag: 'avatar_${_userData!['username']}',
-                        child: CharacterPixelArt(
-                          skinTone: _userData!['skinTone'] as String,
-                          hairStyle: _userData!['hairStyle'] as String,
-                          outfit: _userData!['outfit'] as String,
+                        child: CharacterAsset(
+                          assetIndex:
+                              _userData!['characterAssetIndex'] as int? ?? 0,
                           size: 80,
                         ),
                       ),
