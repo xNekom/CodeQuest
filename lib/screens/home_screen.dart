@@ -50,8 +50,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Recargar datos cuando se regrese a esta pantalla
-    _loadUserData();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        _loadUserData();
+      }
+    });
   }
 
   /// Inicia el tutorial si es necesario
@@ -211,43 +215,43 @@ class _HomeScreenState extends State<HomeScreen> {
             'CODEQUEST',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          Spacer(),
-          if (isAdmin) // Mostrar botones de admin solo si el usuario es admin
-            Flexible(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Widget para probar errores (solo visible para administradores)
-                  const TestErrorWidget(),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.admin_panel_settings),
-                    tooltip: 'Panel de Administrador',
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/admin');
-                    },
-                  ),
-                ],
+          const Spacer(),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isAdmin) ...[
+                // Mostrar botones de admin solo si el usuario es admin
+                // Widget para probar errores (solo visible para administradores)
+                const TestErrorWidget(),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.admin_panel_settings),
+                  tooltip: 'Panel de Administrador',
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/admin');
+                  },
+                ),
+              ],
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () async {
+                  await _authService.signOut();
+                  if (mounted) {
+                    Navigator.pushReplacementNamed(context, '/auth');
+                  }
+                },
               ),
-            ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await _authService.signOut();
-              if (mounted) {
-                Navigator.pushReplacementNamed(context, '/auth');
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            tooltip: 'Editar Personaje',
-            onPressed: () async {
-              // Navegar a selección/edición de personaje
-              await Navigator.pushNamed(context, '/character');
-              // Recargar datos del usuario para reflejar cambios
-              await _loadUserData();
-            },
+              IconButton(
+                icon: const Icon(Icons.edit),
+                tooltip: 'Editar Personaje',
+                onPressed: () async {
+                  // Navegar a selección/edición de personaje
+                  await Navigator.pushNamed(context, '/character');
+                  // Recargar datos del usuario para reflejar cambios
+                  await _loadUserData();
+                },
+              ),
+            ],
           ),
         ],
       ),

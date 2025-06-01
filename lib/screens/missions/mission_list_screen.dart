@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart'; // Para obtener el usuario ac
 class MissionListScreen extends StatefulWidget {
   final GlobalKey? missionListKey;
   final GlobalKey? filterButtonKey;
-  
+
   const MissionListScreen({
     super.key,
     this.missionListKey,
@@ -37,22 +37,43 @@ class _MissionListScreenState extends State<MissionListScreen> {
     _loadCurrentUserAndData();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        _loadCurrentUserAndData();
+      }
+    });
+  }
+
   Future<void> _loadCurrentUserAndData() async {
-    setState(() { _isLoadingUser = true; });
+    setState(() {
+      _isLoadingUser = true;
+    });
     _currentUser = _authService.currentUser;
     if (_currentUser != null) {
       _userData = await _userService.getUserData(_currentUser!.uid);
     }
     if (mounted) {
-      setState(() { _isLoadingUser = false; });
+      setState(() {
+        _isLoadingUser = false;
+      });
     }
   }
 
-  bool _isMissionUnlocked(MissionModel mission, Map<String, dynamic>? userData) {
-    if (userData == null) return false; // Si no hay datos de usuario, bloquear por defecto
+  bool _isMissionUnlocked(
+    MissionModel mission,
+    Map<String, dynamic>? userData,
+  ) {
+    if (userData == null)
+      return false; // Si no hay datos de usuario, bloquear por defecto
 
     final int userLevel = userData['level'] ?? 1;
-    final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
+    final List<String> completedMissions = List<String>.from(
+      userData['completedMissions'] ?? [],
+    );
 
     if (userLevel < mission.levelRequired) {
       return false;
@@ -60,7 +81,9 @@ class _MissionListScreenState extends State<MissionListScreen> {
 
     if (mission.requirements?.completedMissionId != null &&
         mission.requirements!.completedMissionId!.isNotEmpty &&
-        !completedMissions.contains(mission.requirements!.completedMissionId!)) {
+        !completedMissions.contains(
+          mission.requirements!.completedMissionId!,
+        )) {
       return false;
     }
     // Aquí se podrían añadir otras comprobaciones de requisitos si existen en mission.requirements
@@ -72,7 +95,9 @@ class _MissionListScreenState extends State<MissionListScreen> {
     if (userData == null) return "Cargando datos del usuario...";
 
     final int userLevel = userData['level'] ?? 1;
-    final List<String> completedMissions = List<String>.from(userData['completedMissions'] ?? []);
+    final List<String> completedMissions = List<String>.from(
+      userData['completedMissions'] ?? [],
+    );
 
     if (userLevel < mission.levelRequired) {
       return "Nivel requerido: ${mission.levelRequired}";
@@ -80,7 +105,9 @@ class _MissionListScreenState extends State<MissionListScreen> {
 
     if (mission.requirements?.completedMissionId != null &&
         mission.requirements!.completedMissionId!.isNotEmpty &&
-        !completedMissions.contains(mission.requirements!.completedMissionId!)) {
+        !completedMissions.contains(
+          mission.requirements!.completedMissionId!,
+        )) {
       // Para obtener el nombre de la misión prerrequisito, necesitaríamos cargarla.
       // Por simplicidad, solo mostramos el ID o un mensaje genérico.
       // Si tienes acceso a todas las misiones aquí, podrías buscarla por ID.
@@ -92,16 +119,24 @@ class _MissionListScreenState extends State<MissionListScreen> {
   @override
   Widget build(BuildContext context) {
     if (_authService.currentUser == null) {
-      return const Center(child: Text('Por favor, inicia sesión para ver las misiones.'));
+      return const Center(
+        child: Text('Por favor, inicia sesión para ver las misiones.'),
+      );
     }
     if (_isLoadingUser) {
-      return const Center(child: CircularProgressIndicator(key: Key('loading_user_data')));
+      return const Center(
+        child: CircularProgressIndicator(key: Key('loading_user_data')),
+      );
     }
     return StreamBuilder<List<MissionModel>>(
-      stream: _missionService.getMissions(), // Corregido: getMissions y MissionModel
+      stream:
+          _missionService
+              .getMissions(), // Corregido: getMissions y MissionModel
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Error al cargar misiones: ${snapshot.error}'));
+          return Center(
+            child: Text('Error al cargar misiones: ${snapshot.error}'),
+          );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -113,7 +148,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
           return const Center(child: Text('No hay misiones disponibles.'));
         }
 
-                return ListView.separated(
+        return ListView.separated(
           key: widget.missionListKey,
           // Mostrar misiones + 1 casilla fija al final
           itemCount: missions.length + 1,
@@ -127,25 +162,35 @@ class _MissionListScreenState extends State<MissionListScreen> {
                 color: Colors.grey[300],
                 child: const ListTile(
                   leading: Icon(Icons.upcoming, color: Colors.black45),
-                  title: Text('Más misiones en camino...', style: TextStyle(color: Colors.black54)),
+                  title: Text(
+                    'Más misiones en camino...',
+                    style: TextStyle(color: Colors.black54),
+                  ),
                 ),
               );
             }
             final mission = missions[index];
             final bool isUnlocked = _isMissionUnlocked(mission, _userData);
-            final List<String> completedMissions = List<String>.from(_userData?['completedMissions'] ?? []);
-            final bool isCompleted = completedMissions.contains(mission.missionId);
-            
-            String subtitleText = '${mission.description}\nZona: ${mission.zone} - Nivel Requerido: ${mission.levelRequired}';
+            final List<String> completedMissions = List<String>.from(
+              _userData?['completedMissions'] ?? [],
+            );
+            final bool isCompleted = completedMissions.contains(
+              mission.missionId,
+            );
+
+            String subtitleText =
+                '${mission.description}\nZona: ${mission.zone} - Nivel Requerido: ${mission.levelRequired}';
             if (!isUnlocked) {
-              subtitleText += '\nBloqueada: ${_getLockReason(mission, _userData)}';
+              subtitleText +=
+                  '\nBloqueada: ${_getLockReason(mission, _userData)}';
             } else if (isCompleted) {
               subtitleText += '\n✅ ¡Completada!';
             }
 
             Color? cardColor;
             if (isCompleted) {
-              cardColor = Colors.green[100]; // Verde claro para misiones completadas
+              cardColor =
+                  Colors.green[100]; // Verde claro para misiones completadas
             } else if (!isUnlocked) {
               cardColor = Colors.grey[350]; // Gris para misiones bloqueadas
             }
@@ -155,37 +200,62 @@ class _MissionListScreenState extends State<MissionListScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               color: cardColor,
               child: ListTile(
-                key: index == 0 ? widget.filterButtonKey : null, // Usar filterButtonKey para la primera misión como ejemplo
+                key:
+                    index == 0
+                        ? widget.filterButtonKey
+                        : null, // Usar filterButtonKey para la primera misión como ejemplo
                 leading: Icon(
-                  isCompleted ? Icons.check_circle : (isUnlocked ? Icons.explore : Icons.lock),
-                  color: isCompleted ? Colors.green : (isUnlocked ? Theme.of(context).colorScheme.secondary : Colors.grey),
+                  isCompleted
+                      ? Icons.check_circle
+                      : (isUnlocked ? Icons.explore : Icons.lock),
+                  color:
+                      isCompleted
+                          ? Colors.green
+                          : (isUnlocked
+                              ? Theme.of(context).colorScheme.secondary
+                              : Colors.grey),
                 ),
                 title: Text(
-                  mission.name, 
+                  mission.name,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold, 
-                    color: isCompleted ? Colors.green[800] : (isUnlocked ? null : Colors.black54),
+                    fontWeight: FontWeight.bold,
+                    color:
+                        isCompleted
+                            ? Colors.green[800]
+                            : (isUnlocked ? null : Colors.black54),
                     decoration: isCompleted ? TextDecoration.lineThrough : null,
-                  )
+                  ),
                 ),
                 subtitle: Text(
-                  subtitleText, 
+                  subtitleText,
                   style: TextStyle(
-                    color: isCompleted ? Colors.green[700] : (isUnlocked ? null : Colors.black54)
-                  )
+                    color:
+                        isCompleted
+                            ? Colors.green[700]
+                            : (isUnlocked ? null : Colors.black54),
+                  ),
                 ),
-                trailing: isCompleted ? const Icon(Icons.check_circle, color: Colors.green) : (isUnlocked ? const Icon(Icons.arrow_forward_ios) : null),
-                onTap: isUnlocked
-                    ? () {
-                        Navigator.push(
-                          context,
-                          // Reemplaza FadePageRoute con MaterialPageRoute si FadePageRoute no está definido o causa problemas
-                          MaterialPageRoute(
-                            builder: (context) => MissionDetailScreen(missionId: mission.missionId),
-                          ),
-                        );
-                      }
-                    : null, // Deshabilitar onTap solo si está bloqueada
+                trailing:
+                    isCompleted
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : (isUnlocked
+                            ? const Icon(Icons.arrow_forward_ios)
+                            : null),
+                onTap:
+                    isUnlocked
+                        ? () {
+                          Navigator.push(
+                            context,
+                            // Reemplaza FadePageRoute con MaterialPageRoute si FadePageRoute no está definido o causa problemas
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => MissionDetailScreen(
+                                    missionId: mission.missionId,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null, // Deshabilitar onTap solo si está bloqueada
               ),
             );
           },

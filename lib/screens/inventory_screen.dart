@@ -25,6 +25,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
     _loadInventoryData();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        _loadInventoryData();
+      }
+    });
+  }
+
   Future<void> _loadInventoryData() async {
     setState(() {
       _isLoading = true;
@@ -56,15 +67,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
     }
   }
 
-  List<Map<String, dynamic>> _extractInventoryItems(Map<String, dynamic>? userData) {
+  List<Map<String, dynamic>> _extractInventoryItems(
+    Map<String, dynamic>? userData,
+  ) {
     if (userData == null) return [];
-    
+
     final inventory = userData['inventory'] as Map<String, dynamic>?;
     if (inventory == null) return [];
-    
+
     final items = inventory['items'] as List<dynamic>?;
     if (items == null) return [];
-    
+
     return items.map((item) => item as Map<String, dynamic>).toList();
   }
 
@@ -83,13 +96,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
         elevation: 0,
       ),
       body: PixelArtBackground(
-        child: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
-              )
-            : _buildInventoryContent(),
+        child:
+            _isLoading
+                ? Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                )
+                : _buildInventoryContent(),
       ),
     );
   }
@@ -102,9 +116,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return Column(
       children: [
         _buildInventoryHeader(),
-        Expanded(
-          child: _buildInventoryGrid(),
-        ),
+        Expanded(child: _buildInventoryGrid()),
       ],
     );
   }
@@ -116,7 +128,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withAlpha(204),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.tertiary, width: 2),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.tertiary,
+          width: 2,
+        ),
       ),
       child: Column(
         children: [
@@ -160,8 +175,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
       ),
     );
   }
+
   Widget _buildInventoryItemCard(Map<String, dynamic> item) {
-    final String itemName = item['name'] ?? item['itemId'] ?? 'Item Desconocido';
+    final String itemName =
+        item['name'] ?? item['itemId'] ?? 'Item Desconocido';
     final int quantity = item['quantity'] ?? 1;
     final String rarity = item['rarity'] ?? 'common';
 
@@ -227,7 +244,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   'x$quantity',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(179),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(179),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -252,11 +271,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.inventory_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.inventory_outlined, size: 80, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
             'Inventario Vacío',
@@ -269,10 +284,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
           const SizedBox(height: 8),
           Text(
             'Completa misiones y compra items en la tienda\npara llenar tu inventario',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -294,68 +306,73 @@ class _InventoryScreenState extends State<InventoryScreen> {
       ),
     );
   }
+
   void _showItemDetails(Map<String, dynamic> item) {
-    final String itemName = item['name'] ?? item['itemId'] ?? 'Item Desconocido';
-    final String itemDescription = item['description'] ?? 'Sin descripción disponible';
+    final String itemName =
+        item['name'] ?? item['itemId'] ?? 'Item Desconocido';
+    final String itemDescription =
+        item['description'] ?? 'Sin descripción disponible';
     final int quantity = item['quantity'] ?? 1;
     final String rarity = item['rarity'] ?? 'common';
     final String type = item['type'] ?? 'misc';
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        title: Text(
-          itemName,
-          style: TextStyle(
-            fontFamily: 'PixelFont',
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: _getRarityColor(rarity).withAlpha(51),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: _getRarityColor(rarity),
-                    width: 2,
-                  ),
-                ),
-                child: Icon(
-                  _getItemIcon(item),
-                  size: 50,
-                  color: _getRarityColor(rarity),
-                ),
-              ),
-            ),            const SizedBox(height: 16),
-            Text(
-              itemDescription,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            title: Text(
+              itemName,
               style: TextStyle(
-                fontSize: 14,
+                fontFamily: 'PixelFont',
+                fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: 12),
-            _buildDetailRow('Cantidad', 'x$quantity'),
-            _buildDetailRow('Rareza', _getRarityDisplayName(rarity)),
-            _buildDetailRow('Tipo', _getTypeDisplayName(type)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CERRAR'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: _getRarityColor(rarity).withAlpha(51),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: _getRarityColor(rarity),
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      _getItemIcon(item),
+                      size: 50,
+                      color: _getRarityColor(rarity),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  itemDescription,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildDetailRow('Cantidad', 'x$quantity'),
+                _buildDetailRow('Rareza', _getRarityDisplayName(rarity)),
+                _buildDetailRow('Tipo', _getTypeDisplayName(type)),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('CERRAR'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -374,9 +391,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
           ),
           Text(
             value,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
         ],
       ),

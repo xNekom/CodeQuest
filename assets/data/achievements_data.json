@@ -1,9 +1,9 @@
 [
   {
-    "id": "achievement_array_expert",
+    "id": "7ELwgp0v9F3jWwMjCZEE",
     "name": "Experto en Arrays",
     "description": "Derrota 3 ArrayIndexOutOfBoundsExceptions.",
-    "iconUrl": "assets/images/badge_array_expert.png",
+    "iconUrl": "assets/images/badge_array_expert.svg",
     "category": "enemy",
     "points": 20,
     "conditions": {
@@ -17,10 +17,10 @@
     "rewardId": "recompensa_array_expert"
   },
   {
-    "id": "achievement_loop_breaker",
+    "id": "CTulxY4yqplOssxhfyFK",
     "name": "Rompe Bucles",
     "description": "Derrota 2 Bugs de Bucle Infinito.",
-    "iconUrl": "assets/images/badge_loop_breaker.png",
+    "iconUrl": "assets/images/badge_loop_breaker.svg",
     "category": "enemy",
     "points": 15,
     "conditions": {
@@ -34,10 +34,10 @@
     "rewardId": "recompensa_loop_breaker"
   },
   {
-    "id": "achievement_primer_bug",
+    "id": "DXitvzW9AhXcYjr6qfgE",
     "name": "Primer Bug Vencido",
     "description": "Derrota tu primer Bug del Punto y Coma.",
-    "iconUrl": "assets/images/badge_primer_bug.png",
+    "iconUrl": "assets/images/badge_primer_bug.svg",
     "category": "enemy",
     "points": 10,
     "conditions": {
@@ -51,10 +51,10 @@
     "rewardId": "recompensa_primer_bug"
   },
   {
-    "id": "achievement_stack_master",
+    "id": "JsUV4uZQnev75ia6o5H4",
     "name": "Maestro del Stack",
     "description": "Derrota 1 StackOverflowError.",
-    "iconUrl": "assets/images/badge_stack_master.png",
+    "iconUrl": "assets/images/badge_stack_master.svg",
     "category": "enemy",
     "points": 30,
     "conditions": {
@@ -68,10 +68,10 @@
     "rewardId": "recompensa_stack_master"
   },
   {
-    "id": "achievement_null_hunter",
+    "id": "JzWNIsedsMyILkUGwUtN",
     "name": "Cazador de Nulls",
     "description": "Derrota 3 NullPointerExceptions.",
-    "iconUrl": "assets/images/badge_null_hunter.png",
+    "iconUrl": "assets/images/badge_null_hunter.svg",
     "category": "enemy",
     "points": 20,
     "conditions": {
@@ -85,10 +85,10 @@
     "rewardId": "recompensa_null_hunter"
   },
   {
-    "id": "achievement_bug_supremo",
+    "id": "TG7dNvqQsqe83RVQygn2",
     "name": "Conquistador Supremo",
     "description": "Derrota al Bug Supremo en la Batalla Final.",
-    "iconUrl": "assets/images/badge_bug_supremo.png",
+    "iconUrl": "assets/images/badge_bug_supremo.svg",
     "category": "mission",
     "points": 100,
     "conditions": {},
@@ -99,10 +99,10 @@
     "achievementType": "mission"
   },
   {
-    "id": "achievement_cazador_bugs",
+    "id": "UjXG6dBWwzkRgEf45sW3",
     "name": "Cazador de Bugs",
     "description": "Derrota 5 Bugs del Punto y Coma.",
-    "iconUrl": "assets/images/badge_cazador_bugs.png",
+    "iconUrl": "assets/images/badge_cazador_bugs.svg",
     "category": "enemy",
     "points": 25,
     "conditions": {
@@ -116,10 +116,10 @@
     "rewardId": "recompensa_cazador_bugs"
   },
   {
-    "id": "achievement_exception_handler",
+    "id": "ktx6iaPLzo6x6N8SHE4O",
     "name": "Controlador de Excepciones",
     "description": "Derrota 4 Manejadores de Excepciones.",
-    "iconUrl": "assets/images/badge_exception_handler.png",
+    "iconUrl": "assets/images/badge_exception_handler.svg",
     "category": "enemy",
     "points": 25,
     "conditions": {

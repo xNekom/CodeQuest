@@ -20,13 +20,12 @@ class EnemyEncounterScreen extends StatefulWidget {
   State<EnemyEncounterScreen> createState() => _EnemyEncounterScreenState();
 }
 
-class _EnemyEncounterScreenState extends State<EnemyEncounterScreen> 
+class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
     with SingleTickerProviderStateMixin {
-  
   late AnimationController _controller;
   late Animation<double> _fadeInAnim;
   late Animation<double> _slideInAnim;
-  
+
   final EnemyService _enemyService = EnemyService();
   EnemyModel? _enemy;
   bool _isLoading = true;
@@ -39,18 +38,29 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    
+
     _fadeInAnim = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
     );
-    
+
     _slideInAnim = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack),
     );
-    
+
     _loadEnemyData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        _loadEnemyData();
+      }
+    });
   }
 
   Future<void> _loadEnemyData() async {
@@ -78,7 +88,11 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => BattleScreen(battleConfig: widget.battleConfig, isReplay: widget.isReplay),
+        builder:
+            (_) => BattleScreen(
+              battleConfig: widget.battleConfig,
+              isReplay: widget.isReplay,
+            ),
       ),
     );
   }
@@ -180,10 +194,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
               const SizedBox(height: 16),
               Text(
                 'Preparando encuentro...',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
             ],
           ),
@@ -260,9 +271,9 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Imagen del enemigo
                   SlideTransition(
                     position: Tween<Offset>(
@@ -271,9 +282,9 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                     ).animate(_slideInAnim),
                     child: _buildEnemyImage(),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Información del enemigo
                   SlideTransition(
                     position: Tween<Offset>(
@@ -298,9 +309,9 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        
+
                         const SizedBox(height: 8),
-                          Text(
+                        Text(
                           _enemy?.description ?? 'Un enemigo peligroso aparece',
                           style: TextStyle(
                             fontSize: 18,
@@ -311,9 +322,9 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Diálogo del enemigo
                   SlideTransition(
                     position: Tween<Offset>(
@@ -364,10 +375,11 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                               ),
                             ],
                           ),
-                          
+
                           const SizedBox(height: 12),
-                            Text(
-                            _enemy?.dialogue?['encounter'] ?? 'El enemigo te mira amenazadoramente...',
+                          Text(
+                            _enemy?.dialogue?['encounter'] ??
+                                'El enemigo te mira amenazadoramente...',
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,
@@ -380,9 +392,9 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                       ),
                     ),
                   ),
-                  
+
                   const Spacer(),
-                  
+
                   // Botones de acción
                   SlideTransition(
                     position: Tween<Offset>(
@@ -395,7 +407,8 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                           onPressed: _startBattle,
                           color: Colors.red.shade600,
                           child: Row(
-                            mainAxisSize: MainAxisSize.min,                            children: [
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
                               Icon(Icons.flash_on, color: Colors.white),
                               const SizedBox(width: 8),
                               const Text(
@@ -409,9 +422,9 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                             ],
                           ),
                         ),
-                        
+
                         const SizedBox(height: 12),
-                        
+
                         PixelButton(
                           onPressed: () => Navigator.pop(context),
                           isSecondary: true,

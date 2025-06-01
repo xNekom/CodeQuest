@@ -50,6 +50,17 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     _checkAndStartTutorial();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        _loadExistingData();
+      }
+    });
+  }
+
   /// Inicia el tutorial si es necesario
   Future<void> _checkAndStartTutorial() async {
     // Esperar a que la UI se construya completamente

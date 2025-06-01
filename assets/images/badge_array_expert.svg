@@ -1,0 +1,19 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+  
+  <!-- Array brackets -->
+  <rect x="12" y="20" width="4" height="24" fill="#8B4513" rx="1"/>
+  <rect x="48" y="20" width="4" height="24" fill="#8B4513" rx="1"/>
+  
+  <!-- Array elements -->
+  <rect x="20" y="26" width="6" height="6" fill="#4169E1" rx="1"/>
+  <rect x="29" y="26" width="6" height="6" fill="#4169E1" rx="1"/>
+  <rect x="38" y="26" width="6" height="6" fill="#4169E1" rx="1"/>
+  
+  <!-- Expert star -->
+  <polygon points="32,12 34,18 40,18 35,22 37,28 32,24 27,28 29,22 24,18 30,18" fill="#FF6347"/>
+  
+  <!-- Text -->
+  <text x="32" y="52" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#8B4513">EXPERT</text>
+</svg>

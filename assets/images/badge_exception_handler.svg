@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#4169E1" stroke="#191970" stroke-width="2"/>
+  
+  <!-- Shield shape -->
+  <path d="M 32 12 L 44 20 L 44 40 L 32 50 L 20 40 L 20 20 Z" 
+        fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+  
+  <!-- Exception symbol (!) -->
+  <rect x="30" y="22" width="4" height="12" fill="#8B0000" rx="1"/>
+  <circle cx="32" cy="38" r="2" fill="#8B0000"/>
+  
+  <!-- Try-catch blocks -->
+  <rect x="24" y="16" width="16" height="3" fill="#32CD32" rx="1"/>
+  <text x="32" y="18" text-anchor="middle" font-family="monospace" font-size="4" fill="#000">try</text>
+  
+  <rect x="24" y="44" width="16" height="3" fill="#FF6347" rx="1"/>
+  <text x="32" y="46" text-anchor="middle" font-family="monospace" font-size="4" fill="#000">catch</text>
+  
+  <!-- Text -->
+  <text x="32" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" font-weight="bold" fill="#FFD700">HANDLER</text>
+</svg>
