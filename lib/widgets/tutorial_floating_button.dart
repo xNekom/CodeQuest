@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/tutorial_service.dart';
+import '../utils/overflow_utils.dart';
 import 'interactive_tutorial.dart';
 
 /// Widget del botón flotante para tutoriales
@@ -87,11 +88,13 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
       context: context,
       builder:
           (BuildContext context) => AlertDialog(
-            title: const Row(
+            title: OverflowUtils.safeRow(
               children: [
-                Icon(Icons.school, color: Colors.blue),
-                SizedBox(width: 8),
-                Text('Selecciona un Tutorial'),
+                const Icon(Icons.school, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OverflowUtils.safeText('Selecciona un Tutorial'),
+                ),
               ],
             ),
             content: SingleChildScrollView(
@@ -340,7 +343,7 @@ class _TutorialOption extends StatelessWidget {
           border: Border.all(color: Colors.grey.withAlpha((0.3 * 255).round())),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
+        child: OverflowUtils.safeRow(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
@@ -361,21 +364,19 @@ class _TutorialOption extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  OverflowUtils.safeText(
                     title,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
                     ),
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 2),
-                  Text(
+                  OverflowUtils.safeText(
                     description,
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
+                    maxLines: 3,
                   ),
                 ],
               ),

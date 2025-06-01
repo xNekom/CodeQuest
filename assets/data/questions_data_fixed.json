@@ -1,0 +1,119 @@
+[
+  {
+    "id": "pregunta_que_es_un_programa",
+    "text": "¿Qué es un 'programa' en el contexto de la programación?",
+    "options": [
+      "Un dibujo de un ordenador.",
+      "Un conjunto de instrucciones para que el ordenador realice una tarea.",
+      "Un tipo de música.",
+      "Un juego de mesa."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Un programa es precisamente eso: una serie de pasos detallados que le decimos a una máquina para que la ejecute y logre un objetivo, como mostrar un mensaje en pantalla o procesar información.",
+    "level": 1
+  },
+  {
+    "id": "pregunta_multiplataforma_java",
+    "text": "¿Qué significa que Java sea 'multiplataforma'?",
+    "options": [
+      "Que solo funciona en Windows.",
+      "Que un programa Java puede ejecutarse en diferentes sistemas operativos sin modificaciones.",
+      "Que necesitas reescribir el código para cada sistema operativo.",
+      "Que solo funciona en servidores."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Java es multiplataforma porque utiliza la JVM (Java Virtual Machine), que actúa como una capa intermedia entre tu programa y el sistema operativo, permitiendo que el mismo código funcione en Windows, Mac, Linux, etc.",
+    "level": 1
+  },
+  {
+    "id": "pregunta_que_es_una_variable",
+    "text": "¿Qué es una 'variable' en programación?",
+    "options": [
+      "Un número que nunca cambia.",
+      "Un contenedor que puede almacenar diferentes tipos de información.",
+      "Un error en el programa.",
+      "Una función matemática."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Una variable es como una caja etiquetada donde puedes guardar información (números, texto, etc.) y cambiar su contenido cuando sea necesario. Es uno de los conceptos más fundamentales en programación.",
+    "level": 1
+  },
+  {
+    "id": "pregunta_declaracion_variable_entera_java",
+    "text": "¿Cuál de las siguientes líneas declara correctamente una variable entera llamada 'puntuacion' con valor 100?",
+    "options": [
+      "puntuacion = 100;",
+      "int puntuacion;",
+      "int puntuacion = 100;",
+      "Puntuacion int = 100;"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "En Java, primero declaras el tipo (int), luego el nombre (puntuacion), y finalmente asignas el valor (= 100). Todo en una línea: int puntuacion = 100;",
+    "level": 1
+  },
+  {
+    "id": "pregunta_instruccion_hola_mundo_java",
+    "text": "¿Cuál es la instrucción correcta para mostrar 'Hola Mundo' en la consola?",
+    "options": [
+      "print(\"Hola Mundo\");",
+      "System.in.println(\"Hola Mundo\");",
+      "System.out.println(\"Hola Mundo\");",
+      "console.log(\"Hola Mundo\");"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "System.out.println() es la instrucción estándar en Java para mostrar texto en la consola. 'System.out' se refiere a la salida estándar, y 'println' imprime el texto y añade un salto de línea.",
+    "level": 1
+  },
+  {
+    "id": "pregunta_estructura_if_java",
+    "text": "Si quieres mostrar '¡Has ganado!' solo cuando la puntuación sea mayor que 100, ¿cuál es la estructura correcta?",
+    "options": [
+      "if puntuacion > 100 { System.out.println(\"¡Has ganado!\"); }",
+      "if (puntuacion > 100) System.out.println(\"¡Has ganado!\");",
+      "if (puntuacion > 100) { System.out.println(\"¡Has ganado!\"); }",
+      "if (puntuacion es mayor que 100) { System.out.println(\"¡Has ganado!\"); }"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "En Java, la condición del if debe ir entre paréntesis (), y el código a ejecutar debe ir entre llaves {}. Esta es la forma estándar y más clara.",
+    "level": 2
+  },
+  {
+    "id": "pregunta_bucle_for_java",
+    "text": "¿Cuántas veces se ejecutará 'Ataque!' en este código? for (int i = 0; i < 3; i++) { System.out.println(\"Ataque!\"); }",
+    "options": [
+      "0 veces",
+      "1 vez",
+      "3 veces",
+      "4 veces"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "El bucle empieza con i=0, continúa mientras i<3, e incrementa i en cada iteración. Ejecuta cuando i=0, i=1, i=2. Cuando i=3, la condición i<3 es falsa y el bucle termina. Total: 3 veces.",
+    "level": 2
+  },
+  {
+    "id": "pregunta_razon_usar_metodo_java",
+    "text": "¿Cuál es una buena razón para usar métodos en programación?",
+    "options": [
+      "Para hacer el código más difícil de entender.",
+      "Para repetir la misma instrucción muchas veces sin control.",
+      "Para organizar el código en tareas específicas y reutilizarlo, evitando la repetición.",
+      "Para hacer que el programa se ejecute más lento."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Los métodos permiten dividir el código en partes más pequeñas y manejables, evitar repetición, y hacer el código más fácil de entender y mantener. Son fundamentales para escribir buen código.",
+    "level": 2
+  },
+  {
+    "id": "pregunta_evitar_nullpointerexception",
+    "text": "¿Cómo puedes proteger tu código contra una NullPointerException?",
+    "options": [
+      "Ignorar el problema y esperar que no ocurra.",
+      "Usar siempre nombres de variables muy cortos.",
+      "Verificar si una variable tiene valor antes de usarla (ej: if (miVariable != null)).",
+      "Añadir muchos comentarios al código."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Verificar explícitamente si una variable tiene valor (no es null) antes de usarla es una práctica defensiva clave para prevenir errores y hacer tu código más robusto.",
+    "level": 2
+  }
+]

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/code_exercise_model.dart';
 import '../services/code_exercise_service.dart';
+import '../utils/error_handler.dart';
+import '../utils/overflow_utils.dart';
 import 'pixel_widgets.dart';
 
 /// Widget del playground de código donde el usuario completa líneas faltantes
@@ -299,7 +302,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      OverflowUtils.safeRow(
                         children: [
                           Icon(
                             Icons.school,
@@ -307,13 +310,16 @@ class _CodePlaygroundState extends State<CodePlayground> {
                             size: 24,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            'Teoría del Ejercicio',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple[700],
+                          Flexible(
+                            child: OverflowUtils.safeText(
+                              'Teoría del Ejercicio',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.purple[700],
+                              ),
+                              maxLines: 2,
                             ),
                           ),
                         ],
@@ -332,7 +338,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            OverflowUtils.safeRow(
                               children: [
                                 Icon(
                                   Icons.auto_stories,
@@ -340,13 +346,16 @@ class _CodePlaygroundState extends State<CodePlayground> {
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
-                                  '📖 Historia del Concepto',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.purple[800],
+                                Flexible(
+                                  child: OverflowUtils.safeText(
+                                    '📖 Historia del Concepto',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple[800],
+                                    ),
+                                    maxLines: 2,
                                   ),
                                 ),
                               ],
@@ -380,7 +389,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            OverflowUtils.safeRow(
                               children: [
                                 Icon(
                                   Icons.lightbulb,
@@ -388,13 +397,16 @@ class _CodePlaygroundState extends State<CodePlayground> {
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
-                                  '💡 Explicación Técnica',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.purple[800],
+                                Flexible(
+                                  child: OverflowUtils.safeText(
+                                    '💡 Explicación Técnica',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.purple[800],
+                                    ),
+                                    maxLines: 2,
                                   ),
                                 ),
                               ],
@@ -532,16 +544,16 @@ class _CodePlaygroundState extends State<CodePlayground> {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        Row(
+                        OverflowUtils.safeRow(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(Icons.code, size: 16, color: Colors.blue[600]),
                             const SizedBox(width: 4),
                             Expanded(
-                              child: Text(
-                                'Conceptos: ${widget.exercise.concepts.join(", ")}',
+                              child: OverflowUtils.safeConceptsList(
+                                widget.exercise.concepts,
                                 style: Theme.of(context).textTheme.bodySmall,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                                maxLines: 3,
                               ),
                             ),
                           ],

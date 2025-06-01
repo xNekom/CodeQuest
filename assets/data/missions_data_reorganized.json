@@ -1,0 +1,211 @@
+[
+  {
+    "id": "mision_1_1",
+    "title": "Los Primeros Pasos en Algorithmia",
+    "description": "Descubre qué es la programación y da tus primeros pasos en el mundo del código.",
+    "zone": "Bosque Susurrante",
+    "levelRequired": 1,
+    "order": 1,
+    "theory": "🌟 **Bienvenido a Algorithmia, joven Guardián del Código** 🌟\n\nEn el místico reino de Algorithmia, donde la tecnología y la magia se entrelazan, existe un arte ancestral llamado 'Programación'. Imagina que eres un mago que puede hablar con los ordenadores y darles órdenes para que hagan cosas increíbles.\n\nUn **programa** es como una receta de cocina muy detallada: una lista de pasos que le decimos al ordenador para que realice una tarea. Por ejemplo, podríamos crear un programa que calcule cuánto dinero necesitas ahorrar cada mes para comprar algo especial.\n\n**Java** es uno de los lenguajes de programación más populares del mundo. Lo especial de Java es que es como un idioma universal: un programa escrito en Java puede funcionar en casi cualquier ordenador, ya sea Windows, Mac o Linux. ¡Es como tener un hechizo que funciona en cualquier reino!",
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Aprende qué es la programación y Java.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas básicas.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_que_es_un_programa",
+          "pregunta_multiplataforma_java",
+          "pregunta_estructura_principal_java_clase_main"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mision_1_2",
+    "title": "Los Secretos de las Variables",
+    "description": "Aprende a crear y usar variables para almacenar información en tus programas.",
+    "zone": "Bosque Susurrante",
+    "levelRequired": 1,
+    "order": 2,
+    "theory": "🏺 **Los Recipientes Mágicos (Variables)** 🏺\n\nEn Algorithmia, los magos programadores descubrieron que necesitaban cajas especiales para guardar información. Estas cajas mágicas se llaman 'variables' y pueden contener diferentes tipos de tesoros.\n\nImagina que tienes diferentes tipos de cajas:\n• Una caja para **números enteros** (como tu edad: 15, 20, 100) - se llama `int`\n• Una caja para **palabras y frases** (como tu nombre: \"María\", \"Hola mundo\") - se llama `String`\n• Una caja para **números con decimales** (como tu altura: 1.65, 3.14) - se llama `double`\n• Una caja para **respuestas de sí o no** (como: verdadero, falso) - se llama `boolean`\n\nEn Java, antes de usar una caja (variable), debemos decirle qué tipo de tesoro va a guardar. Es como poner una etiqueta en la caja que dice \"Solo números\" o \"Solo palabras\".\n\n**Ejemplo:**\n```java\nint edad = 16;\nString nombre = \"Ana\";\n```",
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Aprende sobre variables y tipos de datos.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas sobre variables.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_que_es_una_variable",
+          "pregunta_declaracion_variable_entera_java",
+          "pregunta_nombre_variable_valido_java"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mision_1_3",
+    "title": "El Arte de las Instrucciones",
+    "description": "Domina las instrucciones básicas para hacer que tu programa se comunique con el mundo.",
+    "zone": "Bosque Susurrante",
+    "levelRequired": 1,
+    "order": 3,
+    "theory": "📜 **El Arte de las Instrucciones Básicas** 📜\n\nEn el corazón de todo programa Java reside el método `main`, el punto de entrada donde comienza la ejecución del hechizo. Como un portal mágico, este método especial es donde el sistema invoca tu programa y donde todas las aventuras de código comienzan.\n\nLas **instrucciones** en Java son como conjuros individuales que se ejecutan uno tras otro. `System.out.println()` es uno de los hechizos más fundamentales, permitiendo que tu programa se comunique con el mundo exterior mostrando mensajes en la consola.\n\n**Reglas importantes:**\n• Cada instrucción debe terminar con un punto y coma `;`\n• Las palabras van entre comillas dobles `\"Hola\"`\n• Los números van sin comillas: `42`\n\n**Ejemplos:**\n```java\nSystem.out.println(\"¡Hola Mundo!\");\nSystem.out.println(\"Mi edad es: \" + 16);\n```",
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Aprende sobre instrucciones básicas.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas sobre instrucciones.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_instruccion_hola_mundo_java",
+          "pregunta_expresion_calculo_vidas_java",
+          "pregunta_tipo_dato_edad_java"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mision_batalla_1_1",
+    "title": "Batalla: El Bug del Punto y Coma",
+    "description": "Enfrenta tu primera batalla contra las fuerzas corruptoras. Derrota al Bug del Punto y Coma con tus conocimientos básicos.",
+    "zone": "Campo de Batalla",
+    "levelRequired": 1,
+    "order": 4,
+    "objectives": [
+      {
+        "type": "batalla",
+        "description": "Derrota al Bug del Punto y Coma respondiendo preguntas básicas.",
+        "target": 1,
+        "battleConfig": {
+          "enemyId": "enemigo_bug_del_punto_y_coma",
+          "questionIds": [
+            "pregunta_que_es_un_programa",
+            "pregunta_que_es_una_variable",
+            "pregunta_instruccion_hola_mundo_java"
+          ],
+          "playerHealthMultiplier": 1,
+          "enemyAttackMultiplier": 0.7,
+          "environment": "campo_bug"
+        }
+      }
+    ]
+  },
+  {
+    "id": "mision_2_1",
+    "title": "El Valle de las Decisiones",
+    "description": "Aprende a tomar decisiones en tus programas usando estructuras condicionales.",
+    "zone": "Valle de las Decisiones",
+    "levelRequired": 2,
+    "order": 5,
+    "theory": "🚪 **Las Puertas Mágicas de la Decisión** 🚪\n\nEn el Valle de las Decisiones de Algorithmia, los caminos se bifurcan constantemente, y solo los Guardianes que dominan el arte de las decisiones pueden navegar exitosamente. Las estructuras condicionales son como encrucijadas mágicas que permiten a tu programa elegir diferentes caminos basándose en condiciones específicas.\n\nLa estructura `if` es la más fundamental: evalúa una condición y ejecuta un bloque de código solo si esa condición es verdadera. Es como un guardián que solo permite el paso si se cumple cierta regla.\n\n**Símbolos de comparación:**\n• `>` mayor que\n• `<` menor que\n• `>=` mayor o igual que\n• `<=` menor o igual que\n• `==` igual que\n• `!=` diferente que\n\n**Ejemplo:**\n```java\nint edad = 16;\nif (edad >= 18) {\n    System.out.println(\"Eres mayor de edad\");\n} else {\n    System.out.println(\"Eres menor de edad\");\n}\n```",
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Aprende sobre estructuras condicionales.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas sobre condicionales.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_estructura_if_java",
+          "pregunta_condicion_if_else_java",
+          "pregunta_division_enteros_java"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mision_2_2",
+    "title": "Los Ciclos del Tiempo",
+    "description": "Domina los bucles y aprende a repetir acciones de manera eficiente en tus programas.",
+    "zone": "Valle de las Decisiones",
+    "levelRequired": 2,
+    "order": 6,
+    "theory": "🌀 **Los Círculos Mágicos de Repetición** 🌀\n\nEn las profundidades del Valle de las Decisiones, descubres los Círculos del Tiempo, donde las acciones pueden repetirse una y otra vez hasta que se cumpla una condición específica. Los bucles son como rituales mágicos que permiten ejecutar el mismo conjunto de instrucciones múltiples veces sin tener que escribirlas repetidamente.\n\n**Tipos de bucles:**\n\n**1. Bucle for** (cuando sabes exactamente cuántas veces repetir):\n```java\nfor (int i = 1; i <= 5; i++) {\n    System.out.println(\"Número: \" + i);\n}\n```\n\n**2. Bucle while** (cuando repites mientras una condición sea verdadera):\n```java\nint contador = 0;\nwhile (contador < 3) {\n    System.out.println(\"Contador: \" + contador);\n    contador++;\n}\n```\n\n**¡Cuidado con los bucles infinitos!** Siempre asegúrate de que la condición eventualmente se vuelva falsa.",
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Aprende sobre bucles y repetición.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas sobre bucles.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_bucle_for_java",
+          "pregunta_identificar_bucle_infinito",
+          "pregunta_funcion_array_java"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mision_2_3",
+    "title": "El Santuario de los Métodos",
+    "description": "Aprende a organizar tu código creando métodos reutilizables y modulares.",
+    "zone": "Valle de las Decisiones",
+    "levelRequired": 2,
+    "order": 7,
+    "theory": "📚 **El Santuario de los Métodos** 📚\n\nEn lo alto del Valle de las Decisiones se alza el Santuario de los Métodos, un templo donde los Guardianes aprenden a dividir sus hechizos en componentes más pequeños y manejables. Los métodos son como conjuros especializados que pueden ser invocados cuando se necesiten, permitiendo organizar el código de manera clara y reutilizable.\n\nUn **método** en Java es un bloque de código que realiza una tarea específica y puede ser llamado desde otras partes del programa.\n\n**Estructura básica:**\n```java\npublic static void nombreMetodo() {\n    // código del método\n}\n```\n\n**Método con parámetros:**\n```java\npublic static void saludar(String nombre) {\n    System.out.println(\"¡Hola \" + nombre + \"!\");\n}\n```\n\n**Método que devuelve un valor:**\n```java\npublic static int sumar(int a, int b) {\n    return a + b;\n}\n```\n\n**Llamar a un método:**\n```java\nsaludar(\"Ana\");\nint resultado = sumar(5, 3);\n```",
+    "objectives": [
+      {
+        "type": "theory",
+        "description": "Aprende sobre métodos y modularización.",
+        "target": 1
+      },
+      {
+        "type": "questions",
+        "description": "Responde correctamente 3 preguntas sobre métodos.",
+        "target": 3,
+        "questionIds": [
+          "pregunta_razon_usar_metodo_java",
+          "pregunta_llamar_metodo_java",
+          "pregunta_que_es_una_excepcion_java"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mision_batalla_2_1",
+    "title": "Batalla: El NullPointerException",
+    "description": "Enfrenta al temido NullPointerException con tus conocimientos de programación básica.",
+    "zone": "Campo de Batalla",
+    "levelRequired": 2,
+    "order": 8,
+    "objectives": [
+      {
+        "type": "batalla",
+        "description": "Derrota al NullPointerException con tus conocimientos.",
+        "target": 1,
+        "battleConfig": {
+          "enemyId": "enemigo_nullpointerexception",
+          "questionIds": [
+            "pregunta_evitar_nullpointerexception",
+            "pregunta_estructura_if_java",
+            "pregunta_bucle_for_java",
+            "pregunta_razon_usar_metodo_java"
+          ],
+          "playerHealthMultiplier": 1,
+          "enemyAttackMultiplier": 1,
+          "environment": "campo_bug"
+        }
+      }
+    ]
+  }
+]

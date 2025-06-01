@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/code_exercise_model.dart';
 import '../services/code_exercise_service.dart';
 import '../widgets/code_playground.dart';
-import '../widgets/pixel_widgets.dart';
+import '../utils/error_handler.dart';
+import '../utils/overflow_utils.dart';
 
 /// Pantalla que muestra la lista de ejercicios de código disponibles
 class CodeExercisesScreen extends StatefulWidget {
@@ -103,14 +104,15 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Título y dificultad
-              Row(
+              OverflowUtils.safeRow(
                 children: [
                   Expanded(
-                    child: Text(
+                    child: OverflowUtils.safeText(
                       exercise.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 2,
                     ),
                   ),
                   // Indicador de dificultad
@@ -123,7 +125,7 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                       color: _getDifficultyColor(exercise.difficulty),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Row(
+                    child: OverflowUtils.safeRow(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.star, size: 14, color: Colors.white),
@@ -186,10 +188,10 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                   const SizedBox(height: 8),
 
                   // Información adicional
-                  Row(
+                  OverflowUtils.safeStatsRow(
                     children: [
                       Expanded(
-                        child: Row(
+                        child: OverflowUtils.safeRow(
                           children: [
                             Icon(
                               Icons.lightbulb_outline,
@@ -197,19 +199,16 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                               color: Colors.orange[600],
                             ),
                             const SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                '${exercise.hints.length} pistas',
-                                style: Theme.of(context).textTheme.bodySmall,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                            OverflowUtils.flexibleText(
+                              '${exercise.hints.length} pistas',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 8),
                       Expanded(
-                        child: Row(
+                        child: OverflowUtils.safeRow(
                           children: [
                             Icon(
                               Icons.quiz_outlined,
@@ -217,12 +216,9 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                               color: Colors.green[600],
                             ),
                             const SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                '${exercise.testCases.length} pruebas',
-                                style: Theme.of(context).textTheme.bodySmall,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                            OverflowUtils.flexibleText(
+                              '${exercise.testCases.length} pruebas',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -360,12 +356,12 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(16),
-                          child: Row(
+                          child: OverflowUtils.safeStatsRow(
                             children: [
                               Expanded(
                                 child: Column(
                                   children: [
-                                    Text(
+                                    OverflowUtils.safeText(
                                       '${_exercises.length}',
                                       style: Theme.of(
                                         context,
@@ -373,15 +369,16 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                                         color: Colors.blue[800],
                                         fontWeight: FontWeight.bold,
                                       ),
+                                      maxLines: 1,
                                     ),
-                                    const Text('Ejercicios'),
+                                    OverflowUtils.safeText('Ejercicios'),
                                   ],
                                 ),
                               ),
                               Expanded(
                                 child: Column(
                                   children: [
-                                    Text(
+                                    OverflowUtils.safeText(
                                       '${_exercises.where((e) => e.difficulty <= 2).length}',
                                       style: Theme.of(
                                         context,
@@ -389,15 +386,33 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                                         color: Colors.green[600],
                                         fontWeight: FontWeight.bold,
                                       ),
+                                      maxLines: 1,
                                     ),
-                                    const Text('Fáciles'),
+                                    OverflowUtils.safeText('Fáciles'),
                                   ],
                                 ),
                               ),
                               Expanded(
                                 child: Column(
                                   children: [
-                                    Text(
+                                    OverflowUtils.safeText(
+                                      '${_exercises.where((e) => e.difficulty == 3).length}',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.headlineMedium?.copyWith(
+                                        color: Colors.orange[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                    OverflowUtils.safeText('Medios'),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    OverflowUtils.safeText(
                                       '${_exercises.where((e) => e.difficulty >= 4).length}',
                                       style: Theme.of(
                                         context,
@@ -405,8 +420,9 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                                         color: Colors.red[600],
                                         fontWeight: FontWeight.bold,
                                       ),
+                                      maxLines: 1,
                                     ),
-                                    const Text('Difíciles'),
+                                    OverflowUtils.safeText('Difíciles'),
                                   ],
                                 ),
                               ),
