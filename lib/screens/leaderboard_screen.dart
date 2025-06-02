@@ -6,7 +6,7 @@ import '../widgets/pixel_widgets.dart';
 import '../theme/pixel_theme.dart';
 
 class LeaderboardScreen extends StatefulWidget {
-  const LeaderboardScreen({Key? key}) : super(key: key);
+  const LeaderboardScreen({super.key});
 
   @override
   State<LeaderboardScreen> createState() => _LeaderboardScreenState();
@@ -24,9 +24,25 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     _loadCurrentUserRanking();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadCurrentUserRanking();
+        }
+      });
+    }
+  }
+
   Future<void> _loadCurrentUserRanking() async {
     if (_currentUser != null) {
-      final ranking = await _leaderboardService.getUserRanking(_currentUser!.uid);
+      final ranking = await _leaderboardService.getUserRanking(
+        _currentUser.uid,
+      );
       setState(() {
         _currentUserRanking = ranking;
         _isLoadingRanking = false;
@@ -60,7 +76,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).colorScheme.primary.withAlpha(51), // 0.2 * 255 ≈ 51
+              Theme.of(
+                context,
+              ).colorScheme.primary.withAlpha(51), // 0.2 * 255 ≈ 51
               Theme.of(context).colorScheme.surface,
             ],
           ),
@@ -69,16 +87,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           children: [
             // Header con información del usuario actual
             if (_currentUser != null) _buildCurrentUserHeader(),
-            
+
             // Lista del leaderboard
             Expanded(
               child: StreamBuilder<List<LeaderboardEntryModel>>(
                 stream: _leaderboardService.getLeaderboardEntries(limit: 100),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
@@ -151,7 +167,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     itemBuilder: (context, index) {
                       final entry = entries[index];
                       final isCurrentUser = _currentUser?.uid == entry.userId;
-                      return _buildLeaderboardEntry(entry, index + 1, isCurrentUser);
+                      return _buildLeaderboardEntry(
+                        entry,
+                        index + 1,
+                        isCurrentUser,
+                      );
                     },
                   );
                 },
@@ -171,18 +191,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.person,
-                  size: 24,
-                  color: Colors.blue,
-                ),
+                const Icon(Icons.person, size: 24, color: Colors.blue),
                 const SizedBox(width: 12),
                 const Text(
                   'Tu posición:',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 if (_isLoadingRanking)
@@ -193,7 +206,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   )
                 else if (_currentUserRanking != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: _getRankingColor(_currentUserRanking!),
                       borderRadius: BorderRadius.circular(12),
@@ -223,17 +239,22 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     );
   }
 
-  Widget _buildLeaderboardEntry(LeaderboardEntryModel entry, int position, bool isCurrentUser) {
+  Widget _buildLeaderboardEntry(
+    LeaderboardEntryModel entry,
+    int position,
+    bool isCurrentUser,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: PixelCard(
         child: Container(
-          decoration: isCurrentUser
-              ? BoxDecoration(
-                  border: Border.all(color: Colors.blue, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                )
-              : null,
+          decoration:
+              isCurrentUser
+                  ? BoxDecoration(
+                    border: Border.all(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  )
+                  : null,
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
@@ -258,7 +279,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 ),
               ),
               const SizedBox(width: 16),
-              
+
               // Información del usuario
               Expanded(
                 child: Column(
@@ -280,7 +301,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         if (isCurrentUser)
                           Container(
                             margin: const EdgeInsets.only(left: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.blue,
                               borderRadius: BorderRadius.circular(10),
@@ -299,21 +323,21 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     const SizedBox(height: 4),
                     Text(
                       'Última actualización: ${_formatDate(entry.lastUpdated)}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
               ),
-              
+
               // Puntuación
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(8),
@@ -331,10 +355,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   const SizedBox(height: 4),
                   const Text(
                     'puntos',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
@@ -360,7 +381,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
   String _formatDate(dynamic timestamp) {
     if (timestamp == null) return 'Desconocido';
-    
+
     try {
       DateTime date;
       if (timestamp is DateTime) {
@@ -369,10 +390,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         // Asumir que es un Timestamp de Firestore
         date = timestamp.toDate();
       }
-      
+
       final now = DateTime.now();
       final difference = now.difference(date);
-      
+
       if (difference.inDays > 0) {
         return 'Hace ${difference.inDays} día${difference.inDays > 1 ? 's' : ''}';
       } else if (difference.inHours > 0) {

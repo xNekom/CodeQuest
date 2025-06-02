@@ -19,6 +19,20 @@ class _ErrorLogScreenState extends State<ErrorLogScreen> {
     _loadLogs();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar datos solo cuando la ruta se vuelve activa
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadLogs();
+        }
+      });
+    }
+  }
+
   Future<void> _loadLogs() async {
     setState(() {
       _isLoading = true;
@@ -41,28 +55,31 @@ class _ErrorLogScreenState extends State<ErrorLogScreen> {
   Future<void> _clearLogs() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Limpiar logs'),
-        content: const Text('¿Estás seguro de que quieres eliminar todos los logs?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Limpiar logs'),
+            content: const Text(
+              '¿Estás seguro de que quieres eliminar todos los logs?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Aceptar'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Aceptar'),
-          ),
-        ],
-      ),
     );
 
     if (confirmed == true) {
       await ErrorLogger.clearLogs();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Logs eliminados')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Logs eliminados')));
         _loadLogs();
       }
     }
@@ -133,17 +150,18 @@ class _ErrorLogScreenState extends State<ErrorLogScreen> {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: theme.colorScheme.outline),
                 ),
-                child: _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : SingleChildScrollView(
-                        child: SelectableText(
-                          _logContent,
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 12,
+                child:
+                    _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : SingleChildScrollView(
+                          child: SelectableText(
+                            _logContent,
+                            style: const TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 12,
+                            ),
                           ),
                         ),
-                      ),
               ),
             ),
           ],
@@ -155,9 +173,12 @@ class _ErrorLogScreenState extends State<ErrorLogScreen> {
           try {
             throw Exception('Error de prueba para verificar el sistema');
           } catch (e, stack) {
-            ErrorLogger.log('Error de prueba generado manualmente', 
-              error: e, stackTrace: stack);
-            
+            ErrorLogger.log(
+              'Error de prueba generado manualmente',
+              error: e,
+              stackTrace: stack,
+            );
+
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Error de prueba generado')),

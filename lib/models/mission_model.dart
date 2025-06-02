@@ -17,6 +17,7 @@ class MissionModel {
   final Reward rewards;
   final bool isRepeatable;
   final String? theory; // Theory content for theory missions
+  final String? technicalExplanation; // Technical explanation without narrative
   final List<String>? examples; // Code examples
   final List<StoryPageModel>? storyPages; // Story content
   final BattleConfigModel? battleConfig;
@@ -38,6 +39,7 @@ class MissionModel {
     required this.rewards,
     required this.isRepeatable,
     this.theory,
+    this.technicalExplanation,
     this.examples,
     this.storyPages,
     this.battleConfig,
@@ -56,18 +58,19 @@ class MissionModel {
   factory MissionModel.fromJson(Map<String, dynamic> json, String missionId) {
     // Parse objectives
     var objectivesData = json['objectives'] as List<dynamic>? ?? [];
-    List<Objective> objectivesList = objectivesData
-        .map((objData) {
-      try {
-        return Objective.fromJson(objData);
-      } catch (e) {
-        // print('[MissionModel] Invalid objective data type for mission $missionId: $objData');
-        return null;
-      }
-    })
-        .where((obj) => obj != null)
-        .cast<Objective>()
-        .toList();
+    List<Objective> objectivesList =
+        objectivesData
+            .map((objData) {
+              try {
+                return Objective.fromJson(objData);
+              } catch (e) {
+                // print('[MissionModel] Invalid objective data type for mission $missionId: $objData');
+                return null;
+              }
+            })
+            .where((obj) => obj != null)
+            .cast<Objective>()
+            .toList();
 
     // Parse examples
     List<String>? examplesList;
@@ -88,39 +91,51 @@ class MissionModel {
     // Parse story pages
     List<StoryPageModel>? storyPagesList;
     if (json['storyPages'] != null && json['storyPages'] is List) {
-      storyPagesList = (json['storyPages'] as List)
-          .map((pageData) => StoryPageModel.fromJson(pageData))
-          .toList();
+      storyPagesList =
+          (json['storyPages'] as List)
+              .map((pageData) => StoryPageModel.fromJson(pageData))
+              .toList();
     }
 
     return MissionModel(
       missionId: missionId,
-      name: json['name'] as String? ?? json['title'] as String? ?? 'Misión sin nombre',
+      name:
+          json['name'] as String? ??
+          json['title'] as String? ??
+          'Misión sin nombre',
       description: json['description'] as String? ?? 'Sin descripción',
       zone: json['zone'] as String? ?? 'Zona desconocida',
       levelRequired: json['levelRequired'] as int? ?? 1,
       status: json['status'] as String? ?? 'disponible',
-      requirements: json['requirements'] != null
-          ? RequirementsModel.fromJson(json['requirements'])
-          : null,
+      requirements:
+          json['requirements'] != null
+              ? RequirementsModel.fromJson(json['requirements'])
+              : null,
       objectives: objectivesList,
       rewards: Reward.fromMap(json['rewards'] ?? {}),
       isRepeatable: json['isRepeatable'] as bool? ?? false,
       theory: json['theory'] as String?,
+      technicalExplanation: json['technicalExplanation'] as String?,
       examples: examplesList,
       storyPages: storyPagesList,
-      battleConfig: json['battleConfig'] != null && json['battleConfig'] is Map<String, dynamic>
-          ? BattleConfigModel.fromJson(json['battleConfig'] as Map<String, dynamic>)
-          : null,
+      battleConfig:
+          json['battleConfig'] != null &&
+                  json['battleConfig'] is Map<String, dynamic>
+              ? BattleConfigModel.fromJson(
+                json['battleConfig'] as Map<String, dynamic>,
+              )
+              : null,
       type: json['type'] as String?,
       order: json['order'] as int?,
       unlocks: unlocksList,
-      createdAt: json['createdAt'] is Timestamp
-          ? (json['createdAt'] as Timestamp).toDate()
-          : null,
-      updatedAt: json['updatedAt'] is Timestamp
-          ? (json['updatedAt'] as Timestamp).toDate()
-          : null,
+      createdAt:
+          json['createdAt'] is Timestamp
+              ? (json['createdAt'] as Timestamp).toDate()
+              : null,
+      updatedAt:
+          json['updatedAt'] is Timestamp
+              ? (json['updatedAt'] as Timestamp).toDate()
+              : null,
     );
   }
 
@@ -137,8 +152,10 @@ class MissionModel {
       'rewards': rewards.toMap(),
       'isRepeatable': isRepeatable,
       if (theory != null) 'theory': theory,
+      if (technicalExplanation != null) 'technicalExplanation': technicalExplanation,
       if (examples != null) 'examples': examples,
-      if (storyPages != null) 'storyPages': storyPages!.map((page) => page.toJson()).toList(),
+      if (storyPages != null)
+        'storyPages': storyPages!.map((page) => page.toJson()).toList(),
       if (battleConfig != null) 'battleConfig': battleConfig!.toJson(),
       if (type != null) 'type': type,
       if (order != null) 'order': order,
@@ -199,10 +216,15 @@ class Objective {
       targetKillCount: json['targetKillCount'] as int?,
       location: json['location'] as String?,
       collectionSource: json['collectionSource'] as String?,
-      collectionSourceDescription: json['collectionSourceDescription'] as String?,
-      battleConfig: json['battleConfig'] != null && json['battleConfig'] is Map<String, dynamic>
-          ? BattleConfigModel.fromJson(json['battleConfig'] as Map<String, dynamic>)
-          : null,
+      collectionSourceDescription:
+          json['collectionSourceDescription'] as String?,
+      battleConfig:
+          json['battleConfig'] != null &&
+                  json['battleConfig'] is Map<String, dynamic>
+              ? BattleConfigModel.fromJson(
+                json['battleConfig'] as Map<String, dynamic>,
+              )
+              : null,
     );
   }
 
@@ -219,7 +241,8 @@ class Objective {
       if (targetKillCount != null) 'targetKillCount': targetKillCount,
       if (location != null) 'location': location,
       if (collectionSource != null) 'collectionSource': collectionSource,
-      if (collectionSourceDescription != null) 'collectionSourceDescription': collectionSourceDescription,
+      if (collectionSourceDescription != null)
+        'collectionSourceDescription': collectionSourceDescription,
       if (battleConfig != null) 'battleConfig': battleConfig!.toJson(),
     };
   }

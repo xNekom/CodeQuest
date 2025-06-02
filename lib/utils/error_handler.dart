@@ -6,6 +6,7 @@ import '../widgets/error_widgets.dart';
 import '../screens/error_screen.dart';
 import 'error_logger.dart';
 import 'web_platform_handler.dart';
+import '../main.dart' show scaffoldMessengerKey;
 
 /// Clase que maneja los errores de forma global en la aplicación.
 /// Proporciona métodos para mostrar mensajes de error de forma consistente
@@ -15,16 +16,50 @@ class ErrorHandler {
   static void showError(BuildContext context, String message) {
     if (!context.mounted) return;
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+    try {
+      // Intentar usar el ScaffoldMessenger del contexto actual
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.fixed,
+        ),
+      );
+    } catch (e) {
+      // Si falla, intentar con el contexto del Navigator root
+      try {
+        final navigatorContext = Navigator.of(context, rootNavigator: true).context;
+        if (navigatorContext.mounted) {
+          ScaffoldMessenger.of(navigatorContext).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: Theme.of(navigatorContext).colorScheme.error,
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.fixed,
+            ),
+          );
+        }
+      } catch (e2) {
+         // Intentar con el ScaffoldMessenger global como último recurso
+         try {
+           scaffoldMessengerKey.currentState?.showSnackBar(
+             SnackBar(
+               content: Text(message),
+               backgroundColor: Colors.red,
+               duration: const Duration(seconds: 3),
+               behavior: SnackBarBehavior.fixed,
+             ),
+           );
+         } catch (e3) {
+           // Como último recurso, mostrar un diálogo simple
+           debugPrint('Error mostrando SnackBar: $e2');
+           debugPrint('Error con ScaffoldMessenger global: $e3');
+           debugPrint('Mensaje de error original: $message');
+           showErrorDialog(context, 'Error', message);
+         }
+       }
+    }
   }
   /// Muestra un diálogo con información detallada sobre un error
   static Future<void> showErrorDialog(BuildContext context, String title, String message) async {
@@ -47,7 +82,10 @@ class ErrorHandler {
       ),
     );
   }
-    /// Muestra una página completa de error, útil cuando falla algo crítico
+    // Variable estática para prevenir múltiples páginas de error simultáneas
+  static bool _isShowingErrorPage = false;
+  
+  /// Muestra una página completa de error, útil cuando falla algo crítico
   static void showErrorPage(
     BuildContext context, {
     required String message, 
@@ -60,19 +98,37 @@ class ErrorHandler {
   }) {
     if (!context.mounted) return;
     
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ErrorScreen(
-          message: message,
-          title: title,
-          onRetry: onRetry,
-          onBack: onBack ?? () => Navigator.of(context).pop(),
-          buttonText: buttonText,
-          backButtonText: backButtonText,
-          icon: icon,
+    // Prevenir múltiples páginas de error simultáneas
+    if (_isShowingErrorPage) {
+      debugPrint('Previniendo múltiples páginas de error simultáneas');
+      return;
+    }
+    
+    _isShowingErrorPage = true;
+    
+    try {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ErrorScreen(
+            message: message,
+            title: title,
+            onBack: onBack ?? () {
+              Navigator.of(context).pop();
+              // Resetear el flag cuando se cierra la página de error
+              _isShowingErrorPage = false;
+            },
+            backButtonText: backButtonText,
+            icon: icon,
+          ),
         ),
-      ),
-    );
+      ).then((_) {
+        // Resetear el flag cuando se cierra la página de error
+        _isShowingErrorPage = false;
+      });
+    } catch (e) {
+      debugPrint('Error al mostrar página de error: $e');
+      _isShowingErrorPage = false;
+    }
   }
   /// Procesa un error y devuelve un mensaje amigable para el usuario
   static String handleError(dynamic error) {
@@ -201,38 +257,101 @@ class ErrorHandler {
       return true;
     };
   }
-    /// Analiza un error y decide si se debe mostrar al usuario
+    // Variable estática para prevenir bucles infinitos en errores críticos
+  static bool _isHandlingCriticalError = false;
+  
+  /// Analiza un error y decide si se debe mostrar al usuario
   static void handleCriticalError(
     BuildContext? context, 
     dynamic error, 
     StackTrace? stackTrace, {
     bool showToUser = true,
   }) {
-    // Verificar si es un error web que podemos ignorar
-    if (kIsWeb && WebPlatformHandler.shouldIgnoreWebError(error)) {
-      debugPrint('Ignorando error web en handleCriticalError: $error');
+    // Prevenir bucles infinitos
+    if (_isHandlingCriticalError) {
+      debugPrint('Previniendo bucle infinito en handleCriticalError: $error');
       return;
     }
     
-    // Registrar el error
-    logError(error, stackTrace);
+    _isHandlingCriticalError = true;
     
-    // Mostrar al usuario si se requiere y si tenemos un contexto
-    if (showToUser && context != null && context.mounted) {
-      // Determinar el mensaje apropiado para el usuario
-      final message = handleError(error);
+    try {
+      // Verificar si es un error web que podemos ignorar
+      if (kIsWeb && WebPlatformHandler.shouldIgnoreWebError(error)) {
+        debugPrint('Ignorando error web en handleCriticalError: $error');
+        return;
+      }
       
-      // Para errores críticos, muestra una página completa
-      showErrorPage(
-        context,
-        message: message,
-        title: 'Error inesperado',
-        onRetry: () {
-          // Aquí puedes implementar una acción de reintentar específica
-          // Por ejemplo, reiniciar la página actual
-          Navigator.of(context).pop();
-        },
-      );
+      // Registrar el error de forma segura
+      try {
+        logError(error, stackTrace);
+      } catch (e) {
+        debugPrint('Error al registrar error crítico: $e');
+        debugPrint('Error original: $error');
+      }
+      
+      // Mostrar al usuario si se requiere y si tenemos un contexto
+      if (showToUser && context != null && context.mounted) {
+        // Determinar el mensaje apropiado para el usuario
+        final message = handleError(error);
+        
+        // Para errores críticos, muestra una página completa
+        showErrorPage(
+          context,
+          message: message,
+          title: 'Error inesperado',
+          onRetry: () {
+            // Usar Future.microtask para evitar bucles infinitos
+            Future.microtask(() {
+              if (!context.mounted) return;
+              // Aquí puedes implementar una acción de reintentar específica
+              // Por ejemplo, reiniciar la página actual
+              Navigator.of(context).pop();
+            });
+          },
+          onBack: () {
+            // Usar Future.microtask para evitar bucles infinitos en la navegación
+            Future.microtask(() {
+              if (!context.mounted) return;
+              
+              // Para errores críticos, verificar si ya estamos en home para evitar bucles
+              final currentRoute = ModalRoute.of(context)?.settings.name;
+              
+              if (currentRoute == '/home') {
+                // Si ya estamos en home, solo hacer pop para cerrar la página de error
+                Navigator.of(context).pop();
+              } else {
+                // Si no estamos en home, navegar al inicio
+                try {
+                  Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+                    '/home',
+                    (route) => false,
+                  );
+                } catch (e) {
+                  // Si falla la navegación, intentar con el contexto normal
+                  debugPrint('Error en navegación con rootNavigator, intentando navegación normal: $e');
+                  try {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/home',
+                      (route) => false,
+                    );
+                  } catch (e2) {
+                    debugPrint('Error en navegación normal: $e2');
+                    // Como último recurso, hacer pop
+                    Navigator.of(context).pop();
+                  }
+                }
+              }
+            });
+          },
+          backButtonText: 'Volver al inicio',
+        );
+      }
+    } finally {
+      // Resetear el flag después de un breve delay para permitir que se complete el manejo
+      Future.delayed(const Duration(milliseconds: 500), () {
+        _isHandlingCriticalError = false;
+      });
     }
   }
 }

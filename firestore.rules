@@ -7,6 +7,11 @@ service cloud.firestore {
       allow read: if request.auth != null; // Permitir lectura para leaderboard
       allow create: if true; // Permitir creación durante registro sin autenticación
       allow read: if true; // Permitir lectura sin autenticación para verificación de username
+      
+      // Reglas para progreso de misiones
+      match /missionProgress/{missionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
     
     // Permitir todas las operaciones en la colección users para verificación de usernames
@@ -28,11 +33,22 @@ service cloud.firestore {
                       request.auth.uid == resource.data.userId;
       allow create: if request.auth != null && 
                        request.auth.uid == request.resource.data.userId;
+      // Permitir a administradores escribir cualquier entrada
+      allow write, delete: if request.auth != null && 
+                              exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow create: if request.auth != null && 
+                       exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
     // Permitir lectura de toda la colección leaderboard para rankings
     match /leaderboard {
       allow read: if request.auth != null;
+      // Permitir a administradores listar todas las entradas
+      allow list: if request.auth != null && 
+                     exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
     // Reglas para preguntas
@@ -62,6 +78,11 @@ service cloud.firestore {
     
     // Reglas para logros
     match /achievements/{achievementId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Reglas para ejercicios de código
+    match /code_exercises/{exerciseId} {
       allow read: if request.auth != null;
     }
   }

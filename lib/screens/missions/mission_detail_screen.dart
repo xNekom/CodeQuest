@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
 import '../../services/mission_service.dart';
 import '../../models/mission_model.dart';
-// import './theory_screen.dart'; // TODO: Create theory_screen.dart
+import 'theory_screen.dart';
 import '../game/enemy_encounter_screen.dart';
+import 'question_screen.dart';
 import '../../widgets/pixel_widgets.dart';
 import '../../utils/custom_page_route.dart'; // Import FadePageRoute
 import '../../services/tutorial_service.dart';
@@ -30,8 +31,10 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   void initState() {
     super.initState();
     // Verificar si debemos mostrar el tutorial
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndStartTutorial();
+    Future.microtask(() {
+      if (mounted) {
+        _checkAndStartTutorial();
+      }
     });
   }
 
@@ -47,38 +50,77 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
     );
   }
 
+  /// Navega al ejercicio correspondiente después de completar la teoría
+  void _navigateToExercise(MissionModel mission) {
+    // Buscar el primer objetivo de tipo 'questions'
+    final questionObjective = mission.objectives.firstWhere(
+      (obj) => obj.type == 'questions',
+      orElse: () => mission.objectives.first,
+    );
+
+    if (questionObjective.type == 'questions' &&
+        questionObjective.questionIds.isNotEmpty) {
+      // Navegar a la pantalla de preguntas
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) =>
+                  QuestionScreen(missionId: mission.missionId, isReplay: false),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Detalle de Misión')),
-      body: FutureBuilder<List<dynamic>>(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/background_mission.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: FutureBuilder<List<dynamic>>(
         future: Future.wait([
           MissionService().getMissionById(widget.missionId),
-          UserService().getUserData(FirebaseAuth.instance.currentUser?.uid ?? '')
+          UserService().getUserData(
+            FirebaseAuth.instance.currentUser?.uid ?? '',
+          ),
         ]),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error al cargar datos: ${snapshot.error}'));
+            return Center(
+              child: Text('Error al cargar datos: ${snapshot.error}'),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           final data = snapshot.data;
           if (data == null || data.length < 2) {
             return const Center(child: Text('Error al cargar datos'));
           }
-          
+
           final mission = data[0] as MissionModel?;
           final userData = data[1] as Map<String, dynamic>?;
-          
+
           if (mission == null) {
-            return const Center(child: Text('Misión no encontrada')); 
+            return const Center(child: Text('Misión no encontrada'));
           }
-          
+
           // Verificar si la misión ya está completada
-          final List<String> completedMissions = List<String>.from(userData?['completedMissions'] ?? []);
-          final bool isMissionCompleted = completedMissions.contains(widget.missionId);
+          final List<String> completedMissions = List<String>.from(
+            userData?['completedMissions'] ?? [],
+          );
+          final bool isMissionCompleted = completedMissions.contains(
+            widget.missionId,
+          );
 
           final name = mission.name;
           final description = mission.description;
@@ -91,13 +133,34 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name, 
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  name,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(2, 2),
+                        blurRadius: 4,
+                        color: Colors.black.withOpacity(0.8),
+                      ),
+                    ],
+                  ),
                   key: _missionTitleKey,
                 ),
                 const SizedBox(height: 12),
                 Text(
                   description,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1, 1),
+                        blurRadius: 3,
+                        color: Colors.black.withOpacity(0.7),
+                      ),
+                    ],
+                  ),
                   key: _missionDescriptionKey,
                 ),
                 const SizedBox(height: 24),
@@ -113,7 +176,9 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                         const SizedBox(height: 8),
                         Text(
                           '¡Misión Completada!',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineSmall?.copyWith(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
                           ),
@@ -121,9 +186,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                         const SizedBox(height: 8),
                         Text(
                           'Ya has completado esta misión y recibido las recompensas.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.grey[600]),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
@@ -131,34 +195,41 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           onPressed: () {
                             // Permitir repetir la lección sin recompensas
                             // Verificar si es una misión de batalla
-                            final firstObjective = mission.objectives.isNotEmpty ? mission.objectives.first : null;
-                            
-                            if (firstObjective?.type == 'batalla' && firstObjective?.battleConfig != null) {
+                            final firstObjective =
+                                mission.objectives.isNotEmpty
+                                    ? mission.objectives.first
+                                    : null;
+
+                            if (firstObjective?.type == 'batalla' &&
+                                firstObjective?.battleConfig != null) {
                               // Navegar directamente a la pantalla de encuentro con enemigo
                               Navigator.push(
                                 context,
                                 FadePageRoute(
-                                  builder: (_) => EnemyEncounterScreen(
-                                    battleConfig: firstObjective!.battleConfig!,
-                                    isReplay: true, // Indicar que es una repetición
-                                  ),
+                                  builder:
+                                      (_) => EnemyEncounterScreen(
+                                        battleConfig:
+                                            firstObjective!.battleConfig!,
+                                        isReplay:
+                                            true, // Indicar que es una repetición
+                                      ),
                                 ),
                               );
                             } else {
-                              // TODO: Navegar a la pantalla de teoría tradicional
-                              // Navigator.push(
-                              //   context,
-                              //   FadePageRoute(
-                              //     builder: (_) => TheoryScreen(
-                              //       missionId: widget.missionId,
-                              //       theoryText: theory,
-                              //       examples: examples,
-                              //       isReplay: true, // Indicar que es una repetición
-                              //     ),
-                              //   ),
-                              // );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Pantalla de teoría en desarrollo')),
+                              // Navegar a la pantalla de teoría
+                              Navigator.push(
+                                context,
+                                FadePageRoute(
+                                  builder:
+                                      (_) => TheoryScreen(
+                                        missionId: widget.missionId,
+                                        theoryText: mission.theory,
+                                        examples: mission.examples,
+                                        storyPages: mission.storyPages,
+                                        isReplay:
+                                            true, // Indicar que es una repetición
+                                      ),
+                                ),
                               );
                             }
                           },
@@ -174,40 +245,52 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                       onPressed: () async {
                         final user = FirebaseAuth.instance.currentUser;
                         if (user != null) {
-                          await UserService().startMission(user.uid, widget.missionId);
+                          await UserService().startMission(
+                            user.uid,
+                            widget.missionId,
+                          );
                         }
                         if (!context.mounted) return;
-                        
+
                         // Verificar si es una misión de batalla
-                        final firstObjective = mission.objectives.isNotEmpty ? mission.objectives.first : null;
-                        
-                        if (firstObjective?.type == 'batalla' && firstObjective?.battleConfig != null) {
+                        final firstObjective =
+                            mission.objectives.isNotEmpty
+                                ? mission.objectives.first
+                                : null;
+
+                        if (firstObjective?.type == 'batalla' &&
+                            firstObjective?.battleConfig != null) {
                           // Navegar directamente a la pantalla de encuentro con enemigo
                           Navigator.push(
                             context,
                             FadePageRoute(
-                              builder: (_) => EnemyEncounterScreen(
-                                battleConfig: firstObjective!.battleConfig!,
-                                isReplay: false,
-                              ),
+                              builder:
+                                  (_) => EnemyEncounterScreen(
+                                    battleConfig: firstObjective!.battleConfig!,
+                                    isReplay: false,
+                                  ),
                             ),
                           );
                         } else {
-                          // TODO: Navegar a la pantalla de teoría tradicional
-                          // Navigator.push(
-                          //   context,
-                          //   FadePageRoute(
-                          //     builder: (_) => TheoryScreen(
-                          //       missionId: widget.missionId,
-                          //       theoryText: theory,
-                          //       examples: examples,
-                          //       isReplay: false,
-                          //     ),
-                          //   ),
-                          // );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Pantalla de teoría en desarrollo')),
+                          // Navegar a la pantalla de teoría tradicional
+                          final result = await Navigator.push(
+                            context,
+                            FadePageRoute(
+                              builder:
+                                  (_) => TheoryScreen(
+                                    missionId: widget.missionId,
+                                    theoryText: mission.theory,
+                                    examples: mission.examples,
+                                    storyPages: mission.storyPages,
+                                    isReplay: false,
+                                  ),
+                            ),
                           );
+
+                          // Si se completó la teoría, navegar al ejercicio
+                          if (result == true && context.mounted) {
+                            _navigateToExercise(mission);
+                          }
                         }
                       },
                       child: const Text('Iniciar Misión'),
@@ -217,6 +300,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             ),
           );
         },
+        ),
       ),
       floatingActionButton: TutorialFloatingButton(
         onTutorialStart: () {

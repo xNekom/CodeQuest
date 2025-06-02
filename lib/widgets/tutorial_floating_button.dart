@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import '../services/tutorial_service.dart';
+import '../utils/overflow_utils.dart';
 import 'interactive_tutorial.dart';
 
 /// Widget del botón flotante para tutoriales
 class TutorialFloatingButton extends StatefulWidget {
   /// Lista de pasos del tutorial para esta pantalla
   final List<InteractiveTutorialStep>? tutorialSteps;
-  
+
   /// Clave única del tutorial para esta pantalla
   final String? tutorialKey;
-  
+
   /// Callback adicional cuando se inicia un tutorial
   final VoidCallback? onTutorialStart;
-  
+
   const TutorialFloatingButton({
     super.key,
     this.tutorialSteps,
@@ -38,22 +39,14 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.5,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 0.5).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
   }
 
   @override
@@ -93,119 +86,103 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
   void _showTutorialSelectionDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.school, color: Colors.blue),
-            SizedBox(width: 8),
-            Text('Selecciona un Tutorial'),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _TutorialOption(
-                title: 'Tutorial de Inicio',
-                description: 'Aprende los conceptos básicos de la aplicación',
-                icon: Icons.home,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  TutorialService.showTutorialDialog(
-                    context,
-                    TutorialService.getHomeScreenTutorial(),
-                    tutorialKey: TutorialService.homeScreenTutorial,
-                  );
-                },
+      builder:
+          (BuildContext context) => AlertDialog(
+            title: OverflowUtils.safeRow(
+              children: [
+                const Icon(Icons.school, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OverflowUtils.safeText('Selecciona un Tutorial'),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _TutorialOption(
+                    title: 'Tutorial de Inicio',
+                    description:
+                        'Aprende los conceptos básicos de la aplicación',
+                    icon: Icons.home,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(
+                        context,
+                      ).pushNamedAndRemoveUntil('/', (route) => false);
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _TutorialOption(
+                    title: 'Selección de Personaje',
+                    description: 'Cómo personalizar tu avatar',
+                    icon: Icons.person_add,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed('/character-selection');
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _TutorialOption(
+                    title: 'Sistema de Misiones',
+                    description: 'Explora y completa misiones',
+                    icon: Icons.assignment,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed('/missions');
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _TutorialOption(
+                    title: 'Logros y Recompensas',
+                    description: 'Descubre cómo ganar logros',
+                    icon: Icons.emoji_events,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed('/achievements');
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _TutorialOption(
+                    title: 'Detalle de Misión',
+                    description:
+                        'Aprende a entender los detalles de una misión',
+                    icon: Icons.assignment_outlined,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed('/missions');
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _TutorialOption(
+                    title: 'Pantalla de Teoría',
+                    description: 'Cómo estudiar la teoría de programación',
+                    icon: Icons.menu_book,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed('/missions');
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              _TutorialOption(
-                title: 'Creación de Personaje',
-                description: 'Cómo personalizar tu avatar',
-                icon: Icons.person_add,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  TutorialService.showTutorialDialog(
-                    context,
-                    TutorialService.getCharacterCreationTutorial(),
-                    tutorialKey: TutorialService.characterCreationTutorial,
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-              _TutorialOption(
-                title: 'Sistema de Misiones',
-                description: 'Explora y completa misiones',
-                icon: Icons.assignment,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  TutorialService.showTutorialDialog(
-                    context,
-                    TutorialService.getMissionScreenTutorial(),
-                    tutorialKey: TutorialService.missionScreenTutorial,
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-              _TutorialOption(
-                title: 'Logros y Recompensas',
-                description: 'Descubre cómo ganar logros',
-                icon: Icons.emoji_events,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  TutorialService.showTutorialDialog(
-                    context,
-                    TutorialService.getAchievementsTutorial(),
-                    tutorialKey: TutorialService.achievementScreenTutorial,
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-              _TutorialOption(
-                title: 'Detalle de Misión',
-                description: 'Aprende a entender los detalles de una misión',
-                icon: Icons.assignment_outlined,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  TutorialService.showTutorialDialog(
-                    context,
-                    TutorialService.getMissionDetailTutorial(),
-                    tutorialKey: TutorialService.missionDetailTutorial,
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-              _TutorialOption(
-                title: 'Pantalla de Teoría',
-                description: 'Cómo estudiar la teoría de programación',
-                icon: Icons.menu_book,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  TutorialService.showTutorialDialog(
-                    context,
-                    TutorialService.getTheoryScreenTutorial(),
-                    tutorialKey: TutorialService.theoryScreenTutorial,
-                  );
-                },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cerrar'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cerrar'),
-          ),
-        ],
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     // Solo mostrar el FAB si hay tutoriales disponibles
-    final hasTutorials = widget.tutorialSteps != null && widget.tutorialSteps!.isNotEmpty;
-    
+    final hasTutorials =
+        widget.tutorialSteps != null && widget.tutorialSteps!.isNotEmpty;
+
     if (!hasTutorials) {
       return const SizedBox.shrink();
     }
@@ -213,56 +190,125 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Botón principal
+        // Botón principal con estilo pixel art
         Positioned(
           right: 16,
           bottom: 16,
-          child: FloatingActionButton(
-            heroTag: "tutorial_main",
-            onPressed: _toggleMenu,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            child: AnimatedBuilder(
-              animation: _rotationAnimation,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _rotationAnimation.value * 3.14159,
-                  child: Icon(
-                    _isMenuOpen ? Icons.close : Icons.help,
-                    color: Colors.white,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              border: Border.all(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  offset: const Offset(2, 2),
+                  blurRadius: 0,
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _toggleMenu,
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  width: 56,
+                  height: 56,
+                  child: AnimatedBuilder(
+                    animation: _rotationAnimation,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: _rotationAnimation.value * 3.14159,
+                        child: Icon(
+                          _isMenuOpen ? Icons.close : Icons.help,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
         ),
-        
-        // Menú de opciones
-        if (_isMenuOpen) ...[          
+
+        // Menú de opciones con mejor espaciado
+        if (_isMenuOpen) ...[
           // Tutorial de esta pantalla
           Positioned(
             right: 16,
-            bottom: 130,
+            bottom: 88, // Reducido el espaciado
             child: ScaleTransition(
               scale: _scaleAnimation,
-              child: FloatingActionButton(
-                heroTag: "current_tutorial",
-                onPressed: _startTutorial,
-                backgroundColor: Colors.green,
-                child: const Icon(Icons.play_arrow, color: Colors.white),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(2, 2),
+                      blurRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _startTutorial,
+                    borderRadius: BorderRadius.circular(4),
+                    child: SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: const Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
           // Todos los tutoriales
           Positioned(
-            right: 16,
-            bottom: 80,
+            right: 72, // Movido a la izquierda para evitar solapamiento
+            bottom: 88,
             child: ScaleTransition(
               scale: _scaleAnimation,
-              child: FloatingActionButton(
-                heroTag: "all_tutorials",
-                onPressed: _showAllTutorials,
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.list, color: Colors.white),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      offset: const Offset(2, 2),
+                      blurRadius: 0,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _showAllTutorials,
+                    borderRadius: BorderRadius.circular(4),
+                    child: SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: const Icon(
+                        Icons.list,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -297,12 +343,14 @@ class _TutorialOption extends StatelessWidget {
           border: Border.all(color: Colors.grey.withAlpha((0.3 * 255).round())),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
+        child: OverflowUtils.safeRow(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withAlpha((0.1 * 255).round()),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(
@@ -316,29 +364,24 @@ class _TutorialOption extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  OverflowUtils.safeText(
                     title,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
                     ),
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 2),
-                  Text(
+                  OverflowUtils.safeText(
                     description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    maxLines: 3,
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
           ],
         ),
       ),

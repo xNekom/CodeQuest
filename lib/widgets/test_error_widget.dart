@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/error_handler.dart';
+import '../main.dart' show scaffoldMessengerKey;
 
 /// Widget para probar diferentes tipos de errores
 /// Se usa durante el desarrollo para verificar el funcionamiento del manejador de errores
@@ -46,7 +47,15 @@ class TestErrorWidget extends StatelessWidget {
           // ignore: unused_local_variable
           final crash = list[5]; // Accediendo a un índice fuera de límites
         } catch (e, stack) {
-          ErrorHandler.showError(context, 'Error de prueba síncrono generado');
+          // Usar directamente el ScaffoldMessenger global
+          scaffoldMessengerKey.currentState?.showSnackBar(
+            SnackBar(
+              content: const Text('Error de prueba síncrono generado'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.fixed,
+            ),
+          );
           ErrorHandler.logError(e, stack);
         }
         break;
@@ -57,10 +66,16 @@ class TestErrorWidget extends StatelessWidget {
           try {
             throw Exception('Este es un error asíncrono de prueba');
           } catch (e, stack) {
-            if (context.mounted) {
-              ErrorHandler.showError(context, 'Error asíncrono generado');
-              ErrorHandler.logError(e, stack);
-            }
+            // Usar directamente el ScaffoldMessenger global
+            scaffoldMessengerKey.currentState?.showSnackBar(
+              SnackBar(
+                content: const Text('Error asíncrono generado'),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.fixed,
+              ),
+            );
+            ErrorHandler.logError(e, stack);
           }
         });
         break;
