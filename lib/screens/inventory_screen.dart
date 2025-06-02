@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_art_background.dart';
+import '../utils/overflow_utils.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -229,7 +230,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               ),
               const SizedBox(height: 8),
               // Nombre del item
-              Text(
+              OverflowUtils.safeText(
                 itemName,
                 style: TextStyle(
                   fontFamily: 'PixelFont',
@@ -238,7 +239,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               // Cantidad

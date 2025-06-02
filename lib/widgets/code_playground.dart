@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/code_exercise_model.dart';
-import '../services/code_exercise_service.dart';
-import '../utils/error_handler.dart';
 import '../utils/overflow_utils.dart';
-import 'pixel_widgets.dart';
 
 /// Widget del playground de código donde el usuario completa líneas faltantes
 class CodePlayground extends StatefulWidget {
@@ -24,7 +21,6 @@ class CodePlayground extends StatefulWidget {
 }
 
 class _CodePlaygroundState extends State<CodePlayground> {
-  final CodeExerciseService _exerciseService = CodeExerciseService();
   final TextEditingController _codeController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
 

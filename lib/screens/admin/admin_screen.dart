@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Importar FirebaseAuth
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
-import '../../models/reward_model.dart';
+
 import '../../models/achievement_model.dart';
 import '../../services/reward_service.dart';
 
@@ -55,23 +55,9 @@ class _AdminScreenState extends State<AdminScreen> {
   final CollectionReference _usersCol = FirebaseFirestore.instance.collection(
     'users',
   );
-  final CollectionReference _missionsCol = FirebaseFirestore.instance
-      .collection('missions');
-  final CollectionReference _itemsCol = FirebaseFirestore.instance.collection(
-    'items',
-  );
-  final CollectionReference _enemiesCol = FirebaseFirestore.instance.collection(
-    'enemies',
-  );
   final CollectionReference _leaderboardsCol = FirebaseFirestore.instance
       .collection('leaderboard');
-  final CollectionReference _questionsCol = FirebaseFirestore.instance
-      .collection('questions');
-  final CollectionReference _rewardsCol = FirebaseFirestore.instance.collection(
-    'rewards',
-  );
-  final CollectionReference _achievementsCol = FirebaseFirestore.instance
-      .collection('achievements');
+
 
   Future<DocumentSnapshot?>? _userDataFuture;
   late List<_AdminGridItem> _adminGridItems; // For GridView
@@ -135,89 +121,7 @@ class _AdminScreenState extends State<AdminScreen> {
     super.dispose();
   }
 
-  Future<void> _resetPassword(String email) async {
-    try {
-      await _authService.sendPasswordResetEmail(email: email);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email de restablecimiento enviado.')),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
-    }
-  }
 
-  Future<void> _viewProfile(Map<String, dynamic> data) async {
-    await showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: const Text('Detalles de Usuario'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  data.entries
-                      .map((e) => Text('${e.key}: ${e.value}'))
-                      .toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cerrar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _editField(String uid, String field, int current) async {
-    final controller = TextEditingController(text: current.toString());
-    final formKey = GlobalKey<FormState>();
-    await showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: Text('Editar $field'),
-          content: Form(
-            key: formKey,
-            child: TextFormField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              validator:
-                  (v) =>
-                      v == null || int.tryParse(v) == null
-                          ? 'Ingrese número válido'
-                          : null,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (!formKey.currentState!.validate()) return;
-                final val = int.parse(controller.text);
-                await _usersCol.doc(uid).update({field: val});
-                if (!mounted) return;
-                _loadUserData(); // Recargar datos
-                setState(() {}); // Actualizar interfaz
-                Navigator.pop(context);
-              },
-              child: const Text('Guardar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Widget _buildUnauthorizedScreen(BuildContext context) {
     return Scaffold(
@@ -370,474 +274,6 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
           ),
           // floatingActionButton: _buildFloatingActionButton(), // Removed
-        );
-      },
-    );
-  }
-
-  Widget _buildUsersTab() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _usersCol.snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final docs = snapshot.data!.docs;
-        if (docs.isEmpty) {
-          return const Center(child: Text('No hay usuarios registrados.'));
-        }
-        return ListView.separated(
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            final role = data['role'] as String? ?? 'user';
-            return ExpansionTile(
-              title: Text(
-                data['username'] ?? doc.id,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Text(
-                data['email'] ?? '',
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: SizedBox(
-                width: 120,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: DropdownButton<String>(
-                        value: role,
-                        isExpanded: false,
-                        items: const [
-                          DropdownMenuItem(value: 'user', child: Text('User')),
-                          DropdownMenuItem(
-                            value: 'admin',
-                            child: Text('Admin'),
-                          ),
-                        ],
-                        onChanged: (val) async {
-                          if (val == null) return;
-                          await _usersCol.doc(doc.id).update({'role': val});
-                          _loadUserData(); // Recargar datos
-                          setState(() {}); // Actualizar interfaz
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      constraints: const BoxConstraints(
-                        minWidth: 32,
-                        minHeight: 32,
-                      ),
-                      onPressed: () async {
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder:
-                              (_) => AlertDialog(
-                                title: const Text('Eliminar usuario'),
-                                content: Text(
-                                  '¿Seguro que deseas eliminar a ${data['username'] ?? doc.id}?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, false),
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, true),
-                                    child: const Text('Eliminar'),
-                                  ),
-                                ],
-                              ),
-                        );
-                        if (!context.mounted) return;
-                        if (confirm == true) {
-                          await _usersCol.doc(doc.id).delete();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Nivel: ${data['level'] ?? 0}',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.edit, size: 20),
-                            padding: const EdgeInsets.all(4),
-                            constraints: const BoxConstraints(
-                              minWidth: 32,
-                              minHeight: 32,
-                            ),
-                            onPressed:
-                                () => _editField(
-                                  doc.id,
-                                  'level',
-                                  data['level'] ?? 0,
-                                ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Exp: ${data['experience'] ?? 0}',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.edit, size: 20),
-                            padding: const EdgeInsets.all(4),
-                            constraints: const BoxConstraints(
-                              minWidth: 32,
-                              minHeight: 32,
-                            ),
-                            onPressed:
-                                () => _editField(
-                                  doc.id,
-                                  'experience',
-                                  data['experience'] ?? 0,
-                                ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Monedas: ${data['coins'] ?? 0}',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.edit, size: 20),
-                            padding: const EdgeInsets.all(4),
-                            constraints: const BoxConstraints(
-                              minWidth: 32,
-                              minHeight: 32,
-                            ),
-                            onPressed:
-                                () => _editField(
-                                  doc.id,
-                                  'coins',
-                                  data['coins'] ?? 0,
-                                ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed:
-                                () => _resetPassword(data['email'] ?? ''),
-                            child: const Text('Reset Password'),
-                          ),
-                          TextButton(
-                            onPressed: () => _viewProfile(data),
-                            child: const Text('Ver Perfil'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildItemsTab() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _itemsCol.snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final docs = snapshot.data!.docs;
-        if (docs.isEmpty) {
-          return const Center(child: Text('No hay items registrados.'));
-        }
-        return ListView.separated(
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            return ListTile(
-              title: Text(data['name'] ?? doc.id),
-              subtitle: Text(data['type'] ?? ''),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      final nameCtrl = TextEditingController(
-                        text: data['name'] ?? '',
-                      );
-                      final descCtrl = TextEditingController(
-                        text: data['description'] ?? '',
-                      );
-                      final typeCtrl = TextEditingController(
-                        text: data['type'] ?? '',
-                      );
-                      showDialog(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text('Editar Item'),
-                              content: Form(
-                                key: GlobalKey<FormState>(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextFormField(
-                                      controller: nameCtrl,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Nombre',
-                                      ),
-                                      validator:
-                                          (v) =>
-                                              v == null || v.isEmpty
-                                                  ? 'Requerido'
-                                                  : null,
-                                    ),
-                                    TextFormField(
-                                      controller: descCtrl,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Descripción',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: typeCtrl,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Tipo',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await _itemsCol.doc(doc.id).update({
-                                      'name': nameCtrl.text,
-                                      'description': descCtrl.text,
-                                      'type': typeCtrl.text,
-                                    });
-                                    if (!mounted) return;
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Guardar'),
-                                ),
-                              ],
-                            ),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _itemsCol.doc(doc.id).delete(),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildEnemiesTab() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _enemiesCol.snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final docs = snapshot.data!.docs;
-        if (docs.isEmpty) {
-          return const Center(child: Text('No hay enemigos registrados.'));
-        }
-        return ListView.separated(
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            return ListTile(
-              title: Text(data['name'] ?? doc.id),
-              subtitle: Text(data['type'] ?? ''),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      final formKey = GlobalKey<FormState>();
-                      final n = TextEditingController(
-                        text: data['name'] as String? ?? '',
-                      );
-                      final d = TextEditingController(
-                        text: data['description'] as String? ?? '',
-                      );
-                      final t = TextEditingController(
-                        text: data['type'] as String? ?? '',
-                      );
-                      final v = TextEditingController(
-                        text: data['visualAssetUrl'] as String? ?? '',
-                      );
-                      final pool = TextEditingController(
-                        text:
-                            (data['questionPool'] as List<dynamic>?)?.join(
-                              ',',
-                            ) ??
-                            '',
-                      );
-                      showDialog(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text('Editar Enemigo'),
-                              content: Form(
-                                key: formKey,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextFormField(
-                                        controller: n,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Nombre',
-                                        ),
-                                        validator:
-                                            (v) =>
-                                                v == null || v.isEmpty
-                                                    ? 'Requerido'
-                                                    : null,
-                                      ),
-                                      TextFormField(
-                                        controller: d,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Descripción',
-                                        ),
-                                      ),
-                                      TextFormField(
-                                        controller: t,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Tipo',
-                                        ),
-                                        validator:
-                                            (v) =>
-                                                v == null || v.isEmpty
-                                                    ? 'Requerido'
-                                                    : null,
-                                      ),
-                                      TextFormField(
-                                        controller: v,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Asset URL',
-                                        ),
-                                        validator:
-                                            (v) =>
-                                                v == null || v.isEmpty
-                                                    ? 'Requerido'
-                                                    : null,
-                                      ),
-                                      TextFormField(
-                                        controller: pool,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Question IDs (coma)',
-                                        ),
-                                        validator:
-                                            (v) =>
-                                                v == null || v.isEmpty
-                                                    ? 'Requerido'
-                                                    : null,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    if (!formKey.currentState!.validate()) {
-                                      return;
-                                    }
-                                    final qList =
-                                        pool.text
-                                            .split(',')
-                                            .map((e) => e.trim())
-                                            .toList();
-                                    await _enemiesCol.doc(doc.id).update({
-                                      'name': n.text,
-                                      'description': d.text,
-                                      'type': t.text,
-                                      'visualAssetUrl': v.text,
-                                      'questionPool': qList,
-                                    });
-                                    if (!mounted) return;
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Guardar'),
-                                ),
-                              ],
-                            ),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => _enemiesCol.doc(doc.id).delete(),
-                  ),
-                ],
-              ),
-            );
-          },
         );
       },
     );
@@ -1144,787 +580,8 @@ class _AdminScreenState extends State<AdminScreen> {
     );
   }
 
-  Widget _buildQuestionsTab() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _questionsCol.snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final docs = snapshot.data!.docs;
-        if (docs.isEmpty) {
-          return const Center(child: Text('No hay preguntas registradas.'));
-        }
-        return ListView.separated(
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            return ListTile(
-              title: Text(data['text'] ?? ''),
-              subtitle: Text(
-                'Opciones: ${(data['options'] as List<dynamic>?)?.length ?? 0}',
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      final formKey = GlobalKey<FormState>();
-                      final textCtrl = TextEditingController(
-                        text: data['text'],
-                      );
-                      final optsCtrl = TextEditingController(
-                        text:
-                            (data['options'] as List<dynamic>?)?.join('||') ??
-                            '',
-                      );
-                      final correctCtrl = TextEditingController(
-                        text: (data['correctAnswerIndex'] ?? 0).toString(),
-                      );
-                      final explCtrl = TextEditingController(
-                        text: data['explanation'] ?? '',
-                      );
-                      showDialog(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text('Editar Pregunta'),
-                              content: Form(
-                                key: formKey,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      TextFormField(
-                                        controller: textCtrl,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Texto',
-                                        ),
-                                        validator:
-                                            (v) =>
-                                                v == null || v.isEmpty
-                                                    ? 'Requerido'
-                                                    : null,
-                                      ),
-                                      TextFormField(
-                                        controller: optsCtrl,
-                                        decoration: const InputDecoration(
-                                          labelText:
-                                              'Opciones (separadas por ||)',
-                                        ),
-                                        validator:
-                                            (v) =>
-                                                v == null || v.isEmpty
-                                                    ? 'Requerido'
-                                                    : null,
-                                      ),
-                                      TextFormField(
-                                        controller: correctCtrl,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Índice correcto',
-                                        ),
-                                        keyboardType: TextInputType.number,
-                                        validator:
-                                            (v) =>
-                                                v == null ||
-                                                        int.tryParse(v) == null
-                                                    ? 'Número inválido'
-                                                    : null,
-                                      ),
-                                      TextFormField(
-                                        controller: explCtrl,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Explicación',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancelar'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    if (!formKey.currentState!.validate()) {
-                                      return;
-                                    }
-                                    await _questionsCol.doc(doc.id).update({
-                                      'text': textCtrl.text,
-                                      'options': optsCtrl.text.split('||'),
-                                      'correctAnswerIndex': int.parse(
-                                        correctCtrl.text,
-                                      ),
-                                      'explanation': explCtrl.text,
-                                    });
-                                    if (!mounted) return;
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Guardar'),
-                                ),
-                              ],
-                            ),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _questionsCol.doc(doc.id).delete(),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   // --- Widgets para las nuevas pestañas (Recompensas y Logros) ---
-  Widget _buildRewardsTab() {
-    return StreamBuilder<List<Reward>>(
-      stream: _rewardService.getRewards(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final rewards = snapshot.data!;
-        if (rewards.isEmpty) {
-          return const Center(child: Text('No hay recompensas registradas.'));
-        }
-        return ListView.separated(
-          itemCount: rewards.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final reward = rewards[index];
-            return ListTile(
-              leading:
-                  reward.iconUrl.isNotEmpty
-                      ? Image.network(
-                        reward.iconUrl,
-                        width: 40,
-                        height: 40,
-                        errorBuilder:
-                            (_, __, ___) => const Icon(Icons.star_border),
-                      )
-                      : const Icon(Icons.star_border),
-              title: Text(reward.name),
-              subtitle: Text(
-                '${reward.description}\\nTipo: ${reward.type}, Valor: ${reward.value}',
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _showRewardDialog(reward: reward),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await _showConfirmDialog(
-                        'Eliminar Recompensa',
-                        '¿Seguro que deseas eliminar ${reward.name}?',
-                      );
-                      if (confirm == true) {
-                        await _rewardService.deleteReward(reward.id);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildAchievementsTab() {
-    return StreamBuilder<List<Achievement>>(
-      stream: _rewardService.getAchievements(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final achievements = snapshot.data!;
-        if (achievements.isEmpty) {
-          return const Center(child: Text('No hay logros registrados.'));
-        }
-        return ListView.separated(
-          itemCount: achievements.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final achievement = achievements[index];
-            return ListTile(
-              leading:
-                  achievement.iconUrl.isNotEmpty
-                      ? Image.network(
-                        achievement.iconUrl,
-                        width: 40,
-                        height: 40,
-                        errorBuilder:
-                            (_, __, ___) =>
-                                const Icon(Icons.emoji_events_outlined),
-                      )
-                      : const Icon(Icons.emoji_events_outlined),
-              title: Text(achievement.name),
-              subtitle: Text(
-                '${achievement.description}\\nMisiones: ${achievement.requiredMissionIds.join(", ")}\\nRecompensa ID: ${achievement.rewardId}',
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed:
-                        () => _showAchievementDialog(achievement: achievement),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await _showConfirmDialog(
-                        'Eliminar Logro',
-                        '¿Seguro que deseas eliminar ${achievement.name}?',
-                      );
-                      if (confirm == true) {
-                        await _rewardService.deleteAchievement(achievement.id);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   // --- Diálogos para CRUD de Recompensas y Logros ---
-  Future<void> _showRewardDialog({Reward? reward}) async {
-    final isEditing = reward != null;
-    final idCtrl = TextEditingController(text: isEditing ? reward.id : '');
-    final nameCtrl = TextEditingController(text: isEditing ? reward.name : '');
-    final descCtrl = TextEditingController(
-      text: isEditing ? reward.description : '',
-    );
-    final iconCtrl = TextEditingController(
-      text: isEditing ? reward.iconUrl : '',
-    );
-    String typeValue = isEditing ? reward.type : 'points';
-    final valueCtrl = TextEditingController(
-      text: isEditing ? reward.value.toString() : '0',
-    );
-    final formKey = GlobalKey<FormState>();
-
-    await showDialog(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            title: Text(isEditing ? 'Editar Recompensa' : 'Crear Recompensa'),
-            content: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (isEditing)
-                      TextFormField(
-                        controller: idCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'ID (no editable)',
-                        ),
-                        readOnly: true,
-                      ),
-                    TextFormField(
-                      controller: nameCtrl,
-                      decoration: const InputDecoration(labelText: 'Nombre'),
-                      validator:
-                          (v) => v == null || v.isEmpty ? 'Requerido' : null,
-                    ),
-                    TextFormField(
-                      controller: descCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Descripción',
-                      ),
-                    ),
-                    TextFormField(
-                      controller: iconCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'URL del Icono',
-                      ),
-                    ),
-                    DropdownButtonFormField<String>(
-                      value: typeValue,
-                      decoration: const InputDecoration(
-                        labelText: 'Tipo de Recompensa',
-                      ),
-                      items:
-                          RewardType.values
-                              .map(
-                                (type) => DropdownMenuItem(
-                                  value: type.name,
-                                  child: Text(type.name),
-                                ),
-                              )
-                              .toList(),
-                      onChanged: (val) {
-                        if (val != null) {
-                          setState(
-                            () => typeValue = val,
-                          ); // Necesita ser StatefulBuilder o mover lógica al estado del diálogo
-                        }
-                      },
-                    ),
-                    TextFormField(
-                      controller: valueCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Valor (ej: puntos, ID item)',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator:
-                          (v) =>
-                              v == null || int.tryParse(v) == null
-                                  ? 'Número inválido'
-                                  : null,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  if (!formKey.currentState!.validate()) return;
-                  final newReward = Reward(
-                    id:
-                        idCtrl.text.isNotEmpty
-                            ? idCtrl.text
-                            : _rewardsCol.doc().id, // Generar ID si es nuevo
-                    name: nameCtrl.text,
-                    description: descCtrl.text,
-                    iconUrl: iconCtrl.text,
-                    type: typeValue,
-                    value: int.parse(valueCtrl.text),
-                  );
-                  if (isEditing) {
-                    await _rewardService.updateReward(newReward);
-                  } else {
-                    await _rewardService.createReward(newReward);
-                  }
-                  if (!mounted) return;
-                  Navigator.pop(context);
-                },
-                child: const Text('Guardar'),
-              ),
-            ],
-          ),
-    );
-  }
-
-  Future<void> _showAchievementDialog({Achievement? achievement}) async {
-    final isEditing = achievement != null;
-    final idCtrl = TextEditingController(text: isEditing ? achievement.id : '');
-    final nameCtrl = TextEditingController(
-      text: isEditing ? achievement.name : '',
-    );
-    final descCtrl = TextEditingController(
-      text: isEditing ? achievement.description : '',
-    );
-    final iconCtrl = TextEditingController(
-      text: isEditing ? achievement.iconUrl : '',
-    );
-    final missionsCtrl = TextEditingController(
-      text: isEditing ? achievement.requiredMissionIds.join(',') : '',
-    );
-    final formKey = GlobalKey<FormState>();
-
-    List<Reward> allRewards = [];
-    String? selectedRewardId = isEditing ? achievement.rewardId : null;
-
-    // Cargar recompensas para el Dropdown
-    try {
-      allRewards = await _rewardService.getRewards().first;
-      if (allRewards.isNotEmpty && selectedRewardId == null && !isEditing) {
-        // selectedRewardId = allRewards.first.id; // Opcional: preseleccionar la primera recompensa al crear
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar recompensas: $e')),
-        );
-      }
-      return; // No mostrar diálogo si fallan las recompensas
-    }
-
-    await showDialog(
-      context: context,
-      builder:
-          (_) => StatefulBuilder(
-            builder: (context, setDialogState) {
-              return AlertDialog(
-                title: Text(isEditing ? 'Editar Logro' : 'Crear Logro'),
-                content: Form(
-                  key: formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isEditing)
-                          TextFormField(
-                            controller: idCtrl,
-                            decoration: const InputDecoration(
-                              labelText: 'ID (no editable)',
-                            ),
-                            readOnly: true,
-                          ),
-                        TextFormField(
-                          controller: nameCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'Nombre',
-                          ),
-                          validator:
-                              (v) =>
-                                  v == null || v.isEmpty ? 'Requerido' : null,
-                        ),
-                        TextFormField(
-                          controller: descCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'Descripción',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: iconCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'URL del Icono',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: missionsCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'IDs de Misiones (separadas por coma)',
-                          ),
-                        ),
-                        DropdownButtonFormField<String>(
-                          value: selectedRewardId,
-                          decoration: const InputDecoration(
-                            labelText: 'Recompensa Otorgada',
-                          ),
-                          items:
-                              allRewards
-                                  .map(
-                                    (r) => DropdownMenuItem(
-                                      value: r.id,
-                                      child: Text(r.name),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (val) {
-                            if (val != null) {
-                              setDialogState(() => selectedRewardId = val);
-                            }
-                          },
-                          validator:
-                              (v) =>
-                                  v == null
-                                      ? 'Seleccione una recompensa'
-                                      : null,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancelar'),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      if (!formKey.currentState!.validate()) return;
-                      if (selectedRewardId == null) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Debe seleccionar una recompensa.'),
-                            ),
-                          );
-                        }
-                        return;
-                      }
-                      final newAchievement = Achievement(
-                        id:
-                            idCtrl.text.isNotEmpty
-                                ? idCtrl.text
-                                : _achievementsCol
-                                    .doc()
-                                    .id, // Generar ID si es nuevo
-                        name: nameCtrl.text,
-                        description: descCtrl.text,
-                        iconUrl: iconCtrl.text,
-                        category: 'general', // Añadir categoría por defecto
-                        points: 10, // Añadir puntos por defecto
-                        conditions: {}, // Añadir condiciones vacías
-                        requiredMissionIds:
-                            missionsCtrl.text
-                                .split(',')
-                                .map((e) => e.trim())
-                                .where((e) => e.isNotEmpty)
-                                .toList(),
-                        rewardId: selectedRewardId!,
-                      );
-                      if (isEditing) {
-                        await _rewardService.updateAchievement(newAchievement);
-                      } else {
-                        await _rewardService.createAchievement(newAchievement);
-                      }
-                      if (!mounted) return;
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Guardar'),
-                  ),
-                ],
-              );
-            },
-          ),
-    );
-  }
-
-  Future<bool?> _showConfirmDialog(String title, String content) async {
-    return showDialog<bool>(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            title: Text(title),
-            content: Text(content),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Confirmar'),
-              ),
-            ],
-          ),
-    );
-  }
-
-  // --- CRUD para Misiones ---
-  Widget _buildMissionsTab() {
-    return StreamBuilder<QuerySnapshot>(
-      stream:
-          _missionsCol
-              .orderBy('difficultyLevel')
-              .orderBy('order')
-              .snapshots(), // Añadido orderBy
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final docs = snapshot.data!.docs;
-        if (docs.isEmpty) {
-          return const Center(child: Text('No hay misiones registradas.'));
-        }
-
-        return ListView.separated(
-          itemCount: docs.length,
-          separatorBuilder: (_, __) => const Divider(),
-          itemBuilder: (context, index) {
-            final doc = docs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            // TODO: Definir un modelo para Mission y usarlo aquí
-            return ListTile(
-              title: Text(
-                data['name'] ?? data['title'] ?? doc.id,
-              ), // Usar 'name' o 'title'
-              subtitle: Text(
-                "Desc: ${data['description'] ?? 'N/A'}\\nDiff: ${data['difficultyLevel'] ?? 'N/A'}, Orden: ${data['order'] ?? 'N/A'}",
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _showMissionDialog(missionDoc: doc),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await _showConfirmDialog(
-                        'Eliminar Misión',
-                        '¿Seguro que deseas eliminar ${data['name'] ?? data['title'] ?? doc.id}?',
-                      );
-                      if (confirm == true) {
-                        await _missionsCol.doc(doc.id).delete();
-                      }
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> _showMissionDialog({DocumentSnapshot? missionDoc}) async {
-    final isEditing = missionDoc != null;
-    final data = missionDoc?.data() as Map<String, dynamic>?;
-
-    final idCtrl = TextEditingController(text: isEditing ? missionDoc.id : '');
-    final nameCtrl = TextEditingController(
-      text:
-          isEditing
-              ? (data?['name'] as String? ?? data?['title'] as String? ?? '')
-              : '',
-    );
-    final descCtrl = TextEditingController(
-      text: isEditing ? (data?['description'] as String? ?? '') : '',
-    );
-    final difficultyLevelCtrl = TextEditingController(
-      text: isEditing ? (data?['difficultyLevel']?.toString() ?? '1') : '1',
-    );
-    final orderCtrl = TextEditingController(
-      text: isEditing ? (data?['order']?.toString() ?? '10') : '10',
-    );
-
-    final formKey = GlobalKey<FormState>();
-
-    await showDialog(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            title: Text(isEditing ? 'Editar Misión' : 'Crear Misión'),
-            content: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (isEditing)
-                      TextFormField(
-                        controller: idCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'ID (no editable)',
-                        ),
-                        readOnly: true,
-                      ),
-                    TextFormField(
-                      controller: nameCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre de la Misión',
-                      ),
-                      validator:
-                          (v) => v == null || v.isEmpty ? 'Requerido' : null,
-                    ),
-                    TextFormField(
-                      controller: descCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Descripción',
-                      ),
-                      validator:
-                          (v) => v == null || v.isEmpty ? 'Requerido' : null,
-                    ),
-                    TextFormField(
-                      controller: difficultyLevelCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Nivel de Dificultad (ej: 1, 2)',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator:
-                          (v) =>
-                              v == null || int.tryParse(v) == null
-                                  ? 'Número inválido'
-                                  : null,
-                    ),
-                    TextFormField(
-                      controller: orderCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Orden (ej: 10, 20)',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator:
-                          (v) =>
-                              v == null || int.tryParse(v) == null
-                                  ? 'Número inválido'
-                                  : null,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  if (!formKey.currentState!.validate()) return;
-
-                  final missionData = {
-                    'name': nameCtrl.text,
-                    'description': descCtrl.text,
-                    'difficultyLevel':
-                        int.tryParse(difficultyLevelCtrl.text) ?? 1,
-                    'order': int.tryParse(orderCtrl.text) ?? 10,
-                  };
-
-                  try {
-                    if (isEditing) {
-                      // El operador '!' se elimina aquí porque isEditing ya garantiza que missionDoc no es null
-                      await _missionsCol.doc(missionDoc.id).update(missionData);
-                    } else {
-                      await _missionsCol.add(missionData);
-                    }
-                    if (!mounted) return;
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Misión ${isEditing ? 'actualizada' : 'creada'} con éxito.',
-                        ),
-                      ),
-                    );
-                  } catch (e) {
-                    if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error al guardar misión: $e')),
-                    );
-                  }
-                },
-                child: const Text('Guardar'),
-              ),
-            ],
-          ),
-    );
-  }
-
   // Método para construir la pestaña de logs de errores
 
   // Gestión específica de monedas
@@ -1980,6 +637,40 @@ class _AdminScreenState extends State<AdminScreen> {
     required List<int> quickIncrements,
     required List<String> quickLabels,
   }) {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    
+    if (currentUserId == null) {
+      return Center(
+        child: Card(
+          color: Colors.red.shade50,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error, color: Colors.red, size: 64),
+                SizedBox(height: 16),
+                Text(
+                  'Error de autenticación',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'No se pudo obtener la información del usuario actual.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red.shade700),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Column(
       children: [
         Container(
@@ -2008,7 +699,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Gestiona específicamente los valores de $fieldName de los usuarios.',
+                      'Gestiona específicamente tus valores de $fieldName.',
                       style: TextStyle(
                         fontSize: 12,
                         color: color.withOpacity(0.8),
@@ -2021,8 +712,8 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ),
         Expanded(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: _usersCol.snapshots(),
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: _usersCol.doc(currentUserId).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -2031,122 +722,118 @@ class _AdminScreenState extends State<AdminScreen> {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final users = snapshot.data!.docs;
-              if (users.isEmpty) {
-                return const Center(child: Text('No hay usuarios registrados'));
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return const Center(child: Text('No se encontraron datos del usuario'));
               }
 
-              return ListView.builder(
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final doc = users[index];
-                  final data = doc.data() as Map<String, dynamic>;
-                  final currentValue = data[field] ?? 0;
+              final data = snapshot.data!.data() as Map<String, dynamic>;
+              final currentValue = data[field] ?? 0;
 
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: color,
-                                child: Icon(icon, color: Colors.white),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      data['username'] ?? doc.id,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+              return Center(
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: color,
+                              child: Icon(icon, color: Colors.white),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data['username'] ?? 'Usuario actual',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    Text(
-                                      '$fieldName actual: $currentValue',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed:
-                                      () => _showSpecificHackDialog(
-                                        doc.id,
-                                        field,
-                                        currentValue,
-                                        fieldName,
-                                        icon,
-                                        color,
-                                        maxValue,
-                                        quickIncrements,
-                                        quickLabels,
-                                      ),
-                                  icon: Icon(Icons.edit, size: 16),
-                                  label: Text('Editar $fieldName'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: color,
-                                    foregroundColor: Colors.white,
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              ElevatedButton(
-                                onPressed:
-                                    () => _quickUpdate(
-                                      doc.id,
-                                      field,
-                                      0,
-                                      fieldName,
+                                  Text(
+                                    '$fieldName actual: $currentValue',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
                                     ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: const Text('Reset'),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: List.generate(
-                              quickIncrements.length,
-                              (i) => TextButton(
-                                onPressed:
-                                    () => _quickUpdate(
-                                      doc.id,
-                                      field,
-                                      currentValue + quickIncrements[i],
-                                      fieldName,
-                                    ),
-                                child: Text('+${quickLabels[i]}'),
+                                  ),
+                                ],
                               ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed:
+                                    () => _showSpecificHackDialog(
+                                      currentUserId,
+                                      field,
+                                      currentValue,
+                                      fieldName,
+                                      icon,
+                                      color,
+                                      maxValue,
+                                      quickIncrements,
+                                      quickLabels,
+                                    ),
+                                icon: Icon(Icons.edit, size: 16),
+                                label: Text('Editar $fieldName'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: color,
+                                  foregroundColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed:
+                                  () => _quickUpdate(
+                                    currentUserId,
+                                    field,
+                                    0,
+                                    fieldName,
+                                  ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                              ),
+                              child: const Text('Reset'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: List.generate(
+                            quickIncrements.length,
+                            (i) => TextButton(
+                              onPressed:
+                                  () => _quickUpdate(
+                                    currentUserId,
+                                    field,
+                                    currentValue + quickIncrements[i],
+                                    fieldName,
+                                  ),
+                              child: Text('+${quickLabels[i]}'),
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),
@@ -2157,6 +844,40 @@ class _AdminScreenState extends State<AdminScreen> {
 
   // Tab para presets rápidos
   Widget _buildPresetsTab() {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    
+    if (currentUserId == null) {
+      return Center(
+        child: Card(
+          color: Colors.red.shade50,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error, color: Colors.red, size: 64),
+                SizedBox(height: 16),
+                Text(
+                  'Error de autenticación',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'No se pudo obtener la información del usuario actual.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red.shade700),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Column(
       children: [
         Container(
@@ -2185,7 +906,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Aplica configuraciones predefinidas a los usuarios de forma rápida.',
+                      'Aplica configuraciones predefinidas a tu perfil de forma rápida.',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.orange.withOpacity(0.8),
@@ -2198,8 +919,8 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ),
         Expanded(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: _usersCol.snapshots(),
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: _usersCol.doc(currentUserId).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -2208,339 +929,144 @@ class _AdminScreenState extends State<AdminScreen> {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final users = snapshot.data!.docs;
-              if (users.isEmpty) {
-                return const Center(child: Text('No hay usuarios registrados'));
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return const Center(child: Text('No se encontraron datos del usuario'));
               }
 
-              return ListView.builder(
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  final doc = users[index];
-                  final data = doc.data() as Map<String, dynamic>;
+              final data = snapshot.data!.data() as Map<String, dynamic>;
 
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+              return Center(
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.orange,
+                              child: Text(
+                                (data['username'] ?? 'Usuario actual')
+                                    .toString()
+                                    .substring(0, 1)
+                                    .toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data['username'] ?? 'Usuario actual',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Nivel: ${data['level'] ?? 0} | Exp: ${data['experience'] ?? 0} | Monedas: ${data['coins'] ?? 0}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2),
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      () => _applyHackPreset(currentUserId, 'beginner'),
+                                  icon: const Icon(Icons.child_care, size: 16),
+                                  label: const Text('Principiante', 
+                                    style: TextStyle(fontSize: 11),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2),
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      () => _applyHackPreset(currentUserId, 'advanced'),
+                                  icon: const Icon(Icons.school, size: 16),
+                                  label: const Text('Avanzado',
+                                    style: TextStyle(fontSize: 11),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.orange,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2),
+                                child: ElevatedButton.icon(
+                                  onPressed:
+                                      () => _applyHackPreset(currentUserId, 'master'),
+                                  icon: const Icon(Icons.emoji_events, size: 16),
+                                  label: const Text('Maestro',
+                                    style: TextStyle(fontSize: 11),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.orange,
-                                child: Text(
-                                  (data['username'] ?? doc.id)
-                                      .toString()
-                                      .substring(0, 1)
-                                      .toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      data['username'] ?? doc.id,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Nivel: ${data['level'] ?? 0} | Exp: ${data['experience'] ?? 0} | Monedas: ${data['coins'] ?? 0}',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                                  child: ElevatedButton.icon(
-                                    onPressed:
-                                        () => _applyHackPreset(doc.id, 'beginner'),
-                                    icon: const Icon(Icons.child_care, size: 16),
-                                    label: const Text('Principiante', 
-                                      style: TextStyle(fontSize: 11),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 8,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                                  child: ElevatedButton.icon(
-                                    onPressed:
-                                        () => _applyHackPreset(doc.id, 'advanced'),
-                                    icon: const Icon(Icons.school, size: 16),
-                                    label: const Text('Avanzado',
-                                      style: TextStyle(fontSize: 11),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.orange,
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 8,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                                  child: ElevatedButton.icon(
-                                    onPressed:
-                                        () => _applyHackPreset(doc.id, 'master'),
-                                    icon: const Icon(Icons.emoji_events, size: 16),
-                                    label: const Text('Maestro',
-                                      style: TextStyle(fontSize: 11),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 8,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildHackStatCard(
-    String title,
-    int value,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          border: Border.all(color: color.withOpacity(0.3)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Text(
-              value.toString(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showHackDialog(
-    String uid,
-    String field,
-    int currentValue,
-    String fieldName,
-  ) async {
-    final controller = TextEditingController(text: currentValue.toString());
-    final formKey = GlobalKey<FormState>();
-
-    await showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.build, color: Colors.red),
-              const SizedBox(width: 8),
-              Text('Hack: $fieldName'),
-            ],
-          ),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Valor actual: $currentValue',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Nuevo valor de $fieldName',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: Icon(
-                      field == 'level'
-                          ? Icons.trending_up
-                          : field == 'experience'
-                          ? Icons.star
-                          : Icons.monetization_on,
-                    ),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return 'Ingrese un valor';
-                    }
-                    final val = int.tryParse(v);
-                    if (val == null) {
-                      return 'Ingrese un número válido';
-                    }
-                    if (val < 0) {
-                      return 'El valor no puede ser negativo';
-                    }
-                    if (field == 'level' && val > 100) {
-                      return 'El nivel máximo es 100';
-                    }
-                    if (field == 'experience' && val > 1000000) {
-                      return 'La experiencia máxima es 1,000,000';
-                    }
-                    if (field == 'coins' && val > 1000000) {
-                      return 'Las monedas máximas son 1,000,000';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        final newValue =
-                            currentValue +
-                            (field == 'coins'
-                                ? 1000
-                                : field == 'experience'
-                                ? 500
-                                : 1);
-                        controller.text = newValue.toString();
-                      },
-                      child: Text(
-                        '+${field == 'coins'
-                            ? '1K'
-                            : field == 'experience'
-                            ? '500'
-                            : '1'}',
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        final newValue =
-                            currentValue +
-                            (field == 'coins'
-                                ? 10000
-                                : field == 'experience'
-                                ? 5000
-                                : 5);
-                        controller.text = newValue.toString();
-                      },
-                      child: Text(
-                        '+${field == 'coins'
-                            ? '10K'
-                            : field == 'experience'
-                            ? '5K'
-                            : '5'}',
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        controller.text = '0';
-                      },
-                      child: const Text('Reset'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (!formKey.currentState!.validate()) return;
-                final val = int.parse(controller.text);
-                await _usersCol.doc(uid).update({field: val});
-                if (!mounted) return;
-                _loadUserData(); // Recargar datos
-                setState(() {}); // Actualizar interfaz
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('$fieldName actualizado a $val'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Aplicar Hack'),
-            ),
-          ],
-        );
-      },
     );
   }
 

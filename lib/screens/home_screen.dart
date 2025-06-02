@@ -9,6 +9,7 @@ import '../widgets/pixel_widgets.dart';
 import '../widgets/character_asset.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
+import '../utils/overflow_utils.dart';
 import '../widgets/test_error_widget.dart';
 import 'code_exercises_screen.dart';
 
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey _missionsKey = GlobalKey();
   final GlobalKey _achievementsKey = GlobalKey();
   final GlobalKey _leaderboardKey = GlobalKey();
-  final GlobalKey _adminKey = GlobalKey();
+
   final GlobalKey _adventureButtonKey =
       GlobalKey(); // Nueva key para el botón de aventura
   final GlobalKey _shopButtonKey =
@@ -379,48 +380,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildUserInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '${_userData!['username']}',
-          style: Theme.of(context).textTheme.titleLarge,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Icon(Icons.star, size: 18),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                'Nivel: ${_userData!['level'] ?? 1}',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Icon(Icons.monetization_on, size: 18, color: Colors.amber),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                '${_userData!['coins'] ?? 0} monedas',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        TextButton.icon(
-          icon: const Icon(Icons.lock_reset),
-          label: const Text('Cambiar Contraseña'),
-          onPressed: _showChangePasswordDialog,
-          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-        ),
-      ],
+    return OverflowUtils.safeUserInfo(
+      username: '${_userData!['username']}',
+      level: '${_userData!['level'] ?? 1}',
+      coins: '${_userData!['coins'] ?? 0}',
+      usernameStyle: Theme.of(context).textTheme.titleLarge,
+      onChangePassword: _showChangePasswordDialog,
     );
   }
 
@@ -620,11 +585,11 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon),
           const SizedBox(width: 12),
-          Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
-          Text(
+          OverflowUtils.expandedText(label, maxLines: 1),
+          const SizedBox(width: 8),
+          OverflowUtils.safeText(
             value,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ],
       ),
@@ -646,9 +611,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.sports_esports, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text('COMENZAR AVENTURA', overflow: TextOverflow.ellipsis),
-            ),
+            OverflowUtils.flexibleText('COMENZAR AVENTURA', maxLines: 1),
           ],
         ),
       ),
@@ -670,7 +633,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.store, size: 20),
             SizedBox(width: 8),
-            Flexible(child: Text('TIENDA', overflow: TextOverflow.ellipsis)),
+            OverflowUtils.flexibleText('TIENDA', maxLines: 1),
           ],
         ),
       ),
@@ -692,9 +655,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.inventory_2, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text('INVENTARIO', overflow: TextOverflow.ellipsis),
-            ),
+            OverflowUtils.flexibleText('INVENTARIO', maxLines: 1),
           ],
         ),
       ),
@@ -721,12 +682,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.code, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                'EJERCICIOS DE CÓDIGO',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            OverflowUtils.flexibleText('EJERCICIOS DE CÓDIGO', maxLines: 1),
           ],
         ),
       ),
@@ -772,13 +728,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Icon(Icons.emoji_events, size: 20),
                     const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        'VER MIS LOGROS',
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                    OverflowUtils.flexibleText(
+                  'VER MIS LOGROS',
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                ),
                   ],
                 ),
               ),
@@ -804,9 +758,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.leaderboard, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text('CLASIFICACIÓN', overflow: TextOverflow.ellipsis),
-            ),
+            OverflowUtils.flexibleText('CLASIFICACIÓN', maxLines: 1),
           ],
         ),
       ),

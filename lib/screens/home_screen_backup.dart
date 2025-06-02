@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey _missionsKey = GlobalKey();
   final GlobalKey _achievementsKey = GlobalKey();
   final GlobalKey _leaderboardKey = GlobalKey();
-  final GlobalKey _adminKey = GlobalKey();
+
   final GlobalKey _adventureButtonKey =
       GlobalKey(); // Nueva key para el botón de aventura
   final GlobalKey _shopButtonKey =

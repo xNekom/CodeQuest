@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/leaderboard_entry_model.dart';
 import '../services/leaderboard_service.dart';
 import '../widgets/pixel_widgets.dart';
-import '../theme/pixel_theme.dart';
+import '../utils/overflow_utils.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
@@ -287,16 +287,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   children: [
                     Row(
                       children: [
-                        Expanded(
-                          child: Text(
-                            entry.username,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: isCurrentUser ? Colors.blue : null,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                        OverflowUtils.expandedText(
+                          entry.username,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isCurrentUser ? Colors.blue : null,
                           ),
+                          maxLines: 1,
                         ),
                         if (isCurrentUser)
                           Container(
