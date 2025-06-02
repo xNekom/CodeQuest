@@ -57,7 +57,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
         });
       }
     } catch (e) {
-      print('Error loading mission: $e');
+      // Error loading mission: $e
     }
   }
 
@@ -258,8 +258,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
                     thickness: 12,
                     radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
                     thumbColor: PixelTheme.primaryColor,
-                    trackColor: PixelTheme.primaryColor.withOpacity(0.2),
-                    trackBorderColor: PixelTheme.primaryColor.withOpacity(0.4),
+                    trackColor: PixelTheme.primaryColor.withValues(alpha: 0.2),
+                    trackBorderColor: PixelTheme.primaryColor.withValues(alpha: 0.4),
                     trackRadius: const Radius.circular(0),
                     crossAxisMargin: 2,
                     mainAxisMargin: 4,
@@ -322,8 +322,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
               thickness: 12,
               radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
               thumbColor: PixelTheme.primaryColor,
-              trackColor: PixelTheme.primaryColor.withOpacity(0.2),
-              trackBorderColor: PixelTheme.primaryColor.withOpacity(0.4),
+              trackColor: PixelTheme.primaryColor.withValues(alpha: 0.2),
+              trackBorderColor: PixelTheme.primaryColor.withValues(alpha: 0.4),
               trackRadius: const Radius.circular(0),
               crossAxisMargin: 2,
               mainAxisMargin: 4,
@@ -402,8 +402,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
                     thickness: 12,
                     radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
                     thumbColor: PixelTheme.primaryColor,
-                    trackColor: PixelTheme.primaryColor.withOpacity(0.2),
-                    trackBorderColor: PixelTheme.primaryColor.withOpacity(0.4),
+                    trackColor: PixelTheme.primaryColor.withValues(alpha: 0.2),
+                    trackBorderColor: PixelTheme.primaryColor.withValues(alpha: 0.4),
                     trackRadius: const Radius.circular(0),
                     crossAxisMargin: 2,
                     mainAxisMargin: 4,

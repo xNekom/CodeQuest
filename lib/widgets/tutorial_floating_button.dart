@@ -102,10 +102,10 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _TutorialOption(
-                    title: 'Tutorial de Inicio',
+                    title: 'Centro de Comando 🚀',
                     description:
-                        'Aprende los conceptos básicos de la aplicación',
-                    icon: Icons.home,
+                        'Domina tu nave espacial y explora todas las funciones épicas',
+                    icon: Icons.rocket_launch,
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(
@@ -113,21 +113,12 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                       ).pushNamedAndRemoveUntil('/', (route) => false);
                     },
                   ),
+
                   const SizedBox(height: 8),
                   _TutorialOption(
-                    title: 'Selección de Personaje',
-                    description: 'Cómo personalizar tu avatar',
-                    icon: Icons.person_add,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed('/character-selection');
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  _TutorialOption(
-                    title: 'Sistema de Misiones',
-                    description: 'Explora y completa misiones',
-                    icon: Icons.assignment,
+                    title: 'Reino de Aventuras 🏰',
+                    description: 'Conquista misiones épicas y desafíos legendarios',
+                    icon: Icons.castle,
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed('/missions');
@@ -135,9 +126,9 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   ),
                   const SizedBox(height: 8),
                   _TutorialOption(
-                    title: 'Logros y Recompensas',
-                    description: 'Descubre cómo ganar logros',
-                    icon: Icons.emoji_events,
+                    title: 'Salón de la Fama 🏆',
+                    description: 'Descubre cómo forjar tu leyenda como programador',
+                    icon: Icons.museum,
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed('/achievements');
@@ -145,10 +136,10 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   ),
                   const SizedBox(height: 8),
                   _TutorialOption(
-                    title: 'Detalle de Misión',
+                    title: 'Briefing de Misión 📋',
                     description:
-                        'Aprende a entender los detalles de una misión',
-                    icon: Icons.assignment_outlined,
+                        'Aprende a planificar tu estrategia de conquista',
+                    icon: Icons.assignment_ind,
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed('/missions');
@@ -156,9 +147,9 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   ),
                   const SizedBox(height: 8),
                   _TutorialOption(
-                    title: 'Pantalla de Teoría',
-                    description: 'Cómo estudiar la teoría de programación',
-                    icon: Icons.menu_book,
+                    title: 'Academia de Conocimiento 🎓',
+                    description: 'Transforma teoría en superpoderes de programación',
+                    icon: Icons.school,
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed('/missions');
@@ -201,7 +192,7 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
               borderRadius: BorderRadius.circular(4),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   offset: const Offset(2, 2),
                   blurRadius: 0,
                 ),
@@ -249,7 +240,7 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   borderRadius: BorderRadius.circular(4),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       offset: const Offset(2, 2),
                       blurRadius: 0,
                     ),
@@ -287,7 +278,7 @@ class _TutorialFloatingButtonState extends State<TutorialFloatingButton>
                   borderRadius: BorderRadius.circular(4),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       offset: const Offset(2, 2),
                       blurRadius: 0,
                     ),

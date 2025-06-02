@@ -178,7 +178,7 @@ class _LeaderboardManagementTabState extends State<LeaderboardManagementTab> {
                     ? IconButton(
                         icon: Icon(Icons.edit, color: Colors.blue),
                         tooltip: 'Editar mi puntuación',
-                        onPressed: () => _showEditScoreDialog(doc, data),
+                        onPressed: () => _editMyScore(doc, data),
                       )
                     : Icon(
                         Icons.lock,
@@ -206,7 +206,7 @@ class _LeaderboardManagementTabState extends State<LeaderboardManagementTab> {
     }
   }
 
-  Future<void> _showEditScoreDialog(
+  Future<void> _editMyScore(
     DocumentSnapshot doc,
     Map<String, dynamic> data,
   ) async {
@@ -215,8 +215,11 @@ class _LeaderboardManagementTabState extends State<LeaderboardManagementTab> {
       text: (data['score'] ?? 0).toString(),
     );
 
+    // Capture context before async operation
+    final dialogContext = context;
+
     await showDialog(
-      context: context,
+      context: dialogContext,
       builder: (context) => AlertDialog(
         title: Row(
           children: [
@@ -274,6 +277,10 @@ class _LeaderboardManagementTabState extends State<LeaderboardManagementTab> {
             onPressed: () async {
               if (!formKey.currentState!.validate()) return;
 
+              // Capture contexts before async operation
+              final navigatorContext = Navigator.of(context);
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+
               try {
                 final newScore = int.parse(scoreCtrl.text);
                 await _leaderboardsCol.doc(doc.id).update({
@@ -282,9 +289,9 @@ class _LeaderboardManagementTabState extends State<LeaderboardManagementTab> {
                 });
 
                 if (!mounted) return;
-                Navigator.pop(context);
+                navigatorContext.pop();
 
-                ScaffoldMessenger.of(context).showSnackBar(
+                scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Row(
                       children: [
@@ -297,7 +304,8 @@ class _LeaderboardManagementTabState extends State<LeaderboardManagementTab> {
                   ),
                 );
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                if (!mounted) return;
+                scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Row(
                       children: [

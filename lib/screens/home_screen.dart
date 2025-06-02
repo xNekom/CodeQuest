@@ -65,40 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// Inicia el tutorial si es necesario
+  /// Método para verificar tutoriales (ya no inicia automáticamente)
   Future<void> _checkAndStartTutorial() async {
-    // Verificar si ya se ejecutó la verificación del tutorial
-    if (_tutorialChecked) return;
-    
-    // Esperar a que la UI se construya completamente, pero con un tiempo menor
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Verificar si el widget sigue montado antes de continuar
-    if (!mounted) return;
-
-    // Marcar como verificado para evitar llamadas múltiples
-    _tutorialChecked = true;
-
-    try {
-      TutorialService.startTutorialIfNeeded(
-        context,
-        TutorialService.homeScreenTutorial,
-        TutorialService.getHomeScreenTutorial(
-          profileKey: _profileKey,
-          missionsKey: _missionsKey,
-          achievementsKey: _achievementsKey,
-          leaderboardKey: _leaderboardKey,
-          adventureButtonKey: _adventureButtonKey,
-          shopButtonKey: _shopButtonKey,
-          inventoryButtonKey: _inventoryButtonKey,
-          codeExercisesButtonKey: _codeExercisesButtonKey,
-        ),
-      );
-    } catch (e) {
-      // Capturar cualquier error que pueda ocurrir durante la inicialización del tutorial
-      ErrorHandler.logError(e, StackTrace.current);
-      // No mostrar error al usuario para no interrumpir la experiencia
-    }
+    // Este método ya no inicia tutoriales automáticamente
+    // Los tutoriales ahora se acceden desde la pantalla de tutoriales
+    return;
   }
 
   Future<void> _loadUserData() async {
@@ -297,6 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                 ),
+
                 IconButton(
                   icon: const Icon(Icons.edit, size: 20),
                   tooltip: 'Editar Personaje',

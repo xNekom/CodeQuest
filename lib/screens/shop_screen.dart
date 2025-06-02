@@ -10,7 +10,7 @@ class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
 
   @override
-  _ShopScreenState createState() => _ShopScreenState();
+  State<ShopScreen> createState() => _ShopScreenState();
 }
 
 class _ShopScreenState extends State<ShopScreen> {
@@ -72,9 +72,11 @@ class _ShopScreenState extends State<ShopScreen> {
       'itemId': item.itemId,
       'quantity': 1,
     });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Has comprado: ${item.name}')));
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Has comprado: ${item.name}')));
+    }
   }
 
   @override

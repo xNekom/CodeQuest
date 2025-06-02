@@ -193,7 +193,7 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
           })
           .catchError((error) {
             // Si el scroll falla, actualizar el rect de todos modos
-            print('DEBUG: Error en scroll automático: $error');
+            // DEBUG: Error en scroll automático: $error
             Future.delayed(const Duration(milliseconds: 200), () {
               _updateTargetRect();
             });
@@ -229,17 +229,12 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
   }
 
   Widget _buildTooltipWithFade() {
-    final currentStepData = widget.steps[_currentStep];
-    final screenSize = MediaQuery.of(context).size;
-
-    print('DEBUG: _targetRect = $_targetRect');
-    print('DEBUG: screenSize = $screenSize');
-    print(
-      'DEBUG: targetKey context = ${currentStepData.targetKey?.currentContext}',
-    );
+    // DEBUG: _targetRect = $_targetRect
+    // DEBUG: screenSize = $screenSize
+    // DEBUG: targetKey context = ${widget.steps[_currentStep].targetKey?.currentContext}
 
     // Siempre centrar el tooltip en la pantalla para mantener consistencia visual
-    print('DEBUG: Centrando tooltip para mantener consistencia visual');
+    // DEBUG: Centrando tooltip para mantener consistencia visual
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Positioned.fill(

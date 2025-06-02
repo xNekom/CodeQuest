@@ -87,7 +87,7 @@ class _RewardNotificationState extends State<RewardNotification> with SingleTick
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: PixelTheme.accentColor.withOpacity(0.5),
+                    color: PixelTheme.accentColor.withValues(alpha: 0.5),
                     spreadRadius: 2,
                     blurRadius: 8,
                     offset: const Offset(0, 4),
@@ -162,7 +162,7 @@ class _RewardNotificationState extends State<RewardNotification> with SingleTick
                     widget.reward.description,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
                     textAlign: TextAlign.center,
                   ),
