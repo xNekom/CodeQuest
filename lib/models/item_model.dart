@@ -1,12 +1,14 @@
+// Representa un ítem dentro del juego, como pociones, equipamiento o materiales.
 class ItemModel {
-  final String itemId;
-  final String name;
-  final String description;
-  final String icon; // Path to the item's icon
-  final String type; // Item type (e.g., 'potion', 'weapon', 'armor', 'material')
-  final String rarity; // Item rarity from JSON
-  final Map<String, dynamic> attributes; // All other specific fields (price, stats, etc.)
+  final String itemId; // ID único del ítem.
+  final String name; // Nombre del ítem.
+  final String description; // Descripción del ítem.
+  final String icon; // Ruta al archivo de icono del ítem.
+  final String type; // Tipo de ítem (ej. 'potion', 'weapon', 'armor', 'material'). Define su uso o categoría.
+  final String rarity; // Rareza del ítem (ej. 'común', 'raro', 'épico'). Puede influir en su valor o poder.
+  final Map<String, dynamic> attributes; // Atributos adicionales específicos del ítem (ej. precio, estadísticas de ataque/defensa, efectos).
 
+  // Constructor para crear una instancia de ItemModel.
   ItemModel({
     required this.itemId,
     required this.name,

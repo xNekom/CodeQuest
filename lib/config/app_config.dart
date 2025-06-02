@@ -1,7 +1,8 @@
 // lib/config/app_config.dart
 
+/// Configuración global de la aplicación.
 class AppConfig {
-  // Cambia esto a 'false' para usar datos locales en lugar de Firebase.
-  // Cambia esto a 'true' para usar Firebase.
+  /// Define si se usa Firebase (`true`) o datos locales (`false`).
+  /// ATENCIÓN: Revisar config de Firebase si es `true`.
   static const bool shouldUseFirebase = true; 
 }

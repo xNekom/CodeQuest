@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#ffffff</color>
+    <color name="splash_background">#1E3A8A</color> <!-- Azul profesional -->
+    <color name="splash_background_light">#F8FAFC</color> <!-- Gris claro profesional -->
 </resources>

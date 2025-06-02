@@ -1,12 +1,14 @@
+// Modelo para representar a un enemigo en el juego.
 class EnemyModel {
-  final String enemyId; // Firestore document ID
-  final String name;
-  final String? description;
+  final String enemyId; // ID único del enemigo, usualmente el ID del documento en Firestore.
+  final String name; // Nombre del enemigo.
+  final String? description; // Descripción opcional del enemigo.
   final String? assetPath; // Path to the enemy's image asset (opcional)
-  final List<Map<String, dynamic>>? lootTable; // Loot table
-  final List<Map<String, dynamic>>? drops; // Potential item drops
-  final Map<String, String>? dialogue; // Encounter, victory, defeat dialogue
+  final List<Map<String, dynamic>>? lootTable; // Tabla de loot que define qué ítems puede soltar el enemigo y con qué probabilidad.
+  final List<Map<String, dynamic>>? drops; // Lista de ítems específicos que el enemigo puede soltar.
+  final Map<String, String>? dialogue; // Diálogos del enemigo para diferentes situaciones (encuentro, victoria, derrota).
 
+  // Constructor para crear una instancia de EnemyModel.
   EnemyModel({
     required this.enemyId,
     required this.name,
