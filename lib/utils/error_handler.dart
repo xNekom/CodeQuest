@@ -142,8 +142,32 @@ class ErrorHandler {
     } else if (error.toString().contains('SocketException') || 
                error.toString().contains('TimeoutException')) {
       return _handleNetworkError(error);
+    } else if (error is Exception) {
+      return _handleCustomException(error);
     } else {
       return 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
+    }
+  }
+
+  /// Maneja excepciones personalizadas de la aplicación
+  static String _handleCustomException(Exception error) {
+    final errorMessage = error.toString();
+    
+    // Remover el prefijo 'Exception: ' si existe
+    final cleanMessage = errorMessage.startsWith('Exception: ') 
+        ? errorMessage.substring(11) 
+        : errorMessage;
+    
+    // Verificar errores específicos conocidos
+    if (cleanMessage.contains('El nombre de usuario ya está en uso')) {
+      return 'Este nombre de usuario ya está registrado. Por favor elige otro nombre de usuario.';
+    } else if (cleanMessage.contains('username') && cleanMessage.contains('already')) {
+      return 'Este nombre de usuario ya está registrado. Por favor elige otro nombre de usuario.';
+    } else if (cleanMessage.contains('email') && cleanMessage.contains('already')) {
+      return 'Este correo electrónico ya está registrado. ¿Ya tienes una cuenta?';
+    } else {
+      // Para otros errores personalizados, devolver el mensaje limpio
+      return cleanMessage.isNotEmpty ? cleanMessage : 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
     }
   }
 
