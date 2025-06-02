@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/code_exercise_model.dart';
 import '../services/code_exercise_service.dart';
+import '../services/tutorial_service.dart';
 import '../widgets/code_playground.dart';
+import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
 
 /// Pantalla que muestra la lista de ejercicios de código disponibles
@@ -17,11 +19,37 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   List<CodeExerciseModel> _exercises = [];
   bool _isLoading = true;
   String? _error;
+  
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _exerciseListKey = GlobalKey();
+  final GlobalKey _searchBarKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
+  final GlobalKey _difficultyFilterKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _loadExercises();
+    _checkAndStartTutorial();
+  }
+  
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.codeExercisesTutorial,
+        TutorialService.getCodeExercisesTutorial(
+          exerciseListKey: _exerciseListKey,
+          searchBarKey: _searchBarKey,
+          difficultyFilterKey: _difficultyFilterKey,
+          backButtonKey: _backButtonKey,
+        ),
+      );
+    }
   }
 
   @override
@@ -282,6 +310,11 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
         backgroundColor: Colors.blue[800],
         foregroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          key: _backButtonKey,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -354,6 +387,7 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                   children: [
                     // Header con estadísticas
                     Container(
+                      key: _difficultyFilterKey,
                       padding: const EdgeInsets.all(16),
                       child: Card(
                         child: Padding(
@@ -436,6 +470,7 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
 
                     // Lista de ejercicios
                     Expanded(
+                      key: _exerciseListKey,
                       child: ListView.builder(
                         itemCount: _exercises.length,
                         itemBuilder: (context, index) {
@@ -445,6 +480,15 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                     ),
                   ],
                 ),
+      ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.codeExercisesTutorial,
+        tutorialSteps: TutorialService.getCodeExercisesTutorial(
+          exerciseListKey: _exerciseListKey,
+          searchBarKey: _searchBarKey,
+          difficultyFilterKey: _difficultyFilterKey,
+          backButtonKey: _backButtonKey,
+        ),
       ),
     );
   }

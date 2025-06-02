@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
   bool _hasInitialized = false; // Bandera para evitar inicializaciones múltiples
-  bool _tutorialChecked = false; // Bandera para evitar verificaciones múltiples del tutorial
 
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _profileKey = GlobalKey();
@@ -644,12 +643,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: PixelButton(
         key: _codeExercisesButtonKey, // Asignar la key al botón de ejercicios
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CodeExercisesScreen(),
-            ),
-          );
+          Navigator.pushNamed(context, '/code-exercises');
         },
         color: Colors.purple[600] ?? Colors.purple,
         child: Row(

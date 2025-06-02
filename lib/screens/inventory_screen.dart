@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
+import '../services/tutorial_service.dart';
+import '../models/item_model.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_art_background.dart';
+import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -19,11 +22,38 @@ class _InventoryScreenState extends State<InventoryScreen> {
   late User? _currentUser;
   bool _isLoading = true;
   List<Map<String, dynamic>> _inventoryItems = [];
+  String? _error;
+  
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _inventoryListKey = GlobalKey();
+  final GlobalKey _itemCardKey = GlobalKey();
+  final GlobalKey _statsKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _loadInventoryData();
+    _checkAndStartTutorial();
+  }
+  
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.inventoryTutorial,
+        TutorialService.getInventoryTutorial(
+          inventoryGridKey: _inventoryListKey,
+          categoryFilterKey: _itemCardKey,
+          itemDetailKey: _statsKey,
+          backButtonKey: _backButtonKey,
+        ),
+      );
+    }
   }
 
   @override
@@ -98,6 +128,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 0,
+        leading: IconButton(
+          key: _backButtonKey,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: PixelArtBackground(
         child:
@@ -108,6 +143,15 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   ),
                 )
                 : _buildInventoryContent(),
+      ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.inventoryTutorial,
+        tutorialSteps: TutorialService.getInventoryTutorial(
+          inventoryGridKey: _inventoryListKey,
+          categoryFilterKey: _itemCardKey,
+          itemDetailKey: _statsKey,
+          backButtonKey: _backButtonKey,
+        ),
       ),
     );
   }
@@ -127,6 +171,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   Widget _buildInventoryHeader() {
     return Container(
+      key: _statsKey,
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -163,6 +208,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   Widget _buildInventoryGrid() {
     return Padding(
+      key: _inventoryListKey,
       padding: const EdgeInsets.all(16),
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -174,13 +220,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
         itemCount: _inventoryItems.length,
         itemBuilder: (context, index) {
           final item = _inventoryItems[index];
-          return _buildInventoryItemCard(item);
+          return _buildInventoryItemCard(item, index == 0 ? _itemCardKey : null);
         },
       ),
     );
   }
 
-  Widget _buildInventoryItemCard(Map<String, dynamic> item) {
+  Widget _buildInventoryItemCard(Map<String, dynamic> item, [GlobalKey? key]) {
     final String itemName =
         item['name'] ?? item['itemId'] ?? 'Item Desconocido';
     final int quantity = item['quantity'] ?? 1;
@@ -191,6 +237,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return GestureDetector(
       onTap: () => _showItemDetails(item),
       child: Container(
+        key: key,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),

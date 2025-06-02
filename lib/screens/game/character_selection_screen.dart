@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
-import '../../services/tutorial_service.dart';
 import '../../widgets/character_asset.dart';
-import '../../widgets/tutorial_floating_button.dart';
 
 class CharacterSelectionScreen extends StatefulWidget {
   const CharacterSelectionScreen({super.key});
@@ -226,9 +224,6 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                         if (!_formKey.currentState!.validate()) return;
                         final user = FirebaseAuth.instance.currentUser;
                         if (user != null) {
-                          // Verificar si es la primera vez que selecciona personaje
-                          final isFirstTimeSelection = !_isEditing;
-                          
                           // Guardar los nuevos datos del personaje
                           await _userService.updateUserData(user.uid, {
                             'characterName': _nameCtrl.text,

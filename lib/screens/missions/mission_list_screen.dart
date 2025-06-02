@@ -152,12 +152,37 @@ class _MissionListScreenState extends State<MissionListScreen> {
           return const Center(child: Text('No hay misiones disponibles.'));
         }
 
-        return ListView.separated(
-          key: widget.missionListKey,
-          // Mostrar misiones + 1 casilla fija al final
-          itemCount: missions.length + 1,
-          separatorBuilder: (context, index) => const Divider(),
-          itemBuilder: (context, index) {
+        return Column(
+          children: [
+            // Botón de filtro
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton.icon(
+                key: widget.filterButtonKey,
+                onPressed: () {
+                  // Aquí se puede implementar la funcionalidad de filtro
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Función de filtro próximamente'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.filter_list),
+                label: const Text('Filtrar Misiones'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+              ),
+            ),
+            // Lista de misiones
+            Expanded(
+              child: ListView.separated(
+                key: widget.missionListKey,
+                // Mostrar misiones + 1 casilla fija al final
+                itemCount: missions.length + 1,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
             // Entrada final fija
             if (index == missions.length) {
               return Card(
@@ -204,10 +229,6 @@ class _MissionListScreenState extends State<MissionListScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               color: cardColor,
               child: ListTile(
-                key:
-                    index == 0
-                        ? widget.filterButtonKey
-                        : null, // Usar filterButtonKey para la primera misión como ejemplo
                 leading: Icon(
                   isCompleted
                       ? Icons.check_circle
@@ -263,7 +284,10 @@ class _MissionListScreenState extends State<MissionListScreen> {
               ),
             );
           },
-        );
+        ),
+      ),
+    ],
+  );
       },
     );
   }

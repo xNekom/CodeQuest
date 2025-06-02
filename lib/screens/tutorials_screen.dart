@@ -35,7 +35,7 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
             end: Alignment.bottomCenter,
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surface.withOpacity(0.8),
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
             ],
           ),
         ),
@@ -54,64 +54,67 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                 ),
                 const SizedBox(height: 16),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _buildTutorialCard(
-                        title: 'Tutorial de Pantalla Principal',
-                        description: 'Aprende a navegar por la pantalla principal y conoce todas sus funciones.',
-                        icon: Icons.home,
-                        onTap: () => _startHomeScreenTutorial(),
-                        tutorialKey: TutorialService.homeScreenTutorial,
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTutorialCard(
-                        title: 'Tutorial de Misiones',
-                        description: 'Descubre cómo acceder y completar misiones para ganar experiencia.',
-                        icon: Icons.assignment,
-                        onTap: () => _startMissionsTutorial(),
-                        tutorialKey: 'missions_tutorial',
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTutorialCard(
-                        title: 'Tutorial de Logros',
-                        description: 'Conoce el sistema de logros y cómo desbloquear nuevos achievements.',
-                        icon: Icons.emoji_events,
-                        onTap: () => _startAchievementsTutorial(),
-                        tutorialKey: 'achievements_tutorial',
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTutorialCard(
-                        title: 'Tutorial de Ejercicios de Código',
-                        description: 'Aprende a resolver ejercicios de programación y mejorar tus habilidades.',
-                        icon: Icons.code,
-                        onTap: () => _startCodeExercisesTutorial(),
-                        tutorialKey: 'code_exercises_tutorial',
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTutorialCard(
-                        title: 'Tutorial de Tienda',
-                        description: 'Descubre cómo comprar items y mejorar tu equipamiento.',
-                        icon: Icons.shopping_cart,
-                        onTap: () => _startShopTutorial(),
-                        tutorialKey: 'shop_tutorial',
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTutorialCard(
-                        title: 'Tutorial de Inventario',
-                        description: 'Gestiona tus items y equipamiento de manera eficiente.',
-                        icon: Icons.inventory,
-                        onTap: () => _startInventoryTutorial(),
-                        tutorialKey: 'inventory_tutorial',
-                      ),
-                      const SizedBox(height: 12),
-                      _buildTutorialCard(
-                        title: 'Tutorial de Tabla de Posiciones',
-                        description: 'Compite con otros jugadores y sube en el ranking.',
-                        icon: Icons.leaderboard,
-                        onTap: () => _startLeaderboardTutorial(),
-                        tutorialKey: 'leaderboard_tutorial',
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildTutorialCard(
+                          title: 'Tutorial de Pantalla Principal',
+                          description: 'Aprende a navegar por la pantalla principal y conoce todas sus funciones.',
+                          icon: Icons.home,
+                          onTap: () => _startHomeScreenTutorial(),
+                          tutorialKey: TutorialService.homeScreenTutorial,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTutorialCard(
+                          title: 'Tutorial de Misiones',
+                          description: 'Descubre cómo acceder y completar misiones para ganar experiencia.',
+                          icon: Icons.assignment,
+                          onTap: () => _startMissionsTutorial(),
+                          tutorialKey: 'missions_tutorial',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTutorialCard(
+                          title: 'Tutorial de Logros',
+                          description: 'Conoce el sistema de logros y cómo desbloquear nuevos achievements.',
+                          icon: Icons.emoji_events,
+                          onTap: () => _startAchievementsTutorial(),
+                          tutorialKey: 'achievements_tutorial',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTutorialCard(
+                          title: 'Tutorial de Ejercicios de Código',
+                          description: 'Aprende a resolver ejercicios de programación y mejorar tus habilidades.',
+                          icon: Icons.code,
+                          onTap: () => _startCodeExercisesTutorial(),
+                          tutorialKey: 'code_exercises_tutorial',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTutorialCard(
+                          title: 'Tutorial de Tienda',
+                          description: 'Descubre cómo comprar items y mejorar tu equipamiento.',
+                          icon: Icons.shopping_cart,
+                          onTap: () => _startShopTutorial(),
+                          tutorialKey: 'shop_tutorial',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTutorialCard(
+                          title: 'Tutorial de Inventario',
+                          description: 'Gestiona tus items y equipamiento de manera eficiente.',
+                          icon: Icons.inventory,
+                          onTap: () => _startInventoryTutorial(),
+                          tutorialKey: 'inventory_tutorial',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTutorialCard(
+                          title: 'Tutorial de Tabla de Posiciones',
+                          description: 'Compite con otros jugadores y sube en el ranking.',
+                          icon: Icons.leaderboard,
+                          onTap: () => _startLeaderboardTutorial(),
+                          tutorialKey: 'leaderboard_tutorial',
+                        ),
+                        const SizedBox(height: 16), // Padding adicional al final
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -146,8 +149,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: isCompleted 
-                          ? Colors.green.withOpacity(0.2)
-                          : Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                          ? Colors.green.withValues(alpha: 0.2)
+                          : Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: isCompleted 
@@ -174,6 +177,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                             Expanded(
                               child: Text(
                                 title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -191,14 +196,18 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 4),
                         Text(
                           description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           isCompleted ? 'Completado' : 'Toca para iniciar',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

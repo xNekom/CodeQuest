@@ -655,12 +655,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: PixelButton(
         key: _codeExercisesButtonKey, // Asignar la key al botón de ejercicios
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CodeExercisesScreen(),
-            ),
-          );
+          Navigator.pushNamed(context, '/code-exercises');
         },
         color: Colors.purple[600] ?? Colors.purple,
         child: Row(
