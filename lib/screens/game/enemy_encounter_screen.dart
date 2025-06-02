@@ -56,11 +56,14 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadEnemyData();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadEnemyData();
+        }
+      });
+    }
   }
 
   Future<void> _loadEnemyData() async {
@@ -232,15 +235,10 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
       body: FadeTransition(
         opacity: _fadeInAnim,
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black,
-                Colors.red.shade900.withOpacity(0.3),
-                Colors.black,
-              ],
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/backgrounds/background_enemy.png'),
+              fit: BoxFit.cover,
             ),
           ),
           child: SafeArea(
@@ -268,12 +266,17 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.red.shade300,
+                            color: Colors.white,
                             shadows: [
                               Shadow(
+                                color: Colors.black,
+                                blurRadius: 8,
+                                offset: const Offset(2, 2),
+                              ),
+                              Shadow(
                                 color: Colors.red.shade700,
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
+                                blurRadius: 15,
+                                offset: const Offset(0, 0),
                               ),
                             ],
                           ),
@@ -325,8 +328,15 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                   'Un enemigo peligroso aparece',
                               style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.red.shade300,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black,
+                                    blurRadius: 4,
+                                    offset: const Offset(1, 1),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -365,7 +375,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                 children: [
                                   Icon(
                                     Icons.format_quote,
-                                    color: Colors.red.shade300,
+                                    color: Colors.white,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
@@ -373,14 +383,21 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                     'Diálogo de Encuentro',
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.red.shade300,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.w600,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black,
+                                          blurRadius: 2,
+                                          offset: const Offset(1, 1),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(width: 8),
                                   Icon(
                                     Icons.format_quote,
-                                    color: Colors.red.shade300,
+                                    color: Colors.white,
                                     size: 20,
                                   ),
                                 ],

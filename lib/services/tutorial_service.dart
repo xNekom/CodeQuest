@@ -19,6 +19,9 @@ class TutorialService {
   factory TutorialService() => _instance;
   TutorialService._internal();
 
+  // Set para rastrear tutoriales ya verificados y evitar logs repetitivos
+  static final Set<String> _checkedTutorials = <String>{};
+
   /// Verifica si un tutorial específico ya fue completado
   Future<bool> isTutorialCompleted(String tutorialKey) async {
     final prefs = await SharedPreferences.getInstance();
@@ -432,11 +435,19 @@ class TutorialService {
     List<InteractiveTutorialStep> steps,
   ) async {
     try {
+      // Evitar verificaciones repetitivas del mismo tutorial
+      if (_checkedTutorials.contains(tutorialKey)) {
+        return;
+      }
+
       final tutorialService = TutorialService();
       final completed = await tutorialService.isTutorialCompleted(tutorialKey);
 
       // Verificar si el contexto sigue siendo válido
       if (!context.mounted) return;
+
+      // Marcar como verificado para evitar llamadas futuras
+      _checkedTutorials.add(tutorialKey);
 
       // Solo verificar si el tutorial está disponible, pero NO iniciarlo automáticamente
       // El tutorial solo debe iniciarse cuando se accede específicamente desde el menú
@@ -508,7 +519,7 @@ class TutorialService {
     String? tutorialKey,
   ) {
     try {
-      if (context == null || !context.mounted || steps.isEmpty) {
+      if (!context.mounted || steps.isEmpty) {
         return;
       }
 

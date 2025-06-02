@@ -41,11 +41,14 @@ class _MissionListScreenState extends State<MissionListScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Recargar datos solo cuando la ruta se vuelve activa
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-        _loadCurrentUserAndData();
-      }
-    });
+    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
+      Future.microtask(() {
+        if (mounted) {
+          _loadCurrentUserAndData();
+        }
+      });
+    }
   }
 
   Future<void> _loadCurrentUserAndData() async {
@@ -67,8 +70,9 @@ class _MissionListScreenState extends State<MissionListScreen> {
     MissionModel mission,
     Map<String, dynamic>? userData,
   ) {
-    if (userData == null)
+    if (userData == null) {
       return false; // Si no hay datos de usuario, bloquear por defecto
+    }
 
     final int userLevel = userData['level'] ?? 1;
     final List<String> completedMissions = List<String>.from(

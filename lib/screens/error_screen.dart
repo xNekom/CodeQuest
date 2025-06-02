@@ -5,9 +5,7 @@ import '../widgets/error_widgets.dart';
 class ErrorScreen extends StatelessWidget {
   final String title;
   final String message;
-  final VoidCallback? onRetry;
   final VoidCallback? onBack;
-  final String? buttonText;
   final String? backButtonText;
   final IconData icon;
 
@@ -15,9 +13,7 @@ class ErrorScreen extends StatelessWidget {
     super.key,
     this.title = 'Error',
     required this.message,
-    this.onRetry,
     this.onBack,
-    this.buttonText = 'Reintentar',
     this.backButtonText = 'Volver',
     this.icon = Icons.error_outline,
   });
@@ -27,10 +23,10 @@ class ErrorScreen extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Scaffold(
-      body: Container(        decoration: BoxDecoration(
-          // Usa el fondo de pixel art para mantener la consistencia visual
+      body: Container(
+        decoration: BoxDecoration(
           image: const DecorationImage(
-            image: AssetImage('assets/backgrounds/pixel_background.png'),
+            image: AssetImage('assets/backgrounds/background_error.png'),
             fit: BoxFit.cover,
           ),
           color: theme.colorScheme.surface,
@@ -48,7 +44,7 @@ class ErrorScreen extends StatelessWidget {
                 width: 4,
               ),              boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: Colors.black.withAlpha(51), // 0.2 * 255 ≈ 51
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
@@ -57,6 +53,14 @@ class ErrorScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Logo de la aplicación
+                Image.asset(
+                  'assets/images/logo/logo_no_background.png',
+                  height: 60,
+                  width: 60,
+                ),
+                const SizedBox(height: 16),
+                
                 // Icono de error estilizado
                 PixelIcon(
                   icon: icon,
@@ -83,30 +87,15 @@ class ErrorScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 
-                // Botones de acción
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (onBack != null)
-                      Expanded(
-                        child: PixelButton(
-                          onPressed: onBack!,
-                          label: backButtonText!,
-                          variant: PixelButtonVariant.secondary,
-                        ),
-                      ),
-                    if (onBack != null && onRetry != null)
-                      const SizedBox(width: 16),
-                    if (onRetry != null)
-                      Expanded(
-                        child: PixelButton(
-                          onPressed: onRetry!,
-                          label: buttonText!,
-                          variant: PixelButtonVariant.primary,
-                        ),
-                      ),
-                  ],
-                ),
+                // Botón de acción
+                if (onBack != null)
+                  Center(
+                    child: PixelButton(
+                      onPressed: onBack!,
+                      label: backButtonText ?? 'Volver',
+                      variant: PixelButtonVariant.secondary,
+                    ),
+                  ),
               ],
             ),
           ),

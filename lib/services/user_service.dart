@@ -155,7 +155,7 @@ class UserService {
         );
 
         if (missionDoc.exists) {
-          final missionData = missionDoc.data() as Map<String, dynamic>;
+          final missionData = missionDoc.data();
           final objectives = List<Map<String, dynamic>>.from(
             missionData['objectives'] ?? [],
           );

@@ -73,7 +73,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -93,10 +100,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const SizedBox(height: 30.0),
                           
-                          Icon(
-                            Icons.sports_esports,
-                            size: 80,
-                            color: Theme.of(context).colorScheme.primary,
+                          Image.asset(
+                            'assets/images/logo/logo_no_background.png',
+                            height: 120,
+                            width: 120,
                           ),
                           
                           const SizedBox(height: 24.0),

@@ -31,8 +31,10 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   void initState() {
     super.initState();
     // Verificar si debemos mostrar el tutorial
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndStartTutorial();
+    Future.microtask(() {
+      if (mounted) {
+        _checkAndStartTutorial();
+      }
     });
   }
 
@@ -74,7 +76,16 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Detalle de Misión')),
-      body: FutureBuilder<List<dynamic>>(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/background_mission.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: FutureBuilder<List<dynamic>>(
         future: Future.wait([
           MissionService().getMissionById(widget.missionId),
           UserService().getUserData(
@@ -123,11 +134,35 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
               children: [
                 Text(
                   name,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(2, 2),
+                        blurRadius: 4,
+                        color: Colors.black.withOpacity(0.8),
+                      ),
+                    ],
+                  ),
                   key: _missionTitleKey,
                 ),
                 const SizedBox(height: 12),
-                Text(description, key: _missionDescriptionKey),
+                Text(
+                  description,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1, 1),
+                        blurRadius: 3,
+                        color: Colors.black.withOpacity(0.7),
+                      ),
+                    ],
+                  ),
+                  key: _missionDescriptionKey,
+                ),
                 const SizedBox(height: 24),
                 if (isMissionCompleted)
                   Center(
@@ -265,6 +300,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
             ),
           );
         },
+        ),
       ),
       floatingActionButton: TutorialFloatingButton(
         onTutorialStart: () {

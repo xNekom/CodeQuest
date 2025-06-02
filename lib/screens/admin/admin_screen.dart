@@ -271,7 +271,7 @@ class _AdminScreenState extends State<AdminScreen> {
         }
 
         if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          Future.microtask(() {
             if (mounted && ModalRoute.of(context)?.isCurrent == true) {
               Navigator.pushNamedAndRemoveUntil(
                 context,
@@ -379,13 +379,16 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: _usersCol.snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final docs = snapshot.data!.docs;
-        if (docs.isEmpty)
+        if (docs.isEmpty) {
           return const Center(child: Text('No hay usuarios registrados.'));
+        }
         return ListView.separated(
           itemCount: docs.length,
           separatorBuilder: (_, __) => const Divider(),
@@ -461,8 +464,9 @@ class _AdminScreenState extends State<AdminScreen> {
                               ),
                         );
                         if (!context.mounted) return;
-                        if (confirm == true)
+                        if (confirm == true) {
                           await _usersCol.doc(doc.id).delete();
+                        }
                       },
                     ),
                   ],
@@ -575,13 +579,16 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: _itemsCol.snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final docs = snapshot.data!.docs;
-        if (docs.isEmpty)
+        if (docs.isEmpty) {
           return const Center(child: Text('No hay items registrados.'));
+        }
         return ListView.separated(
           itemCount: docs.length,
           separatorBuilder: (_, __) => const Divider(),
@@ -681,13 +688,16 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: _enemiesCol.snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final docs = snapshot.data!.docs;
-        if (docs.isEmpty)
+        if (docs.isEmpty) {
           return const Center(child: Text('No hay enemigos registrados.'));
+        }
         return ListView.separated(
           itemCount: docs.length,
           separatorBuilder: (_, __) => const Divider(),
@@ -795,8 +805,9 @@ class _AdminScreenState extends State<AdminScreen> {
                                 ),
                                 TextButton(
                                   onPressed: () async {
-                                    if (!formKey.currentState!.validate())
+                                    if (!formKey.currentState!.validate()) {
                                       return;
+                                    }
                                     final qList =
                                         pool.text
                                             .split(',')
@@ -836,7 +847,7 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: _leaderboardsCol.orderBy('score', descending: true).snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(
             child: Card(
               color: Colors.red.shade50,
@@ -856,7 +867,8 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
           );
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(
             child: Card(
               child: Padding(
@@ -872,8 +884,9 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
           );
+        }
         final docs = snapshot.data!.docs;
-        if (docs.isEmpty)
+        if (docs.isEmpty) {
           return Center(
             child: Card(
               color: Colors.blue.shade50,
@@ -902,6 +915,7 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
           );
+        }
 
         final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -1063,8 +1077,9 @@ class _AdminScreenState extends State<AdminScreen> {
                     keyboardType: TextInputType.number,
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Requerido';
-                      if (int.tryParse(v) == null)
+                      if (int.tryParse(v) == null) {
                         return 'Debe ser un número válido';
+                      }
                       if (int.parse(v) < 0) return 'No puede ser negativo';
                       return null;
                     },
@@ -1133,13 +1148,16 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: _questionsCol.snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final docs = snapshot.data!.docs;
-        if (docs.isEmpty)
+        if (docs.isEmpty) {
           return const Center(child: Text('No hay preguntas registradas.'));
+        }
         return ListView.separated(
           itemCount: docs.length,
           separatorBuilder: (_, __) => const Divider(),
@@ -1236,8 +1254,9 @@ class _AdminScreenState extends State<AdminScreen> {
                                 ),
                                 TextButton(
                                   onPressed: () async {
-                                    if (!formKey.currentState!.validate())
+                                    if (!formKey.currentState!.validate()) {
                                       return;
+                                    }
                                     await _questionsCol.doc(doc.id).update({
                                       'text': textCtrl.text,
                                       'options': optsCtrl.text.split('||'),
@@ -1274,13 +1293,16 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<List<Reward>>(
       stream: _rewardService.getRewards(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final rewards = snapshot.data!;
-        if (rewards.isEmpty)
+        if (rewards.isEmpty) {
           return const Center(child: Text('No hay recompensas registradas.'));
+        }
         return ListView.separated(
           itemCount: rewards.length,
           separatorBuilder: (_, __) => const Divider(),
@@ -1333,13 +1355,16 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<List<Achievement>>(
       stream: _rewardService.getAchievements(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final achievements = snapshot.data!;
-        if (achievements.isEmpty)
+        if (achievements.isEmpty) {
           return const Center(child: Text('No hay logros registrados.'));
+        }
         return ListView.separated(
           itemCount: achievements.length,
           separatorBuilder: (_, __) => const Divider(),
@@ -1459,10 +1484,11 @@ class _AdminScreenState extends State<AdminScreen> {
                               )
                               .toList(),
                       onChanged: (val) {
-                        if (val != null)
+                        if (val != null) {
                           setState(
                             () => typeValue = val,
                           ); // Necesita ser StatefulBuilder o mover lógica al estado del diálogo
+                        }
                       },
                     ),
                     TextFormField(
@@ -1542,10 +1568,11 @@ class _AdminScreenState extends State<AdminScreen> {
         // selectedRewardId = allRewards.first.id; // Opcional: preseleccionar la primera recompensa al crear
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al cargar recompensas: $e')),
         );
+      }
       return; // No mostrar diálogo si fallan las recompensas
     }
 
@@ -1612,8 +1639,9 @@ class _AdminScreenState extends State<AdminScreen> {
                                   )
                                   .toList(),
                           onChanged: (val) {
-                            if (val != null)
+                            if (val != null) {
                               setDialogState(() => selectedRewardId = val);
+                            }
                           },
                           validator:
                               (v) =>
@@ -1634,12 +1662,13 @@ class _AdminScreenState extends State<AdminScreen> {
                     onPressed: () async {
                       if (!formKey.currentState!.validate()) return;
                       if (selectedRewardId == null) {
-                        if (mounted)
+                        if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Debe seleccionar una recompensa.'),
                             ),
                           );
+                        }
                         return;
                       }
                       final newAchievement = Achievement(
@@ -1710,13 +1739,16 @@ class _AdminScreenState extends State<AdminScreen> {
               .orderBy('order')
               .snapshots(), // Añadido orderBy
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final docs = snapshot.data!.docs;
-        if (docs.isEmpty)
+        if (docs.isEmpty) {
           return const Center(child: Text('No hay misiones registradas.'));
+        }
 
         return ListView.separated(
           itemCount: docs.length,
@@ -2240,45 +2272,69 @@ class _AdminScreenState extends State<AdminScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              ElevatedButton.icon(
-                                onPressed:
-                                    () => _applyHackPreset(doc.id, 'beginner'),
-                                icon: const Icon(Icons.child_care, size: 16),
-                                label: const Text('Principiante'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                  child: ElevatedButton.icon(
+                                    onPressed:
+                                        () => _applyHackPreset(doc.id, 'beginner'),
+                                    icon: const Icon(Icons.child_care, size: 16),
+                                    label: const Text('Principiante', 
+                                      style: TextStyle(fontSize: 11),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 8,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                              ElevatedButton.icon(
-                                onPressed:
-                                    () => _applyHackPreset(doc.id, 'advanced'),
-                                icon: const Icon(Icons.school, size: 16),
-                                label: const Text('Avanzado'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                  child: ElevatedButton.icon(
+                                    onPressed:
+                                        () => _applyHackPreset(doc.id, 'advanced'),
+                                    icon: const Icon(Icons.school, size: 16),
+                                    label: const Text('Avanzado',
+                                      style: TextStyle(fontSize: 11),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.orange,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 8,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                              ElevatedButton.icon(
-                                onPressed:
-                                    () => _applyHackPreset(doc.id, 'master'),
-                                icon: const Icon(Icons.emoji_events, size: 16),
-                                label: const Text('Maestro'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                                  child: ElevatedButton.icon(
+                                    onPressed:
+                                        () => _applyHackPreset(doc.id, 'master'),
+                                    icon: const Icon(Icons.emoji_events, size: 16),
+                                    label: const Text('Maestro',
+                                      style: TextStyle(fontSize: 11),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 8,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -2766,7 +2822,7 @@ class _AdminScreenState extends State<AdminScreen> {
     return StreamBuilder<DocumentSnapshot>(
       stream: _usersCol.doc(currentUserId).snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(
             child: Card(
               color: Colors.red.shade50,
@@ -2786,7 +2842,8 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
           );
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return const Center(
             child: Card(
               child: Padding(
@@ -2802,6 +2859,7 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
             ),
           );
+        }
 
         if (!snapshot.data!.exists) {
           return Center(
@@ -2882,11 +2940,15 @@ class _AdminScreenState extends State<AdminScreen> {
                                   size: 20,
                                 ),
                                 SizedBox(width: 4),
-                                Text(
-                                  '${unlockedAchievements.length} logros desbloqueados',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontWeight: FontWeight.w500,
+                                Expanded(
+                                  child: Text(
+                                    '${unlockedAchievements.length} logros desbloqueados',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade700,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -3193,11 +3255,11 @@ class _AdminScreenState extends State<AdminScreen> {
       print('DEBUG: Mapping ${doc.id} -> $achievementId');
     }
 
-    achievements.forEach((achievement) {
+    for (var achievement in achievements) {
       print(
         'DEBUG: Available achievement: ${achievement.id} - ${achievement.name}',
       );
-    });
+    }
 
     // Convertir currentAchievements (document IDs) a achievement IDs para la comparación
     final selectedAchievementIds =
