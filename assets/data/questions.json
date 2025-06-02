@@ -1,7 +1,7 @@
 [
   {
     "id": "q_constructor_4",
-    "text": "Observa: `public class Robot { String nombre; public Robot(String n) { nombre = n; } }`. ¿Cómo crearías un objeto Robot llamado 'WallE'?",
+    "text": "Observa el siguiente código:\n\n```java\npublic class Robot {\n    String nombre;\n    public Robot(String n) {\n        nombre = n;\n    }\n}\n```\n\n¿Cómo crearías un objeto Robot llamado 'WallE'?",
     "options": [
       "Robot wallE = Robot(\"WallE\");",
       "Robot wallE = new Robot(\"WallE\");",
@@ -27,7 +27,7 @@
   },
   {
     "id": "pregunta_bucle_for_java",
-    "text": "¿Cuántas veces se ejecutará el mensaje 'Ataque!' el siguiente código Java? for (int i = 0; i < 3; i++) { System.out.println(\"Ataque!\"); }",
+    "text": "¿Cuántas veces se ejecutará el mensaje 'Ataque!' en el siguiente código Java?\n\n```java\nfor (int i = 0; i < 3; i++) {\n    System.out.println(\"Ataque!\");\n}\n```",
     "options": [
       "0 veces",
       "1 vez",
@@ -157,7 +157,7 @@
   },
   {
     "id": "pregunta_llamar_metodo_java",
-    "text": "Dado el siguiente método en Java: public void mostrarMensaje() { System.out.println(\"¡Bienvenido a CodeQuest!\"); } ¿Cómo llamarías a este método para que imprima el mensaje?",
+    "text": "Dado el siguiente método en Java:\n\npublic void mostrarMensaje() {\n    System.out.println(\"¡Bienvenido a CodeQuest!\");\n}\n\n¿Cómo llamarías a este método para que imprima el mensaje?",
     "options": [
       "System.out.println(mostrarMensaje);",
       "mostrarMensaje();",
@@ -222,7 +222,7 @@
   },
   {
     "id": "pregunta_acceder_elemento_array_java",
-    "text": "Dado el siguiente array en Java: String[] nombresEnemigos = {\"Goblin\", \"Orco\", \"Esqueleto\"}; ¿Qué código imprimiría 'Orco' en la consola?",
+    "text": "Dado el siguiente array en Java:\n\n```java\nString[] nombresEnemigos = {\"Goblin\", \"Orco\", \"Esqueleto\"};\n```\n\n¿Qué código imprimiría 'Orco' en la consola?",
     "options": [
       "System.out.println(nombresEnemigos[1]);",
       "System.out.println(nombresEnemigos[2]);",
@@ -300,7 +300,7 @@
   },
   {
     "id": "pregunta_condicion_if_else_java",
-    "text": "Considera el siguiente código Java: int nivel = 7; if (nivel >= 10) { System.out.println(\"Eres un héroe legendario.\"); } else { System.out.println(\"Sigue entrenando.\"); } ¿Qué mensaje se imprimirá en la consola cuando se ejecute este código?",
+    "text": "Considera el siguiente código Java:\n\n```java\nint nivel = 7;\nif (nivel >= 10) {\n    System.out.println(\"Eres un héroe legendario.\");\n} else {\n    System.out.println(\"Sigue entrenando.\");\n}\n```\n\n¿Qué mensaje se imprimirá en la consola cuando se ejecute este código?",
     "options": [
       "Eres un héroe legendario.",
       "Sigue entrenando.",

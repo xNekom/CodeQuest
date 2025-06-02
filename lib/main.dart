@@ -23,6 +23,12 @@ import 'utils/error_handler.dart'; // Importar ErrorHandler
 import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
 import 'utils/platform_utils.dart'; // Importar PlatformUtils
 
+// Clave global para ScaffoldMessenger
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+// Clave global para Navigator
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   // Ejecutar la app dentro de una zona que captura errores
   runZonedGuarded(
@@ -67,6 +73,7 @@ void main() async {
 Widget _buildEmergencyApp(dynamic error, StackTrace stack) {
   return MaterialApp(
     title: 'CodeQuest - Modo de emergencia',
+    navigatorKey: navigatorKey,
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.blue,
@@ -162,9 +169,8 @@ class MyApp extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(
-                      context,
-                    ).pushNamedAndRemoveUntil('/home', (route) => false);
+                    // Usar el navigatorKey global para navegar desde el contexto de error
+                    navigatorKey.currentState?.pushNamedAndRemoveUntil('/home', (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -188,6 +194,10 @@ class MyApp extends StatelessWidget {
       initialRoute:
           '/', // Configurar el manejador de errores a nivel de navegación
       navigatorObservers: [ErrorHandlingNavigatorObserver()],
+      // Configurar Navigator global
+      navigatorKey: navigatorKey,
+      // Configurar ScaffoldMessenger global para snackbars
+      scaffoldMessengerKey: scaffoldMessengerKey,
       // Página que se muestra cuando se navega a una ruta que no existe
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
