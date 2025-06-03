@@ -158,7 +158,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
       try {
         await _userService.updateStatsAfterQuestion(userId, isCorrect);
       } catch (e) {
-        debugPrint('Error al actualizar estadísticas de pregunta: $e');
+        // debugPrint('Error al actualizar estadísticas de pregunta: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
     }
   }
@@ -205,28 +205,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
     setState(() {
       _isLoading = true;
     });
+
     try {
-      // Solo otorgar recompensas si no es una repetición
-      if (!widget.isReplay) {
-        await _userService.addExperience(
-          userId,
-          _experiencePoints,
-          missionId: widget.missionId,
-        );
-        await _userService.completeMission(
-          userId,
-          widget.missionId,
-          isBattleMission: false,
-        );
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (mounted) {
-        if (widget.isReplay) {
-          // Si es repetición, mostrar mensaje y volver al home
+      if (widget.isReplay) {
+        // Si es repetición, navegar inmediatamente sin operaciones de BD
+        setState(() {
+          _isLoading = false;
+        });
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -237,30 +223,37 @@ class _QuestionScreenState extends State<QuestionScreen> {
           Navigator.of(
             context,
           ).pushNamedAndRemoveUntil('/home', (route) => false);
-        } else {
-          // Si no es repetición, mostrar pantalla de misión completada
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder:
-                  (context) => MissionCompletedScreen(
-                    missionId: widget.missionId,
-                    missionName: _missionName,
-                    experiencePoints: _experiencePoints,
-                    coinsEarned: 10, // Monedas por misión de teoría
-                    isBattleMission: false,
-                    onContinue: () {
-                      // Navegar directamente al home con reemplazo completo
-                      Navigator.of(
-                        context,
-                      ).pushNamedAndRemoveUntil('/home', (route) => false);
-                    },
-                    // unlockedAchievement: ..., // Opcional
-                    // earnedReward: ..., // Opcional
-                  ),
-            ),
-          );
         }
+        return;
       }
+
+      // Navegar inmediatamente a la pantalla de recompensas
+      setState(() {
+        _isLoading = false;
+      });
+      
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MissionCompletedScreen(
+              missionId: widget.missionId,
+              missionName: _missionName,
+              experiencePoints: _experiencePoints,
+              coinsEarned: 10, // Monedas por misión de teoría
+              isBattleMission: false,
+              onContinue: () {
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/home', (route) => false);
+              },
+            ),
+          ),
+        );
+      }
+
+      // Ejecutar operaciones de base de datos en segundo plano
+      _processRewardsInBackground(userId);
+      
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -272,6 +265,28 @@ class _QuestionScreenState extends State<QuestionScreen> {
           ),
         );
       }
+    }
+  }
+
+  // Procesar recompensas en segundo plano sin bloquear la UI
+  void _processRewardsInBackground(String userId) async {
+    try {
+      // Ejecutar operaciones de BD de forma asíncrona
+      await Future.wait([
+        _userService.addExperience(
+          userId,
+          _experiencePoints,
+          missionId: widget.missionId,
+        ),
+        _userService.completeMission(
+          userId,
+          widget.missionId,
+          isBattleMission: false,
+        ),
+      ]);
+    } catch (e) {
+      // Manejar errores silenciosamente o mostrar notificación discreta
+      debugPrint('Error procesando recompensas en segundo plano');
     }
   }
 

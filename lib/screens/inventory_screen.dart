@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
-import '../models/item_model.dart';
+
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_art_background.dart';
 import '../widgets/tutorial_floating_button.dart';
@@ -22,7 +22,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   late User? _currentUser;
   bool _isLoading = true;
   List<Map<String, dynamic>> _inventoryItems = [];
-  String? _error;
+
   
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _inventoryListKey = GlobalKey();
@@ -92,7 +92,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         });
       }
     } catch (e) {
-      debugPrint('Error al cargar inventario: $e');
+      // debugPrint('Error al cargar inventario: $e'); // REMOVIDO PARA PRODUCCIÓN
       if (mounted) {
         setState(() {
           _isLoading = false;

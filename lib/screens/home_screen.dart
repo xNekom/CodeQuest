@@ -11,7 +11,7 @@ import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../utils/overflow_utils.dart';
 import '../widgets/test_error_widget.dart';
-import 'code_exercises_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

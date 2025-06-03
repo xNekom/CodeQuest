@@ -32,6 +32,9 @@ class TheoryScreen extends StatefulWidget {
 
 class _TheoryScreenState extends State<TheoryScreen> {
   final PageController _pageController = PageController();
+  final ScrollController _theoryScrollController = ScrollController();
+  final ScrollController _examplesScrollController = ScrollController();
+  final ScrollController _storyScrollController = ScrollController();
   int _currentPage = 0;
   bool _showTechnicalExplanation = false;
   MissionModel? mission;
@@ -64,6 +67,9 @@ class _TheoryScreenState extends State<TheoryScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _theoryScrollController.dispose();
+    _examplesScrollController.dispose();
+    _storyScrollController.dispose();
     super.dispose();
   }
 
@@ -254,6 +260,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return RawScrollbar(
+                    controller: _theoryScrollController,
                     thumbVisibility: true,
                     thickness: 12,
                     radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
@@ -264,6 +271,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
                     crossAxisMargin: 2,
                     mainAxisMargin: 4,
                     child: SingleChildScrollView(
+                      controller: _theoryScrollController,
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,
@@ -318,6 +326,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
           const SizedBox(height: 24),
           Expanded(
             child: RawScrollbar(
+              controller: _examplesScrollController,
               thumbVisibility: true,
               thickness: 12,
               radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
@@ -328,6 +337,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
               crossAxisMargin: 2,
               mainAxisMargin: 4,
               child: ListView.builder(
+                controller: _examplesScrollController,
                 itemCount: widget.examples!.length,
                 itemBuilder: (context, index) {
                   return Container(
@@ -398,6 +408,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return RawScrollbar(
+                    controller: _storyScrollController,
                     thumbVisibility: true,
                     thickness: 12,
                     radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
@@ -408,6 +419,7 @@ class _TheoryScreenState extends State<TheoryScreen> {
                     crossAxisMargin: 2,
                     mainAxisMargin: 4,
                     child: SingleChildScrollView(
+                      controller: _storyScrollController,
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,

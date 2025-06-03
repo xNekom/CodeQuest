@@ -79,6 +79,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/characters/
+    - assets/images/enemies/
     - assets/images/logo/
     - assets/backgrounds/
     - assets/data/questions.json

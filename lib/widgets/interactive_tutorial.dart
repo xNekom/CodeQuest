@@ -235,9 +235,9 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
 
     // Siempre centrar el tooltip en la pantalla para mantener consistencia visual
     // DEBUG: Centrando tooltip para mantener consistencia visual
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Positioned.fill(
+    return Positioned.fill(
+      child: FadeTransition(
+        opacity: _fadeAnimation,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),

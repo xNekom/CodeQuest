@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'reward_notification_service.dart';
@@ -76,7 +75,7 @@ class RewardService {
           .map((e) => Reward.fromMap(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      debugPrint('Error loading rewards from local JSON: $e');
+      // debugPrint('Error loading rewards from local JSON: $e'); // REMOVIDO PARA PRODUCCIÓN
       return [];
     }
   }
@@ -104,7 +103,7 @@ class RewardService {
           .map((e) => Achievement.fromMap(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      debugPrint('Error loading achievements from local JSON: $e');
+      // debugPrint('Error loading achievements from local JSON: $e'); // REMOVIDO PARA PRODUCCIÓN
       return [];
     }
   }
@@ -129,7 +128,7 @@ class RewardService {
     String userId,
     String missionId,
   ) async {
-    debugPrint("Verificando logros para misión: $missionId");
+    // debugPrint("Verificando logros para misión: $missionId"); // REMOVIDO PARA PRODUCCIÓN
 
     // Obtener logros que dependen de la misión - usar achievementType y requiredMissionIds juntos
     final snap =
@@ -138,7 +137,7 @@ class RewardService {
             .where('requiredMissionIds', arrayContains: missionId)
             .get();
 
-    debugPrint("Encontrados ${snap.docs.length} logros por misión");
+    // debugPrint("Encontrados ${snap.docs.length} logros por misión"); // REMOVIDO PARA PRODUCCIÓN
 
     final achievementsToCheck =
         snap.docs
@@ -148,19 +147,19 @@ class RewardService {
             .toList();
 
     for (var achievement in achievementsToCheck) {
-      debugPrint("Procesando logro: ${achievement.id} - ${achievement.name}");
+      // debugPrint("Procesando logro: ${achievement.id} - ${achievement.name}"); // REMOVIDO PARA PRODUCCIÓN
 
       if (await _isAchievementUnlocked(userId, achievement.id)) {
-        debugPrint("Logro ya desbloqueado: ${achievement.id}");
+        // debugPrint("Logro ya desbloqueado: ${achievement.id}"); // REMOVIDO PARA PRODUCCIÓN
         continue;
       }
 
       // Registrar en la subcolección y en users/{userId}.unlockedAchievements
-      debugPrint("Desbloqueando logro: ${achievement.id}");
+      // debugPrint("Desbloqueando logro: ${achievement.id}"); // REMOVIDO PARA PRODUCCIÓN
       await _unlockAchievementForUser(userId, achievement);
 
       // Otorgar recompensa según configuración Firebase
-      debugPrint("Otorgando recompensa: ${achievement.rewardId}");
+      // debugPrint("Otorgando recompensa: ${achievement.rewardId}"); // REMOVIDO PARA PRODUCCIÓN
       await _grantRewardToUser(userId, achievement.rewardId);
     }
   }
@@ -218,7 +217,7 @@ class RewardService {
   ) async {
     try {
       // Primero, intentar almacenar en la colección separada
-      debugPrint("Guardando logro en subcolección user_achievements");
+      // debugPrint("Guardando logro en subcolección user_achievements"); // REMOVIDO PARA PRODUCCIÓN
       await _userAchievementsCol
           .doc(userId)
           .collection('achievements')
@@ -233,24 +232,22 @@ class RewardService {
             'points': achievement.points,
           });
 
-      debugPrint("Logro guardado en subcolección correctamente");
+      // debugPrint("Logro guardado en subcolección correctamente"); // REMOVIDO PARA PRODUCCIÓN
     } catch (e) {
-      debugPrint("Error al guardar logro en subcolección: $e");
+      // debugPrint("Error al guardar logro en subcolección: $e"); // REMOVIDO PARA PRODUCCIÓN
       // No propagamos el error para continuar con la siguiente operación
     }
 
     try {
       // Segundo, intentar actualizar el array en el documento del usuario
-      debugPrint(
-        "Actualizando array unlockedAchievements en documento de usuario",
-      );
+      // debugPrint("Actualizando array unlockedAchievements en documento de usuario"); // REMOVIDO PARA PRODUCCIÓN
       await _firestore.collection('users').doc(userId).update({
         'unlockedAchievements': FieldValue.arrayUnion([achievement.id]),
       });
 
-      debugPrint("Array de logros actualizado correctamente");
+      // debugPrint("Array de logros actualizado correctamente"); // REMOVIDO PARA PRODUCCIÓN
     } catch (e) {
-      debugPrint("Error al actualizar array de logros: $e");
+      // debugPrint("Error al actualizar array de logros: $e"); // REMOVIDO PARA PRODUCCIÓN
       rethrow; // Propagamos este error ya que es crítico
     }
   }
@@ -321,22 +318,18 @@ class RewardService {
 
       return (enemiesDefeated?[enemyId] as int?) ?? 0;
     } catch (e) {
-      debugPrint('Error al obtener estadísticas de enemigos: $e');
+      // debugPrint('Error al obtener estadísticas de enemigos: $e'); // REMOVIDO PARA PRODUCCIÓN
       return 0;
     }
   }
 
   Stream<List<Achievement>> getUnlockedAchievements(String userId) {
     // Leer siempre desde el campo unlockedAchievements del documento de usuario
-    debugPrint('DEBUG getUnlockedAchievements: Starting for userId: $userId');
-    debugPrint(
-      'DEBUG getUnlockedAchievements: shouldUseFirebase: ${AppConfig.shouldUseFirebase}',
-    );
+    // debugPrint('DEBUG getUnlockedAchievements: Starting for userId: $userId'); // REMOVIDO PARA PRODUCCIÓN
+    // debugPrint('DEBUG getUnlockedAchievements: shouldUseFirebase: ${AppConfig.shouldUseFirebase}'); // REMOVIDO PARA PRODUCCIÓN
 
     if (!AppConfig.shouldUseFirebase) {
-      debugPrint(
-        'DEBUG getUnlockedAchievements: Firebase disabled, returning empty list',
-      );
+      // debugPrint('DEBUG getUnlockedAchievements: Firebase disabled, returning empty list'); // REMOVIDO PARA PRODUCCIÓN
       return Stream.value(<Achievement>[]);
     }
 
@@ -344,14 +337,10 @@ class RewardService {
       doc,
     ) async {
       try {
-        debugPrint(
-          'DEBUG getUnlockedAchievements: Document exists: ${doc.exists}',
-        );
+        // debugPrint('DEBUG getUnlockedAchievements: Document exists: ${doc.exists}'); // REMOVIDO PARA PRODUCCIÓN
         final data = doc.data();
-        debugPrint(
-          'DEBUG getUnlockedAchievements: User data exists: ${data != null}',
-        );
-        debugPrint('DEBUG getUnlockedAchievements: Full user data: $data');
+        // debugPrint('DEBUG getUnlockedAchievements: User data exists: ${data != null}'); // REMOVIDO PARA PRODUCCIÓN
+        // debugPrint('DEBUG getUnlockedAchievements: Full user data: $data'); // REMOVIDO PARA PRODUCCIÓN
 
         final ids =
             data == null
@@ -360,14 +349,10 @@ class RewardService {
                   (data['unlockedAchievements'] as List<dynamic>?) ?? [],
                 );
 
-        debugPrint(
-          'DEBUG getUnlockedAchievements: Found ${ids.length} achievement IDs: $ids',
-        );
+        // debugPrint('DEBUG getUnlockedAchievements: Found ${ids.length} achievement IDs: $ids'); // REMOVIDO PARA PRODUCCIÓN
 
         if (ids.isEmpty) {
-          debugPrint(
-            'DEBUG getUnlockedAchievements: No achievements found, returning empty list',
-          );
+          // debugPrint('DEBUG getUnlockedAchievements: No achievements found, returning empty list'); // REMOVIDO PARA PRODUCCIÓN
           return <Achievement>[];
         }
 
@@ -377,16 +362,14 @@ class RewardService {
         // Procesar en lotes de 10 (límite de Firestore whereIn)
         for (int i = 0; i < ids.length; i += 10) {
           final batch = ids.skip(i).take(10).toList();
-          debugPrint('DEBUG getUnlockedAchievements: Querying batch: $batch');
+          // debugPrint('DEBUG getUnlockedAchievements: Querying batch: $batch'); // REMOVIDO PARA PRODUCCIÓN
 
           final snap =
               await _achievementsCol
                   .where(FieldPath.documentId, whereIn: batch)
                   .get();
 
-          debugPrint(
-            'DEBUG getUnlockedAchievements: Found ${snap.docs.length} achievements in batch',
-          );
+          // debugPrint('DEBUG getUnlockedAchievements: Found ${snap.docs.length} achievements in batch'); // REMOVIDO PARA PRODUCCIÓN
 
           final batchAchievements =
               snap.docs
@@ -399,12 +382,10 @@ class RewardService {
           allAchievements.addAll(batchAchievements);
         }
 
-        debugPrint(
-          'DEBUG getUnlockedAchievements: Total achievements loaded: ${allAchievements.length}',
-        );
+        // debugPrint('DEBUG getUnlockedAchievements: Total achievements loaded: ${allAchievements.length}'); // REMOVIDO PARA PRODUCCIÓN
         return allAchievements;
       } catch (e) {
-        debugPrint('ERROR getUnlockedAchievements: $e');
+        // debugPrint('ERROR getUnlockedAchievements: $e'); // REMOVIDO PARA PRODUCCIÓN
         return <Achievement>[];
       }
     });

@@ -69,9 +69,9 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   /// Carga los ejercicios desde el servicio
   Future<void> _loadExercises() async {
     try {
-      debugPrint('🚀 Iniciando carga de ejercicios...');
+      // debugPrint('🚀 Iniciando carga de ejercicios...'); // REMOVIDO PARA PRODUCCIÓN
       final exercises = await _exerciseService.getAllExercises();
-      debugPrint('📚 Ejercicios recibidos: ${exercises.length}');
+      // debugPrint('📚 Ejercicios recibidos: ${exercises.length}'); // REMOVIDO PARA PRODUCCIÓN
 
       setState(() {
         _exercises = exercises;
@@ -80,10 +80,10 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
       });
 
       if (exercises.isEmpty) {
-        debugPrint('⚠️ Lista de ejercicios vacía');
+        // debugPrint('⚠️ Lista de ejercicios vacía'); // REMOVIDO PARA PRODUCCIÓN
       }
     } catch (e) {
-      debugPrint('❌ Error en _loadExercises: $e');
+      // debugPrint('❌ Error en _loadExercises: $e'); // REMOVIDO PARA PRODUCCIÓN
       setState(() {
         _error = 'Error al cargar los ejercicios: $e';
         _isLoading = false;
