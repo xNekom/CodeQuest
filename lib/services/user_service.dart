@@ -71,25 +71,24 @@ class UserService {
       int currentExp = userData['experience'] ?? 0;
       int currentLevel = userData['level'] ?? 1;
 
-      // Calcular experiencia máxima para el nivel actual
-      int maxExpForCurrentLevel = currentLevel * 100;
-
       // Calcular nueva experiencia
       int newExp = currentExp + experiencePoints;
 
       Map<String, dynamic> updateData = {};
 
-      // Verificar si excede la experiencia máxima del nivel actual
-      if (newExp >= maxExpForCurrentLevel) {
-        // No se puede ganar más experiencia hasta subir de nivel por misiones
-        // Mantener la experiencia en el máximo del nivel actual
-        updateData['experience'] = maxExpForCurrentLevel;
+      // Verificar si alcanza o supera los 400 XP (límite por nivel)
+      if (newExp >= 400) {
+        // Subir de nivel y resetear experiencia a 0
+        int newLevel = currentLevel + 1;
+        updateData['level'] = newLevel;
+        updateData['experience'] = 0;
+        updateData['coins'] = FieldValue.increment(200); // Bonificación por subir de nivel
 
-        // debugPrint('[UserService] Experiencia limitada al máximo del nivel $currentLevel: $maxExpForCurrentLevel XP'); // REMOVIDO PARA PRODUCCIÓN
-        // debugPrint('[UserService] Para subir de nivel, completa 3 misiones de teoría y 1 de batalla'); // REMOVIDO PARA PRODUCCIÓN
+        debugPrint('[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel!');
+        debugPrint('[UserService] Experiencia reseteada a 0 XP');
       } else {
         updateData['experience'] = newExp;
-        // debugPrint('[UserService] Experiencia actualizada: $newExp/$maxExpForCurrentLevel XP'); // REMOVIDO PARA PRODUCCIÓN
+        debugPrint('[UserService] Experiencia actualizada: $newExp/400 XP');
       }
 
       await _firestore.collection('users').doc(uid).update(updateData);
@@ -134,6 +133,7 @@ class UserService {
         userData['completedMissions'] ?? [],
       );
       int currentLevel = userData['level'] ?? 1;
+      int currentExp = userData['experience'] ?? 0;
 
       // Obtener información de todas las misiones para clasificarlas
       final missionsSnapshot = await _firestore.collection('missions').get();
@@ -177,41 +177,30 @@ class UserService {
 
       // Verificar si debe subir de nivel basado en misiones completadas
       if (newLevel > currentLevel) {
-        // Calcular experiencia redistribuida para el nuevo nivel
-        // Misiones de teoría restantes en el nivel actual (después de los grupos de 3)
-        int remainingTheoryMissions = theoryMissionsCompleted % 3;
-        // Experiencia base: 25 XP por misión de teoría restante, 50 XP por misión de batalla extra
-        int redistributedExp = (remainingTheoryMissions * 25);
-
-        // Si hay misiones de batalla extra (más allá de las necesarias para el nivel)
-        int extraBattleMissions = battleMissionsCompleted - completeLevels;
-        if (extraBattleMissions > 0) {
-          redistributedExp += (extraBattleMissions * 50);
-        }
-
-        // Limitar la experiencia al máximo del nuevo nivel
-        int maxExpForNewLevel = newLevel * 100;
-        redistributedExp = redistributedExp.clamp(0, maxExpForNewLevel);
-
+        // Con el nuevo sistema, simplemente subir de nivel y mantener experiencia actual
+        // Si la experiencia actual es >= 400, se reseteará a 0 en la próxima ganancia de XP
         Map<String, dynamic> updateData = {
           'level': newLevel,
-          'experience': redistributedExp, // Resetear y redistribuir experiencia
           'coins': FieldValue.increment(
             (newLevel - currentLevel) * 200,
           ), // Bonificación por subir de nivel
         };
 
+        // Solo resetear experiencia si está en 400 o más
+        if (currentExp >= 400) {
+          updateData['experience'] = 0;
+        }
+
         await _firestore.collection('users').doc(uid).update(updateData);
 
-        // debugPrint('[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel por misiones completadas!'); // REMOVIDO PARA PRODUCCIÓN
-        // debugPrint('[UserService] Misiones completadas: $theoryMissionsCompleted teoría, $battleMissionsCompleted batalla'); // REMOVIDO PARA PRODUCCIÓN
-        // debugPrint('[UserService] Experiencia redistribuida: $redistributedExp/$maxExpForNewLevel XP'); // REMOVIDO PARA PRODUCCIÓN
+        debugPrint('[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel por misiones completadas!');
+        debugPrint('[UserService] Misiones completadas: $theoryMissionsCompleted teoría, $battleMissionsCompleted batalla');
 
         // Actualizar puntuación en el leaderboard
         await _leaderboardService.updateUserScore(uid);
       }
     } catch (e) {
-      // debugPrint('[UserService] Error al verificar progreso de nivel: $e'); // REMOVIDO PARA PRODUCCIÓN
+      debugPrint('[UserService] Error al verificar progreso de nivel: $e');
     }
   }
 

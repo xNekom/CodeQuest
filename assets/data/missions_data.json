@@ -8,7 +8,7 @@
     "status": "disponible",
     "isRepeatable": false,
     "rewards": {
-      "experience": 30,
+      "experience": 75,
       "coins": 20,
       "items": [],
       "unlocks": [
@@ -66,7 +66,7 @@
       "completedMissionId": "mision_1_1"
     },
     "rewards": {
-      "experience": 35,
+      "experience": 75,
       "coins": 25,
       "items": [],
       "unlocks": [
@@ -135,7 +135,7 @@
       }
     ],
     "rewards": {
-      "experience": 40,
+      "experience": 75,
       "coins": 30,
       "items": [],
       "unlocks": [
@@ -187,7 +187,7 @@
       }
     ],
     "rewards": {
-      "experience": 45,
+      "experience": 75,
       "coins": 35,
       "items": [],
       "unlocks": [
@@ -239,7 +239,7 @@
       }
     ],
     "rewards": {
-      "experience": 50,
+      "experience": 75,
       "coins": 40,
       "items": [],
       "unlocks": [
@@ -291,7 +291,7 @@
       }
     ],
     "rewards": {
-      "experience": 55,
+      "experience": 75,
       "coins": 45,
       "items": [],
       "unlocks": [
@@ -344,7 +344,7 @@
       }
     ],
     "rewards": {
-      "experience": 50,
+      "experience": 175,
       "coins": 40,
       "items": [],
       "unlocks": [
@@ -384,7 +384,7 @@
       }
     ],
     "rewards": {
-      "experience": 60,
+      "experience": 175,
       "coins": 50,
       "items": [],
       "unlocks": []

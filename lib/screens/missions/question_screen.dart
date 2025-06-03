@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 // import 'package:cloud_firestore/cloud_firestore.dart'; // No se usa directamente aquí
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
@@ -36,7 +38,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool _isLoading = true;
   String _missionName = "";
   String _errorMessage = "";
-  final int _experiencePoints = 25;
+  int _experiencePoints = 0; // Se obtendrá de los datos de la misión
 
   int? _selectedOptionIndex; // Para rastrear la opción seleccionada
   bool _answerSubmitted =
@@ -50,6 +52,29 @@ class _QuestionScreenState extends State<QuestionScreen> {
   void initState() {
     super.initState();
     _loadMissionStructure();
+  }
+
+  // Método para obtener la experiencia directamente del JSON de la misión
+  Future<int> _getExperienceFromMissionData(String missionId) async {
+    try {
+      // Cargar el JSON directamente desde assets
+      final String jsonString = await rootBundle.loadString('assets/data/missions_data.json');
+      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      
+      // Buscar la misión por ID
+      for (var missionData in jsonList) {
+        if (missionData['id'] == missionId) {
+          // Acceder directamente al campo experience en rewards
+          return missionData['rewards']?['experience'] ?? 75;
+        }
+      }
+      
+      // Si no se encuentra la misión, devolver valor por defecto
+      return 100;
+    } catch (e) {
+      // En caso de error, devolver valor por defecto
+      return 100;
+    }
   }
 
   Future<void> _loadMissionStructure() async {
@@ -66,6 +91,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
       if (mission != null) {
         _missionName = mission.name;
+        // Obtener experiencia directamente del JSON de rewards
+        // El JSON tiene estructura: "rewards": {"experience": 75/175, "coins": 20, ...}
+        // Necesitamos acceder al JSON original ya que el modelo Reward no maneja esta estructura
+        _experiencePoints = await _getExperienceFromMissionData(widget.missionId);
         // [QS] Mission loaded: ${mission.name}. Objectives count: ${mission.objectives.length}
         mission.objectives.asMap().forEach((idx, obj) {
           // [QS] Objective $idx: type=${obj.type}, description=${obj.description}, questionIds=${obj.questionIds}

@@ -763,7 +763,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int _getCurrentLevelMaxExp() {
-    int currentLevel = _userData!['level'] ?? 1;
-    return currentLevel * 100; // Nivel actual * 100 es la experiencia requerida
+    return 400; // Cada nivel requiere 400 XP
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/enemy_model.dart';
@@ -45,6 +47,7 @@ class _BattleScreenState extends State<BattleScreen> {
   int _totalCorrectAnswers = 0;
   int _totalIncorrectAnswers = 0;
   bool _isProcessingNextQuestion = false; // Variable para evitar doble clic
+  int _missionExperience = 175; // Experiencia que otorga la misión de batalla
   @override
   void initState() {
     super.initState();
@@ -211,14 +214,9 @@ class _BattleScreenState extends State<BattleScreen> {
           final currentMissionId =
               userDoc.data()?['currentMissionId'] as String?;
           if (currentMissionId != null && currentMissionId.isNotEmpty) {
-            await _userService.completeMission(
-              userId,
-              currentMissionId,
-              isBattleMission: true,
-            );
             completedMissionId = currentMissionId;
 
-            // Obtener el nombre real de la misión
+            // Obtener el nombre real de la misión y experiencia
             try {
               final missionDoc =
                   await FirebaseFirestore.instance
@@ -226,11 +224,14 @@ class _BattleScreenState extends State<BattleScreen> {
                       .doc(currentMissionId)
                       .get();
               if (missionDoc.exists) {
-                missionName = missionDoc.data()?['name'] ?? missionName;
+                final missionData = missionDoc.data();
+                missionName = missionData?['name'] ?? missionName;
+                // Guardar experiencia para usar en las recompensas usando el método confiable
+                _missionExperience = await _getExperienceFromMissionData(currentMissionId);
               }
             } catch (e) {
               debugPrint(
-                '[BattleScreen] Error al obtener nombre de misión: $e',
+                '[BattleScreen] Error al obtener datos de misión: $e',
               );
             }
           }
@@ -348,7 +349,7 @@ class _BattleScreenState extends State<BattleScreen> {
                             (context) => MissionCompletedScreen(
                               missionId: completedMissionId!,
                               missionName: missionName,
-                              experiencePoints: 50, // Experiencia por batalla
+                              experiencePoints: _missionExperience, // Usar el valor actualizado
                               coinsEarned: 50, // Monedas por batalla
                               isBattleMission: true,
                               onContinue: () {
@@ -380,19 +381,47 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 
+  // Método para obtener la experiencia directamente del JSON de la misión
+  Future<int> _getExperienceFromMissionData(String missionId) async {
+    try {
+      // Cargar el JSON directamente desde assets
+      final String jsonString = await rootBundle.loadString('assets/data/missions_data.json');
+      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      
+      // Buscar la misión por ID
+      for (var missionData in jsonList) {
+        if (missionData['id'] == missionId) {
+          // Acceder directamente al campo experience en rewards
+          return missionData['rewards']?['experience'] ?? 175;
+        }
+      }
+      
+      // Si no se encuentra la misión, devolver valor por defecto
+      return 175;
+    } catch (e) {
+      // En caso de error, devolver valor por defecto
+      return 175;
+    }
+  }
+
   // Procesar recompensas de batalla en segundo plano sin bloquear la UI
   void _processBattleRewardsInBackground(String? missionId) async {
     final String? userId = _authService.currentUser?.uid;
     if (userId == null || missionId == null) return;
 
     try {
-      // Ejecutar operaciones de BD de forma asíncrona
+      // Obtener la experiencia correcta directamente del JSON
+      final int experiencePoints = await _getExperienceFromMissionData(missionId);
+      
+      // Primero otorgar experiencia antes de marcar como completada
+      await _userService.addExperience(
+        userId,
+        experiencePoints, // Experiencia correcta desde el JSON
+        missionId: missionId,
+      );
+      
+      // Luego ejecutar las demás operaciones
       await Future.wait([
-        _userService.addExperience(
-          userId,
-          50, // Experiencia por batalla
-          missionId: missionId,
-        ),
         _userService.completeMission(
           userId,
           missionId,
