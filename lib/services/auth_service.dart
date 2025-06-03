@@ -148,12 +148,7 @@ class AuthService {
           'enemiesDefeated': {},
           'totalEnemiesDefeated': 0,
         },
-        'characterStats': {
-          'health': 100,
-          'attack': 10,
-          'defense': 5,
-          'speed': 8,
-        },
+
         'createdAt': FieldValue.serverTimestamp(),
         'lastLogin': FieldValue.serverTimestamp(),
       });

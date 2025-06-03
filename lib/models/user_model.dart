@@ -28,7 +28,7 @@ class UserModel {
   Map<String, dynamic>? inventory; // Representa el inventario del jugador (ej. ítems y sus cantidades).
   List<String>? unlockedAbilities; // Lista de IDs de habilidades desbloqueadas por el jugador.
   Map<String, dynamic>? equippedItems; // Mapa de ítems equipados por el personaje (ej. 'arma': 'id_espada').
-  Map<String, dynamic>? characterStats; // Estadísticas específicas del personaje en combate (ej. batallas ganadas/perdidas).
+
   Map<String, dynamic>? stats; // Estadísticas generales del jugador (ej. preguntas respondidas, respuestas correctas).
   Map<String, dynamic>? difficultConcepts; // Registra conceptos con los que el usuario tiene dificultad, para aprendizaje adaptativo.
   Map<String, dynamic>? settings; // Configuraciones personalizadas del usuario (ej. volumen, notificaciones).
@@ -60,7 +60,7 @@ class UserModel {
     this.inventory,
     this.unlockedAbilities,
     this.equippedItems,
-    this.characterStats,
+
     this.stats,
     this.difficultConcepts,
     this.settings,
@@ -96,7 +96,7 @@ class UserModel {
               ?.map((e) => e.toString())
               .toList(),
       equippedItems: json['equippedItems'] as Map<String, dynamic>?,
-      characterStats: json['characterStats'] as Map<String, dynamic>?,
+
       stats:
           json['stats'] as Map<String, dynamic>? ??
           {
@@ -132,7 +132,7 @@ class UserModel {
       'inventory': inventory,
       'unlockedAbilities': unlockedAbilities,
       'equippedItems': equippedItems,
-      'characterStats': characterStats,
+
       'stats': stats,
       'difficultConcepts': difficultConcepts,
       'settings': settings,
