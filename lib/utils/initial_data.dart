@@ -24,7 +24,6 @@ class InitialData {
         description: 'Una pequeña cantidad de monedas de oro',
         type: 'coins',
         value: 50,
-        iconUrl: '',
         conditions: {},
       );
       await _rewardService.createReward(reward1);
@@ -36,7 +35,6 @@ class InitialData {
         description: 'Puntos de experiencia adicionales',
         type: 'experience',
         value: 100,
-        iconUrl: '',
         conditions: {},
       );
       await _rewardService.createReward(reward2);
@@ -54,7 +52,6 @@ class InitialData {
         id: 'achievement_first_enemy',
         name: 'Primer Adversario',
         description: 'Derrota tu primer enemigo de programación',
-        iconUrl: '',
         category: 'enemy',
         points: 10,
         conditions: {
@@ -71,7 +68,6 @@ class InitialData {
         id: 'achievement_bug_hunter',
         name: 'Cazador de Bugs',
         description: 'Derrota 3 enemigos de programación',
-        iconUrl: '',
         category: 'combat',
         points: 25,
         conditions: {

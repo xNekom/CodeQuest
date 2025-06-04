@@ -143,43 +143,10 @@ class AchievementCard extends StatelessWidget {
   }
 
   Widget _buildAchievementIcon() {
-    // Si el iconUrl es una ruta de asset local, usar Image.asset
-    if (achievement.iconUrl.startsWith('assets/')) {
-      return Image.asset(
-        achievement.iconUrl,
-        width: 32,
-        height: 32,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(
-            Icons.emoji_events,
-            size: 32,
-            color: PixelTheme.accentColor,
-          );
-        },
-      );
-    }
-    // Si es una URL de red, usar Image.network
-    else if (achievement.iconUrl.startsWith('http')) {
-      return Image.network(
-        achievement.iconUrl,
-        width: 32,
-        height: 32,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(
-            Icons.emoji_events,
-            size: 32,
-            color: PixelTheme.accentColor,
-          );
-        },
-      );
-    }
-    // Por defecto, mostrar icono
-    else {
-      return const Icon(
-        Icons.emoji_events,
-        size: 32,
-        color: PixelTheme.accentColor,
-      );
-    }
+    return const Icon(
+      Icons.emoji_events,
+      size: 32,
+      color: PixelTheme.accentColor,
+    );
   }
 }

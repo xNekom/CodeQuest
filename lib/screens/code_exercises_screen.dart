@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import '../models/code_exercise_model.dart';
 import '../services/code_exercise_service.dart';
+import '../services/reward_service.dart';
 import '../services/tutorial_service.dart';
 import '../widgets/code_playground.dart';
 import '../widgets/tutorial_floating_button.dart';
@@ -17,15 +19,17 @@ class CodeExercisesScreen extends StatefulWidget {
 
 class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   final CodeExerciseService _exerciseService = CodeExerciseService();
+  final RewardService _rewardService = RewardService();
+  final AuthService _authService = AuthService();
   List<CodeExerciseModel> _exercises = [];
   bool _isLoading = true;
   String? _error;
-  
+
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _exerciseListKey = GlobalKey();
-  final GlobalKey _searchBarKey = GlobalKey();
   final GlobalKey _backButtonKey = GlobalKey();
   final GlobalKey _difficultyFilterKey = GlobalKey();
+  final GlobalKey _searchBarKey = GlobalKey();
 
   @override
   void initState() {
@@ -93,16 +97,16 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
     }
   }
 
-  /// Navega al playground del ejercicio seleccionado
+  /// Abre el playground para un ejercicio específico
   void _openExercise(CodeExerciseModel exercise) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
             (context) => CodePlayground(
               exercise: exercise,
-              onComplete: () {
+              onComplete: () async {
                 Navigator.of(context).pop();
-                // Aquí podrías actualizar el progreso del usuario
+                await _handleExerciseCompletion(exercise);
                 _showCompletionMessage(exercise);
               },
             ),
@@ -110,15 +114,34 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
     );
   }
 
+  /// Maneja la completación de un ejercicio
+  Future<void> _handleExerciseCompletion(CodeExerciseModel exercise) async {
+    final currentUser = _authService.currentUser;
+    if (currentUser != null) {
+      try {
+        // Verificar y otorgar logros por completar el ejercicio
+        await _rewardService.checkAndUnlockCodeExerciseAchievements(
+          currentUser.uid,
+          exercise.exerciseId,
+        );
+      } catch (e) {
+        // Error silencioso para no interrumpir la experiencia del usuario
+        debugPrint('Error al verificar logros: $e');
+      }
+    }
+  }
+
   /// Muestra mensaje de completación del ejercicio
   void _showCompletionMessage(CodeExerciseModel exercise) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('¡Has completado "${exercise.title}"!'),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('¡Has completado "${exercise.title}"!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   /// Construye la tarjeta de un ejercicio

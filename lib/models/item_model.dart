@@ -3,7 +3,7 @@ class ItemModel {
   final String itemId; // ID único del ítem.
   final String name; // Nombre del ítem.
   final String description; // Descripción del ítem.
-  final String icon; // Ruta al archivo de icono del ítem.
+
   final String type; // Tipo de ítem (ej. 'potion', 'weapon', 'armor', 'material'). Define su uso o categoría.
   final String rarity; // Rareza del ítem (ej. 'común', 'raro', 'épico'). Puede influir en su valor o poder.
   final Map<String, dynamic> attributes; // Atributos adicionales específicos del ítem (ej. precio, estadísticas de ataque/defensa, efectos).
@@ -13,7 +13,7 @@ class ItemModel {
     required this.itemId,
     required this.name,
     required this.description,
-    required this.icon,
+
     required this.type,
     required this.rarity,
     required this.attributes,
@@ -24,7 +24,7 @@ class ItemModel {
     
     final name = remainingAttributes.remove('name') as String;
     final description = remainingAttributes.remove('description') as String;
-    final icon = remainingAttributes.remove('icon') as String;
+    remainingAttributes.remove('icon');
     final type = remainingAttributes.remove('type') as String;
     final rarity = remainingAttributes.remove('rareza') as String;
     
@@ -43,7 +43,6 @@ class ItemModel {
       itemId: itemId, // El ID del documento de Firestore
       name: name,
       description: description,
-      icon: icon,
       type: type,
       rarity: rarity,
       attributes: remainingAttributes, // Todos los demás campos van aquí
@@ -53,7 +52,7 @@ class ItemModel {
     return {
       'name': name,
       'description': description,
-      'icon': icon,
+
       'type': type,
       'rarity': rarity,
       ...attributes, // Expande todos los atributos adicionales

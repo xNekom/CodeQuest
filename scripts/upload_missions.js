@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Cargar la clave de servicio
-const serviceAccount = require('./assets/data/serviceAccountKey.json');
+const serviceAccount = require('../assets/data/serviceAccountKey.json');
 
 // Inicializar Firebase Admin
 admin.initializeApp({
@@ -17,7 +17,7 @@ async function uploadMissions() {
     console.log('=== SUBIENDO MISIONES A FIRESTORE ===\n');
     
     // Leer el archivo de misiones
-    const missionsPath = path.join(__dirname, 'assets/data/missions_data.json');
+    const missionsPath = path.join(__dirname, '../assets/data/missions_data.json');
     const missionsData = JSON.parse(fs.readFileSync(missionsPath, 'utf8'));
     
     console.log(`Encontradas ${missionsData.length} misiones para subir...\n`);
@@ -27,7 +27,7 @@ async function uploadMissions() {
       const mission = missionsData[i];
       const missionId = mission.missionId || mission.id;
       
-      console.log(`${i + 1}. Subiendo misión: ${mission.title} (${missionId})`);
+      console.log(`${i + 1}. Subiendo misión: ${mission.name || mission.title} (${missionId})`);
       
       try {
         await db.collection('missions').doc(missionId).set(mission);
@@ -45,7 +45,7 @@ async function uploadMissions() {
     
     snapshot.forEach(doc => {
       const data = doc.data();
-      console.log(`- ${doc.id}: ${data.title}`);
+      console.log(`- ${doc.id}: ${data.name || data.title}`);
     });
     
     console.log('\n✅ Proceso completado exitosamente');

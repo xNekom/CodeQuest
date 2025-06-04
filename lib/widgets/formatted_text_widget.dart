@@ -28,7 +28,7 @@ class FormattedTextWidget extends StatelessWidget {
       // No hay código, mostrar texto normal
       return Text(
         text,
-        style: style ?? Theme.of(context).textTheme.headlineSmall,
+        style: style ?? Theme.of(context).textTheme.bodyLarge,
         textAlign: textAlign,
       );
     }
@@ -44,7 +44,7 @@ class FormattedTextWidget extends StatelessWidget {
           widgets.add(
             Text(
               beforeText,
-              style: style ?? Theme.of(context).textTheme.headlineSmall,
+              style: style ?? Theme.of(context).textTheme.bodyLarge,
               textAlign: textAlign,
             ),
           );
@@ -89,7 +89,7 @@ class FormattedTextWidget extends StatelessWidget {
         widgets.add(
           Text(
             afterText,
-            style: style ?? Theme.of(context).textTheme.headlineSmall,
+            style: style ?? Theme.of(context).textTheme.bodyLarge,
             textAlign: textAlign,
           ),
         );

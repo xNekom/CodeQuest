@@ -310,17 +310,10 @@ class MissionCompletedScreen extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: Image.network(
-                reward.iconUrl,
-                width: 40,
-                height: 40,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    rewardIcon,
-                    color: rewardColor,
-                    size: 30,
-                  );
-                },
+              child: Icon(
+                rewardIcon,
+                color: rewardColor,
+                size: 30,
               ),
             ),
           ),

@@ -5,7 +5,7 @@ class Achievement {
   final String id; // Identificador único del logro.
   final String name; // Nombre visible del logro.
   final String description; // Descripción detallada de cómo obtener el logro.
-  final String iconUrl; // URL al icono del logro
+
   final List<String> requiredMissionIds; // IDs de las misiones necesarias para desbloquear
   final String rewardId; // ID de la recompensa otorgada
   final Timestamp? unlockedDate; // Fecha y hora en que el usuario desbloqueó el logro. Null si aún no se ha desbloqueado.
@@ -25,7 +25,7 @@ class Achievement {
     required this.id,
     required this.name,
     required this.description,
-    required this.iconUrl,
+
     required this.requiredMissionIds,
     required this.rewardId,
     required this.category,
@@ -40,7 +40,7 @@ class Achievement {
       'id': id,
       'name': name,
       'description': description,
-      'iconUrl': iconUrl,
+
       'requiredMissionIds': requiredMissionIds,
       'rewardId': rewardId,
       'category': category,
@@ -57,7 +57,7 @@ class Achievement {
       id: map['id'] is String ? map['id'] as String : throw ArgumentError('Invalid or missing "id"'),
       name: map['name'],
       description: map['description'],
-      iconUrl: map['iconUrl'],
+
       requiredMissionIds: map['requiredMissionIds'] is List
           ? List<String>.from(map['requiredMissionIds'])
           : [],

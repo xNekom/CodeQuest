@@ -292,12 +292,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
               ),
               child: unlocked
                   ? Center(
-                      child: Image.network(
-                        a.iconUrl,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.emoji_events, size: 48, color: Theme.of(context).colorScheme.tertiary);
-                        },
-                      ),
+                      child: Icon(Icons.emoji_events, size: 48, color: Theme.of(context).colorScheme.tertiary),
                     )
                   : const Center(
                       child: Icon(

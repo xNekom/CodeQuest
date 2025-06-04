@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/reward_model.dart';
+import '../models/achievement_model.dart';
 import '../widgets/reward_notification.dart';
 
 class RewardNotificationService {
@@ -14,6 +15,15 @@ class RewardNotificationService {
   // Método para mostrar una notificación de recompensa
   void showRewardNotification(Reward reward) {
     _rewardStreamController.add(reward);
+  }
+
+  // Método para mostrar una notificación de logro
+  void showAchievementNotification(Achievement achievement) {
+    // Por ahora, simplemente imprimimos el logro desbloqueado
+    // En una implementación completa, podrías mostrar una notificación específica para logros
+    print('🎉 ¡LOGRO DESBLOQUEADO: ${achievement.name}! 🎉');
+    print('📝 Descripción: ${achievement.description}');
+    print('🏆 Puntos: ${achievement.points}');
   }
 
   // Método para mostrar la notificación en la UI
