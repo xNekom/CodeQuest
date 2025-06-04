@@ -49,6 +49,8 @@ dependencies:
   flutter_code_editor: ^0.3.0
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
+  # Audio
+  audioplayers: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +84,7 @@ flutter:
     - assets/images/enemies/
     - assets/images/logo/
     - assets/backgrounds/
+    - assets/music/
     - assets/data/questions.json
     - assets/data/code_exercises.json
     - assets/data/items_data.json

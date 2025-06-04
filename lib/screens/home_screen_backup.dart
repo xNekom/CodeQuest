@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
@@ -214,9 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Text(
+          Text(
             'CODEQUEST',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: GoogleFonts.pressStart2p(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const Spacer(),
           Flexible(

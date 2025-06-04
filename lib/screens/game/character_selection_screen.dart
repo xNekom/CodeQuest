@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
 import '../../widgets/character_asset.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 class CharacterSelectionScreen extends StatefulWidget {
   const CharacterSelectionScreen({super.key});
@@ -87,13 +88,10 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEditing
-              ? 'Editar Selección de Personaje'
-              : 'Selección de Personaje',
-        ),
-      ), // Título dinámico
+      appBar: const PixelAppBar(
+        title: 'Selecciona tu Personaje',
+        titleFontSize: 12,
+      ),
 
       body: SafeArea(
         child: LayoutBuilder(
@@ -193,26 +191,34 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                                   : null,
                     ),
                     SizedBox(height: isPortrait ? 6 : 12),
-                    DropdownButtonFormField<String>(
-                      key: _customizationKey,
-                      value: _selectedProgrammingRole,
-                      decoration: const InputDecoration(
-                        labelText: 'Rol de Programación',
-                        helperText:
-                            'Selecciona tu especialidad en programación',
+                    SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        key: _customizationKey,
+                        value: _selectedProgrammingRole,
+                        decoration: const InputDecoration(
+                          labelText: 'Rol de Programación',
+                          helperText:
+                              'Selecciona tu especialidad en programación',
+                        ),
+                        isExpanded: true,
+                        items:
+                            _programmingRoles.map((role) {
+                              return DropdownMenuItem(
+                                value: role,
+                                child: Text(
+                                  role,
+                                  style: const TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                        onChanged: (v) {
+                          if (v != null) {
+                            setState(() => _selectedProgrammingRole = v);
+                          }
+                        },
                       ),
-                      items:
-                          _programmingRoles.map((role) {
-                            return DropdownMenuItem(
-                              value: role,
-                              child: Text(role),
-                            );
-                          }).toList(),
-                      onChanged: (v) {
-                        if (v != null) {
-                          setState(() => _selectedProgrammingRole = v);
-                        }
-                      },
                     ),
                     SizedBox(height: isPortrait ? 6 : 16),
                     ElevatedButton(

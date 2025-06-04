@@ -6,6 +6,7 @@ import '../services/tutorial_service.dart';
 
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_art_background.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
 
@@ -118,16 +119,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'INVENTARIO',
-          style: TextStyle(
-            fontFamily: 'PixelFont',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        elevation: 0,
+      appBar: PixelAppBar(
+        title: 'INVENTARIO',
         leading: IconButton(
           key: _backButtonKey,
           icon: const Icon(Icons.arrow_back),

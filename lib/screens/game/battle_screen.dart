@@ -11,7 +11,9 @@ import '../../services/enemy_service.dart';
 import '../../services/user_service.dart';
 import '../../services/reward_service.dart';
 import '../../services/auth_service.dart';
+import '../../services/audio_service.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../widgets/pixel_app_bar.dart';
 import 'package:codequest/widgets/formatted_text_widget.dart';
 import '../mission_completed_screen.dart';
 
@@ -52,6 +54,8 @@ class _BattleScreenState extends State<BattleScreen> {
   void initState() {
     super.initState();
     _questionIds = widget.battleConfig.questionIds;
+    // Asegurar que la música de batalla continúe durante las preguntas
+    AudioService().playBattleTheme();
     _loadInitialData();
   }
 
@@ -185,6 +189,11 @@ class _BattleScreenState extends State<BattleScreen> {
     bool victory = _totalCorrectAnswers >= (_questionIds.length * 0.6);
     String? completedMissionId;
     String missionName = 'Batalla contra ${_currentEnemy?.name ?? "Enemigo"}';
+
+    // Reproducir música de victoria si ganó
+    if (victory) {
+      AudioService().playVictoryTheme();
+    }
 
     if (victory) {
       final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -437,11 +446,10 @@ class _BattleScreenState extends State<BattleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      title: Text(
-        'Batalla - Pregunta ${_currentQuestionIndex + 1}/${_questionIds.length}',
-      ),
+    final appBar = PixelAppBar(
+      title: 'Batalla - Pregunta ${_currentQuestionIndex + 1}/${_questionIds.length}',
       backgroundColor: Theme.of(context).colorScheme.primary,
+      titleFontSize: 12,
     );
 
     if (_isLoading || _currentQuestion == null) {
@@ -807,5 +815,12 @@ class _BattleScreenState extends State<BattleScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Regresar a la música principal al salir de la batalla
+    AudioService().playMainTheme();
+    super.dispose();
   }
 }

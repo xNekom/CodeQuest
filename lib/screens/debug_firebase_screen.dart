@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/code_exercise_model.dart';
 import '../config/app_config.dart';
+import '../widgets/pixel_app_bar.dart';
 
 class DebugFirebaseScreen extends StatefulWidget {
   const DebugFirebaseScreen({super.key});
@@ -118,10 +119,13 @@ class _DebugFirebaseScreenState extends State<DebugFirebaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Debug Firebase'),
-        backgroundColor: Colors.red[800],
-        foregroundColor: Colors.white,
+      appBar: PixelAppBar(
+        title: 'Debug Firebase',
+        backgroundColor: Colors.orange[800],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

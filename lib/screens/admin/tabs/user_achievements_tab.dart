@@ -66,47 +66,54 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
             elevation: 4,
             child: Padding(
               padding: EdgeInsets.all(16),
-              child: Row(
+              child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.blue,
-                    child: Icon(
-                      Icons.person,
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.userData!['username'] ?? 'Usuario',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.blue,
+                        child: Icon(
+                          Icons.person,
+                          size: 30,
+                          color: Colors.white,
                         ),
-                        Text(
-                          'Logros desbloqueados: ${unlockedAchievements.length}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                            overflow: TextOverflow.visible,
-                          ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.userData!['username'] ?? 'Usuario',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Logros desbloqueados: ${unlockedAchievements.length}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () => _showManageMyAchievementsDialog(),
-                    icon: Icon(Icons.edit),
-                    label: Text('Gestionar'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
+                  SizedBox(height: 16),
+                  Center(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showManageMyAchievementsDialog(),
+                      icon: Icon(Icons.edit, size: 18),
+                      label: Text('Gestionar'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      ),
                     ),
                   ),
                 ],
@@ -185,47 +192,53 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
                       child: Padding(
                         padding: EdgeInsets.all(8),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(
-                              Icons.emoji_events,
-                              size: 32,
-                              color: Colors.amber,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              achievementData['name'] ?? 'Sin nombre',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.emoji_events,
+                                    size: 32,
+                                    color: Colors.amber,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Flexible(
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                      child: Text(
+                                        achievementData['name'] ?? 'Logro sin nombre',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[800],
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              achievementData['description'] ?? 'Sin descripción',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey[600],
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(height: 8),
-                            ElevatedButton(
-                              onPressed: () => _removeMyAchievement(achievementId),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                minimumSize: Size(double.infinity, 24),
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              ),
-                              child: Text(
-                                'Eliminar',
-                                style: TextStyle(fontSize: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 32,
+                              child: ElevatedButton(
+                                onPressed: () => _removeMyAchievement(achievementId),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                ),
+                                child: Text(
+                                  'Eliminar',
+                                  style: TextStyle(fontSize: 12),
+                                ),
                               ),
                             ),
                           ],

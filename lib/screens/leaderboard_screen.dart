@@ -4,6 +4,7 @@ import '../services/leaderboard_service.dart';
 import '../services/tutorial_service.dart';
 import '../models/leaderboard_entry_model.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
 
@@ -85,18 +86,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'TABLA DE CLASIFICACIÓN',
-          style: TextStyle(
-            fontFamily: 'PixelFont',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: PixelAppBar(
+        title: 'TABLA DE CLASIFICACIÓN',
         leading: IconButton(
           key: _backButtonKey,
           icon: const Icon(Icons.arrow_back),

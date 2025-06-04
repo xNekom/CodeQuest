@@ -7,6 +7,7 @@ import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../widgets/tutorial_floating_button.dart';
 
 class ShopScreen extends StatefulWidget {
@@ -110,9 +111,8 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('TIENDA'),
-        centerTitle: true,
+      appBar: PixelAppBar(
+        title: 'TIENDA',
         leading: IconButton(
           key: _backButtonKey,
           icon: const Icon(Icons.arrow_back),

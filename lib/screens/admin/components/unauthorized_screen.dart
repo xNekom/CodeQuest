@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../widgets/pixel_app_bar.dart';
 
 class UnauthorizedScreen extends StatelessWidget {
   const UnauthorizedScreen({super.key});
@@ -6,9 +7,8 @@ class UnauthorizedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Acceso Denegado'),
-        automaticallyImplyLeading: false,
+      appBar: const PixelAdminAppBar(
+        title: 'Acceso Denegado',
       ),
       body: Center(
         child: Column(
