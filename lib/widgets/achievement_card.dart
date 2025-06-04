@@ -1,6 +1,7 @@
 // ignore_for_file: use_super_parameters, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../models/achievement_model.dart';
 import '../theme/pixel_theme.dart';
 
@@ -143,6 +144,13 @@ class AchievementCard extends StatelessWidget {
   }
 
   Widget _buildAchievementIcon() {
+    if (achievement.iconUrl != null && achievement.iconUrl!.isNotEmpty) {
+      return SvgPicture.asset(
+        achievement.iconUrl!,
+        width: 32,
+        height: 32,
+      );
+    }
     return const Icon(
       Icons.emoji_events,
       size: 32,

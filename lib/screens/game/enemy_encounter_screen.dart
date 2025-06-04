@@ -373,14 +373,17 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                 children: [
                                   Icon(Icons.flash_on, color: Colors.white),
                                   const SizedBox(width: 8),
-                                  const Text(
-                                    '¡ENTRAR EN BATALLA!',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                                  Flexible(
+                                     child: Text(
+                                       '¡ENTRAR EN BATALLA!',
+                                       style: TextStyle(
+                                         color: Colors.white,
+                                         fontWeight: FontWeight.bold,
+                                         fontSize: 14,
+                                       ),
+                                       textAlign: TextAlign.center,
+                                     ),
+                                   ),
                                 ],
                               ),
                             ),

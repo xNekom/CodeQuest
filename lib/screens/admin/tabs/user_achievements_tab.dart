@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/achievement_model.dart';
+import '../../../config/app_config.dart';
+import '../../../services/reward_service.dart';
 
 class UserAchievementsTab extends StatefulWidget {
   final CollectionReference usersCol;
@@ -20,6 +24,66 @@ class UserAchievementsTab extends StatefulWidget {
 }
 
 class _UserAchievementsTabState extends State<UserAchievementsTab> {
+  final RewardService _rewardService = RewardService();
+  List<Achievement> _unlockedAchievements = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUnlockedAchievements();
+  }
+
+  Future<void> _loadUnlockedAchievements() async {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId != null) {
+      if (AppConfig.shouldUseFirebase) {
+        // Usar datos de Firebase (userData)
+        final unlockedIds = List<String>.from(
+          widget.userData?['unlockedAchievements'] ?? [],
+        );
+        
+        if (unlockedIds.isNotEmpty) {
+          final List<Achievement> achievements = [];
+          for (final id in unlockedIds) {
+            try {
+              final doc = await widget.achievementsCol.doc(id).get();
+              if (doc.exists) {
+                final data = doc.data() as Map<String, dynamic>;
+                achievements.add(Achievement.fromMap(data));
+              }
+            } catch (e) {
+              // Error loading achievement
+            }
+          }
+          setState(() {
+            _unlockedAchievements = achievements;
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _unlockedAchievements = [];
+            _isLoading = false;
+          });
+        }
+      } else {
+        // Usar datos locales de SharedPreferences
+        _rewardService.getUnlockedAchievements(currentUserId).listen((achievements) {
+          if (mounted) {
+            setState(() {
+              _unlockedAchievements = achievements;
+              _isLoading = false;
+            });
+          }
+        });
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
@@ -39,22 +103,18 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
       );
     }
 
-    if (widget.userData == null) {
+    if (_isLoading) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text('Cargando datos del usuario...'),
+            Text('Cargando logros del usuario...'),
           ],
         ),
       );
     }
-
-    final unlockedAchievements = List<String>.from(
-      widget.userData!['unlockedAchievements'] ?? [],
-    );
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
@@ -85,18 +145,20 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.userData!['username'] ?? 'Usuario',
+                              widget.userData?['username'] ?? 'Usuario',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              'Logros desbloqueados: ${unlockedAchievements.length}',
+                              'Logros desbloqueados: ${_unlockedAchievements.length}',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[600],
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -129,7 +191,7 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
             ),
           ),
           SizedBox(height: 8),
-          if (unlockedAchievements.isEmpty)
+          if (_unlockedAchievements.isEmpty)
             Card(
               child: Padding(
                 padding: EdgeInsets.all(32),
@@ -164,88 +226,64 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
               ),
-              itemCount: unlockedAchievements.length,
+              itemCount: _unlockedAchievements.length,
               itemBuilder: (context, index) {
-                final achievementId = unlockedAchievements[index];
-                return FutureBuilder<DocumentSnapshot>(
-                  future: widget.achievementsCol.doc(achievementId).get(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Card(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
+                final achievement = _unlockedAchievements[index];
+                final achievementData = achievement.toMap();
 
-                    final achievementData = snapshot.data!.data() as Map<String, dynamic>?;
-                    if (achievementData == null) {
-                      return Card(
-                        child: Center(
-                          child: Text('Logro no encontrado'),
-                        ),
-                      );
-                    }
-
-                    return Card(
-                      elevation: 2,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.emoji_events,
-                                    size: 32,
-                                    color: Colors.amber,
-                                  ),
-                                  SizedBox(height: 8),
-                                  Flexible(
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                      child: Text(
-                                        achievementData['name'] ?? 'Logro sin nombre',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey[800],
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                return Card(
+                  elevation: 2,
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildAchievementIcon(achievementData),
+                              SizedBox(height: 8),
+                              Flexible(
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: Text(
+                                    achievement.name,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey[800],
                                     ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 32,
-                              child: ElevatedButton(
-                                onPressed: () => _removeMyAchievement(achievementId),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                ),
-                                child: Text(
-                                  'Eliminar',
-                                  style: TextStyle(fontSize: 12),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                        SizedBox(
+                          width: double.infinity,
+                          height: 32,
+                          child: ElevatedButton(
+                            onPressed: () => _removeMyAchievement(achievement.id),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            ),
+                            child: Text(
+                              'Eliminar',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
@@ -324,11 +362,14 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
                     children: [
                       Icon(Icons.person, color: Colors.blue),
                       SizedBox(width: 8),
-                      Text(
-                        widget.userData!['username'] ?? 'Usuario',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
+                      Flexible(
+                        child: Text(
+                          widget.userData!['username'] ?? 'Usuario',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -440,7 +481,12 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               children: [
                 Icon(Icons.error, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Usuario no autenticado'),
+                Expanded(
+                  child: Text(
+                    'Usuario no autenticado',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.red,
@@ -454,9 +500,17 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     
     try {
-      await widget.usersCol.doc(currentUserId).update({
-        'unlockedAchievements': achievements,
-      });
+      if (AppConfig.shouldUseFirebase) {
+        // Modo Firebase
+        await widget.usersCol.doc(currentUserId).update({
+          'unlockedAchievements': achievements,
+        });
+      } else {
+        // Modo local
+        final prefs = await SharedPreferences.getInstance();
+        final key = 'user_${currentUserId}_unlocked_achievements';
+        await prefs.setStringList(key, achievements);
+      }
 
       if (mounted) {
         scaffoldMessenger.showSnackBar(
@@ -465,12 +519,20 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               children: [
                 Icon(Icons.check_circle, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Mis logros actualizados correctamente'),
+                Flexible(
+                  child: Text(
+                    'Mis logros actualizados correctamente',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.green,
           ),
         );
+        
+        // Recargar los logros
+        _loadUnlockedAchievements();
       }
     } catch (e) {
       if (mounted) {
@@ -490,6 +552,8 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     }
   }
 
+
+
   // Remover uno de mis logros
   Future<void> _removeMyAchievement(String achievementId) async {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
@@ -501,7 +565,12 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               children: [
                 Icon(Icons.error, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Usuario no autenticado'),
+                Expanded(
+                  child: Text(
+                    'Usuario no autenticado',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.red,
@@ -524,11 +593,18 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               children: [
                 Icon(Icons.warning, color: Colors.orange),
                 SizedBox(width: 8),
-                Text('Confirmar eliminación'),
+                Flexible(
+                  child: Text(
+                    'Confirmar eliminación',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             content: Text(
               '¿Estás seguro de que quieres eliminar el logro "$achievementId"?',
+              overflow: TextOverflow.visible,
+              softWrap: true,
             ),
             actions: [
               TextButton(
@@ -550,9 +626,24 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     if (confirmed != true) return;
     
     try {
-      await widget.usersCol.doc(currentUserId).update({
-        'unlockedAchievements': FieldValue.arrayRemove([achievementId]),
-      });
+      if (AppConfig.shouldUseFirebase) {
+        // Modo Firebase
+        await widget.usersCol.doc(currentUserId).update({
+          'unlockedAchievements': FieldValue.arrayRemove([achievementId]),
+        });
+      } else {
+        // Modo local
+        final prefs = await SharedPreferences.getInstance();
+        final key = 'user_${currentUserId}_unlocked_achievements';
+        final currentAchievements = prefs.getStringList(key) ?? [];
+        
+        // Remover el achievement de la lista
+        currentAchievements.remove(achievementId);
+        
+        // Guardar en SharedPreferences
+        await prefs.setStringList(key, currentAchievements);
+      }
+      
       if (mounted) {
         scaffoldMessenger.showSnackBar(
           SnackBar(
@@ -560,12 +651,20 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               children: [
                 Icon(Icons.check_circle, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Logro "$achievementId" eliminado'),
+                Expanded(
+                  child: Text(
+                    'Logro "$achievementId" eliminado',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.orange,
           ),
         );
+        
+        // Recargar los logros
+        _loadUnlockedAchievements();
       }
     } catch (e) {
       if (mounted) {
@@ -575,7 +674,12 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               children: [
                 Icon(Icons.error, color: Colors.white),
                 SizedBox(width: 8),
-                Text('Error al eliminar logro: $e'),
+                Expanded(
+                  child: Text(
+                    'Error al eliminar logro: $e',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             backgroundColor: Colors.red,
@@ -583,5 +687,29 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
         );
       }
     }
+  }
+
+  // Método para construir el icono del achievement
+  Widget _buildAchievementIcon(Map<String, dynamic> achievementData) {
+    final iconUrl = achievementData['iconUrl'] as String?;
+    
+    if (iconUrl != null && iconUrl.isNotEmpty) {
+      return SvgPicture.asset(
+        iconUrl,
+        width: 32,
+        height: 32,
+        placeholderBuilder: (context) => const Icon(
+          Icons.emoji_events,
+          size: 32,
+          color: Colors.amber,
+        ),
+      );
+    }
+    
+    return const Icon(
+      Icons.emoji_events,
+      size: 32,
+      color: Colors.amber,
+    );
   }
 }

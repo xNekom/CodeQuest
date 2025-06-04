@@ -81,7 +81,7 @@ class _RewardsTabState extends State<RewardsTab> {
               
               return ListView.separated(
                 itemCount: rewards.length,
-                separatorBuilder: (_, __) => const Divider(),
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final reward = rewards[index];
                   return ListTile(
@@ -351,7 +351,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
               
               return ListView.separated(
                 itemCount: achievements.length,
-                separatorBuilder: (_, __) => const Divider(),
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final achievement = achievements[index];
                   return ListTile(

@@ -13,7 +13,7 @@
     "unlockedAbilities": [],
     "equippedItems": {},
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "createdAt": {
       "_seconds": 1749124347,
       "_nanoseconds": 571000000
@@ -52,7 +52,7 @@
   },
   {
     "id": "6zdYbNRFhsPttEatolyQoMwZIhv1",
-    "adminRole": "user",
+    "adminRole": "admin",
     "coins": 0,
     "completedMissions": [],
     "currentMissionId": "",
@@ -111,7 +111,7 @@
     "equippedItems": {},
     "unlockedAchievements": [],
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,
@@ -153,7 +153,7 @@
     "unlockedAchievements": [],
     "characterAssetIndex": 0,
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,
@@ -175,7 +175,7 @@
   },
   {
     "id": "KELgd989oJScQvBnOt39sfsvwi42",
-    "adminRole": "user",
+    "adminRole": "admin",
     "coins": 0,
     "completedMissions": [],
     "currentMissionId": "",
@@ -234,7 +234,7 @@
     "equippedItems": {},
     "unlockedAchievements": [],
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,
@@ -270,7 +270,7 @@
     "unlockedAbilities": [],
     "equippedItems": {},
     "unlockedAchievements": [],
-    "adminRole": "user",
+    "adminRole": "admin",
     "createdAt": {
       "_seconds": 1748880459,
       "_nanoseconds": 763000000
@@ -301,7 +301,7 @@
   },
   {
     "id": "UURjhLmUr9ZVEakjCxn59mLHFgr1",
-    "adminRole": "user",
+    "adminRole": "admin",
     "coins": 0,
     "completedMissions": [],
     "currentMissionId": "",
@@ -342,7 +342,7 @@
   },
   {
     "id": "WHe8BiU0XqOmN2cu7Ns6SaJtu0N2",
-    "adminRole": "user",
+    "adminRole": "admin",
     "characterAssetIndex": 0,
     "coins": 0,
     "completedMissions": [],
@@ -402,7 +402,7 @@
     "unlockedAchievements": [],
     "characterAssetIndex": 0,
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,
@@ -442,7 +442,7 @@
     "equippedItems": {},
     "unlockedAchievements": [],
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,
@@ -534,7 +534,7 @@
     "id": "kKiQuR2LvIdvVV3tYeulX7Ogbf13",
     "email": "test1@gmail.com",
     "username": "test1",
-    "role": "user",
+    "role": "admin",
     "currentMissionId": "",
     "progressInMission": {},
     "completedMissions": [],
@@ -549,7 +549,7 @@
     "unlockedAbilities": [],
     "equippedItems": {},
     "unlockedAchievements": [],
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,
@@ -592,7 +592,7 @@
     "unlockedAchievements": [],
     "characterAssetIndex": 0,
     "programmingRole": "Desarrollador Full Stack",
-    "adminRole": "user",
+    "adminRole": "admin",
     "stats": {
       "questionsAnswered": 0,
       "correctAnswers": 0,

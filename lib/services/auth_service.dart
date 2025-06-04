@@ -138,7 +138,6 @@ class AuthService {
         'unlockedAchievements': [],
         'characterAssetIndex': 0,
         'programmingRole': 'Desarrollador Full Stack',
-        'adminRole': 'user',
         'characterSelected': false,
         'stats': {
           'questionsAnswered': 0,

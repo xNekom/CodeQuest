@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
+import '../services/item_service.dart';
+import '../models/item_model.dart';
 
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_art_background.dart';
@@ -21,9 +23,11 @@ class InventoryScreen extends StatefulWidget {
 class _InventoryScreenState extends State<InventoryScreen> {
   final AuthService _authService = AuthService();
   final UserService _userService = UserService();
+  final ItemService _itemService = ItemService();
   late User? _currentUser;
   bool _isLoading = true;
   List<Map<String, dynamic>> _inventoryItems = [];
+  Map<String, ItemModel> _itemsDatabase = {};
 
   
   // GlobalKeys para el sistema de tutoriales
@@ -86,10 +90,14 @@ class _InventoryScreenState extends State<InventoryScreen> {
     }
 
     try {
+      // Primero cargar la base de datos de items
+      final items = await _itemService.getItems();
+      _itemsDatabase = {for (var item in items) item.itemId: item};
+      
       final userData = await _userService.getUserData(_currentUser!.uid);
       if (mounted) {
         setState(() {
-          _inventoryItems = _extractInventoryItems(userData);
+          _inventoryItems = _extractAndEnrichInventoryItems(userData);
           _isLoading = false;
         });
       }
@@ -115,6 +123,27 @@ class _InventoryScreenState extends State<InventoryScreen> {
     if (items == null) return [];
 
     return items.map((item) => item as Map<String, dynamic>).toList();
+  }
+
+  List<Map<String, dynamic>> _extractAndEnrichInventoryItems(
+    Map<String, dynamic>? userData,
+  ) {
+    final baseItems = _extractInventoryItems(userData);
+    
+    return baseItems.map((item) {
+      final itemId = item['itemId'] as String?;
+      if (itemId != null && _itemsDatabase.containsKey(itemId)) {
+        final itemData = _itemsDatabase[itemId]!;
+        return {
+          ...item,
+          'name': itemData.name,
+          'description': itemData.description,
+          'type': itemData.type,
+          'rarity': itemData.rarity,
+        };
+      }
+      return item;
+    }).toList();
   }
 
   @override
@@ -204,25 +233,22 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return Padding(
       key: _inventoryListKey,
       padding: const EdgeInsets.all(16),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.8,
-        ),
+      child: ListView.builder(
         itemCount: _inventoryItems.length,
         itemBuilder: (context, index) {
           final item = _inventoryItems[index];
-          return _buildInventoryItemCard(item, index == 0 ? _itemCardKey : null);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _buildInventoryItemCard(item, index == 0 ? _itemCardKey : null),
+          );
         },
       ),
     );
   }
 
   Widget _buildInventoryItemCard(Map<String, dynamic> item, [GlobalKey? key]) {
-    final String itemName =
-        item['name'] ?? item['itemId'] ?? 'Item Desconocido';
+    final String itemName = item['name'] ?? 'Item Desconocido';
+    final String itemDescription = item['description'] ?? 'Sin descripción disponible';
     final int quantity = item['quantity'] ?? 1;
     final String rarity = item['rarity'] ?? 'common';
 
@@ -232,9 +258,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
       onTap: () => _showItemDetails(item),
       child: Container(
         key: key,
+        constraints: const BoxConstraints(minHeight: 80),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
           border: Border.all(color: rarityColor, width: 2),
           boxShadow: [
             BoxShadow(
@@ -247,61 +274,93 @@ class _InventoryScreenState extends State<InventoryScreen> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
               // Icono del item
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: rarityColor.withAlpha(51),
+                  borderRadius: BorderRadius.circular(PixelTheme.borderRadiusSmall),
+                ),
+                child: Icon(
+                  _getItemIcon(item),
+                  size: 32,
+                  color: rarityColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Información del item
               Expanded(
-                flex: 3,
-                child: Center(
-                  child: Container(
-                    width: 60,
-                    height: 60,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Nombre del item
+                    OverflowUtils.safeText(
+                      itemName,
+                      style: TextStyle(
+                        fontFamily: 'PixelFont',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 4),
+                    // Descripción del item
+                    OverflowUtils.safeText(
+                      itemDescription,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurface.withAlpha(179),
+                      ),
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+              ),
+              // Información lateral (cantidad y rareza)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Cantidad
+                  if (quantity > 1)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withAlpha(51),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'x$quantity',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 4),
+                  // Rareza
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: rarityColor.withAlpha(51),
-                      borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(
-                      _getItemIcon(item),
-                      size: 40,
-                      color: rarityColor,
+                    child: Text(
+                      _getRarityDisplayName(rarity),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: rarityColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Nombre del item
-              OverflowUtils.safeText(
-                itemName,
-                style: TextStyle(
-                  fontFamily: 'PixelFont',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 4),
-              // Cantidad
-              if (quantity > 1)
-                Text(
-                  'x$quantity',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(179),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              // Rareza
-              Text(
-                _getRarityDisplayName(rarity),
-                style: TextStyle(
-                  fontSize: 10,
-                  color: rarityColor,
-                  fontWeight: FontWeight.bold,
-                ),
+                ],
               ),
             ],
           ),
@@ -352,10 +411,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
   }
 
   void _showItemDetails(Map<String, dynamic> item) {
-    final String itemName =
-        item['name'] ?? item['itemId'] ?? 'Item Desconocido';
-    final String itemDescription =
-        item['description'] ?? 'Sin descripción disponible';
+    final String itemName = item['name'] ?? 'Item Desconocido';
+    final String itemDescription = item['description'] ?? 'Sin descripción disponible';
     final int quantity = item['quantity'] ?? 1;
     final String rarity = item['rarity'] ?? 'common';
     final String type = item['type'] ?? 'misc';
@@ -373,42 +430,61 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: _getRarityColor(rarity).withAlpha(51),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: _getRarityColor(rarity),
-                        width: 2,
+            content: Container(
+              width: double.maxFinite,
+              constraints: const BoxConstraints(
+                maxHeight: 400, // Altura máxima fija para todo el contenido
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: _getRarityColor(rarity).withAlpha(51),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: _getRarityColor(rarity),
+                            width: 2,
+                          ),
+                        ),
+                        child: Icon(
+                          _getItemIcon(item),
+                          size: 50,
+                          color: _getRarityColor(rarity),
+                        ),
                       ),
                     ),
-                    child: Icon(
-                      _getItemIcon(item),
-                      size: 50,
-                      color: _getRarityColor(rarity),
+                    const SizedBox(height: 16),
+                    // Descripción del item
+                    Text(
+                      'Descripción:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.onSurface.withAlpha(179),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 4),
+                    Text(
+                      itemDescription,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDetailRow('Cantidad', 'x$quantity'),
+                    _buildDetailRow('Rareza', _getRarityDisplayName(rarity)),
+                    _buildDetailRow('Tipo', _getTypeDisplayName(type)),
+                    const SizedBox(height: 16), // Espacio adicional al final
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  itemDescription,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _buildDetailRow('Cantidad', 'x$quantity'),
-                _buildDetailRow('Rareza', _getRarityDisplayName(rarity)),
-                _buildDetailRow('Tipo', _getTypeDisplayName(type)),
-              ],
+              ),
             ),
             actions: [
               TextButton(

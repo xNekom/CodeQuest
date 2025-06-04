@@ -5,6 +5,7 @@ class Achievement {
   final String id; // Identificador único del logro.
   final String name; // Nombre visible del logro.
   final String description; // Descripción detallada de cómo obtener el logro.
+  final String? iconUrl; // URL del icono del logro (archivo SVG).
 
   final List<String> requiredMissionIds; // IDs de las misiones necesarias para desbloquear
   final String rewardId; // ID de la recompensa otorgada
@@ -25,6 +26,7 @@ class Achievement {
     required this.id,
     required this.name,
     required this.description,
+    this.iconUrl,
 
     required this.requiredMissionIds,
     required this.rewardId,
@@ -40,6 +42,7 @@ class Achievement {
       'id': id,
       'name': name,
       'description': description,
+      'iconUrl': iconUrl,
 
       'requiredMissionIds': requiredMissionIds,
       'rewardId': rewardId,
@@ -57,6 +60,7 @@ class Achievement {
       id: map['id'] is String ? map['id'] as String : throw ArgumentError('Invalid or missing "id"'),
       name: map['name'],
       description: map['description'],
+      iconUrl: map['iconUrl'] as String?,
 
       requiredMissionIds: map['requiredMissionIds'] is List
           ? List<String>.from(map['requiredMissionIds'])

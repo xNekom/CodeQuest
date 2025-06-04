@@ -435,16 +435,15 @@ class _MissionListScreenState extends State<MissionListScreen> {
                 ),
                 trailing:
                     isCompleted
-                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        ? null // Eliminar el icono duplicado para misiones completadas
                         : (isUnlocked
                             ? const Icon(Icons.arrow_forward_ios)
                             : null),
                 onTap:
-                    isUnlocked
+                    (isUnlocked || isCompleted)
                         ? () {
                           Navigator.push(
                             context,
-                            // Reemplaza FadePageRoute con MaterialPageRoute si FadePageRoute no está definido o causa problemas
                             MaterialPageRoute(
                               builder:
                                   (context) => MissionDetailScreen(
@@ -453,7 +452,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
                             ),
                           );
                         }
-                        : null, // Deshabilitar onTap solo si está bloqueada
+                        : null, // Deshabilitar onTap solo si está bloqueada y no completada
               ),
             );
           },

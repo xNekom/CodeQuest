@@ -1,5 +1,5 @@
-// import 'package:audioplayers/audioplayers.dart'; // Comentado temporalmente
-// import 'package:flutter/foundation.dart'; // Comentado temporalmente - no utilizado
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 
 class AudioService {
@@ -7,18 +7,17 @@ class AudioService {
   factory AudioService() => _instance;
   AudioService._internal();
 
-  // final AudioPlayer _backgroundPlayer = AudioPlayer(); // Comentado temporalmente
-  // final AudioPlayer _effectPlayer = AudioPlayer(); // Comentado temporalmente
+  final AudioPlayer _backgroundPlayer = AudioPlayer();
+  final AudioPlayer _effectPlayer = AudioPlayer();
   
   bool _isBackgroundMusicEnabled = true;
   bool _areSoundEffectsEnabled = true;
   double _backgroundVolume = 0.5;
   double _effectVolume = 0.7;
   
-  // Campos comentados temporalmente - funcionalidad de audio deshabilitada
-  // String? _currentBackgroundTrack;
-  // bool _isInitialized = false;
-  // StreamSubscription<void>? _victoryCompleteSubscription;
+  String? _currentBackgroundTrack;
+  bool _isInitialized = false;
+  StreamSubscription<void>? _victoryCompleteSubscription;
 
   // Getters
   bool get isBackgroundMusicEnabled => _isBackgroundMusicEnabled;
@@ -27,8 +26,6 @@ class AudioService {
   double get effectVolume => _effectVolume;
 
   Future<void> initialize() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
-    /*
     if (_isInitialized) return;
     
     try {
@@ -45,57 +42,50 @@ class AudioService {
       await playMainTheme();
     } catch (e) {
       if (kDebugMode) {
-        print('Error initializing audio service: $e');
+        debugPrint('Error initializing audio service: $e');
       }
     }
-    */
   }
 
   Future<void> playMainTheme() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
-    /*
     if (!_isBackgroundMusicEnabled) return;
     
     try {
       await _backgroundPlayer.stop();
+      await _backgroundPlayer.setReleaseMode(ReleaseMode.loop);
       await _backgroundPlayer.play(AssetSource('music/main_theme.mp3'));
       _currentBackgroundTrack = 'main_theme';
       
       if (kDebugMode) {
-        print('Playing main theme');
+        debugPrint('Playing main theme in loop');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error playing main theme: $e');
+        debugPrint('Error playing main theme: $e');
       }
     }
-    */
   }
 
   Future<void> playBattleTheme() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
-    /*
     if (!_isBackgroundMusicEnabled || _currentBackgroundTrack == 'battle_theme') return;
     
     try {
       await _backgroundPlayer.stop();
+      await _backgroundPlayer.setReleaseMode(ReleaseMode.loop);
       await _backgroundPlayer.play(AssetSource('music/battle_theme.mp3'));
       _currentBackgroundTrack = 'battle_theme';
       
       if (kDebugMode) {
-        print('Playing battle theme');
+        debugPrint('Playing battle theme in loop');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error playing battle theme: $e');
+        debugPrint('Error playing battle theme: $e');
       }
     }
-    */
   }
 
   Future<void> playVictoryTheme() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
-    /*
     if (!_areSoundEffectsEnabled) return;
     
     try {
@@ -107,65 +97,181 @@ class AudioService {
       await _effectPlayer.play(AssetSource('music/victory_theme.mp3'));
       
       if (kDebugMode) {
-        print('Playing victory theme');
+        debugPrint('Playing victory theme');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error playing victory theme: $e');
+        debugPrint('Error playing victory theme: $e');
       }
     }
-    */
   }
 
   Future<void> playClickSound() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    if (!_areSoundEffectsEnabled) return;
+    
+    try {
+      await _effectPlayer.play(AssetSource('music/tap_sound.mp3'));
+      
+      if (kDebugMode) {
+        debugPrint('Playing click sound');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error playing click sound: $e');
+      }
+    }
   }
 
   Future<void> playSuccessSound() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    if (!_areSoundEffectsEnabled) return;
+    
+    try {
+      await _effectPlayer.play(AssetSource('music/tap_sound.mp3'));
+      
+      if (kDebugMode) {
+        debugPrint('Playing success sound');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error playing success sound: $e');
+      }
+    }
   }
 
   Future<void> playErrorSound() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    if (!_areSoundEffectsEnabled) return;
+    
+    try {
+      await _effectPlayer.play(AssetSource('music/tap_sound.mp3'));
+      
+      if (kDebugMode) {
+        debugPrint('Playing error sound');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error playing error sound: $e');
+      }
+    }
   }
 
   Future<void> stopBackgroundMusic() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    try {
+      await _backgroundPlayer.stop();
+      _currentBackgroundTrack = null;
+      
+      if (kDebugMode) {
+        debugPrint('Background music stopped');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error stopping background music: $e');
+      }
+    }
   }
 
   Future<void> stopAllAudio() async {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    try {
+      await _backgroundPlayer.stop();
+      await _effectPlayer.stop();
+      await _victoryCompleteSubscription?.cancel();
+      _currentBackgroundTrack = null;
+      
+      if (kDebugMode) {
+        debugPrint('All audio stopped');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error stopping all audio: $e');
+      }
+    }
   }
 
   Future<void> setBackgroundMusicEnabled(bool enabled) async {
     _isBackgroundMusicEnabled = enabled;
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    
+    if (!enabled) {
+      await stopBackgroundMusic();
+    } else if (_isInitialized) {
+      await playMainTheme();
+    }
   }
 
   Future<void> setSoundEffectsEnabled(bool enabled) async {
     _areSoundEffectsEnabled = enabled;
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    
+    if (!enabled) {
+      await _effectPlayer.stop();
+    }
   }
 
   Future<void> setBackgroundVolume(double volume) async {
     _backgroundVolume = volume.clamp(0.0, 1.0);
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    
+    try {
+      await _backgroundPlayer.setVolume(_backgroundVolume);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error setting background volume: $e');
+      }
+    }
   }
 
   Future<void> setEffectVolume(double volume) async {
     _effectVolume = volume.clamp(0.0, 1.0);
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    
+    try {
+      await _effectPlayer.setVolume(_effectVolume);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error setting effect volume: $e');
+      }
+    }
   }
 
   void pauseOnAppBackground() {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    try {
+      _backgroundPlayer.pause();
+      _effectPlayer.pause();
+      
+      if (kDebugMode) {
+        debugPrint('Audio paused on app background');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error pausing audio on app background: $e');
+      }
+    }
   }
 
   void resumeOnAppForeground() {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    try {
+      if (_isBackgroundMusicEnabled && _currentBackgroundTrack != null) {
+        _backgroundPlayer.resume();
+      }
+      
+      if (kDebugMode) {
+        debugPrint('Audio resumed on app foreground');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error resuming audio on app foreground: $e');
+      }
+    }
   }
 
   void dispose() {
-    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    try {
+      _victoryCompleteSubscription?.cancel();
+      _backgroundPlayer.dispose();
+      _effectPlayer.dispose();
+      
+      if (kDebugMode) {
+        debugPrint('Audio service disposed');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error disposing audio service: $e');
+      }
+    }
   }
 }

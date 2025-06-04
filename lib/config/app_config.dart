@@ -4,5 +4,5 @@
 class AppConfig {
   /// Define si se usa Firebase (`true`) o datos locales (`false`).
   /// ATENCIÓN: Revisar config de Firebase si es `true`.
-  static const bool shouldUseFirebase = false; 
+  static const bool shouldUseFirebase = true; 
 }
