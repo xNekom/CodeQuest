@@ -21,13 +21,13 @@ class AchievementCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: PixelTheme.spacingSmall, horizontal: PixelTheme.spacingMedium),
         decoration: BoxDecoration(
           color:
               isUnlocked
                   ? PixelTheme.secondaryColor.withValues(alpha: 0.7)
                   : Colors.grey.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
           border: Border.all(
             color: isUnlocked ? PixelTheme.accentColor : Colors.grey.shade600,
             width: 2,
@@ -57,7 +57,7 @@ class AchievementCard extends StatelessWidget {
                       isUnlocked
                           ? Theme.of(context).colorScheme.surface
                           : Colors.black38,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                   border: Border.all(
                     color:
                         isUnlocked

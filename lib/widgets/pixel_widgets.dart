@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/pixel_theme.dart';
 
 /// Botón personalizado con estilo pixel art
 class PixelButton extends StatefulWidget {
@@ -80,7 +81,7 @@ class _PixelButtonState extends State<PixelButton> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               elevation: 0,
               shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(0)),
+                borderRadius: BorderRadius.all(Radius.circular(PixelTheme.borderRadiusSmall)),
               ),
             ),
             child: Center(child: widget.child),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/code_exercise_model.dart';
 import '../utils/overflow_utils.dart';
 import 'pixel_app_bar.dart';
+import '../theme/pixel_theme.dart';
 
 /// Widget del playground de código donde el usuario completa líneas faltantes
 class CodePlayground extends StatefulWidget {
@@ -216,7 +217,9 @@ class _CodePlaygroundState extends State<CodePlayground> {
               children: [
                 Icon(Icons.celebration, color: Colors.amber[600]),
                 const SizedBox(width: 8),
-                const Text('¡Excelente!'),
+                const Expanded(
+                  child: Text('¡Excelente!'),
+                ),
               ],
             ),
             content: Column(
@@ -328,7 +331,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Colors.purple[25],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.purple[200]!),
                         ),
                         child: Column(
@@ -379,7 +382,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.purple[300]!),
                         ),
                         child: Column(
@@ -461,7 +464,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(PixelTheme.borderRadiusSmall + 2),
                                   border: Border.all(color: Colors.blue[200]!),
                                 ),
                                 child: Row(
@@ -597,7 +600,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.green[300]!),
                         ),
                         child: Text(
@@ -647,7 +650,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.grey[50],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.grey[300]!),
                         ),
                         child: Column(
@@ -926,12 +929,14 @@ class _CodePlaygroundState extends State<CodePlayground> {
                             size: 20,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            'Error de compilación:',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red[700],
-                              fontSize: 16,
+                          Expanded(
+                            child: Text(
+                              'Error de compilación:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red[700],
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ],
@@ -942,7 +947,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusSmall),
                           border: Border.all(color: Colors.red[300]!),
                         ),
                         child: Text(

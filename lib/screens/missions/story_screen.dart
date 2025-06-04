@@ -49,7 +49,10 @@ class _StoryScreenState extends State<StoryScreen> {
   Widget build(BuildContext context) {
     if (widget.storyPages.isEmpty) {
       return Scaffold(
-        appBar: const PixelAppBar(title: 'Teoría de la Misión'),
+        appBar: const PixelAppBar(
+          title: 'Teoría de la Misión',
+          titleFontSize: 12,
+        ),
         body: const Center(child: Text('No hay páginas de historia disponibles.')),
       );
     }

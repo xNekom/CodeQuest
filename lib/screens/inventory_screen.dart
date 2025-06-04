@@ -9,6 +9,7 @@ import '../widgets/pixel_art_background.dart';
 import '../widgets/pixel_app_bar.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
+import '../theme/pixel_theme.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -169,7 +170,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withAlpha(204),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
         border: Border.all(
           color: Theme.of(context).colorScheme.tertiary,
           width: 2,
@@ -233,7 +234,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         key: key,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
           border: Border.all(color: rarityColor, width: 2),
           boxShadow: [
             BoxShadow(
@@ -258,7 +259,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     height: 60,
                     decoration: BoxDecoration(
                       color: rarityColor.withAlpha(51),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                     ),
                     child: Icon(
                       _getItemIcon(item),
@@ -421,7 +422,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: PixelTheme.spacingXSmall),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

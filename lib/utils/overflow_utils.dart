@@ -397,7 +397,10 @@ class OverflowUtils {
           const SizedBox(height: 8),
           TextButton.icon(
             icon: const Icon(Icons.lock_reset),
-            label: const Text('Cambiar Contraseña'),
+            label: flexibleText(
+              'Cambiar Contraseña',
+              maxLines: 2,
+            ),
             onPressed: onChangePassword,
           ),
         ],

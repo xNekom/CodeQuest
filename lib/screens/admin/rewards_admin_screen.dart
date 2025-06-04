@@ -186,23 +186,27 @@ class _RewardsTabState extends State<RewardsTab> {
                   decoration: const InputDecoration(labelText: 'URL del Icono'),
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedType,
-                  decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
-                  items: const [
-                    DropdownMenuItem(value: 'points', child: Text('Puntos')),
-                    DropdownMenuItem(value: 'item', child: Text('Objeto')),
-                    DropdownMenuItem(value: 'badge', child: Text('Insignia')),
-                    DropdownMenuItem(value: 'coins', child: Text('Monedas')),
-                    DropdownMenuItem(value: 'experience', child: Text('Experiencia')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedType = value;
-                      });
-                    }
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedType,
+                    decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(value: 'points', child: Text('Puntos', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'item', child: Text('Objeto', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'badge', child: Text('Insignia', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'coins', child: Text('Monedas', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'experience', child: Text('Experiencia', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedType = value;
+                        });
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -425,23 +429,27 @@ class _AchievementsTabState extends State<AchievementsTab> {
                   decoration: const InputDecoration(labelText: 'URL del Icono'),
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedCategory,
-                  decoration: const InputDecoration(labelText: 'Categoría'),
-                  items: const [
-                    DropdownMenuItem(value: 'general', child: Text('General')),
-                    DropdownMenuItem(value: 'enemy', child: Text('Enemigos')),
-                    DropdownMenuItem(value: 'mission', child: Text('Misiones')),
-                    DropdownMenuItem(value: 'combat', child: Text('Combate')),
-                    DropdownMenuItem(value: 'exploration', child: Text('Exploración')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedCategory = value;
-                      });
-                    }
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    decoration: const InputDecoration(labelText: 'Categoría'),
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(value: 'general', child: Text('General', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'enemy', child: Text('Enemigos', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'mission', child: Text('Misiones', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'combat', child: Text('Combate', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'exploration', child: Text('Exploración', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedCategory = value;
+                        });
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -459,18 +467,26 @@ class _AchievementsTabState extends State<AchievementsTab> {
                     
                     final rewards = snapshot.data!;
                     
-                    return DropdownButtonFormField<String>(
-                      value: selectedRewardId.isEmpty ? null : selectedRewardId,
-                      decoration: const InputDecoration(labelText: 'Recompensa'),
-                      items: rewards.map((reward) => DropdownMenuItem(
-                        value: reward.id,
-                        child: Text(reward.name),
-                      )).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedRewardId = value ?? '';
-                        });
-                      },
+                    return SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        value: selectedRewardId.isEmpty ? null : selectedRewardId,
+                        decoration: const InputDecoration(labelText: 'Recompensa'),
+                        isExpanded: true,
+                        items: rewards.map((reward) => DropdownMenuItem(
+                          value: reward.id,
+                          child: Text(
+                            reward.name,
+                            style: const TextStyle(fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRewardId = value ?? '';
+                          });
+                        },
+                      ),
                     );
                   },
                 ),
