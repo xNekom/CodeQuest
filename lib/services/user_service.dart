@@ -307,8 +307,42 @@ class UserService {
   // Añadir un item al inventario
   Future<void> addItemToInventory(String uid, Map<String, dynamic> item) async {
     try {
+      // Obtener el inventario actual del usuario
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      if (!userDoc.exists) {
+        throw Exception('Usuario no encontrado');
+      }
+
+      final userData = userDoc.data() as Map<String, dynamic>;
+      final inventory = userData['inventory'] as Map<String, dynamic>? ?? {};
+      final items = List<Map<String, dynamic>>.from(inventory['items'] ?? []);
+      
+      final itemId = item['itemId'] as String;
+      final quantityToAdd = item['quantity'] as int? ?? 1;
+      
+      // Buscar si el item ya existe en el inventario
+      bool itemFound = false;
+      for (int i = 0; i < items.length; i++) {
+        if (items[i]['itemId'] == itemId) {
+          // El item ya existe, incrementar la cantidad
+          final currentQuantity = items[i]['quantity'] as int? ?? 1;
+          items[i]['quantity'] = currentQuantity + quantityToAdd;
+          itemFound = true;
+          break;
+        }
+      }
+      
+      // Si el item no existe, añadirlo al inventario
+      if (!itemFound) {
+        items.add({
+          'itemId': itemId,
+          'quantity': quantityToAdd,
+        });
+      }
+      
+      // Actualizar el inventario en Firestore
       await _firestore.collection('users').doc(uid).update({
-        'inventory.items': FieldValue.arrayUnion([item]),
+        'inventory.items': items,
       });
     } catch (e) {
       // debugPrint('Error al añadir item al inventario: $e'); // REMOVIDO PARA PRODUCCIÓN

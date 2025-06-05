@@ -38,31 +38,47 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
     if (currentUserId != null) {
       if (AppConfig.shouldUseFirebase) {
-        // Usar datos de Firebase (userData)
-        final unlockedIds = List<String>.from(
-          widget.userData?['unlockedAchievements'] ?? [],
-        );
-        
-        if (unlockedIds.isNotEmpty) {
-          final List<Achievement> achievements = [];
-          for (final id in unlockedIds) {
-            try {
-              final doc = await widget.achievementsCol.doc(id).get();
-              if (doc.exists) {
-                final data = doc.data() as Map<String, dynamic>;
-                achievements.add(Achievement.fromMap(data));
+        // Recargar datos actualizados del usuario desde Firebase
+        try {
+          final userDoc = await widget.usersCol.doc(currentUserId).get();
+          if (userDoc.exists) {
+            final updatedUserData = userDoc.data() as Map<String, dynamic>;
+            final unlockedIds = List<String>.from(
+              updatedUserData['unlockedAchievements'] ?? [],
+            );
+            
+            if (unlockedIds.isNotEmpty) {
+              final List<Achievement> achievements = [];
+              for (final id in unlockedIds) {
+                try {
+                  final doc = await widget.achievementsCol.doc(id).get();
+                  if (doc.exists) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    achievements.add(Achievement.fromMap(data));
+                  }
+                } catch (e) {
+                  // Error loading achievement
+                }
               }
-            } catch (e) {
-              // Error loading achievement
+              setState(() {
+                _unlockedAchievements = achievements;
+                _isLoading = false;
+              });
+            } else {
+              setState(() {
+                _unlockedAchievements = [];
+                _isLoading = false;
+              });
             }
+          } else {
+            setState(() {
+              _unlockedAchievements = [];
+              _isLoading = false;
+            });
           }
+        } catch (e) {
+          // Error al recargar datos del usuario
           setState(() {
-            _unlockedAchievements = achievements;
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _unlockedAchievements = [];
             _isLoading = false;
           });
         }
@@ -307,10 +323,22 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     // Crear mapeo de document ID a achievement ID
     final docIdToAchievementId = await _createDocumentToAchievementMapping();
 
-    // Obtener logros actuales del usuario
-    final currentAchievements = List<String>.from(
-      widget.userData!['unlockedAchievements'] ?? [],
-    );
+    // Obtener logros actuales del usuario (datos actualizados)
+    List<String> currentAchievements = [];
+    try {
+      final userDoc = await widget.usersCol.doc(currentUserId).get();
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        currentAchievements = List<String>.from(
+          userData['unlockedAchievements'] ?? [],
+        );
+      }
+    } catch (e) {
+      // Error al obtener datos del usuario, usar datos del widget como fallback
+      currentAchievements = List<String>.from(
+        widget.userData?['unlockedAchievements'] ?? [],
+      );
+    }
 
     // Crear lista de logros seleccionados (usando document IDs)
     final selectedAchievements = <String>{};
