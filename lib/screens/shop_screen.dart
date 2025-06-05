@@ -30,8 +30,7 @@ class _ShopScreenState extends State<ShopScreen> {
   final GlobalKey _itemListKey = GlobalKey();
   final GlobalKey _shopItemKey = GlobalKey();
   final GlobalKey _backButtonKey = GlobalKey();
-  int _currentPage = 0;
-  static const int _itemsPerPage = 10;
+
   String _selectedType = 'Todos';
 
   @override
@@ -177,15 +176,7 @@ class _ShopScreenState extends State<ShopScreen> {
                             ),
                           );
                         }
-                        // Paginación
-                        final totalPages =
-                            (filteredItems.length / _itemsPerPage).ceil();
-                        final start = _currentPage * _itemsPerPage;
-                        final end =
-                            start + _itemsPerPage < filteredItems.length
-                                ? start + _itemsPerPage
-                                : filteredItems.length;
-                        final pageItems = filteredItems.sublist(start, end);
+
 
                         return Column(
                           children: [
@@ -212,7 +203,6 @@ class _ShopScreenState extends State<ShopScreen> {
                                 onChanged: (value) {
                                   setState(() {
                                     _selectedType = value!;
-                                    _currentPage = 0;
                                   });
                                 },
                               ),
@@ -220,9 +210,9 @@ class _ShopScreenState extends State<ShopScreen> {
                             Expanded(
                               key: _itemListKey,
                               child: ListView.builder(
-                                itemCount: pageItems.length,
+                                itemCount: filteredItems.length,
                                 itemBuilder: (context, index) {
-                                  final item = pageItems[index];
+                                  final item = filteredItems[index];
                                   final dynamic priceVal =
                                       item.attributes['valor_monetario'];
                                   final price =
@@ -278,38 +268,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 },
                               ),
                             ),
-                            // Controles de paginación
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  PixelButton(
-                                    onPressed:
-                                        _currentPage > 0
-                                            ? () =>
-                                                setState(() => _currentPage--)
-                                            : null,
-                                    child: const Text('Anterior'),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(
-                                    'Página ${_currentPage + 1}/$totalPages',
-                                  ),
-                                  const SizedBox(width: 16),
-                                  PixelButton(
-                                    onPressed:
-                                        _currentPage < totalPages - 1
-                                            ? () =>
-                                                setState(() => _currentPage++)
-                                            : null,
-                                    child: const Text('Siguiente'),
-                                  ),
-                                ],
-                              ),
-                            ),
+
                           ],
                         );
                       },

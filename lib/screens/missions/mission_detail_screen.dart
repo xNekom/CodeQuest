@@ -75,7 +75,10 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PixelAppBar(title: 'Detalle de Misión'),
+      appBar: const PixelAppBar(
+        title: 'Detalle de Misión',
+        titleFontSize: 12,
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,

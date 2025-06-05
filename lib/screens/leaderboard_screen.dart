@@ -7,6 +7,7 @@ import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_app_bar.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
+import '../theme/pixel_theme.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
@@ -88,6 +89,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     return Scaffold(
       appBar: PixelAppBar(
         title: 'TABLA DE CLASIFICACIÓN',
+        titleFontSize: 12,
         leading: IconButton(
           key: _backButtonKey,
           icon: const Icon(Icons.arrow_back),
@@ -242,12 +244,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 else if (_currentUserRanking != null)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                      horizontal: PixelTheme.spacingMedium,
+                      vertical: PixelTheme.spacingSmall,
                     ),
                     decoration: BoxDecoration(
                       color: _getRankingColor(_currentUserRanking!),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
                       border: Border.all(color: Colors.black, width: 1),
                     ),
                     child: Text(
@@ -370,8 +372,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                      horizontal: PixelTheme.spacingMedium,
+                      vertical: PixelTheme.spacingSmall,
                     ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,

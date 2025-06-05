@@ -12,6 +12,7 @@ import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../utils/overflow_utils.dart';
 import '../widgets/test_error_widget.dart';
+import '../theme/pixel_theme.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
   bool _hasInitialized = false; // Bandera para evitar inicializaciones múltiples
+  bool _showCompletedMissions = false; // Estado para mostrar/ocultar misiones completadas
 
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _profileKey = GlobalKey();
@@ -192,8 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: PixelTheme.spacingMedium, vertical: PixelTheme.spacingSmall),
+      margin: const EdgeInsets.all(PixelTheme.spacingMedium),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
         color: Theme.of(
@@ -214,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 32,
                   width: 32,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: PixelTheme.spacingSmall),
                 Expanded(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -298,65 +300,56 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildUserHeader() {
-    return PixelCard(
+    return Column(
       key: _profileKey, // Asignar la key al perfil
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isWide = constraints.maxWidth > 400;
-          return Column(
-            children: [
-              isWide
-                  ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Hero(
-                        tag: 'avatar_${_userData!['username']}',
-                        child: CharacterAsset(
-                          assetIndex:
-                              _userData!['characterAssetIndex'] as int? ?? 0,
-                          size: 80,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildUserInfo()),
-                    ],
-                  )
-                  : Column(
-                    children: [
-                      Hero(
-                        tag: 'avatar_${_userData!['username']}',
-                        child: CharacterAsset(
-                          assetIndex:
-                              _userData!['characterAssetIndex'] as int? ?? 0,
-                          size: 80,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildUserInfo(),
-                    ],
-                  ),
-              const SizedBox(height: 16),
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: _calculateExpProgress()),
-                duration: const Duration(seconds: 1),
-                builder: (context, value, child) {
-                  return Column(
-                    children: [
-                      const Text('Experiencia'),
-                      const SizedBox(height: 4),
-                      PixelProgressBar(
-                        value: value,
-                        label:
-                            '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP',
-                      ),
-                    ],
-                  );
-                },
+      children: [
+        // Icono del personaje y información del usuario en fila
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Icono del personaje más grande y sin recuadro
+            Flexible(
+              flex: 2,
+              child: Hero(
+                tag: 'avatar_${_userData!['username']}',
+                child: CharacterAsset(
+                  assetIndex: _userData!['characterAssetIndex'] as int? ?? 0,
+                  size: 200, // Aumentado para igualar el tamaño del widget de información
+                ),
               ),
-            ],
-          );
-        },
-      ),
+            ),
+            const SizedBox(width: 16),
+            // Información del usuario en un recuadro
+            Flexible(
+              flex: 3,
+              child: PixelCard(
+                child: _buildUserInfo(),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Barra de experiencia en un recuadro separado
+        PixelCard(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: _calculateExpProgress()),
+            duration: const Duration(seconds: 1),
+            builder: (context, value, child) {
+              return Column(
+                children: [
+                  const Text('Experiencia'),
+                  const SizedBox(height: 4),
+                  PixelProgressBar(
+                    value: value,
+                    label:
+                        '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP',
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -535,23 +528,45 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_userData!['completedMissions']?.isNotEmpty ?? false)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(
-                  _userData!['completedMissions'].length,
-                  (index) => ElevatedButton(
-                    onPressed: null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      disabledBackgroundColor: Colors.green.withAlpha(
-                        179,
-                      ), // Reemplazado .withOpacity(0.7)
-                      disabledForegroundColor: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _showCompletedMissions = !_showCompletedMissions;
+                      });
+                    },
+                    child: Text(
+                      _showCompletedMissions 
+                        ? 'Ocultar misiones completadas'
+                        : 'Ver misiones completadas',
+                      style: const TextStyle(color: Colors.blue),
                     ),
-                    child: Text('Misión ${index + 1}'),
                   ),
-                ),
+                  if (_showCompletedMissions)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: List.generate(
+                          _userData!['completedMissions'].length,
+                          (index) => ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              disabledBackgroundColor: Colors.green.withAlpha(
+                                179,
+                              ),
+                              disabledForegroundColor: Colors.white,
+                            ),
+                            child: Text('Misión ${index + 1}'),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
         ],
@@ -703,7 +718,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.emoji_events, size: 20),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: PixelTheme.spacingSmall),
                     OverflowUtils.flexibleText(
                   'VER MIS LOGROS',
                   maxLines: 1,

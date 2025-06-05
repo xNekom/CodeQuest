@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/user_model.dart';
 import '../../widgets/pixel_app_bar.dart';
+import '../../theme/pixel_theme.dart';
 
 // Components
 import 'components/admin_grid_item.dart';
@@ -293,7 +294,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   Text(
                                     'Bienvenido, ${user.username}',
                                     style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: PixelTheme.fontSizeXXLarge,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.deepPurple,
                                     ),
@@ -301,7 +302,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                   Text(
                                     'Panel de administración de CodeQuest',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: PixelTheme.fontSizeMedium,
                                       color: Colors.grey[600],
                                     ),
                                   ),
@@ -317,7 +318,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       Text(
                         'Herramientas de Administración',
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: PixelTheme.fontSizeXXLarge + 2,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),

@@ -271,7 +271,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         return MaterialPageRoute(
           builder:
               (context) => Scaffold(
-                appBar: const PixelAppBar(title: 'Ruta no encontrada'),
+                appBar: const PixelAppBar(
+                  title: 'Ruta no encontrada',
+                  titleFontSize: 12,
+                ),
                 body: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

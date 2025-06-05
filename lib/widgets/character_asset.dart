@@ -35,31 +35,18 @@ class CharacterAsset extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade400, width: 2),
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey.shade100,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Image.asset(
-              characterImagePath,
-              width: size * 0.9,
-              height: size * 0.9,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return Icon(
-                  Icons.person,
-                  size: size * 0.7,
-                  color: Colors.grey.shade600,
-                );
-              },
-            ),
-          ),
-        ),
+      child: Image.asset(
+        characterImagePath,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(
+            Icons.person,
+            size: size * 0.7,
+            color: Colors.grey.shade600,
+          );
+        },
       ),
     );
   }
