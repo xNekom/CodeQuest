@@ -21,9 +21,9 @@ class RewardNotificationService {
   void showAchievementNotification(Achievement achievement) {
     // Por ahora, simplemente imprimimos el logro desbloqueado
     // En una implementación completa, podrías mostrar una notificación específica para logros
-    print('🎉 ¡LOGRO DESBLOQUEADO: ${achievement.name}! 🎉');
-    print('📝 Descripción: ${achievement.description}');
-    print('🏆 Puntos: ${achievement.points}');
+    debugPrint('🎉 ¡LOGRO DESBLOQUEADO: ${achievement.name}! 🎉');
+  debugPrint('📝 Descripción: ${achievement.description}');
+  debugPrint('🏆 Puntos: ${achievement.points}');
   }
 
   // Método para mostrar la notificación en la UI

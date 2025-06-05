@@ -129,7 +129,9 @@ class RewardService {
     String userId,
     String missionId,
   ) async {
+    // debugPrint('🚀 DEBUG: checkAndUnlockAchievement llamado para usuario: $userId, misión: $missionId'); // REMOVIDO PARA PRODUCCIÓN
     if (!AppConfig.shouldUseFirebase) {
+      // debugPrint('🔧 DEBUG: Usando modo local, llamando _checkAndUnlockMissionAchievementsLocal'); // REMOVIDO PARA PRODUCCIÓN
       await _checkAndUnlockMissionAchievementsLocal(userId, missionId);
       return;
     }
@@ -528,34 +530,34 @@ class RewardService {
 
   Future<List<Achievement>> _loadUnlockedAchievementsLocal(String userId) async {
     try {
-      print('🔍 DEBUG: Cargando logros desbloqueados localmente para usuario: $userId');
+      // debugPrint('🔍 DEBUG: Cargando logros desbloqueados localmente para usuario: $userId'); // REMOVIDO PARA PRODUCCIÓN
       final prefs = await SharedPreferences.getInstance();
       final key = 'user_${userId}_unlocked_achievements';
       final unlockedIds = prefs.getStringList(key) ?? [];
-      print('📋 DEBUG: IDs de logros desbloqueados encontrados: $unlockedIds');
+      // debugPrint('📋 DEBUG: IDs de logros desbloqueados encontrados: $unlockedIds'); // REMOVIDO PARA PRODUCCIÓN
       
       if (unlockedIds.isEmpty) {
-        print('⚠️ DEBUG: No hay logros desbloqueados');
+        // debugPrint('⚠️ DEBUG: No hay logros desbloqueados'); // REMOVIDO PARA PRODUCCIÓN
         return <Achievement>[];
       }
       
       // Cargar todos los logros desde JSON
       final allAchievements = await _loadAchievementsFromLocalJson();
-      print('📚 DEBUG: Total de logros cargados desde JSON: ${allAchievements.length}');
+      // debugPrint('📚 DEBUG: Total de logros cargados desde JSON: ${allAchievements.length}'); // REMOVIDO PARA PRODUCCIÓN
       
       // Filtrar solo los logros desbloqueados
       final unlockedAchievements = allAchievements
           .where((achievement) => unlockedIds.contains(achievement.id))
           .toList();
       
-      print('🏆 DEBUG: Logros desbloqueados encontrados: ${unlockedAchievements.length}');
-      for (final achievement in unlockedAchievements) {
-        print('  - ${achievement.name} (${achievement.id})');
-      }
+      // debugPrint('🏆 DEBUG: Logros desbloqueados encontrados: ${unlockedAchievements.length}'); // REMOVIDO PARA PRODUCCIÓN
+      // for (final achievement in unlockedAchievements) {
+      //   debugPrint('  - ${achievement.name} (${achievement.id})'); // REMOVIDO PARA PRODUCCIÓN
+      // }
       
       return unlockedAchievements;
     } catch (e) {
-      print('❌ DEBUG: Error cargando logros desbloqueados localmente: $e');
+      // debugPrint('❌ DEBUG: Error cargando logros desbloqueados localmente: $e'); // REMOVIDO PARA PRODUCCIÓN
       return <Achievement>[];
     }
   }
@@ -565,34 +567,34 @@ class RewardService {
     String missionId,
   ) async {
     try {
-      print('🔍 DEBUG: Iniciando verificación de logros de misión local para: $missionId');
+      // debugPrint('🔍 DEBUG: Iniciando verificación de logros de misión local para: $missionId'); // REMOVIDO PARA PRODUCCIÓN
       final prefs = await SharedPreferences.getInstance();
       
       // Cargar logros desde JSON local
       final achievements = await _loadAchievementsFromLocalJson();
-      print('📚 DEBUG: Cargados ${achievements.length} logros desde JSON');
+      // debugPrint('📚 DEBUG: Cargados ${achievements.length} logros desde JSON'); // REMOVIDO PARA PRODUCCIÓN
       
       // Filtrar logros relacionados con misiones (incluyendo batallas)
       final missionAchievements = achievements.where((achievement) => 
         (achievement.achievementType == 'mission_completion' || achievement.achievementType == 'mission') &&
         achievement.requiredMissionIds.contains(missionId)
       ).toList();
-      print('🎯 DEBUG: Encontrados ${missionAchievements.length} logros de misión para $missionId');
+      // debugPrint('🎯 DEBUG: Encontrados ${missionAchievements.length} logros de misión para $missionId'); // REMOVIDO PARA PRODUCCIÓN
 
       for (final achievement in missionAchievements) {
-        print('🔎 DEBUG: Verificando logro: ${achievement.name} (${achievement.id})');
+        // debugPrint('🔎 DEBUG: Verificando logro: ${achievement.name} (${achievement.id})'); // REMOVIDO PARA PRODUCCIÓN
         final isUnlocked = await _isAchievementUnlockedLocal(prefs, userId, achievement.id);
-        print('🔓 DEBUG: Logro ya desbloqueado: $isUnlocked');
+        // debugPrint('🔓 DEBUG: Logro ya desbloqueado: $isUnlocked'); // REMOVIDO PARA PRODUCCIÓN
         
         if (!isUnlocked) {
-          print('🏆 DEBUG: ¡Logro desbloqueado! ${achievement.name}');
+          // debugPrint('🏆 DEBUG: ¡Logro desbloqueado! ${achievement.name}'); // REMOVIDO PARA PRODUCCIÓN
           await _unlockAchievementForUserLocal(prefs, userId, achievement);
           // Mostrar notificación del logro
           _notificationService.showAchievementNotification(achievement);
         }
       }
     } catch (e) {
-      print('❌ DEBUG: Error checking local mission achievements: $e');
+      // debugPrint('❌ DEBUG: Error checking local mission achievements: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 
@@ -601,43 +603,43 @@ class RewardService {
     String exerciseId,
   ) async {
     try {
-      print('🔍 DEBUG: Iniciando verificación de logros local para ejercicio: $exerciseId');
+      // debugPrint('🔍 DEBUG: Iniciando verificación de logros local para ejercicio: $exerciseId'); // REMOVIDO PARA PRODUCCIÓN
       final prefs = await SharedPreferences.getInstance();
       
       // Actualizar progreso local del usuario
       await _updateUserCodeExerciseProgressLocal(prefs, userId, exerciseId);
-      print('✅ DEBUG: Progreso actualizado para ejercicio: $exerciseId');
+      // debugPrint('✅ DEBUG: Progreso actualizado para ejercicio: $exerciseId'); // REMOVIDO PARA PRODUCCIÓN
       
       // Cargar logros desde JSON local
       final achievements = await _loadAchievementsFromLocalJson();
-      print('📚 DEBUG: Cargados ${achievements.length} logros desde JSON');
+      // debugPrint('📚 DEBUG: Cargados ${achievements.length} logros desde JSON'); // REMOVIDO PARA PRODUCCIÓN
       
       // Filtrar logros relacionados con ejercicios de código
       final codeExerciseAchievements = achievements.where((achievement) => 
         achievement.achievementType == 'code_exercise_completion' ||
         achievement.achievementType == 'code_exercise_milestone'
       ).toList();
-      print('🎯 DEBUG: Encontrados ${codeExerciseAchievements.length} logros de ejercicios de código');
+      // debugPrint('🎯 DEBUG: Encontrados ${codeExerciseAchievements.length} logros de ejercicios de código'); // REMOVIDO PARA PRODUCCIÓN
 
       for (final achievement in codeExerciseAchievements) {
-        print('🔎 DEBUG: Verificando logro: ${achievement.name} (${achievement.id})');
+        // debugPrint('🔎 DEBUG: Verificando logro: ${achievement.name} (${achievement.id})'); // REMOVIDO PARA PRODUCCIÓN
         final isUnlocked = await _isAchievementUnlockedLocal(prefs, userId, achievement.id);
-        print('🔓 DEBUG: Logro ya desbloqueado: $isUnlocked');
+        // debugPrint('🔓 DEBUG: Logro ya desbloqueado: $isUnlocked'); // REMOVIDO PARA PRODUCCIÓN
         
         if (!isUnlocked) {
           final conditionsMet = await _checkCodeExerciseAchievementConditionsLocal(prefs, userId, achievement);
-          print('✔️ DEBUG: Condiciones cumplidas: $conditionsMet');
+          // debugPrint('✔️ DEBUG: Condiciones cumplidas: $conditionsMet'); // REMOVIDO PARA PRODUCCIÓN
           
           if (conditionsMet) {
             await _unlockAchievementForUserLocal(prefs, userId, achievement);
-            print('🏆 DEBUG: ¡Logro desbloqueado! ${achievement.name}');
+            // debugPrint('🏆 DEBUG: ¡Logro desbloqueado! ${achievement.name}'); // REMOVIDO PARA PRODUCCIÓN
             // Mostrar notificación del logro
             _notificationService.showAchievementNotification(achievement);
           }
         }
       }
     } catch (e) {
-      print('❌ DEBUG: Error checking local code exercise achievements: $e');
+      // debugPrint('❌ DEBUG: Error checking local code exercise achievements: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 
@@ -649,17 +651,17 @@ class RewardService {
     final key = 'user_${userId}_completed_exercises';
     final completedExercises = prefs.getStringList(key) ?? [];
     
-    print('📝 DEBUG: Lista actual de ejercicios completados: $completedExercises');
+    // debugPrint('📝 DEBUG: Lista actual de ejercicios completados: $completedExercises'); // REMOVIDO PARA PRODUCCIÓN
     
     if (!completedExercises.contains(exerciseId)) {
       completedExercises.add(exerciseId);
       await prefs.setStringList(key, completedExercises);
-      print('➕ DEBUG: Ejercicio $exerciseId agregado a la lista');
+      // debugPrint('➕ DEBUG: Ejercicio $exerciseId agregado a la lista'); // REMOVIDO PARA PRODUCCIÓN
     } else {
-      print('⚠️ DEBUG: Ejercicio $exerciseId ya estaba en la lista');
+      // debugPrint('⚠️ DEBUG: Ejercicio $exerciseId ya estaba en la lista'); // REMOVIDO PARA PRODUCCIÓN
     }
     
-    print('📋 DEBUG: Lista final de ejercicios completados: $completedExercises');
+    // debugPrint('📋 DEBUG: Lista final de ejercicios completados: $completedExercises'); // REMOVIDO PARA PRODUCCIÓN
     
     await prefs.setString('user_${userId}_last_completed_exercise', exerciseId);
     await prefs.setInt('user_${userId}_last_activity', DateTime.now().millisecondsSinceEpoch);
@@ -681,14 +683,14 @@ class RewardService {
     Achievement achievement,
   ) async {
     final conditions = achievement.conditions;
-    print('🔍 DEBUG: Verificando condiciones para ${achievement.name}: $conditions');
+    // debugPrint('🔍 DEBUG: Verificando condiciones para ${achievement.name}: $conditions'); // REMOVIDO PARA PRODUCCIÓN
     
     // Verificar logro por ejercicio específico
     if (conditions.containsKey('completedCodeExerciseId')) {
       final requiredExerciseId = conditions['completedCodeExerciseId'] as String;
-      print('🎯 DEBUG: Verificando si se completó ejercicio específico: $requiredExerciseId');
+      // debugPrint('🎯 DEBUG: Verificando si se completó ejercicio específico: $requiredExerciseId'); // REMOVIDO PARA PRODUCCIÓN
       final result = await _hasCompletedCodeExerciseLocal(prefs, userId, requiredExerciseId);
-      print('✅ DEBUG: Ejercicio $requiredExerciseId completado: $result');
+      // debugPrint('✅ DEBUG: Ejercicio $requiredExerciseId completado: $result'); // REMOVIDO PARA PRODUCCIÓN
       return result;
     }
     
@@ -696,18 +698,18 @@ class RewardService {
     if (conditions.containsKey('completedCodeExercisesCount')) {
       final requiredCount = conditions['completedCodeExercisesCount'] as int;
       final completedCount = await _getCompletedCodeExercisesCountLocal(prefs, userId);
-      print('📊 DEBUG: Ejercicios completados: $completedCount, requeridos: $requiredCount');
+      // debugPrint('📊 DEBUG: Ejercicios completados: $completedCount, requeridos: $requiredCount'); // REMOVIDO PARA PRODUCCIÓN
       return completedCount >= requiredCount;
     }
     
     // Verificar logro por completar todos los ejercicios
     if (conditions.containsKey('completedAllCodeExercises')) {
       final result = await _hasCompletedAllCodeExercisesLocal(prefs, userId);
-      print('🎯 DEBUG: Todos los ejercicios completados: $result');
+      // debugPrint('🎯 DEBUG: Todos los ejercicios completados: $result'); // REMOVIDO PARA PRODUCCIÓN
       return result;
     }
     
-    print('❌ DEBUG: No se encontraron condiciones válidas');
+    // debugPrint('❌ DEBUG: No se encontraron condiciones válidas'); // REMOVIDO PARA PRODUCCIÓN
     return false;
   }
 
@@ -718,9 +720,9 @@ class RewardService {
   ) async {
     final key = 'user_${userId}_completed_exercises';
     final completedExercises = prefs.getStringList(key) ?? [];
-    print('🔍 DEBUG: Buscando ejercicio "$exerciseId" en lista: $completedExercises');
+    // debugPrint('🔍 DEBUG: Buscando ejercicio "$exerciseId" en lista: $completedExercises'); // REMOVIDO PARA PRODUCCIÓN
     final result = completedExercises.contains(exerciseId);
-    print('🎯 DEBUG: Ejercicio "$exerciseId" encontrado: $result');
+    // debugPrint('🎯 DEBUG: Ejercicio "$exerciseId" encontrado: $result'); // REMOVIDO PARA PRODUCCIÓN
     return result;
   }
 

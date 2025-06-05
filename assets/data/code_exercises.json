@@ -5,7 +5,7 @@
     "title": "El Cofre del Tesoro",
     "description": "Declara una variable entera llamada 'monedas' y asígnale el valor 50.",
     "theory": "💰 El Cofre del Tesoro: Variables y Asignación 💰\n\nEn tu viaje como Guardián del Código, encontrarás tesoros y recursos. Para guardarlos, necesitas Cofres del Tesoro, que en el lenguaje de Java se llaman variables.\n\n📦 Declaración: Abriendo el Cofre\nAntes de guardar cualquier cosa, debes declarar tu cofre, es decir, decirle a Java qué tipo de tesoro va a contener. Para números enteros, usarás el tipo `int`.\n\n```java\nint miNumero;\n```\nAquí, `int` dice que guardará un número entero, y `miNumero` es el nombre que le das a tu cofre.\n\n💎 Asignación: Guardando el Tesoro\nUna vez que tienes tu cofre, puedes guardar un tesoro dentro de él usando el operador de asignación `=`.\n\n```java\nmiNumero = 10;\n```\nAhora, el cofre `miNumero` contiene el valor `10`.\n\n✨ Declaración y Asignación en un solo paso:\n¡Puedes abrir el cofre y guardar el tesoro al mismo tiempo!\n\n```java\nint miNumero = 10;\n```\n\n🎯 Tu Misión del Tesoro:\nTu primera misión es preparar un cofre para tus monedas. Declara una variable entera llamada `monedas` y guarda en ella la cantidad inicial de `50` monedas de oro.",
-    "initialCode": "public class Tesoro {\n    public static void main(String[] args) {\n        // Escribe aquí tu código\n    }\n}",
+    "initialCode": "// Escribe aquí tu código",
     "expectedOutput": "",
     "hints": [
       "Recuerda que para números enteros se usa `int`.",
@@ -42,7 +42,7 @@
     "title": "El Primer Saludo",
     "description": "Escribe un programa que imprima en la consola el mensaje '¡Hola, Guardián del Código!'",
     "theory": "🗣️ El Primer Saludo: Imprimiendo Mensajes 🗣️\n\nComo Guardián del Código, necesitas una forma de comunicarte con el mundo digital y mostrar tus resultados. Para esto, Java te ofrece un hechizo de invocación de mensajes.\n\n✨ El Hechizo `System.out.println()`\nEste es tu conjuro principal para hacer que tu programa hable. La palabra `System` se refiere al sistema de tu ordenador. `out` significa que estamos enviando algo 'hacia afuera' (la consola), y `println` (print line) significa 'imprimir una línea'.\n\n```java\nSystem.out.println(\"Tu mensaje aquí\");\n```\n\n📝 Reglas del Conjuro:\n* El mensaje que quieres imprimir debe ir entre comillas dobles (`\" \"`).\n* Cada conjuro debe terminar con un punto y coma (`;`), como el sello final de un pergamino.\n\n📜 Ejemplo de Invocación:\n```java\nSystem.out.println(\"¡Mi primer mensaje!\");\n```\nEsto hará que `¡Mi primer mensaje!` aparezca en la pantalla.\n\n🎯 Tu Misión del Saludo:\nTu misión es invocar el mensaje de bienvenida a todos los Guardianes del Código. Haz que tu programa imprima exactamente: `¡Hola, Guardián del Código!`",
-    "initialCode": "public class SaludoGuardian {\n    public static void main(String[] args) {\n        // Escribe aquí tu código\n    }\n}",
+    "initialCode": "// Escribe aquí tu código",
     "expectedOutput": "¡Hola, Guardián del Código!\n",
     "hints": [
       "Usa `System.out.println();` para imprimir una línea.",
@@ -71,51 +71,31 @@
     "id": "operaciones_basicas",
     "exerciseId": "operaciones_basicas",
     "title": "Los Cómputos del Escriba",
-    "description": "Declara dos variables enteras, 'a' con valor 10 y 'b' con valor 5. Luego, calcula su suma, resta, multiplicación y división, e imprime cada resultado en una nueva línea.",
-    "theory": "➕➖✖️➗ Los Cómputos del Escriba: Operaciones Básicas ➕➖✖️➗\n\nComo Guardián del Código, a menudo necesitarás realizar cálculos con los tesoros que almacenas en tus variables. Los Escribas de Algorithmia te enseñarán los operadores aritméticos básicos.\n\n🔢 Operadores Aritméticos:\n* Suma: `+` (ej: `5 + 3` es `8`)\n* Resta: `-` (ej: `10 - 4` es `6`)\n* Multiplicación: `*` (ej: `2 * 6` es `12`)\n* División: `/` (ej: `10 / 2` es `5`)\n\nCombinando Variables y Operadores:\nPuedes usar estos operadores directamente con números o con variables que contengan números.\n\n```java\nint num1 = 20;\nint num2 = 4;\nint suma = num1 + num2;      // suma será 24\nint division = num1 / num2;  // division será 5\n```\n\n🎯 Tu Misión de Cómputos:\nDeclara dos variables, `a` con el valor `10` y `b` con el valor `5`. Luego, realiza las siguientes operaciones y muestra cada resultado en una nueva línea utilizando `System.out.println()`:\n1.  La suma de `a` y `b`\n2.  La resta de `a` y `b`\n3.  La multiplicación de `a` y `b`\n4.  La división de `a` y `b`",
-    "initialCode": "public class CalculadoraBasica {\n    public static void main(String[] args) {\n        // Declara tus variables aquí\n        // Realiza e imprime las operaciones aquí\n    }\n}",
-    "expectedOutput": "15\n5\n50\n2\n",
+    "description": "¿Cuál es el resultado de la operación 15 + 8 * 2?",
+    "theory": "➕➖✖️➗ Los Cómputos del Escriba: Operaciones Básicas ➕➖✖️➗\n\nComo Guardián del Código, a menudo necesitarás realizar cálculos con los tesoros que almacenas en tus variables. Los Escribas de Algorithmia te enseñarán los operadores aritméticos básicos.\n\n🔢 Operadores Aritméticos:\n* Suma: `+` (ej: `5 + 3` es `8`)\n* Resta: `-` (ej: `10 - 4` es `6`)\n* Multiplicación: `*` (ej: `2 * 6` es `12`)\n* División: `/` (ej: `10 / 2` es `5`)\n\n⚡ Orden de Operaciones:\nEn Java, al igual que en matemáticas, existe un orden de precedencia:\n1. Paréntesis `()`\n2. Multiplicación `*` y División `/`\n3. Suma `+` y Resta `-`\n\n📜 Ejemplo:\n```java\nint resultado = 5 + 3 * 2; // resultado será 11, no 16\n// Porque primero se hace 3 * 2 = 6, luego 5 + 6 = 11\n```\n\n🎯 Tu Misión de Cómputos:\nCalcula mentalmente el resultado de la operación `15 + 8 * 2` siguiendo el orden correcto de operaciones.",
+    "initialCode": "// ¿Cuál es el resultado de 15 + 8 * 2?\n// Escribe aquí tu respuesta",
+    "expectedOutput": "31\n",
     "hints": [
-      "Recuerda declarar las variables 'a' y 'b' con sus valores iniciales.",
-      "Usa `System.out.println()` para cada resultado.",
-      "La división de enteros en Java truncará la parte decimal."
+      "Recuerda el orden de operaciones: primero multiplicación, luego suma.",
+      "8 * 2 = 16, luego 15 + 16 = 31"
     ],
     "requiredPatterns": [
-      "int a = 10",
-      "int b = 5",
-      "System.out.println(a + b)",
-      "System.out.println(a - b)",
-      "System.out.println(a * b)",
-      "System.out.println(a / b)"
+      "System.out.println(15 + 8 * 2)"
     ],
     "forbiddenPatterns": [],
     "testCases": [
       {
-        "description": "Debe calcular y mostrar la suma correctamente.",
-        "expectedOutput": "15\n",
-        "codeToEvaluate": "int a = 10; int b = 5; System.out.println(a + b);",
-        "expectedEvaluationOutput": "15\n",
+        "description": "Debe calcular correctamente 15 + 8 * 2 = 31.",
+        "expectedOutput": "31\n",
+        "codeToEvaluate": "System.out.println(15 + 8 * 2);",
+        "expectedEvaluationOutput": "31\n",
         "isHidden": false
       },
       {
-        "description": "Debe calcular y mostrar la resta correctamente.",
-        "expectedOutput": "5\n",
-        "codeToEvaluate": "int a = 10; int b = 5; System.out.println(a - b);",
-        "expectedEvaluationOutput": "5\n",
-        "isHidden": false
-      },
-      {
-        "description": "Debe calcular y mostrar la multiplicación correctamente.",
-        "expectedOutput": "50\n",
-        "codeToEvaluate": "int a = 10; int b = 5; System.out.println(a * b);",
-        "expectedEvaluationOutput": "50\n",
-        "isHidden": false
-      },
-      {
-        "description": "Debe calcular y mostrar la división correctamente.",
-        "expectedOutput": "2\n",
-        "codeToEvaluate": "int a = 10; int b = 5; System.out.println(a / b);",
-        "expectedEvaluationOutput": "2\n",
+        "description": "Debe entender el orden de operaciones.",
+        "expectedOutput": "31\n",
+        "codeToEvaluate": "System.out.println(15 + 8 * 2);",
+        "expectedEvaluationOutput": "31\n",
         "isHidden": false
       }
     ],
@@ -134,7 +114,7 @@
     "title": "El Sendero Bifurcado",
     "description": "Declara una variable 'puntuacion' con valor 70. Si la 'puntuacion' es mayor o igual a 60, imprime '¡Has aprobado la prueba!'",
     "theory": " bifurcado. Necesitas aprender a tomar decisiones en tu código, a guiarlo por diferentes senderos según las circunstancias. Las estructuras condicionales serán tu mapa y brújula.\n\n🧭 El Sendero `if` (Si...):\nEl hechizo `if` te permite ejecutar un bloque de código solo si una condición es verdadera. Es como decir: 'Si el camino está despejado, avanza'.\n\n```java\nif (condicion) {\n    // Código a ejecutar si la condición es verdadera\n}\n```\n\n❓ Condiciones:\nUna condición es una expresión que se evalúa como `true` (verdadero) o `false` (falso). Usarás operadores de comparación para construir estas condiciones:\n* `>` (mayor que)\n* `<` (menor que)\n* `>=` (mayor o igual que)\n* `<=` (menor o igual que)\n* `==` (igual a)\n* `!=` (diferente de)\n\n📜 Ejemplo de Invocación:\n```java\nint edad = 18;\nif (edad >= 18) {\n    System.out.println(\"Puedes votar.\");\n}\n```\n\n🎯 Tu Misión Bifurcada:\nTu misión es usar el hechizo `if` para determinar si un Guardián ha aprobado una prueba. Declara una variable `puntuacion` con un valor de `70`. Luego, si la `puntuacion` es mayor o igual a `60`, imprime el mensaje: `¡Has aprobado la prueba!`",
-    "initialCode": "public class EvaluadorPrueba {\n    public static void main(String[] args) {\n        // Escribe aquí tu código\n    }\n}",
+    "initialCode": "// Escribe aquí tu código",
     "expectedOutput": "¡Has aprobado la prueba!\n",
     "hints": [
       "Declara `puntuacion` como `int`.",
@@ -178,7 +158,7 @@
     "title": "El Círculo Mágico de la Repetición",
     "description": "Crea un bucle for simple que muestre los números del 1 al 3 en una sola línea.",
     "theory": "🌀 Los Círculos Mágicos de Repetición 🌀\n\nEn Algorithmia, existe una magia ancestral conocida como los Círculos de Repetición. Estos hechizos permiten a los Guardianes del Código realizar tareas repetitivas de manera eficiente, canalizando su energía mágica en patrones cíclicos.\n\n🔄 El Hechizo FOR (Círculo Controlado)\nEl hechizo `for` es el más preciso de todos los círculos mágicos. Te permite definir exactamente cuántas veces quieres que se repita una acción, como un ritual que se ejecuta un número específico de veces.\n\n⚡ La Anatomía del Círculo Mágico:\n```java\nfor (inicialización; condición; incremento) {\n    // Acción a repetir\n}\n```\n\n🎯 Los Tres Pilares del Hechizo:\n1.  Inicialización (`int i = 1`): Donde comienza el ritual\n2.  Condición (`i <= 3`): Cuándo debe continuar el círculo\n3.  Incremento (`i++`): Cómo avanza cada iteración\n\n📜 Ejemplo de Invocación:\n```java\nfor (int i = 1; i <= 3; i++) {\n    System.out.print(i + \" \");\n}\n```\n\n🎯 Tu Misión Cíclica:\nDebes crear un círculo mágico que invoque los números sagrados del 1 al 3, manifestándolos en una secuencia continua para demostrar tu dominio sobre la magia de la repetición.",
-    "initialCode": "public class BucleFor {\n    public static void main(String[] args) {\n        // Escribe aquí tu código\n    }\n}",
+    "initialCode": "// Escribe aquí tu código",
     "expectedOutput": "1 2 3 ",
     "hints": [
       "Usa `for (int i = 1; i <= 3; i++)` para configurar el bucle.",
@@ -208,29 +188,24 @@
     "id": "clase_simple_personaje",
     "exerciseId": "clase_simple_personaje",
     "title": "El Molde del Héroe",
-    "description": "Crea una clase `Personaje` con un atributo `nombre` (String) y un método `saludar()` que imprima 'Hola, soy [nombre]'.",
-    "theory": "🧙 El Molde del Héroe: Creando tu Primera Clase 🧙\n\nEn Algorithmia, todo lo que ves y con lo que interactúas se basa en Objetos. Un Objeto es como una criatura o un artefacto mágico, y una Clase es el Molde o el Plano que te permite crear esos objetos.\n\nblueprint La Clase:\nUna clase define las características (atributos) y las acciones (métodos) que tendrán los objetos creados a partir de ella.\n\n```java\npublic class MiClase {\n    // Atributos (características)\n    String nombre;\n    int vida;\n\n    // Métodos (acciones)\n    public void hacerAlgo() {\n        System.out.println(\"Haciendo algo...\");\n    }\n}\n```\n\n👤 Atributos: Las Características del Héroe\nLos atributos son como las propiedades de tu personaje: su nombre, su nivel de vida, su fuerza. Se declaran como variables dentro de la clase.\n\n⚔️ Métodos: Las Habilidades del Héroe\nLos métodos son las acciones que tu personaje puede realizar: atacar, curar, hablar. Son como funciones dentro de la clase.\n\n📜 Ejemplo:\n```java\npublic class Perro {\n    String nombre;\n\n    public void ladrar() {\n        System.out.println(nombre + \" dice: ¡Guau!\");\n    }\n}\n```\n\n🎯 Tu Misión del Héroe:\nTu misión es crear el molde para todos los héroes de Algorithmia. Define una clase llamada `Personaje` que tenga:\n1.  Un atributo de tipo `String` llamado `nombre`.\n2.  Un método público llamado `saludar()` que imprima en la consola: `Hola, soy [nombre_del_personaje]!` (reemplaza `[nombre_del_personaje]` con el valor del atributo `nombre`).\n\n¡Luego, en el método `main`, crea un objeto de `Personaje`, asigna un nombre y haz que salude!",
-    "initialCode": "public class Main {\n    public static void main(String[] args) {\n        // Crea una instancia de Personaje y hazla saludar aquí\n    }\n}\n\n// Define tu clase Personaje aquí",
-    "expectedOutput": "Hola, soy Héroe Valiente!\n",
+    "description": "¿Cuál es la palabra clave correcta para crear una nueva instancia de una clase en Java?",
+    "theory": "🧙 El Molde del Héroe: Creando tu Primera Clase 🧙\n\nEn Algorithmia, todo lo que ves y con lo que interactúas se basa en Objetos. Un Objeto es como una criatura o un artefacto mágico, y una Clase es el Molde o el Plano que te permite crear esos objetos.\n\n🏗️ La Clase:\nUna clase define las características (atributos) y las acciones (métodos) que tendrán los objetos creados a partir de ella.\n\n```java\npublic class MiClase {\n    // Atributos (características)\n    String nombre;\n    int vida;\n\n    // Métodos (acciones)\n    public void hacerAlgo() {\n        System.out.println(\"Haciendo algo...\");\n    }\n}\n```\n\n✨ Creando Objetos:\nPara crear un objeto (instancia) de una clase, usas la palabra clave `new` seguida del nombre de la clase y paréntesis:\n\n```java\nMiClase objeto = new MiClase();\n```\n\n🎯 Opciones:\nA) create\nB) new\nC) make\nD) instance",
+    "initialCode": "public class Main {\n    public static void main(String[] args) {\n        // ¿Cuál palabra clave se usa para crear objetos?\n        // Escribe aquí tu respuesta (A, B, C o D)\n        \n    }\n}",
+    "expectedOutput": "B\n",
     "hints": [
-      "La clase `Personaje` debe estar fuera del método `main`, pero dentro de la clase `Main` si estás en un solo archivo, o en su propio archivo `Personaje.java`.",
-      "Para acceder al atributo `nombre` dentro del método `saludar()`, simplemente usa `nombre`.",
-      "En el `main`, crea un objeto `Personaje p = new Personaje();`, asigna `p.nombre = \"Héroe Valiente\";` y luego llama a `p.saludar();`."
+      "Piensa en la palabra que usas antes del nombre de la clase para crear un objeto.",
+      "Es la misma palabra que usas para crear arrays: `new int[5]`."
     ],
     "requiredPatterns": [
-      "class Personaje",
-      "String nombre",
-      "public void saludar()",
-      "System.out.println(\"Hola, soy \" + nombre + \"!\")",
-      "new Personaje()"
+      "System.out.println(\"B\")"
     ],
     "forbiddenPatterns": [],
     "testCases": [
       {
-        "description": "Debe crear la clase Personaje, instanciarla y hacer que salude con el nombre 'Héroe Valiente'.",
-        "expectedOutput": "Hola, soy Héroe Valiente!\n",
-        "codeToEvaluate": "public class Main { public static void main(String[] args) { Personaje p = new Personaje(); p.nombre = \"Héroe Valiente\"; p.saludar(); } } class Personaje { String nombre; public void saludar() { System.out.println(\"Hola, soy \" + nombre + \"!\"); } }",
-        "expectedEvaluationOutput": "Hola, soy Héroe Valiente!\n",
+        "description": "Debe responder correctamente que 'new' es la palabra clave para crear objetos.",
+        "expectedOutput": "B\n",
+        "codeToEvaluate": "System.out.println(\"B\");",
+        "expectedEvaluationOutput": "B\n",
         "isHidden": false
       }
     ],
@@ -247,29 +222,24 @@
     "id": "constructor_personaje",
     "exerciseId": "constructor_personaje",
     "title": "El Ritual de Creación",
-    "description": "Modifica la clase `Personaje` para que tenga un constructor que reciba un nombre y lo asigne al atributo.",
-    "theory": "✨ El Ritual de Creación: Constructores ✨\n\nCrear objetos es un acto de magia, y cada objeto necesita ser invocado correctamente. Para eso usamos los Constructores.\n\n🏗️ ¿Qué es un Constructor?\nUn constructor es un método especial que se invoca automáticamente cuando creas un nuevo objeto de una clase (`new MiClase()`). Su propósito principal es inicializar los atributos del objeto, asegurándose de que nazca en un estado válido.\n\n📝 Características del Constructor:\n* Tiene el mismo nombre que la clase.\n* No tiene tipo de retorno (ni siquiera `void`).\n* Puedes tener varios constructores (sobrecarga), siempre que tengan diferentes parámetros.\n\n📜 Ejemplo:\n```java\npublic class Golem {\n    String material;\n\n    // Constructor que recibe un material\n    public Golem(String mat) {\n        this.material = mat; // 'this' se refiere al atributo de la instancia actual\n        System.out.println(\"Un golem de \" + this.material + \" ha sido forjado.\");\n    }\n}\n\n// En el main:\n// Golem golemPiedra = new Golem(\"Piedra\");\n```\n\n🎯 Tu Misión del Ritual:\nModifica tu clase `Personaje` para que al crear un nuevo personaje, puedas darle un nombre directamente. Esto significa:\n1.  Añade un constructor a la clase `Personaje`.\n2.  Este constructor debe recibir un parámetro de tipo `String` (que será el nombre).\n3.  Dentro del constructor, asigna este parámetro al atributo `nombre` de la clase.\n4.  En el método `main`, crea un `Personaje` llamado `\"Aria la Valiente\"` usando este nuevo constructor y haz que salude.",
-    "initialCode": "public class Main {\n    public static void main(String[] args) {\n        // Crea tu Personaje usando el constructor y haz que salude aquí\n    }\n}\n\nclass Personaje {\n    String nombre;\n\n    // Constructor de la clase Personaje (añadir aquí)\n\n    public void saludar() {\n        System.out.println(\"Hola, soy \" + nombre + \"!\");\n    }\n}",
-    "expectedOutput": "Hola, soy Aria la Valiente!\n",
+    "description": "¿Cuál es la característica principal que distingue a un constructor de un método normal en Java?",
+    "theory": "✨ El Ritual de Creación: Constructores ✨\n\nCrear objetos es un acto de magia, y cada objeto necesita ser invocado correctamente. Para eso usamos los Constructores.\n\n🏗️ ¿Qué es un Constructor?\nUn constructor es un método especial que se invoca automáticamente cuando creas un nuevo objeto de una clase (`new MiClase()`). Su propósito principal es inicializar los atributos del objeto.\n\n📝 Características del Constructor:\n* Tiene el mismo nombre que la clase\n* No tiene tipo de retorno (ni siquiera `void`)\n* Se ejecuta automáticamente al crear un objeto\n* Puede recibir parámetros para inicializar atributos\n\n📜 Ejemplo:\n```java\npublic class Golem {\n    String material;\n\n    // Constructor\n    public Golem(String mat) {\n        this.material = mat;\n    }\n}\n```\n\n🎯 Opciones:\nA) Tiene la palabra 'constructor' en su nombre\nB) No tiene tipo de retorno\nC) Siempre es privado\nD) Debe tener parámetros",
+    "initialCode": "public class Main {\n    public static void main(String[] args) {\n        // ¿Cuál es la característica principal de un constructor?\n        // Escribe aquí tu respuesta (A, B, C o D)\n        \n    }\n}",
+    "expectedOutput": "B\n",
     "hints": [
-      "El constructor debe llamarse `Personaje`.",
-      "Dentro del constructor, usa `this.nombre = nombreParametro;` para distinguir entre el atributo de la clase y el parámetro del constructor.",
-      "Para crear el objeto en el `main`, usa `Personaje aria = new Personaje(\"Aria la Valiente\");`."
+      "Piensa en qué hace diferente a un constructor de un método normal.",
+      "Los métodos normales tienen tipos de retorno como void, int, String, etc."
     ],
     "requiredPatterns": [
-      "public Personaje(String nombre)",
-      "this.nombre = nombre",
-      "new Personaje(\"Aria la Valiente\")"
+      "System.out.println(\"B\")"
     ],
-    "forbiddenPatterns": [
-      "p.nombre = \"Aria la Valiente\""
-    ],
+    "forbiddenPatterns": [],
     "testCases": [
       {
-        "description": "Debe crear la clase Personaje con constructor y usarlo para instanciar y saludar.",
-        "expectedOutput": "Hola, soy Aria la Valiente!\n",
-        "codeToEvaluate": "public class Main { public static void main(String[] args) { Personaje p = new Personaje(\"Aria la Valiente\"); p.saludar(); } } class Personaje { String nombre; public Personaje(String nombre) { this.nombre = nombre; } public void saludar() { System.out.println(\"Hola, soy \" + nombre + \"!\"); } }",
-        "expectedEvaluationOutput": "Hola, soy Aria la Valiente!\n",
+        "description": "Debe responder correctamente que los constructores no tienen tipo de retorno.",
+        "expectedOutput": "B\n",
+        "codeToEvaluate": "System.out.println(\"B\");",
+        "expectedEvaluationOutput": "B\n",
         "isHidden": false
       }
     ],
@@ -284,32 +254,24 @@
     "id": "herencia_basica",
     "exerciseId": "herencia_basica",
     "title": "El Linaje del Código",
-    "description": "Crea una clase `Animal` con un método `emitirSonido()`. Luego, crea una clase `Perro` que herede de `Animal` y sobreescriba `emitirSonido()` para que imprima 'Guau'.",
-    "theory": "👨‍👩‍👧‍👦 El Linaje del Código: Herencia 👨‍👩‍👧‍👦\n\nEn el reino de Algorithmia, el conocimiento y las habilidades pueden transmitirse de generación en generación. Esto es la Herencia, uno de los pilares de la Programación Orientada a Objetos.\n\n🧬 ¿Qué es la Herencia?\nLa herencia permite que una clase hija (subclase) adquiera los atributos y métodos de una clase padre (superclase). Es como decir: 'Un Perro ES UN Animal', por lo tanto, un Perro tiene todo lo que tiene un Animal, y además, sus propias características.\n\n🔑 La Palabra Clave `extends`:\nPara indicar que una clase hereda de otra, usas la palabra clave `extends`.\n\n```java\nclass ClaseHija extends ClasePadre {\n    // ...\n}\n```\n\n🔄 Sobreescritura de Métodos (`@Override`):\nUna clase hija puede redefinir un método que ya existe en su clase padre. Esto se llama sobreescritura (overriding). Se usa la anotación `@Override` para indicar que estás sobreescribiendo un método, lo cual es una buena práctica y ayuda a evitar errores.\n\n📜 Ejemplo:\n```java\nclass Vehiculo {\n    public void mover() {\n        System.out.println(\"El vehículo se mueve.\");\n    }\n}\n\nclass Coche extends Vehiculo {\n    @Override\n    public void mover() {\n        System.out.println(\"El coche ruge y avanza.\");\n    }\n}\n```\n\n🎯 Tu Misión del Linaje:\nCrea una jerarquía de clases de animales:\n1.  Define una clase base llamada `Animal` con un método `public void emitirSonido()` que imprima `\"El animal hace un sonido.\"`\n2.  Crea una clase `Perro` que herede de `Animal`.\n3.  Sobreescribe el método `emitirSonido()` en la clase `Perro` para que imprima `\"Guau.\"`\n4.  En el método `main`, crea un objeto `Perro` y llama a su método `emitirSonido()` para ver el resultado.",
-    "initialCode": "public class Main {\n    public static void main(String[] args) {\n        // Crea tu objeto Perro y hazlo emitir sonido aquí\n    }\n}\n\n// Define la clase Animal aquí\n// Define la clase Perro aquí",
-    "expectedOutput": "Guau.\n",
+    "description": "¿Cuál es la palabra clave en Java que se usa para indicar que una clase hereda de otra?",
+    "theory": "👨‍👩‍👧‍👦 El Linaje del Código: Herencia 👨‍👩‍👧‍👦\n\nEn el reino de Algorithmia, el conocimiento y las habilidades pueden transmitirse de generación en generación. Esto es la Herencia, uno de los pilares de la Programación Orientada a Objetos.\n\n🧬 ¿Qué es la Herencia?\nLa herencia permite que una clase hija (subclase) adquiera los atributos y métodos de una clase padre (superclase). Es como decir: 'Un Perro ES UN Animal', por lo tanto, un Perro tiene todo lo que tiene un Animal, y además, sus propias características.\n\n🔑 La Palabra Clave para Herencia:\nPara indicar que una clase hereda de otra, usas una palabra clave específica.\n\n```java\nclass ClaseHija extends ClasePadre {\n    // La clase hija hereda todo de la clase padre\n}\n```\n\n📜 Ejemplo:\n```java\nclass Animal {\n    public void respirar() {\n        System.out.println(\"El animal respira\");\n    }\n}\n\nclass Perro extends Animal {\n    // Perro hereda el método respirar()\n    public void ladrar() {\n        System.out.println(\"Guau!\");\n    }\n}\n```\n\n🎯 Opciones:\nA) inherits\nB) extends\nC) implements\nD) super",
+    "initialCode": "public class Main {\n    public static void main(String[] args) {\n        // ¿Cuál palabra clave se usa para herencia?\n        // Escribe aquí tu respuesta (A, B, C o D)\n        \n    }\n}",
+    "expectedOutput": "B\n",
     "hints": [
-      "La clase `Perro` debe usar `extends Animal`.",
-      "El método `emitirSonido` en `Perro` debe tener la misma firma (nombre, parámetros y tipo de retorno) que en `Animal`.",
-      "Usa la anotación `@Override` sobre el método `emitirSonido` en `Perro`."
+      "Piensa en la palabra que 'extiende' las capacidades de una clase.",
+      "Es la misma palabra que usarías para decir que algo se 'extiende' o 'amplía'."
     ],
     "requiredPatterns": [
-      "class Animal",
-      "public void emitirSonido()",
-      "class Perro extends Animal",
-      "@Override",
-      "System.out.println(\"Guau.\")",
-      "new Perro()"
+      "System.out.println(\"B\")"
     ],
-    "forbiddenPatterns": [
-      "super."
-    ],
+    "forbiddenPatterns": [],
     "testCases": [
       {
-        "description": "Debe crear una instancia de Perro y llamar a su método emitirSonido, mostrando 'Guau.'.",
-        "expectedOutput": "Guau.\n",
-        "codeToEvaluate": "public class Main { public static void main(String[] args) { Perro miPerro = new Perro(); miPerro.emitirSonido(); } } class Animal { public void emitirSonido() { System.out.println(\"El animal hace un sonido.\"); } } class Perro extends Animal { @Override public void emitirSonido() { System.out.println(\"Guau.\"); } }",
-        "expectedEvaluationOutput": "Guau.\n",
+        "description": "Debe responder correctamente que 'extends' es la palabra clave para herencia.",
+        "expectedOutput": "B\n",
+        "codeToEvaluate": "System.out.println(\"B\");",
+        "expectedEvaluationOutput": "B\n",
         "isHidden": false
       }
     ],
@@ -329,7 +291,7 @@
     "title": "El Pergamino de los Elementos",
     "description": "Declara un array de enteros llamado 'numeros' con los valores 10, 20 y 30. Luego, imprime el segundo elemento del array.",
     "theory": "📜 El Pergamino de los Elementos: Arrays 📜\n\nImagina que necesitas organizar una colección de tesoros similares, como una lista de pociones o una serie de puntuaciones. En lugar de usar un cofre (variable) para cada uno, puedes usar un Pergamino de los Elementos, o lo que en Java llamamos un Array.\n\n📦 ¿Qué es un Array?\nUn array es una estructura de datos que te permite almacenar una colección de elementos del mismo tipo en un solo lugar. Piensa en él como una lista numerada de cajones, donde cada cajón guarda un tesoro.\n\n📏 Declaración y Creación:\nPara crear un array, debes especificar el tipo de elementos que guardará y su tamaño.\n\n```java\n// Declarar un array de enteros llamado 'puntuaciones' con 5 espacios\nint[] puntuaciones = new int[5];\n\n// Declarar e inicializar un array con valores directamente\nString[] nombres = {\"Ana\", \"Juan\", \"Maria\"};\n```\n\n📍 Acceso a Elementos: Los Índices\nCada elemento en un array tiene una posición, llamada índice. ¡Atención! Los índices en Java siempre empiezan en `0`.\n\n```java\nString[] frutas = {\"Manzana\", \"Banana\", \"Cereza\"};\n// \"Manzana\" está en el índice 0\n// \"Banana\" está en el índice 1\n// \"Cereza\" está en el índice 2\n\nSystem.out.println(frutas[0]); // Imprime \"Manzana\"\n```\n\n🎯 Tu Misión del Pergamino:\nTu misión es crear un pergamino que contenga algunos números sagrados. Declara un array de enteros llamado `numeros` e inicialízalo con los valores `10`, `20` y `30`. Luego, utilizando el índice correcto, imprime el segundo elemento de ese array.",
-    "initialCode": "public class ArrayEjemplo {\n    public static void main(String[] args) {\n        // Escribe aquí tu código\n    }\n}",
+    "initialCode": "// Escribe aquí tu código",
     "expectedOutput": "20\n",
     "hints": [
       "Usa la sintaxis `{ valor1, valor2, ... }` para inicializar el array directamente.",

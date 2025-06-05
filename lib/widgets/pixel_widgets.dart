@@ -83,7 +83,7 @@ class _PixelButtonState extends State<PixelButton> {
                 vertical: PixelTheme.spacingSmall
               ),
               elevation: widget.isSecondary ? 0 : 3,
-              shadowColor: widget.isSecondary ? null : Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              shadowColor: widget.isSecondary ? null : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
               ),
@@ -136,14 +136,14 @@ class PixelTextField extends StatelessWidget {
         fillColor: Theme.of(context).colorScheme.surface,
         border: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
@@ -200,12 +200,12 @@ class PixelCard extends StatelessWidget {
         color: color ?? Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
         border: Border.all(
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1), 
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1), 
           width: 1
         ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 8,
             spreadRadius: 0,

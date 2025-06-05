@@ -11,13 +11,12 @@ class QuestionService {
   Future<QuestionModel?> getQuestionById(String questionId) async {
     if (AppConfig.shouldUseFirebase) {
       try {
-        QuerySnapshot querySnapshot = await _firestore
+        DocumentSnapshot doc = await _firestore
             .collection('questions')
-            .where('originalId', isEqualTo: questionId)
-            .limit(1)
+            .doc(questionId)
             .get();
-        if (querySnapshot.docs.isNotEmpty) {
-          return QuestionModel.fromFirestore(querySnapshot.docs.first);
+        if (doc.exists) {
+          return QuestionModel.fromFirestore(doc);
         }
       } catch (e) {
         // Error al obtener pregunta por ID desde Firebase: $e
@@ -34,13 +33,12 @@ class QuestionService {
       try {
         // [QServ] Loading questions from Firebase for IDs: $questionIds
         for (String id in questionIds) {
-          QuerySnapshot querySnapshot = await _firestore
+          DocumentSnapshot doc = await _firestore
               .collection('questions')
-              .where('originalId', isEqualTo: id)
-              .limit(1)
+              .doc(id)
               .get();
-          if (querySnapshot.docs.isNotEmpty) {
-            questions.add(QuestionModel.fromFirestore(querySnapshot.docs.first));
+          if (doc.exists) {
+            questions.add(QuestionModel.fromFirestore(doc));
             // [QServ] Found Firebase question for ID "$id"
           } else {
             // [QServ] Question not found in Firebase for ID "$id"

@@ -38,7 +38,9 @@ class _CodePlaygroundState extends State<CodePlayground> {
     // Buscar solo la primera línea que necesita ser completada
     for (int i = 0; i < lines.length; i++) {
       if (!foundFirstMatch &&
-          lines[i].trim().startsWith('// Escribe aquí tu código')) {
+          (lines[i].trim().startsWith('// Escribe aquí tu código') ||
+           lines[i].trim().startsWith('// Escribe aquí tu respuesta') ||
+           lines[i].trim().startsWith('// ¿Cuál'))) {
         lines[i] = '    // COMPLETAR: Escribe aquí la línea de código';
         foundFirstMatch = true;
         break;
@@ -56,13 +58,20 @@ class _CodePlaygroundState extends State<CodePlayground> {
       case 'variables_basicas':
         return 'String nombre = "Juan"; System.out.println("Mi nombre es " + nombre);';
       case 'operaciones_matematicas':
-        return 'int suma = numero1 + numero2; System.out.println("Suma: " + suma);';
+      case 'operaciones_basicas':
+        return '31';
       case 'condicionales_if':
         return 'if (edad >= 18) System.out.println("Eres mayor de edad");';
       case 'bucle_for_basico':
         return 'for (int i = 1; i <= 3; i++) System.out.print(i + " ");';
       case 'metodo_simple':
         return 'System.out.println(saludar("Ana"));';
+      case 'clase_simple_personaje':
+        return 'A';
+      case 'constructor_personaje':
+        return 'B';
+      case 'herencia_basica':
+        return 'C';
       default:
         return '';
     }

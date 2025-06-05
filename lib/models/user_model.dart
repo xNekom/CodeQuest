@@ -19,7 +19,7 @@ class UserModel {
   // --- Campos de personalización del personaje y roles ---
   bool? characterSelected; // Indica si el usuario ya ha seleccionado su personaje inicial.
   String? characterName; // Nombre elegido para el personaje del juego.
-  String? adminRole; // Rol del usuario en el sistema (ej. 'user', 'admin').
+  String? role; // Rol del usuario en el sistema (ej. 'user', 'admin').
   int characterAssetIndex; // Índice del asset visual para el personaje (rango 0-8).
   String? programmingRole; // Rol de programación elegido por el usuario (ej. 'Desarrollador Full Stack').
 
@@ -38,7 +38,7 @@ class UserModel {
   Timestamp? creationDate; // Fecha y hora de creación de la cuenta.
 
   // Getter para verificar fácilmente si el usuario tiene rol de administrador.
-  bool get isAdmin => adminRole == 'admin';
+  bool get isAdmin => role == 'admin';
   // Constructor para crear una instancia de UserModel.
   UserModel({
     required this.userId,
@@ -53,7 +53,7 @@ class UserModel {
     this.gameCurrency = 0,
     this.characterSelected,
     this.characterName,
-    this.adminRole = 'user',
+    this.role = 'user',
     this.characterAssetIndex = 0,
     this.programmingRole = 'Desarrollador Full Stack',
     this.progressInMission,
@@ -84,8 +84,7 @@ class UserModel {
       gameCurrency: json['gameCurrency'] as int? ?? 0,
       characterSelected: json['characterSelected'] as bool?,
       characterName: json['characterName'] as String?,
-      adminRole:
-          json['adminRole'] as String? ?? json['role'] as String? ?? 'user',
+      role: json['role'] as String? ?? json['adminRole'] as String? ?? 'user',
       characterAssetIndex: json['characterAssetIndex'] as int? ?? 0,
       programmingRole:
           json['programmingRole'] as String? ?? 'Desarrollador Full Stack',
@@ -125,7 +124,7 @@ class UserModel {
 
       'characterSelected': characterSelected,
       'characterName': characterName,
-      'adminRole': adminRole,
+      'role': role,
       'characterAssetIndex': characterAssetIndex,
       'programmingRole': programmingRole,
       'progressInMission': progressInMission,

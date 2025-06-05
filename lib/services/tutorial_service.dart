@@ -392,33 +392,33 @@ class TutorialService {
       InteractiveTutorialStep(
         title: '¡Bienvenido a tu Mochila del Programador! 🎒',
         description:
-            'Este es tu inventario personal donde se guardan todos los objetos que has adquirido en la tienda o ganado como recompensa. Organiza y utiliza estratégicamente tus recursos para avanzar en tu aventura.',
+            'Este es tu inventario personal donde se guardan todos los objetos que has adquirido en la tienda o ganado como recompensa. Cada item se muestra en una tarjeta con su información básica.',
         icon: Icons.backpack,
         showPulse: false,
       ),
-      if (categoryFilterKey != null)
-        InteractiveTutorialStep(
-          title: 'Filtro de Categorías 📑',
-          description:
-              'Organiza tu inventario por categorías para encontrar rápidamente lo que necesitas, ya sean armas, armaduras, pociones o elementos decorativos.',
-          icon: Icons.category,
-          targetKey: categoryFilterKey,
-          showPulse: true,
-        ),
       if (inventoryGridKey != null)
         InteractiveTutorialStep(
-          title: 'Tus Objetos Coleccionados 📦',
+          title: 'Lista de Objetos 📦',
           description:
-              'Aquí puedes ver todos los objetos que posees. Cada tarjeta muestra información básica del objeto. Toca cualquiera para ver más detalles o utilizarlo.',
-          icon: Icons.grid_view,
+              'Aquí puedes ver todos los objetos que posees en una lista organizada. Cada tarjeta muestra el icono, nombre, descripción breve, cantidad y rareza del objeto. Las tarjetas se adaptan automáticamente al contenido.',
+          icon: Icons.list,
           targetKey: inventoryGridKey,
+          showPulse: true,
+        ),
+      if (categoryFilterKey != null)
+        InteractiveTutorialStep(
+          title: 'Tarjeta de Objeto 🎴',
+          description:
+              'Cada tarjeta muestra información esencial: icono del objeto, nombre en negrita, descripción resumida, cantidad (si tienes más de uno) y nivel de rareza con colores distintivos.',
+          icon: Icons.card_membership,
+          targetKey: categoryFilterKey,
           showPulse: true,
         ),
       if (itemDetailKey != null)
         InteractiveTutorialStep(
-          title: 'Detalles del Objeto 🔍',
+          title: 'Detalles Completos 🔍',
           description:
-              'Al seleccionar un objeto, puedes ver sus estadísticas detalladas, descripción y opciones disponibles como equipar, usar o combinar con otros objetos.',
+              'Toca cualquier tarjeta para abrir una ventana con información detallada del objeto, incluyendo descripción completa, estadísticas, tipo y opciones de uso disponibles.',
           icon: Icons.info,
           targetKey: itemDetailKey,
           showPulse: true,
@@ -433,9 +433,9 @@ class TutorialService {
           showPulse: true,
         ),
       InteractiveTutorialStep(
-        title: 'Consejos de Inventario 💡',
+        title: 'Gestión Inteligente 💡',
         description:
-            'Revisa regularmente tu inventario para ver qué objetos puedes utilizar para mejorar tu experiencia. Algunos objetos pueden combinarse para crear elementos más poderosos, y otros tienen efectos especiales que te ayudarán en momentos específicos.',
+            'Tu inventario se organiza automáticamente. Los objetos más raros tienen bordes de colores especiales. Revisa regularmente para descubrir nuevos objetos y sus usos estratégicos en tu aventura de programación.',
         icon: Icons.lightbulb,
         showPulse: false,
       ),
@@ -453,51 +453,51 @@ class TutorialService {
       InteractiveTutorialStep(
         title: '¡Bienvenido al Ranking de Leyendas! 🏆',
         description:
-            'Esta es la tabla de clasificación global donde puedes ver cómo te comparas con otros programadores. Compite sanamente, aprende de los mejores y aspira a alcanzar la cima.',
+            'Descubre la tabla de clasificación global donde puedes comparar tu progreso con otros programadores. Aquí verás las posiciones, puntuaciones y estadísticas de los mejores jugadores de CodeQuest.',
         icon: Icons.emoji_events,
         showPulse: false,
       ),
       if (userRankingKey != null)
         InteractiveTutorialStep(
-          title: 'Tu Posición Actual 🌟',
+          title: 'Tu Posición Personal 🌟',
           description:
-              'Aquí puedes ver tu posición en el ranking global, junto con tu puntuación total y estadísticas relevantes. ¡Sigue completando misiones para subir en la clasificación!',
-          icon: Icons.person,
+              'Esta tarjeta muestra tu posición actual en el ranking global. El número está coloreado según tu rendimiento: oro para los primeros lugares, plata para posiciones intermedias y bronce para el resto.',
+          icon: Icons.account_circle,
           targetKey: userRankingKey,
           showPulse: true,
         ),
       if (timeFilterKey != null)
         InteractiveTutorialStep(
-          title: 'Filtro Temporal ⏱️',
+          title: 'Jugador Destacado 👑',
           description:
-              'Cambia entre diferentes períodos de tiempo para ver los rankings semanales, mensuales o de todos los tiempos. Es útil para seguir las tendencias y los competidores más activos.',
-          icon: Icons.calendar_today,
+              'El primer jugador de la lista tiene un diseño especial que lo destaca como el líder actual. Observa sus estadísticas para inspirarte y establecer metas.',
+          icon: Icons.star,
           targetKey: timeFilterKey,
           showPulse: true,
         ),
       if (leaderboardListKey != null)
         InteractiveTutorialStep(
-          title: 'Tabla de Clasificación 📊',
+          title: 'Lista de Clasificación 📊',
           description:
-              'Explora la lista de los mejores programadores. Cada fila muestra la posición, nombre, avatar, puntuación y estadísticas destacadas de cada jugador.',
-          icon: Icons.leaderboard,
+              'Cada entrada muestra la posición, nombre del jugador, puntuación total y estadísticas clave. Tu propia entrada aparece resaltada con un borde azul para que la encuentres fácilmente.',
+          icon: Icons.format_list_numbered,
           targetKey: leaderboardListKey,
           showPulse: true,
         ),
       if (backButtonKey != null)
         InteractiveTutorialStep(
-          title: 'Volver al Inicio 🏠',
+          title: 'Navegación 🏠',
           description:
-              'Cuando termines de revisar las clasificaciones, usa este botón para regresar a la pantalla principal.',
-          icon: Icons.home,
+              'Usa este botón para regresar al menú principal cuando hayas terminado de revisar las clasificaciones.',
+          icon: Icons.arrow_back,
           targetKey: backButtonKey,
           showPulse: true,
         ),
       InteractiveTutorialStep(
-        title: 'Consejos para Competir 💡',
+        title: 'Estrategias para Subir de Rango 💡',
         description:
-            'La clasificación se basa en tu rendimiento general: misiones completadas, precisión en respuestas, tiempo de resolución y logros desbloqueados. Concéntrate en mejorar constantemente y no solo en tu posición en el ranking.',
-        icon: Icons.lightbulb,
+            'Tu puntuación se calcula basándose en misiones completadas, precisión en las respuestas, velocidad de resolución y logros desbloqueados. Enfócate en la calidad y consistencia, no solo en la velocidad.',
+        icon: Icons.trending_up,
         showPulse: false,
       ),
     ];

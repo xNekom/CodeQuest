@@ -240,7 +240,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                               // Navegar directamente a la pantalla de encuentro con enemigo
                               Navigator.push(
                                 context,
-                                FadePageRoute(
+                                MaterialPageRoute(
                                   builder:
                                       (_) => EnemyEncounterScreen(
                                         battleConfig:
@@ -254,7 +254,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                               // Navegar a la pantalla de teoría
                               Navigator.push(
                                 context,
-                                FadePageRoute(
+                                MaterialPageRoute(
                                   builder:
                                       (_) => TheoryScreen(
                                         missionId: widget.missionId,
@@ -298,10 +298,11 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           // Navegar directamente a la pantalla de encuentro con enemigo
                           Navigator.push(
                             context,
-                            FadePageRoute(
+                            MaterialPageRoute(
                               builder:
                                   (_) => EnemyEncounterScreen(
-                                    battleConfig: firstObjective!.battleConfig!,
+                                    battleConfig:
+                                        firstObjective!.battleConfig!,
                                     isReplay: false,
                                   ),
                             ),
@@ -310,7 +311,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           // Navegar a la pantalla de teoría tradicional
                           final result = await Navigator.push(
                             context,
-                            FadePageRoute(
+                            MaterialPageRoute(
                               builder:
                                   (_) => TheoryScreen(
                                     missionId: widget.missionId,

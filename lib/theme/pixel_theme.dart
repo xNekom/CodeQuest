@@ -73,7 +73,7 @@ class PixelTheme {
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
         elevation: 2,
-        shadowColor: primaryColor.withOpacity(0.3),
+        shadowColor: primaryColor.withValues(alpha: 0.3),
         padding: const EdgeInsets.symmetric(horizontal: spacingMedium, vertical: spacingSmall),
       ),
     ),
@@ -81,18 +81,18 @@ class PixelTheme {
       filled: true,
       fillColor: lightSurfaceColor,
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withOpacity(0.2), width: 1),
+        borderSide: BorderSide(color: lightTextColor.withValues(alpha: 0.2), width: 1),
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withOpacity(0.2), width: 1),
+        borderSide: BorderSide(color: lightTextColor.withValues(alpha: 0.2), width: 1),
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: primaryColor, width: 2),
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
-      labelStyle: TextStyle(color: lightTextColor.withOpacity(0.7)),
+      labelStyle: TextStyle(color: lightTextColor.withValues(alpha: 0.7)),
       contentPadding: const EdgeInsets.symmetric(horizontal: spacingMedium, vertical: spacingSmall),
     ),
   );
@@ -128,7 +128,7 @@ class PixelTheme {
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
         elevation: 2,
-        shadowColor: primaryColor.withOpacity(0.3),
+        shadowColor: primaryColor.withValues(alpha: 0.3),
         padding: const EdgeInsets.symmetric(horizontal: spacingMedium, vertical: spacingSmall),
       ),
     ),
@@ -136,18 +136,18 @@ class PixelTheme {
       filled: true,
       fillColor: darkDialogSurfaceColor,
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withOpacity(0.2), width: 1),
+        borderSide: BorderSide(color: darkTextColor.withValues(alpha: 0.2), width: 1),
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withOpacity(0.2), width: 1),
+        borderSide: BorderSide(color: darkTextColor.withValues(alpha: 0.2), width: 1),
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: primaryColor, width: 2),
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
-      labelStyle: TextStyle(color: darkTextColor.withOpacity(0.7)),
+      labelStyle: TextStyle(color: darkTextColor.withValues(alpha: 0.7)),
       contentPadding: const EdgeInsets.symmetric(horizontal: spacingMedium, vertical: spacingSmall),
     ),
   );
