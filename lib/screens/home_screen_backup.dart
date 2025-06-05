@@ -10,7 +10,7 @@ import '../widgets/character_asset.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../widgets/test_error_widget.dart';
-import 'code_exercises_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -18,7 +18,7 @@ import 'screens/shop_screen.dart'; // Importar ShopScreen
 import 'screens/inventory_screen.dart'; // Importar InventoryScreen
 import 'screens/leaderboard_screen.dart'; // Importar LeaderboardScreen
 import 'screens/error_log_screen.dart'; // Importar ErrorLogScreen
-import 'screens/debug_firebase_screen.dart'; // Importar DebugFirebaseScreen
+// import 'screens/debug_firebase_screen.dart'; // Importar DebugFirebaseScreen - REMOVIDO PARA PRODUCCIÓN
 import 'screens/tutorials_screen.dart'; // Importar TutorialsScreen
 import 'screens/code_exercises_screen.dart'; // Importar CodeExercisesScreen
 import 'utils/error_handler.dart'; // Importar ErrorHandler
@@ -63,8 +63,8 @@ void main() async {
         runApp(const MyApp());
       } catch (e, stack) {
         // Manejar errores durante la inicialización
-        debugPrint('Error crítico durante la inicialización: $e');
-        debugPrint(stack.toString());
+        // debugPrint('Error crítico durante la inicialización: $e'); // REMOVIDO PARA PRODUCCIÓN
+    // debugPrint(stack.toString()); // REMOVIDO PARA PRODUCCIÓN
 
         // Intenta ejecutar una versión mínima de la app que permite reintentar
         runApp(_buildEmergencyApp(e, stack));
@@ -153,8 +153,8 @@ class MyApp extends StatelessWidget {
         ErrorHandler.logError(errorDetails.exception, errorDetails.stack);
       } catch (e) {
         // Si falla el logging, al menos imprimir en consola
-        debugPrint('Error logging failed: $e');
-        debugPrint('Original error: ${errorDetails.exception}');
+        // debugPrint('Error logging failed: $e'); // REMOVIDO PARA PRODUCCIÓN
+      // debugPrint('Original error: ${errorDetails.exception}'); // REMOVIDO PARA PRODUCCIÓN
       }
       
       // Crear un widget de error simple sin usar Theme.of(context) para evitar bucles infinitos
@@ -190,7 +190,7 @@ class MyApp extends StatelessWidget {
                     try {
                       navigatorKey.currentState?.pushNamedAndRemoveUntil('/home', (route) => false);
                     } catch (e) {
-                      debugPrint('Error en navegación desde ErrorWidget: $e');
+                      // debugPrint('Error en navegación desde ErrorWidget: $e'); // REMOVIDO PARA PRODUCCIÓN
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -300,9 +300,7 @@ class MyApp extends StatelessWidget {
                 const RewardNotificationManager(child: CodeExercisesScreen()),
         '/error-logs':
             (context) => const ErrorLogScreen(), // Nueva ruta para ver los logs
-        '/debug-firebase':
-            (context) =>
-                const DebugFirebaseScreen(), // Ruta temporal para debug Firebase
+        // '/debug-firebase': (context) => const DebugFirebaseScreen(), // REMOVIDO PARA PRODUCCIÓN
       },
     );
   }

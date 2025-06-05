@@ -165,7 +165,7 @@ class TutorialService {
         InteractiveTutorialStep(
           title: 'Filtro de Misiones 🔍',
           description:
-              'Usa este botón para organizar las misiones según tus necesidades. Puedes filtrar por dificultad, tema o estado de completado para encontrar exactamente lo que buscas.',
+              'Usa este botón para organizar las misiones según tus necesidades. Puedes filtrar por nivel de dificultad (Principiante, Intermedio, Avanzado) o por estado de completado (Todas, Completadas, Disponibles, Bloqueadas) para encontrar exactamente lo que buscas.',
           icon: Icons.filter_list,
           targetKey: filterButtonKey,
           showPulse: true,
@@ -538,13 +538,13 @@ class TutorialService {
       // El tutorial solo debe iniciarse cuando se accede específicamente desde el menú
       if (!completed) {
         // Tutorial disponible pero no se inicia automáticamente
-        debugPrint(
-          'Tutorial $tutorialKey disponible pero no se inicia automáticamente',
-        );
+        // debugPrint(
+        //   'Tutorial $tutorialKey disponible pero no se inicia automáticamente',
+        // ); // REMOVIDO PARA PRODUCCIÓN
       }
     } catch (e) {
       // Capturar cualquier error que pueda ocurrir
-      debugPrint('Error al verificar tutorial: $e');
+      // debugPrint('Error al verificar tutorial: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 
@@ -674,7 +674,7 @@ class TutorialService {
       overlay.insert(_currentOverlayEntry!);
     } catch (e) {
       // Capturar cualquier error que pueda ocurrir
-      debugPrint('Error al iniciar tutorial interactivo: $e');
+      // debugPrint('Error al iniciar tutorial interactivo: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 

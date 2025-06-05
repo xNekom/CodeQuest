@@ -30,6 +30,10 @@ class _MissionListScreenState extends State<MissionListScreen> {
   User? _currentUser;
   Map<String, dynamic>? _userData;
   bool _isLoadingUser = true;
+  
+  // Estados para el filtro
+  String _filterType = 'all'; // 'all', 'completed', 'available', 'locked'
+  String _levelFilter = 'all'; // 'all', 'beginner', 'intermediate', 'advanced'
 
   @override
   void initState() {
@@ -120,6 +124,178 @@ class _MissionListScreenState extends State<MissionListScreen> {
     return "Requisitos no cumplidos";
   }
 
+  List<MissionModel> _applyFilters(List<MissionModel> missions) {
+    return missions.where((mission) {
+      final bool isUnlocked = _isMissionUnlocked(mission, _userData);
+      final List<String> completedMissions = List<String>.from(
+        _userData?['completedMissions'] ?? [],
+      );
+      final bool isCompleted = completedMissions.contains(mission.missionId);
+
+      // Filtro por estado
+      if (_filterType != 'all') {
+        switch (_filterType) {
+          case 'completed':
+            if (!isCompleted) return false;
+            break;
+          case 'available':
+            if (!isUnlocked || isCompleted) return false;
+            break;
+          case 'locked':
+            if (isUnlocked) return false;
+            break;
+        }
+      }
+
+      // Filtro por nivel
+      if (_levelFilter != 'all') {
+        switch (_levelFilter) {
+          case 'beginner':
+            if (mission.levelRequired > 3) return false;
+            break;
+          case 'intermediate':
+            if (mission.levelRequired <= 3 || mission.levelRequired > 6) return false;
+            break;
+          case 'advanced':
+            if (mission.levelRequired <= 6) return false;
+            break;
+        }
+      }
+
+      return true;
+    }).toList();
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Filtrar Misiones'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Estado de completado:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  RadioListTile<String>(
+                    title: const Text('Todas'),
+                    value: 'all',
+                    groupValue: _filterType,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _filterType = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Completadas'),
+                    value: 'completed',
+                    groupValue: _filterType,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _filterType = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Disponibles'),
+                    value: 'available',
+                    groupValue: _filterType,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _filterType = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Bloqueadas'),
+                    value: 'locked',
+                    groupValue: _filterType,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _filterType = value!;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Nivel de dificultad:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  RadioListTile<String>(
+                    title: const Text('Todos los niveles'),
+                    value: 'all',
+                    groupValue: _levelFilter,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _levelFilter = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Principiante (1-3)'),
+                    value: 'beginner',
+                    groupValue: _levelFilter,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _levelFilter = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Intermedio (4-6)'),
+                    value: 'intermediate',
+                    groupValue: _levelFilter,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _levelFilter = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Avanzado (7+)'),
+                    value: 'advanced',
+                    groupValue: _levelFilter,
+                    onChanged: (value) {
+                      setDialogState(() {
+                        _levelFilter = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    setDialogState(() {
+                      _filterType = 'all';
+                      _levelFilter = 'all';
+                    });
+                  },
+                  child: const Text('Limpiar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      // Los filtros ya están actualizados
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Aplicar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_authService.currentUser == null) {
@@ -152,6 +328,9 @@ class _MissionListScreenState extends State<MissionListScreen> {
           return const Center(child: Text('No hay misiones disponibles.'));
         }
 
+        // Aplicar filtros
+        final filteredMissions = _applyFilters(missions);
+
         return Column(
           children: [
             // Botón de filtro
@@ -160,13 +339,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
               child: ElevatedButton.icon(
                 key: widget.filterButtonKey,
                 onPressed: () {
-                  // Aquí se puede implementar la funcionalidad de filtro
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Función de filtro próximamente'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+                  _showFilterDialog();
                 },
                 icon: const Icon(Icons.filter_list),
                 label: const Text('Filtrar Misiones'),
@@ -179,12 +352,12 @@ class _MissionListScreenState extends State<MissionListScreen> {
             Expanded(
               child: ListView.separated(
                 key: widget.missionListKey,
-                // Mostrar misiones + 1 casilla fija al final
-                itemCount: missions.length + 1,
+                // Mostrar misiones filtradas + 1 casilla fija al final
+                itemCount: filteredMissions.length + 1,
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
             // Entrada final fija
-            if (index == missions.length) {
+            if (index == filteredMissions.length) {
               return Card(
                 elevation: 2,
                 margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -198,7 +371,7 @@ class _MissionListScreenState extends State<MissionListScreen> {
                 ),
               );
             }
-            final mission = missions[index];
+            final mission = filteredMissions[index];
             final bool isUnlocked = _isMissionUnlocked(mission, _userData);
             final List<String> completedMissions = List<String>.from(
               _userData?['completedMissions'] ?? [],

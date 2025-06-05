@@ -45,7 +45,7 @@ class TestErrorWidget extends StatelessWidget {
           // Generar un error síncrono
           final list = <String>[];
           // ignore: unused_local_variable
-          final crash = list[5]; // Accediendo a un índice fuera de límites
+          final crash = list[0]; // Accediendo a un índice fuera de límites
         } catch (e, stack) {
           // Usar directamente el ScaffoldMessenger global
           scaffoldMessengerKey.currentState?.showSnackBar(

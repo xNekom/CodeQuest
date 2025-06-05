@@ -8,6 +8,7 @@ import '../../services/question_service.dart';
 import '../../services/enemy_service.dart';
 import '../../services/user_service.dart';
 import '../../services/reward_service.dart';
+import '../../services/auth_service.dart';
 import '../../widgets/pixel_widgets.dart';
 import 'package:codequest/widgets/formatted_text_widget.dart';
 import '../mission_completed_screen.dart';
@@ -36,12 +37,14 @@ class _BattleScreenState extends State<BattleScreen> {
   final EnemyService _enemyService = EnemyService();
   final UserService _userService = UserService();
   final RewardService _rewardService = RewardService();
+  final AuthService _authService = AuthService();
   bool _isLoading = true;
   int? _selectedOptionIndex;
   bool _answerSubmitted = false;
   bool? _isCurrentAnswerCorrect;
   int _totalCorrectAnswers = 0;
   int _totalIncorrectAnswers = 0;
+  bool _isProcessingNextQuestion = false; // Variable para evitar doble clic
   @override
   void initState() {
     super.initState();
@@ -154,11 +157,24 @@ class _BattleScreenState extends State<BattleScreen> {
   }
 
   void _nextQuestion() {
+    // Evitar múltiples clics
+    if (_isProcessingNextQuestion) return;
+    
+    setState(() {
+      _isProcessingNextQuestion = true;
+    });
+    
     if (_currentQuestionIndex < _questionIds.length - 1) {
       _currentQuestionIndex++;
       _loadData();
+      // Restablecer el estado después de cargar los datos
+      setState(() {
+        _isProcessingNextQuestion = false;
+      });
     } else {
       _finishBattle();
+      // No necesitamos restablecer _isProcessingNextQuestion aquí porque
+      // _finishBattle() navega a otra pantalla
     }
   }
 
@@ -219,8 +235,8 @@ class _BattleScreenState extends State<BattleScreen> {
             }
           }
         } catch (e) {
-          debugPrint('[BattleScreen] Error al completar misión: $e');
-        }
+        // debugPrint('[BattleScreen] Error al completar misión: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
       }
     } else {
       // En caso de derrota, solo actualizar estadísticas de batalla si no es repetición
@@ -229,8 +245,8 @@ class _BattleScreenState extends State<BattleScreen> {
         try {
           await _userService.updateStatsAfterBattle(userId, false);
         } catch (e) {
-          debugPrint('[BattleScreen] Error al actualizar estadísticas: $e');
-        }
+        // debugPrint('[BattleScreen] Error al actualizar estadísticas: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
       }
     }
     if (!mounted) return; // Evitar usar contexto si el widget ya fue desmontado
@@ -324,7 +340,7 @@ class _BattleScreenState extends State<BattleScreen> {
                       (route) => false,
                     );
                   } else if (victory && completedMissionId != null) {
-                    // Si ganó y completó una misión, mostrar pantalla de misión completada
+                    // Si ganó y completó una misión, mostrar pantalla de misión completada inmediatamente
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -345,6 +361,9 @@ class _BattleScreenState extends State<BattleScreen> {
                             ),
                       ),
                     );
+                    
+                    // Procesar recompensas en segundo plano
+                    _processBattleRewardsInBackground(completedMissionId);
                   } else {
                     // Si no completó misión o perdió, volver al home directamente
                     Navigator.pushNamedAndRemoveUntil(
@@ -359,6 +378,32 @@ class _BattleScreenState extends State<BattleScreen> {
             ],
           ),
     );
+  }
+
+  // Procesar recompensas de batalla en segundo plano sin bloquear la UI
+  void _processBattleRewardsInBackground(String? missionId) async {
+    final String? userId = _authService.currentUser?.uid;
+    if (userId == null || missionId == null) return;
+
+    try {
+      // Ejecutar operaciones de BD de forma asíncrona
+      await Future.wait([
+        _userService.addExperience(
+          userId,
+          50, // Experiencia por batalla
+          missionId: missionId,
+        ),
+        _userService.completeMission(
+          userId,
+          missionId,
+          isBattleMission: true,
+        ),
+        _userService.updateStatsAfterBattle(userId, true), // Victoria
+      ]);
+    } catch (e) {
+      // Manejar errores silenciosamente
+      debugPrint('Error procesando recompensas de batalla en segundo plano');
+    }
   }
 
   @override
@@ -582,15 +627,24 @@ class _BattleScreenState extends State<BattleScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: PixelButton(
-                  onPressed: () {
-                    _nextQuestion();
-                  },
-                  child: Text(
-                    _currentQuestionIndex < _questionIds.length - 1
-                        ? 'SIGUIENTE'
-                        : 'FINALIZAR',
-                    style: const TextStyle(fontFamily: 'PixelFont'),
-                  ),
+                  onPressed: _isProcessingNextQuestion ? null : () {
+                  _nextQuestion();
+                },
+                child: _isProcessingNextQuestion
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(
+                        _currentQuestionIndex < _questionIds.length - 1
+                            ? 'SIGUIENTE'
+                            : 'FINALIZAR',
+                        style: const TextStyle(fontFamily: 'PixelFont'),
+                      ),
                 ),
               ),
             ],

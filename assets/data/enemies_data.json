@@ -3,7 +3,7 @@
     "id": "enemigo_guardian_de_las_sombras",
     "name": "Guardián de las Sombras",
     "description": "Un antiguo espíritu que protege los secretos del Bosque Susurrante. Desafía a los viajeros con acertijos y pruebas de combate.",
-    "assetPath": "assets/enemies/guardian_sombras.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.5
@@ -22,7 +22,7 @@
     "id": "enemigo_bug_de_bucle_infinito",
     "name": "Bug de Bucle Infinito",
     "description": "Un enemigo peligroso que puede hacer que tu programa nunca termine.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.9
@@ -38,7 +38,7 @@
     "id": "enemigo_bug_del_punto_y_coma",
     "name": "Bug del Punto y Coma",
     "description": "Un pequeño pero molesto error que aparece cuando olvidas el punto y coma.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.7
@@ -54,7 +54,7 @@
     "id": "enemigo_stackoverflowerror",
     "name": "StackOverflowError",
     "description": "Un error que aparece cuando el stack de llamadas se agota debido a recursión infinita.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.75
@@ -70,7 +70,7 @@
     "id": "enemigo_error_de_jvm",
     "name": "Error de JVM",
     "description": "Un error crítico de la máquina virtual de Java.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.4
@@ -86,7 +86,7 @@
     "id": "enemigo_internalerror",
     "name": "InternalError",
     "description": "Un error interno del sistema que indica un problema grave.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.3
@@ -102,7 +102,7 @@
     "id": "enemigo_error_de_java",
     "name": "Error de Java",
     "description": "Un error general de Java que puede aparecer en cualquier momento.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.6
@@ -118,7 +118,7 @@
     "id": "enemigo_illegalargumentexception",
     "name": "IllegalArgumentException",
     "description": "Una excepción que aparece cuando pasas argumentos inválidos a un método.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.65
@@ -134,7 +134,7 @@
     "id": "enemigo_outofmemoryerror",
     "name": "OutOfMemoryError",
     "description": "Un error que aparece cuando la aplicación se queda sin memoria disponible.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.45
@@ -150,7 +150,7 @@
     "id": "enemigo_classnotfoundexception",
     "name": "ClassNotFoundException",
     "description": "Una excepción que aparece cuando el sistema no puede encontrar una clase específica.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.6
@@ -166,7 +166,7 @@
     "id": "enemigo_securityexception",
     "name": "SecurityException",
     "description": "Una excepción relacionada con violaciones de seguridad en el código.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.55
@@ -182,7 +182,7 @@
     "id": "enemigo_nullpointerexception",
     "name": "NullPointerException",
     "description": "Una excepción temida que aparece cuando intentas usar una referencia nula.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.8
@@ -198,7 +198,7 @@
     "id": "enemigo_espiritu_codigo_incompleto",
     "name": "Espíritu del Código Incompleto",
     "description": "Un espíritu que representa todos los proyectos no terminados y el código abandonado.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.6
@@ -214,7 +214,7 @@
     "id": "enemigo_manejador_de_excepciones",
     "name": "Manejador de Excepciones",
     "description": "Un enemigo que protege contra errores pero a veces puede ser difícil de manejar.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.65
@@ -230,7 +230,7 @@
     "id": "enemigo_bug_de_variable_no_inicializada",
     "name": "Bug de Variable No Inicializada",
     "description": "Un error sutil que aparece cuando usas una variable sin inicializar.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.7
@@ -246,7 +246,7 @@
     "id": "enemigo_arrayindexoutofboundsexception",
     "name": "ArrayIndexOutOfBoundsException",
     "description": "Una excepción que aparece cuando intentas acceder a un índice fuera del rango del array.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.7
@@ -262,7 +262,7 @@
     "id": "enemigo_noclassdeffounderror",
     "name": "NoClassDefFoundError",
     "description": "Un error que aparece cuando una clase estaba disponible en tiempo de compilación pero no en tiempo de ejecución.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.png",
+    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
     "lootTable": [
       {
         "dropChance": 0.5
