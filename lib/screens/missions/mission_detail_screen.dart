@@ -43,9 +43,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       context,
       TutorialService.missionDetailTutorial,
       TutorialService.getMissionDetailTutorial(
-        missionTitleKey: _missionTitleKey,
-        missionDescriptionKey: _missionDescriptionKey,
-        startMissionButtonKey: _startMissionButtonKey,
+        descriptionKey: _missionDescriptionKey,
+        startButtonKey: _startMissionButtonKey,
       ),
     );
   }
@@ -339,9 +338,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
           TutorialService.showTutorialDialog(
             context,
             TutorialService.getMissionDetailTutorial(
-              missionTitleKey: _missionTitleKey,
-              missionDescriptionKey: _missionDescriptionKey,
-              startMissionButtonKey: _startMissionButtonKey,
+              descriptionKey: _missionDescriptionKey,
+              startButtonKey: _startMissionButtonKey,
             ),
           );
         },

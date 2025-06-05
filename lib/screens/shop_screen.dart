@@ -1,10 +1,13 @@
 // filepath: lib/screens/shop_screen.dart
 import 'package:flutter/material.dart';
+
+import '../models/item_model.dart';
 import '../services/item_service.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
-import '../models/item_model.dart';
+import '../services/tutorial_service.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/tutorial_floating_button.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -20,6 +23,12 @@ class _ShopScreenState extends State<ShopScreen> {
   late Future<List<ItemModel>> _itemsFuture;
   int _coins = 0;
   bool _isLoading = true;
+  
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _coinDisplayKey = GlobalKey();
+  final GlobalKey _itemListKey = GlobalKey();
+  final GlobalKey _shopItemKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
   int _currentPage = 0;
   static const int _itemsPerPage = 10;
   String _selectedType = 'Todos';
@@ -28,6 +37,25 @@ class _ShopScreenState extends State<ShopScreen> {
   void initState() {
     super.initState();
     _loadData();
+    _checkAndStartTutorial();
+  }
+  
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.shopTutorial,
+        TutorialService.getShopTutorial(
+          coinsIndicatorKey: _coinDisplayKey,
+          itemListKey: _itemListKey,
+          backButtonKey: _backButtonKey,
+        ),
+      );
+    }
   }
 
   @override
@@ -82,13 +110,22 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('TIENDA'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('TIENDA'),
+        centerTitle: true,
+        leading: IconButton(
+          key: _backButtonKey,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())
               : Column(
                 children: [
                   Padding(
+                    key: _coinDisplayKey,
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       'Monedas: $_coins',
@@ -181,6 +218,7 @@ class _ShopScreenState extends State<ShopScreen> {
                               ),
                             ),
                             Expanded(
+                              key: _itemListKey,
                               child: ListView.builder(
                                 itemCount: pageItems.length,
                                 itemBuilder: (context, index) {
@@ -194,6 +232,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   );
                                   final canBuy = hasPrice && _coins >= price;
                                   return Card(
+                                    key: index == 0 ? _shopItemKey : null,
                                     margin: const EdgeInsets.symmetric(
                                       horizontal: 8,
                                       vertical: 4,
@@ -278,6 +317,14 @@ class _ShopScreenState extends State<ShopScreen> {
                   ),
                 ],
               ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.shopTutorial,
+        tutorialSteps: TutorialService.getShopTutorial(
+          coinsIndicatorKey: _coinDisplayKey,
+          itemListKey: _itemListKey,
+          backButtonKey: _backButtonKey,
+        ),
+      ),
     );
   }
 }

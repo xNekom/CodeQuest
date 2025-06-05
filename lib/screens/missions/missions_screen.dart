@@ -30,8 +30,8 @@ class _MissionsScreenState extends State<MissionsScreen> {
     if (mounted) {
       TutorialService.startTutorialIfNeeded(
         context,
-        TutorialService.missionScreenTutorial,
-        TutorialService.getMissionScreenTutorial(
+        TutorialService.missionsScreenTutorial,
+        TutorialService.getMissionsScreenTutorial(
           missionListKey: _missionListKey,
           filterButtonKey: _filterButtonKey,
           backButtonKey: _backButtonKey,
@@ -62,8 +62,8 @@ class _MissionsScreenState extends State<MissionsScreen> {
         ),
       ),
       floatingActionButton: TutorialFloatingButton(
-        tutorialKey: TutorialService.missionScreenTutorial,
-        tutorialSteps: TutorialService.getMissionScreenTutorial(
+        tutorialKey: TutorialService.missionsScreenTutorial,
+        tutorialSteps: TutorialService.getMissionsScreenTutorial(
           missionListKey: _missionListKey,
           filterButtonKey: _filterButtonKey,
           backButtonKey: _backButtonKey,

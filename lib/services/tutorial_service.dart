@@ -3,16 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/interactive_tutorial.dart';
 
 class TutorialService {
+  // Claves para los tutoriales reorganizados
   static const String _homeScreenTutorialKey = 'home_screen_tutorial_completed';
-
-  static const String _missionsTutorialKey = 'missions_tutorial_completed';
-  static const String _achievementsTutorialKey =
-      'achievements_tutorial_completed';
-  static const String _missionDetailTutorialKey =
-      'mission_detail_tutorial_completed';
-  static const String _theoryScreenTutorialKey =
-      'theory_screen_tutorial_completed';
-  static const String _welcomeTutorialKey = 'welcome_tutorial_completed';
+  static const String _missionsScreenTutorialKey = 'missions_screen_tutorial_completed';
+  static const String _codeExercisesTutorialKey = 'code_exercises_tutorial_completed';
+  static const String _shopTutorialKey = 'shop_tutorial_completed';
+  static const String _inventoryTutorialKey = 'inventory_tutorial_completed';
+  static const String _leaderboardTutorialKey = 'leaderboard_tutorial_completed';
+  static const String _achievementsTutorialKey = 'achievements_tutorial_completed';
 
   // Singleton pattern
   static final TutorialService _instance = TutorialService._internal();
@@ -38,12 +36,12 @@ class TutorialService {
   Future<void> resetAllTutorials() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_homeScreenTutorialKey);
-
-    await prefs.remove(_missionsTutorialKey);
+    await prefs.remove(_missionsScreenTutorialKey);
+    await prefs.remove(_codeExercisesTutorialKey);
+    await prefs.remove(_shopTutorialKey);
+    await prefs.remove(_inventoryTutorialKey);
+    await prefs.remove(_leaderboardTutorialKey);
     await prefs.remove(_achievementsTutorialKey);
-    await prefs.remove(_missionDetailTutorialKey);
-    await prefs.remove(_theoryScreenTutorialKey);
-    await prefs.remove(_welcomeTutorialKey);
   }
 
   /// Tutorial para la pantalla principal (HomeScreen)
@@ -150,274 +148,370 @@ class TutorialService {
 
 
   /// Tutorial para la pantalla de misiones
-  static List<InteractiveTutorialStep> getMissionsTutorial({
-    GlobalKey? missionListKey,
-    GlobalKey? firstMissionKey,
-  }) {
-    return [
-      InteractiveTutorialStep(
-        title: 'Centro de Comando de Misiones 🎯',
-        description:
-            '¡Bienvenido al corazón de tu aventura! Aquí encontrarás desafíos emocionantes diseñados para convertirte en un programador experto. Cada misión es una oportunidad de crecimiento.',
-        icon: Icons.military_tech,
-        showPulse: false,
-      ),
-      if (missionListKey != null)
-        InteractiveTutorialStep(
-          title: 'Catálogo de Aventuras 📋',
-          description:
-              'Explora este universo de posibilidades. Las misiones están organizadas por dificultad y tema. Conforme avances, desbloquearás desafíos más emocionantes y complejos.',
-          icon: Icons.explore,
-          targetKey: missionListKey,
-          showPulse: true,
-        ),
-      if (firstMissionKey != null)
-        InteractiveTutorialStep(
-          title: 'Tu Primera Gran Aventura 🌟',
-          description:
-              '¡Es hora de la acción! Selecciona cualquier misión disponible para ver sus detalles, objetivos y recompensas. Cada paso te acerca más a dominar la programación.',
-          icon: Icons.rocket,
-          targetKey: firstMissionKey,
-          showPulse: true,
-        ),
-    ];
-  }
-
-  /// Tutorial para la pantalla de logros
-  static List<InteractiveTutorialStep> getAchievementsTutorial({
-    GlobalKey? achievementGridKey,
-    GlobalKey? progressKey,
-    GlobalKey? rewardsKey,
-  }) {
-    return [
-      InteractiveTutorialStep(
-        title: 'Salón de la Fama del Programador 🏆',
-        description:
-            '¡Bienvenido a tu museo personal de triunfos! Aquí se exhiben todas tus hazañas como programador. Cada logro representa un hito importante en tu viaje de aprendizaje.',
-        icon: Icons.museum,
-        showPulse: false,
-      ),
-      if (achievementGridKey != null)
-        InteractiveTutorialStep(
-          title: 'Colección de Trofeos 🎖️',
-          description:
-              'Tu vitrina personal de éxitos. Los logros dorados brillan con orgullo, mientras que los plateados esperan pacientemente tu próximo gran momento. ¡Cada uno tiene su historia!',
-          icon: Icons.workspace_premium,
-          targetKey: achievementGridKey,
-          showPulse: true,
-        ),
-      if (progressKey != null)
-        InteractiveTutorialStep(
-          title: 'Medidor de Grandeza 📈',
-          description:
-              'Tu barra de progreso hacia la maestría. Cada porcentaje representa horas de dedicación, líneas de código escritas y problemas resueltos. ¡El camino hacia la excelencia!',
-          icon: Icons.trending_up,
-          targetKey: progressKey,
-          showPulse: true,
-        ),
-      if (rewardsKey != null)
-        InteractiveTutorialStep(
-          title: 'Tesoros del Conocimiento 💎',
-          description:
-              'Los logros no solo son reconocimientos, ¡son llaves que abren puertas! Experiencia extra, títulos únicos, objetos especiales y sorpresas te esperan.',
-          icon: Icons.diamond,
-          targetKey: rewardsKey,
-          showPulse: true,
-        ),
-    ];
-  }
-
-  /// Tutorial para la pantalla de misiones (nueva versión)
-  static List<InteractiveTutorialStep> getMissionScreenTutorial({
+  static List<InteractiveTutorialStep> getMissionsScreenTutorial({
     GlobalKey? missionListKey,
     GlobalKey? filterButtonKey,
     GlobalKey? backButtonKey,
   }) {
     return [
       InteractiveTutorialStep(
-        title: '¡Bienvenido al Reino de las Misiones! 🏰',
+        title: '¡Bienvenido al Centro de Misiones! 🏰',
         description:
-            'Has entrado al epicentro de la aventura. Aquí cada desafío es una puerta hacia nuevos conocimientos. ¡Prepárate para una experiencia de aprendizaje única y emocionante!',
+            'Este es tu centro de comando para todas las aventuras de programación. Aquí encontrarás desafíos organizados por dificultad y tema, diseñados para llevarte desde principiante hasta experto.',
         icon: Icons.castle,
         showPulse: false,
       ),
-      if (missionListKey != null)
-        InteractiveTutorialStep(
-          title: 'Mapa del Tesoro del Conocimiento 🗺️',
-          description:
-              'Tu guía hacia la maestría en programación. Las misiones brillantes están listas para ser conquistadas, mientras que las sombreadas aguardan tu crecimiento. ¡Cada una es un escalón hacia la grandeza!',
-          icon: Icons.map,
-          targetKey: missionListKey,
-          showPulse: true,
-        ),
       if (filterButtonKey != null)
         InteractiveTutorialStep(
-          title: 'Brújula de Aventuras 🧭',
+          title: 'Filtro de Misiones 🔍',
           description:
-              'Tu herramienta de navegación inteligente. Filtra por tema, dificultad o tipo de desafío para encontrar exactamente lo que necesitas para tu próximo gran salto de aprendizaje.',
-          icon: Icons.explore,
+              'Usa este botón para organizar las misiones según tus necesidades. Puedes filtrar por dificultad, tema o estado de completado para encontrar exactamente lo que buscas.',
+          icon: Icons.filter_list,
           targetKey: filterButtonKey,
+          showPulse: true,
+        ),
+      if (missionListKey != null)
+        InteractiveTutorialStep(
+          title: 'Lista de Misiones Disponibles 📋',
+          description:
+              'Aquí se muestran todas tus misiones. Las verdes están completadas, las normales están disponibles, y las grises están bloqueadas hasta que cumplas los requisitos. Cada misión te enseña conceptos específicos de programación.',
+          icon: Icons.list_alt,
+          targetKey: missionListKey,
           showPulse: true,
         ),
       if (backButtonKey != null)
         InteractiveTutorialStep(
-          title: 'Portal de Regreso 🚪',
+          title: 'Volver al Inicio 🏠',
           description:
-              'Tu escape rápido cuando necesites reagruparte. Siempre puedes volver al campamento base para planificar tu próxima estrategia de conquista.',
-          icon: Icons.exit_to_app,
+              'Usa este botón para regresar a la pantalla principal cuando hayas terminado de revisar las misiones disponibles.',
+          icon: Icons.home,
           targetKey: backButtonKey,
           showPulse: true,
         ),
       InteractiveTutorialStep(
-        title: '¡Que Comience la Épica! ⚔️',
+        title: 'Consejos para el Éxito 💡',
         description:
-            'Cada misión completada forja tu leyenda como programador. Experiencia, tesoros y sabiduría te esperan. ¡El destino está en tus manos, valiente aventurero!',
-        icon: Icons.auto_awesome,
+            'Completa las misiones en orden para un aprendizaje progresivo. Cada misión desbloqueada te acerca más a dominar la programación. ¡No tengas miedo de repetir misiones para reforzar conceptos!',
+        icon: Icons.lightbulb,
         showPulse: false,
       ),
     ];
   }
-
-  /// Tutorial para la pantalla de detalle de misión
-  static List<InteractiveTutorialStep> getMissionDetailTutorial({
-    GlobalKey? missionTitleKey,
-    GlobalKey? missionDescriptionKey,
-    GlobalKey? startMissionButtonKey,
-  }) {
-    return [
-      InteractiveTutorialStep(
-        title: 'Briefing de la Misión 📋',
-        description:
-            '¡Momento de estrategia! Aquí tienes toda la información crucial sobre tu próxima aventura. Conoce a tu enemigo, planifica tu ataque y prepárate para la victoria.',
-        icon: Icons.assignment_ind,
-        showPulse: false,
-      ),
-      if (missionTitleKey != null)
-        InteractiveTutorialStep(
-          title: 'Nombre en Clave de la Operación 🎯',
-          description: 'Cada misión tiene su identidad única. Este título no es solo un nombre, es tu destino, tu desafío, tu oportunidad de brillar como programador.',
-          icon: Icons.flag,
-          targetKey: missionTitleKey,
-          showPulse: true,
-        ),
-      if (missionDescriptionKey != null)
-        InteractiveTutorialStep(
-          title: 'Dossier de Inteligencia 📖',
-          description:
-              'Tu manual de supervivencia para esta aventura. Lee cuidadosamente: aquí están los objetivos, el contexto y las claves para triunfar. ¡El conocimiento es poder!',
-          icon: Icons.menu_book,
-          targetKey: missionDescriptionKey,
-          showPulse: true,
-        ),
-      if (startMissionButtonKey != null)
-        InteractiveTutorialStep(
-          title: 'Botón de Lanzamiento 🚀',
-          description:
-              '¡El momento de la verdad! Cuando te sientas preparado y confiado, presiona aquí para iniciar tu aventura de aprendizaje. ¡Tu futuro como programador te espera!',
-          icon: Icons.rocket_launch,
-          targetKey: startMissionButtonKey,
-          showPulse: true,
-        ),
-    ];
-  }
-
-  /// Tutorial para la pantalla de teoría
-  static List<InteractiveTutorialStep> getTheoryScreenTutorial({
-    GlobalKey? theoryTitleKey,
-    GlobalKey? theoryContentKey,
-    GlobalKey? examplesKey,
-    GlobalKey? startExercisesButtonKey,
+  
+  /// Tutorial para la pantalla de ejercicios de código
+  static List<InteractiveTutorialStep> getCodeExercisesTutorial({
+    GlobalKey? exerciseListKey,
+    GlobalKey? difficultyFilterKey,
+    GlobalKey? searchBarKey,
     GlobalKey? backButtonKey,
   }) {
     return [
       InteractiveTutorialStep(
-        title: 'Academia de Conocimiento 🎓',
+        title: '¡Bienvenido al Laboratorio de Código! 💻',
         description:
-            '¡Bienvenido al aula más emocionante del mundo! Aquí transformarás conceptos abstractos en superpoderes de programación. Cada línea que leas te acerca más a la maestría.',
-        icon: Icons.school,
+            'Este es tu espacio personal para practicar y perfeccionar tus habilidades de programación. Aquí encontrarás ejercicios prácticos que te ayudarán a dominar los conceptos que has aprendido en las misiones.',
+        icon: Icons.code,
         showPulse: false,
       ),
-      if (theoryTitleKey != null)
+      if (searchBarKey != null)
         InteractiveTutorialStep(
-          title: 'Lección del Día 📖',
+          title: 'Buscador de Ejercicios 🔍',
           description:
-              'El tema estrella de tu aventura de aprendizaje. Este concepto será tu nueva herramienta secreta para resolver problemas como un verdadero programador ninja.',
-          icon: Icons.auto_stories,
-          targetKey: theoryTitleKey,
+              'Usa esta barra para buscar ejercicios específicos por nombre o concepto. Es útil cuando quieres practicar algo en particular.',
+          icon: Icons.search,
+          targetKey: searchBarKey,
           showPulse: true,
         ),
-      if (theoryContentKey != null)
+      if (difficultyFilterKey != null)
         InteractiveTutorialStep(
-          title: 'Grimorio del Programador 📜',
+          title: 'Filtro de Dificultad ⭐',
           description:
-              'Tu manual de hechizos de programación. Lee cada palabra como si fuera un tesoro: aquí están los secretos que necesitas para dominar este arte milenario.',
-          icon: Icons.library_books,
-          targetKey: theoryContentKey,
+              'Organiza los ejercicios según su nivel de dificultad. Comienza con los más sencillos y ve avanzando gradualmente hacia los desafíos más complejos.',
+          icon: Icons.filter_list,
+          targetKey: difficultyFilterKey,
           showPulse: true,
         ),
-      if (examplesKey != null)
+      if (exerciseListKey != null)
         InteractiveTutorialStep(
-          title: 'Laboratorio de Experimentos 🧪',
+          title: 'Catálogo de Ejercicios 📚',
           description:
-              '¡La magia en acción! Estos ejemplos son como recetas de cocina para programadores. Observa cómo la teoría cobra vida y se convierte en código real y funcional.',
-          icon: Icons.science,
-          targetKey: examplesKey,
-          showPulse: true,
-        ),
-      if (startExercisesButtonKey != null)
-        InteractiveTutorialStep(
-          title: 'Arena de Combate 🥊',
-          description:
-              '¡Hora de demostrar tu valía! Cuando te sientas como un maestro de la teoría, presiona aquí para enfrentar desafíos reales y poner a prueba tus nuevas habilidades.',
-          icon: Icons.sports_mma,
-          targetKey: startExercisesButtonKey,
+              'Explora todos los ejercicios disponibles. Cada tarjeta muestra el título, descripción, dificultad y conceptos que practicarás. ¡Toca cualquiera para comenzar a programar!',
+          icon: Icons.list_alt,
+          targetKey: exerciseListKey,
           showPulse: true,
         ),
       if (backButtonKey != null)
         InteractiveTutorialStep(
-          title: 'Puerta de Escape Estratégico 🔄',
+          title: 'Volver al Inicio 🏠',
           description:
-              'A veces necesitas reagruparte y revisar el plan maestro. Este botón te lleva de vuelta al briefing para repasar los objetivos de tu misión.',
-          icon: Icons.refresh,
+              'Cuando termines de practicar, usa este botón para regresar a la pantalla principal.',
+          icon: Icons.home,
           targetKey: backButtonKey,
           showPulse: true,
         ),
+      InteractiveTutorialStep(
+        title: 'Consejos para Practicar 💡',
+        description:
+            'La práctica constante es clave para dominar la programación. Intenta resolver ejercicios regularmente, incluso los que ya has completado. Recuerda: cada línea de código que escribes te hace mejor programador.',
+        icon: Icons.lightbulb,
+        showPulse: false,
+      ),
+    ];
+  }
+  
+  /// Tutorial para la pantalla de logros
+  static List<InteractiveTutorialStep> getAchievementsTutorial({
+    GlobalKey? progressKey,
+    GlobalKey? achievementGridKey,
+    GlobalKey? rewardsKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return [
+      InteractiveTutorialStep(
+        title: '¡Bienvenido a tu Galería de Logros! 🌟',
+        description:
+            'Este es el lugar donde se celebran todos tus triunfos y conquistas en CodeQuest. Cada logro cuenta una historia de superación y progreso en tu aventura de aprendizaje.',
+        icon: Icons.stars,
+        showPulse: false,
+      ),
+      if (progressKey != null)
+        InteractiveTutorialStep(
+          title: 'Barra de Progreso General 📊',
+          description:
+              'Aquí puedes ver tu progreso general en el juego. Muestra el porcentaje de logros desbloqueados y te da una idea de cuánto has avanzado en tu aventura.',
+          icon: Icons.trending_up,
+          targetKey: progressKey,
+          showPulse: true,
+        ),
+      if (achievementGridKey != null)
+        InteractiveTutorialStep(
+          title: 'Colección de Logros 🏆',
+          description:
+              'Explora todos los logros disponibles. Los dorados están desbloqueados, los grises aún están por conseguir. Cada logro tiene requisitos específicos y recompensas únicas.',
+          icon: Icons.emoji_events,
+          targetKey: achievementGridKey,
+          showPulse: true,
+        ),
+      if (rewardsKey != null)
+        InteractiveTutorialStep(
+          title: 'Sistema de Recompensas 🎁',
+          description:
+              'Cada logro desbloqueado te otorga recompensas especiales como monedas, objetos únicos o títulos especiales. ¡Algunas recompensas solo se pueden obtener a través de logros!',
+          icon: Icons.card_giftcard,
+          targetKey: rewardsKey,
+          showPulse: true,
+        ),
+      if (backButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Volver al Inicio 🏠',
+          description:
+              'Cuando termines de revisar tus logros, usa este botón para regresar a la pantalla principal.',
+          icon: Icons.home,
+          targetKey: backButtonKey,
+          showPulse: true,
+        ),
+      InteractiveTutorialStep(
+        title: 'Consejos para Logros 💡',
+        description:
+            'Los logros se desbloquean automáticamente al cumplir ciertos requisitos. Algunos son fáciles de conseguir, otros requieren dedicación y habilidad. ¡No te desanimes si algunos parecen difíciles, cada paso cuenta!',
+        icon: Icons.lightbulb,
+        showPulse: false,
+      ),
+    ];
+  }
+  
+  /// Tutorial para la pantalla de tienda
+  static List<InteractiveTutorialStep> getShopTutorial({
+    GlobalKey? coinsIndicatorKey,
+    GlobalKey? itemListKey,
+    GlobalKey? categoryFilterKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return [
+      InteractiveTutorialStep(
+        title: '¡Bienvenido al Mercado del Aventurero! 🛒',
+        description:
+            'Este es el lugar perfecto para gastar las monedas que has ganado completando misiones y ejercicios. Aquí encontrarás objetos útiles, mejoras para tu personaje y elementos decorativos.',
+        icon: Icons.shopping_bag,
+        showPulse: false,
+      ),
+      if (coinsIndicatorKey != null)
+        InteractiveTutorialStep(
+          title: 'Tu Tesoro 💰',
+          description:
+              'Aquí puedes ver cuántas monedas tienes disponibles para gastar. Gana más completando misiones, ejercicios y desbloqueando logros.',
+          icon: Icons.monetization_on,
+          targetKey: coinsIndicatorKey,
+          showPulse: true,
+        ),
+      if (categoryFilterKey != null)
+        InteractiveTutorialStep(
+          title: 'Categorías de Productos 📑',
+          description:
+              'Filtra los productos por categoría para encontrar exactamente lo que estás buscando, ya sean armas, armaduras, pociones o elementos decorativos.',
+          icon: Icons.category,
+          targetKey: categoryFilterKey,
+          showPulse: true,
+        ),
+      if (itemListKey != null)
+        InteractiveTutorialStep(
+          title: 'Catálogo de Productos 🏪',
+          description:
+              'Explora todos los productos disponibles. Cada tarjeta muestra el nombre, descripción, precio y estadísticas del objeto. Toca cualquiera para ver más detalles o comprarlo.',
+          icon: Icons.shopping_cart,
+          targetKey: itemListKey,
+          showPulse: true,
+        ),
+      if (backButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Volver al Inicio 🏠',
+          description:
+              'Cuando termines tus compras, usa este botón para regresar a la pantalla principal.',
+          icon: Icons.home,
+          targetKey: backButtonKey,
+          showPulse: true,
+        ),
+      InteractiveTutorialStep(
+        title: 'Consejos de Compra 💡',
+        description:
+            'Invierte sabiamente tus monedas. Algunos objetos pueden ayudarte en batallas, mientras que otros desbloquean nuevas funcionalidades o personalizan tu experiencia. ¡Revisa regularmente la tienda para ver nuevos productos!',
+        icon: Icons.lightbulb,
+        showPulse: false,
+      ),
+    ];
+  }
+  
+  /// Tutorial para la pantalla de inventario
+  static List<InteractiveTutorialStep> getInventoryTutorial({
+    GlobalKey? inventoryGridKey,
+    GlobalKey? categoryFilterKey,
+    GlobalKey? itemDetailKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return [
+      InteractiveTutorialStep(
+        title: '¡Bienvenido a tu Mochila del Programador! 🎒',
+        description:
+            'Este es tu inventario personal donde se guardan todos los objetos que has adquirido en la tienda o ganado como recompensa. Organiza y utiliza estratégicamente tus recursos para avanzar en tu aventura.',
+        icon: Icons.backpack,
+        showPulse: false,
+      ),
+      if (categoryFilterKey != null)
+        InteractiveTutorialStep(
+          title: 'Filtro de Categorías 📑',
+          description:
+              'Organiza tu inventario por categorías para encontrar rápidamente lo que necesitas, ya sean armas, armaduras, pociones o elementos decorativos.',
+          icon: Icons.category,
+          targetKey: categoryFilterKey,
+          showPulse: true,
+        ),
+      if (inventoryGridKey != null)
+        InteractiveTutorialStep(
+          title: 'Tus Objetos Coleccionados 📦',
+          description:
+              'Aquí puedes ver todos los objetos que posees. Cada tarjeta muestra información básica del objeto. Toca cualquiera para ver más detalles o utilizarlo.',
+          icon: Icons.grid_view,
+          targetKey: inventoryGridKey,
+          showPulse: true,
+        ),
+      if (itemDetailKey != null)
+        InteractiveTutorialStep(
+          title: 'Detalles del Objeto 🔍',
+          description:
+              'Al seleccionar un objeto, puedes ver sus estadísticas detalladas, descripción y opciones disponibles como equipar, usar o combinar con otros objetos.',
+          icon: Icons.info,
+          targetKey: itemDetailKey,
+          showPulse: true,
+        ),
+      if (backButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Volver al Inicio 🏠',
+          description:
+              'Cuando termines de revisar tu inventario, usa este botón para regresar a la pantalla principal.',
+          icon: Icons.home,
+          targetKey: backButtonKey,
+          showPulse: true,
+        ),
+      InteractiveTutorialStep(
+        title: 'Consejos de Inventario 💡',
+        description:
+            'Revisa regularmente tu inventario para ver qué objetos puedes utilizar para mejorar tu experiencia. Algunos objetos pueden combinarse para crear elementos más poderosos, y otros tienen efectos especiales que te ayudarán en momentos específicos.',
+        icon: Icons.lightbulb,
+        showPulse: false,
+      ),
+    ];
+  }
+  
+  /// Tutorial para la pantalla de clasificación (leaderboard)
+  static List<InteractiveTutorialStep> getLeaderboardTutorial({
+    GlobalKey? userRankingKey,
+    GlobalKey? leaderboardListKey,
+    GlobalKey? timeFilterKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return [
+      InteractiveTutorialStep(
+        title: '¡Bienvenido al Ranking de Leyendas! 🏆',
+        description:
+            'Esta es la tabla de clasificación global donde puedes ver cómo te comparas con otros programadores. Compite sanamente, aprende de los mejores y aspira a alcanzar la cima.',
+        icon: Icons.emoji_events,
+        showPulse: false,
+      ),
+      if (userRankingKey != null)
+        InteractiveTutorialStep(
+          title: 'Tu Posición Actual 🌟',
+          description:
+              'Aquí puedes ver tu posición en el ranking global, junto con tu puntuación total y estadísticas relevantes. ¡Sigue completando misiones para subir en la clasificación!',
+          icon: Icons.person,
+          targetKey: userRankingKey,
+          showPulse: true,
+        ),
+      if (timeFilterKey != null)
+        InteractiveTutorialStep(
+          title: 'Filtro Temporal ⏱️',
+          description:
+              'Cambia entre diferentes períodos de tiempo para ver los rankings semanales, mensuales o de todos los tiempos. Es útil para seguir las tendencias y los competidores más activos.',
+          icon: Icons.calendar_today,
+          targetKey: timeFilterKey,
+          showPulse: true,
+        ),
+      if (leaderboardListKey != null)
+        InteractiveTutorialStep(
+          title: 'Tabla de Clasificación 📊',
+          description:
+              'Explora la lista de los mejores programadores. Cada fila muestra la posición, nombre, avatar, puntuación y estadísticas destacadas de cada jugador.',
+          icon: Icons.leaderboard,
+          targetKey: leaderboardListKey,
+          showPulse: true,
+        ),
+      if (backButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Volver al Inicio 🏠',
+          description:
+              'Cuando termines de revisar las clasificaciones, usa este botón para regresar a la pantalla principal.',
+          icon: Icons.home,
+          targetKey: backButtonKey,
+          showPulse: true,
+        ),
+      InteractiveTutorialStep(
+        title: 'Consejos para Competir 💡',
+        description:
+            'La clasificación se basa en tu rendimiento general: misiones completadas, precisión en respuestas, tiempo de resolución y logros desbloqueados. Concéntrate en mejorar constantemente y no solo en tu posición en el ranking.',
+        icon: Icons.lightbulb,
+        showPulse: false,
+      ),
     ];
   }
 
-  /// Tutorial de bienvenida después de la primera selección de personaje
-  static List<InteractiveTutorialStep> getWelcomeTutorial() {
-    return [
-      InteractiveTutorialStep(
-        title: '¡Bienvenido a CodeQuest, Héroe! 🎉',
-        description:
-            '¡Felicidades, valiente aventurero! Has dado el primer paso hacia la grandeza. Tu personaje está listo y tu destino como maestro programador te espera. ¡La leyenda comienza ahora!',
-        icon: Icons.celebration,
-        showPulse: false,
-      ),
-      InteractiveTutorialStep(
-        title: 'El Mundo Te Espera 🌍',
-        description:
-            'Un universo infinito de posibilidades se abre ante ti. Explorarás reinos de código, conquistarás algoritmos misteriosos y desbloquearás poderes de programación que ni imaginas.',
-        icon: Icons.public,
-        showPulse: false,
-      ),
-      InteractiveTutorialStep(
-        title: 'Forja Tu Leyenda 💫',
-        description:
-            'Cada línea de código que escribas, cada problema que resuelvas, cada misión que completes te convertirá en una leyenda. Experiencia, tesoros y reconocimiento serán tus recompensas.',
-        icon: Icons.auto_awesome,
-        showPulse: false,
-      ),
-      InteractiveTutorialStep(
-        title: '¡Que Comience la Épica! 🚀',
-        description:
-            'Tu nave está lista, tu equipo preparado, tu mente afilada. Dirígete al centro de comando y elige tu primera misión. ¡El futuro de la programación está en tus manos, campeón!',
-        icon: Icons.rocket_launch,
-        showPulse: false,
-      ),
-    ];
-  }
+
+
+
+
+
+
+
+
+
 
   /// Verifica si un tutorial está disponible pero NO lo inicia automáticamente
   static Future<void> startTutorialIfNeeded(
@@ -584,12 +678,148 @@ class TutorialService {
     }
   }
 
+  /// Tutorial para la pantalla de misiones (alias para compatibilidad)
+  static List<InteractiveTutorialStep> getMissionScreenTutorial({
+    GlobalKey? missionListKey,
+    GlobalKey? filterButtonKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return getMissionsScreenTutorial(
+      missionListKey: missionListKey,
+      filterButtonKey: filterButtonKey,
+      backButtonKey: backButtonKey,
+    );
+  }
+
+  /// Tutorial para detalles de misión
+  static List<InteractiveTutorialStep> getMissionDetailTutorial({
+    GlobalKey? startButtonKey,
+    GlobalKey? descriptionKey,
+    GlobalKey? requirementsKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return [
+      InteractiveTutorialStep(
+        title: '¡Detalles de la Misión! 📖',
+        description: 'Aquí puedes ver toda la información sobre esta misión específica, incluyendo objetivos, requisitos y recompensas.',
+        icon: Icons.info,
+        showPulse: false,
+      ),
+      if (descriptionKey != null)
+        InteractiveTutorialStep(
+          title: 'Descripción de la Misión 📝',
+          description: 'Lee cuidadosamente la descripción para entender qué conceptos aprenderás y qué se espera de ti.',
+          icon: Icons.description,
+          targetKey: descriptionKey,
+          showPulse: true,
+        ),
+      if (requirementsKey != null)
+        InteractiveTutorialStep(
+          title: 'Requisitos 📋',
+          description: 'Aquí se muestran los requisitos previos que necesitas cumplir antes de comenzar esta misión.',
+          icon: Icons.checklist,
+          targetKey: requirementsKey,
+          showPulse: true,
+        ),
+      if (startButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Comenzar Misión 🚀',
+          description: 'Cuando estés listo, presiona este botón para comenzar tu aventura de programación.',
+          icon: Icons.play_arrow,
+          targetKey: startButtonKey,
+          showPulse: true,
+        ),
+      if (backButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Regresar 🔙',
+          description: 'Usa este botón para volver a la lista de misiones cuando hayas terminado de revisar los detalles.',
+          icon: Icons.arrow_back,
+          targetKey: backButtonKey,
+          showPulse: true,
+        ),
+    ];
+  }
+
+  /// Tutorial de bienvenida
+  static List<InteractiveTutorialStep> getWelcomeTutorial() {
+    return [
+      InteractiveTutorialStep(
+        title: '¡Bienvenido a CodeQuest! 🎮',
+        description: 'Embárcate en una aventura épica donde aprenderás programación mientras juegas. ¡Prepárate para convertirte en un maestro del código!',
+        icon: Icons.celebration,
+        showPulse: false,
+      ),
+      InteractiveTutorialStep(
+        title: 'Tu Aventura Comienza 🌟',
+        description: 'Completa misiones, gana recompensas, y desbloquea nuevos desafíos. Cada línea de código te acerca más a la maestría.',
+        icon: Icons.star,
+        showPulse: false,
+      ),
+    ];
+  }
+
+  /// Tutorial para pantalla de teoría
+  static List<InteractiveTutorialStep> getTheoryScreenTutorial({
+    GlobalKey? contentKey,
+    GlobalKey? examplesKey,
+    GlobalKey? nextButtonKey,
+    GlobalKey? backButtonKey,
+  }) {
+    return [
+      InteractiveTutorialStep(
+        title: 'Sección de Teoría 📚',
+        description: 'Aquí aprenderás los conceptos fundamentales antes de ponerlos en práctica. La teoría es la base de todo buen programador.',
+        icon: Icons.school,
+        showPulse: false,
+      ),
+      if (contentKey != null)
+        InteractiveTutorialStep(
+          title: 'Contenido Teórico 📖',
+          description: 'Lee cuidadosamente el contenido. Cada concepto está explicado de manera clara y con ejemplos prácticos.',
+          icon: Icons.menu_book,
+          targetKey: contentKey,
+          showPulse: true,
+        ),
+      if (examplesKey != null)
+        InteractiveTutorialStep(
+          title: 'Ejemplos Prácticos 💡',
+          description: 'Los ejemplos te ayudan a entender cómo aplicar la teoría en código real. Estudia cada ejemplo detenidamente.',
+          icon: Icons.lightbulb,
+          targetKey: examplesKey,
+          showPulse: true,
+        ),
+      if (nextButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Continuar ➡️',
+          description: 'Cuando hayas entendido el concepto, presiona aquí para continuar con la práctica.',
+          icon: Icons.arrow_forward,
+          targetKey: nextButtonKey,
+          showPulse: true,
+        ),
+      if (backButtonKey != null)
+        InteractiveTutorialStep(
+          title: 'Regresar 🔙',
+          description: 'Si necesitas revisar algo anterior, usa este botón para navegar hacia atrás.',
+          icon: Icons.arrow_back,
+          targetKey: backButtonKey,
+          showPulse: true,
+        ),
+    ];
+  }
+
   // Claves públicas para los tutoriales
   static const String homeScreenTutorial = _homeScreenTutorialKey;
-
-  static const String missionScreenTutorial = _missionsTutorialKey;
-  static const String achievementScreenTutorial = _achievementsTutorialKey;
-  static const String missionDetailTutorial = _missionDetailTutorialKey;
-  static const String welcomeTutorial = _welcomeTutorialKey;
-  static const String theoryScreenTutorial = _theoryScreenTutorialKey;
+  static const String missionsScreenTutorial = _missionsScreenTutorialKey;
+  static const String missionScreenTutorial = _missionsScreenTutorialKey; // Alias para compatibilidad
+  static const String codeExercisesTutorial = _codeExercisesTutorialKey;
+  static const String shopTutorial = _shopTutorialKey;
+  static const String inventoryTutorial = _inventoryTutorialKey;
+  static const String leaderboardTutorial = _leaderboardTutorialKey;
+  static const String achievementsTutorial = _achievementsTutorialKey;
+  static const String achievementScreenTutorial = _achievementsTutorialKey; // Alias para compatibilidad
+  
+  // Constantes adicionales para tutoriales específicos
+  static const String missionDetailTutorial = 'mission_detail_tutorial_completed';
+  static const String welcomeTutorial = 'welcome_tutorial_completed';
+  static const String theoryScreenTutorial = 'theory_screen_tutorial_completed';
 }

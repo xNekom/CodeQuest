@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/leaderboard_entry_model.dart';
 import '../services/leaderboard_service.dart';
+import '../services/tutorial_service.dart';
+import '../models/leaderboard_entry_model.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/tutorial_floating_button.dart';
 import '../utils/overflow_utils.dart';
 
 class LeaderboardScreen extends StatefulWidget {
@@ -17,11 +19,37 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   final User? _currentUser = FirebaseAuth.instance.currentUser;
   int? _currentUserRanking;
   bool _isLoadingRanking = true;
+  
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _userRankingKey = GlobalKey();
+  final GlobalKey _leaderboardListKey = GlobalKey();
+  final GlobalKey _topPlayersKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _loadCurrentUserRanking();
+    _checkAndStartTutorial();
+  }
+  
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.leaderboardTutorial,
+        TutorialService.getLeaderboardTutorial(
+          userRankingKey: _userRankingKey,
+          leaderboardListKey: _leaderboardListKey,
+          timeFilterKey: _topPlayersKey,
+          backButtonKey: _backButtonKey,
+        ),
+      );
+    }
   }
 
   @override
@@ -69,6 +97,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          key: _backButtonKey,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -162,6 +195,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   }
 
                   return ListView.builder(
+                    key: _leaderboardListKey,
                     padding: const EdgeInsets.all(16),
                     itemCount: entries.length,
                     itemBuilder: (context, index) {
@@ -171,6 +205,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         entry,
                         index + 1,
                         isCurrentUser,
+                        key: index == 0 ? _topPlayersKey : null,
                       );
                     },
                   );
@@ -180,11 +215,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           ],
         ),
       ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialSteps: TutorialService.getLeaderboardTutorial(
+          userRankingKey: _userRankingKey,
+          leaderboardListKey: _leaderboardListKey,
+          timeFilterKey: _topPlayersKey,
+          backButtonKey: _backButtonKey,
+        ),
+      ),
     );
   }
 
   Widget _buildCurrentUserHeader() {
     return Container(
+      key: _userRankingKey,
       margin: const EdgeInsets.all(16),
       child: PixelCard(
         child: Column(
@@ -242,9 +286,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   Widget _buildLeaderboardEntry(
     LeaderboardEntryModel entry,
     int position,
-    bool isCurrentUser,
-  ) {
+    bool isCurrentUser, {
+    GlobalKey? key,
+  }) {
     return Container(
+      key: key,
       margin: const EdgeInsets.only(bottom: 8),
       child: PixelCard(
         child: Container(

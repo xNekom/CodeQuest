@@ -79,11 +79,7 @@ void main() {
         expect(steps.last.title, contains('Listo'));
       });
 
-      test('should return correct tutorial steps for character selection', () {
-        final steps = TutorialService.getCharacterSelectionTutorial();
-        expect(steps, isNotEmpty);
-        expect(steps.first.title, contains('Crea tu Aventurero'));
-      });
+      // Character selection tutorial was removed - test removed
       test('should return correct tutorial steps for missions', () {
         final steps = TutorialService.getMissionScreenTutorial();
         expect(steps, isNotEmpty);
@@ -264,9 +260,11 @@ void main() {
 
       test('Tutorial service constants should be accessible', () {
         expect(TutorialService.homeScreenTutorial, isNotEmpty);
-        expect(TutorialService.characterSelectionTutorial, isNotEmpty);
         expect(TutorialService.missionScreenTutorial, isNotEmpty);
         expect(TutorialService.achievementScreenTutorial, isNotEmpty);
+        expect(TutorialService.missionDetailTutorial, isNotEmpty);
+        expect(TutorialService.welcomeTutorial, isNotEmpty);
+        expect(TutorialService.theoryScreenTutorial, isNotEmpty);
       });
     });
 

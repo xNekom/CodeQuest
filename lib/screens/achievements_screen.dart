@@ -79,7 +79,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
     if (mounted) {
       TutorialService.startTutorialIfNeeded(
         context,
-        TutorialService.achievementScreenTutorial,
+        TutorialService.achievementsTutorial,
         TutorialService.getAchievementsTutorial(
           progressKey: _progressBarKey,
           achievementGridKey: _achievementListKey,
@@ -113,7 +113,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
             : _buildContent(),
       ),
       floatingActionButton: TutorialFloatingButton(
-        tutorialKey: TutorialService.achievementScreenTutorial,
+        tutorialKey: TutorialService.achievementsTutorial,
         tutorialSteps: TutorialService.getAchievementsTutorial(
           progressKey: _progressBarKey,
           achievementGridKey: _achievementListKey,
