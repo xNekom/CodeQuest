@@ -100,22 +100,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   }
 
   Widget _buildEnemyImage() {
-    if (_enemy?.assetPath != null && _enemy!.assetPath!.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(
-          _enemy!.assetPath!,
-          width: 200,
-          height: 200,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildEnemyPlaceholder();
-          },
-        ),
-      );
-    } else {
-      return _buildEnemyPlaceholder();
-    }
+    return _buildEnemyPlaceholder();
   }
 
   Widget _buildEnemyPlaceholder() {

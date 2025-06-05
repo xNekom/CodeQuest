@@ -1,277 +1,212 @@
 [
   {
-    "id": "enemigo_guardian_de_las_sombras",
-    "name": "Guardián de las Sombras",
-    "description": "Un antiguo espíritu que protege los secretos del Bosque Susurrante. Desafía a los viajeros con acertijos y pruebas de combate.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
+    "id": "enemigo_syntax_error",
+    "name": "Error Sintáctico Menor",
+    "description": "Un pequeño fallo en la escritura del código que impide su compilación.",
+    "assetPath": "assets/images/enemies/syntax_error_minor.png",
     "lootTable": [
       {
-        "dropChance": 0.5
+        "itemId": "item_fragmento_codigo",
+        "dropChance": 0.8
       },
       {
-        "dropChance": 0.3
+        "itemId": "item_llave_inglesa",
+        "dropChance": 0.2
       }
     ],
     "dialogue": {
-      "encounter": "¡Prepárate para enfrentar la oscuridad!",
-      "victory": "La sabiduría prevalece...",
-      "defeat": "Aún no estás listo..."
-    }
-  },
-  {
-    "id": "enemigo_bug_de_bucle_infinito",
-    "name": "Bug de Bucle Infinito",
-    "description": "Un enemigo peligroso que puede hacer que tu programa nunca termine.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.9
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Estás atrapado en un bucle infinito!",
-      "victory": "¡while(true) ejecutándose forever!",
-      "defeat": "¡Encontraste la condición de salida!"
-    }
-  },
-  {
-    "id": "enemigo_bug_del_punto_y_coma",
-    "name": "Bug del Punto y Coma",
-    "description": "Un pequeño pero molesto error que aparece cuando olvidas el punto y coma.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.7
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Te olvidaste el punto y coma!",
-      "victory": "¡Error de sintaxis!",
-      "defeat": "¡Me encontraste!"
-    }
-  },
-  {
-    "id": "enemigo_stackoverflowerror",
-    "name": "StackOverflowError",
-    "description": "Un error que aparece cuando el stack de llamadas se agota debido a recursión infinita.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.75
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Tu recursión no tiene fin!",
-      "victory": "¡Stack overflow detectado!",
-      "defeat": "¡Controlaste la recursión!"
-    }
-  },
-  {
-    "id": "enemigo_error_de_jvm",
-    "name": "Error de JVM",
-    "description": "Un error crítico de la máquina virtual de Java.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.4
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡La JVM está fallando!",
-      "victory": "¡JVM crashed!",
-      "defeat": "¡JVM estabilizada!"
-    }
-  },
-  {
-    "id": "enemigo_internalerror",
-    "name": "InternalError",
-    "description": "Un error interno del sistema que indica un problema grave.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.3
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Error interno del sistema!",
-      "victory": "¡Internal system failure!",
-      "defeat": "¡Sistema estabilizado!"
-    }
-  },
-  {
-    "id": "enemigo_error_de_java",
-    "name": "Error de Java",
-    "description": "Un error general de Java que puede aparecer en cualquier momento.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.6
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Tu código Java tiene errores!",
-      "victory": "¡Compilation failed!",
-      "defeat": "¡Código corregido exitosamente!"
-    }
-  },
-  {
-    "id": "enemigo_illegalargumentexception",
-    "name": "IllegalArgumentException",
-    "description": "Una excepción que aparece cuando pasas argumentos inválidos a un método.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.65
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Ese argumento no es válido!",
-      "victory": "¡Illegal argument provided!",
-      "defeat": "¡Argumentos validados correctamente!"
-    }
-  },
-  {
-    "id": "enemigo_outofmemoryerror",
-    "name": "OutOfMemoryError",
-    "description": "Un error que aparece cuando la aplicación se queda sin memoria disponible.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.45
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡No hay más memoria disponible!",
-      "victory": "¡Out of memory!",
-      "defeat": "¡Memoria optimizada!"
-    }
-  },
-  {
-    "id": "enemigo_classnotfoundexception",
-    "name": "ClassNotFoundException",
-    "description": "Una excepción que aparece cuando el sistema no puede encontrar una clase específica.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.6
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡No puedo encontrar esa clase!",
-      "victory": "¡Class not found!",
-      "defeat": "¡Clase localizada en el classpath!"
-    }
-  },
-  {
-    "id": "enemigo_securityexception",
-    "name": "SecurityException",
-    "description": "Una excepción relacionada con violaciones de seguridad en el código.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.55
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Violación de seguridad detectada!",
-      "victory": "¡Security breach!",
-      "defeat": "¡Permisos de seguridad correctos!"
+      "encounter": "¡Me falta un punto y coma!",
+      "victory": "¡Código limpio, Guardián!",
+      "defeat": "¡Olvidaste una '}'!"
     }
   },
   {
     "id": "enemigo_nullpointerexception",
     "name": "NullPointerException",
-    "description": "Una excepción temida que aparece cuando intentas usar una referencia nula.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
+    "description": "Un error que ocurre cuando intentas usar una referencia nula como si fuera un objeto.",
+    "assetPath": "assets/images/enemies/nullpointer_exception.png",
     "lootTable": [
       {
-        "dropChance": 0.8
+        "itemId": "item_fragmento_codigo_avanzado",
+        "dropChance": 0.7
+      },
+      {
+        "itemId": "item_lupa_debug",
+        "dropChance": 0.3
       }
     ],
     "dialogue": {
-      "encounter": "¡Referencia nula detectada! ¡Tu código crasheará!",
-      "victory": "¡NullPointerException lanzada!",
-      "defeat": "¡Verificaste la referencia nula a tiempo!"
+      "encounter": "¡No apunto a nada!",
+      "victory": "¡Variable inicializada!",
+      "defeat": "¡Te perdiste en el vacío!"
     }
   },
   {
-    "id": "enemigo_espiritu_codigo_incompleto",
-    "name": "Espíritu del Código Incompleto",
-    "description": "Un espíritu que representa todos los proyectos no terminados y el código abandonado.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
+    "id": "enemigo_outofmemoryerror",
+    "name": "OutOfMemoryError",
+    "description": "El programa ha agotado toda la memoria disponible, causando un fallo crítico.",
+    "assetPath": "assets/images/enemies/out_of_memory_error.png",
     "lootTable": [
       {
+        "itemId": "item_cristal_memoria",
         "dropChance": 0.6
+      },
+      {
+        "itemId": "item_optimizador_recursos",
+        "dropChance": 0.2
       }
     ],
     "dialogue": {
-      "encounter": "¡Tu código nunca será completado!",
-      "victory": "¡Proyecto abandonado!",
-      "defeat": "¡Código finalizado con éxito!"
+      "encounter": "¡No queda espacio!",
+      "victory": "¡Memoria liberada!",
+      "defeat": "¡El sistema se ha colapsado!"
     }
   },
   {
-    "id": "enemigo_manejador_de_excepciones",
-    "name": "Manejador de Excepciones",
-    "description": "Un enemigo que protege contra errores pero a veces puede ser difícil de manejar.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
+    "id": "enemigo_stack_overflow_error",
+    "name": "StackOverflowError",
+    "description": "Una excepción que ocurre cuando la pila de llamadas de un programa se desborda, a menudo por recursión infinita.",
+    "assetPath": "assets/images/enemies/stack_overflow_error.png",
     "lootTable": [
       {
-        "dropChance": 0.65
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Maneja esta excepción si puedes!",
-      "victory": "¡Exception no manejada!",
-      "defeat": "¡Buen manejo de excepciones!"
-    }
-  },
-  {
-    "id": "enemigo_bug_de_variable_no_inicializada",
-    "name": "Bug de Variable No Inicializada",
-    "description": "Un error sutil que aparece cuando usas una variable sin inicializar.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.7
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Tu variable no tiene valor!",
-      "victory": "¡Undefined behavior!",
-      "defeat": "¡Variable inicializada correctamente!"
-    }
-  },
-  {
-    "id": "enemigo_arrayindexoutofboundsexception",
-    "name": "ArrayIndexOutOfBoundsException",
-    "description": "Una excepción que aparece cuando intentas acceder a un índice fuera del rango del array.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
-        "dropChance": 0.7
-      }
-    ],
-    "dialogue": {
-      "encounter": "¡Ese índice no existe!",
-      "victory": "¡Array bounds violated!",
-      "defeat": "¡Verificaste los límites del array!"
-    }
-  },
-  {
-    "id": "enemigo_noclassdeffounderror",
-    "name": "NoClassDefFoundError",
-    "description": "Un error que aparece cuando una clase estaba disponible en tiempo de compilación pero no en tiempo de ejecución.",
-    "assetPath": "assets/images/enemies/placeholder_enemy.svg",
-    "lootTable": [
-      {
+        "itemId": "item_fragmento_codigo_legendario",
         "dropChance": 0.5
+      },
+      {
+        "itemId": "item_cronometro_recursion",
+        "dropChance": 0.1
       }
     ],
     "dialogue": {
-      "encounter": "¡La clase desapareció en runtime!",
-      "victory": "¡No class definition found!",
-      "defeat": "¡Todas las dependencias están presentes!"
+      "encounter": "¡Demasiadas llamadas, no puedo respirar!",
+      "victory": "¡Bucle controlado!",
+      "defeat": "¡Caíste en un ciclo sin fin!"
+    }
+  },
+  {
+    "id": "enemigo_illegalargumentexception",
+    "name": "IllegalArgumentException",
+    "description": "Se lanza cuando un método ha recibido un argumento inválido o inapropiado.",
+    "assetPath": "assets/images/enemies/illegal_argument_exception.png",
+    "lootTable": [
+      {
+        "itemId": "item_valid_data_token",
+        "dropChance": 0.75
+      },
+      {
+        "itemId": "item_guia_parametros",
+        "dropChance": 0.25
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Ese dato no es válido aquí!",
+      "victory": "¡Argumentos correctos!",
+      "defeat": "¡Tus entradas me confunden!"
+    }
+  },
+  {
+    "id": "enemigo_classnotfoundexception",
+    "name": "ClassNotFoundException",
+    "description": "Ocurre cuando la aplicación intenta cargar una clase pero no puede encontrar su definición.",
+    "assetPath": "assets/images/enemies/class_not_found_exception.png",
+    "lootTable": [
+      {
+        "itemId": "item_clase_perdida_fragmento",
+        "dropChance": 0.65
+      },
+      {
+        "itemId": "item_biblioteca_maestra",
+        "dropChance": 0.15
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡¿Dónde está mi clase?!",
+      "victory": "¡Clase encontrada!",
+      "defeat": "¡No existe tal clase!"
+    }
+  },
+  {
+    "id": "enemigo_ioexception",
+    "name": "IOException",
+    "description": "Un error genérico que ocurre durante operaciones de entrada/salida (lectura/escritura de archivos).",
+    "assetPath": "assets/images/enemies/io_exception.png",
+    "lootTable": [
+      {
+        "itemId": "item_datos_corruptos",
+        "dropChance": 0.7
+      },
+      {
+        "itemId": "item_controlador_io",
+        "dropChance": 0.2
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡No puedo leer/escribir!",
+      "victory": "¡Flujo de datos seguro!",
+      "defeat": "¡Fallo en la comunicación!"
+    }
+  },
+  {
+    "id": "enemigo_arithmeticexception",
+    "name": "ArithmeticException",
+    "description": "Se lanza cuando ocurre una condición aritmética excepcional, como división por cero.",
+    "assetPath": "assets/images/enemies/arithmetic_exception.png",
+    "lootTable": [
+      {
+        "itemId": "item_calculo_preciso",
+        "dropChance": 0.8
+      },
+      {
+        "itemId": "item_formula_maestra",
+        "dropChance": 0.1
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡No puedes dividir por cero!",
+      "victory": "¡Operación validada!",
+      "defeat": "¡Mis números te dominan!"
+    }
+  },
+  {
+    "id": "enemigo_illegalstateexception",
+    "name": "IllegalStateException",
+    "description": "Indica que un método ha sido invocado en un momento inapropiado para el estado del objeto.",
+    "assetPath": "assets/images/enemies/illegal_state_exception.png",
+    "lootTable": [
+      {
+        "itemId": "item_estado_coherente",
+        "dropChance": 0.7
+      },
+      {
+        "itemId": "item_mapeo_estados",
+        "dropChance": 0.2
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡No estoy listo para eso!",
+      "victory": "¡Estado consistente!",
+      "defeat": "¡Mi estado es inestable!"
+    }
+  },
+  {
+    "id": "enemigo_bug_supremo",
+    "name": "Bug Supremo",
+    "description": "La manifestación final de todos los errores y vulnerabilidades, el jefe supremo de Algorithmia.",
+    "assetPath": "assets/images/enemies/bug_supremo.png",
+    "lootTable": [
+      {
+        "itemId": "item_nucleo_algoritmia",
+        "dropChance": 1.0
+      },
+      {
+        "itemId": "item_fragmento_codigo_divino",
+        "dropChance": 1.0
+      }
+    ],
+    "dialogue": {
+      "encounter": "¡Soy la suma de tus errores, Guardián!",
+      "victory": "¡El código está limpio, el reino a salvo!",
+      "defeat": "¡Algorithmia caerá ante mí!"
     }
   }
 ]

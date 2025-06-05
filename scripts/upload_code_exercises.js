@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Cargar la clave de servicio
-const serviceAccount = require('./assets/data/serviceAccountKey.json');
+const serviceAccount = require('../assets/data/serviceAccountKey.json');
 
 // Inicializar Firebase Admin
 admin.initializeApp({
@@ -17,7 +17,7 @@ async function uploadCodeExercises() {
     console.log('=== SUBIENDO EJERCICIOS DE CÓDIGO A FIRESTORE ===\n');
     
     // Leer el archivo de ejercicios
-    const exercisesPath = path.join(__dirname, 'assets/data/code_exercises.json');
+    const exercisesPath = path.join(__dirname, '../assets/data/code_exercises.json');
     const exercisesData = JSON.parse(fs.readFileSync(exercisesPath, 'utf8'));
     
     console.log(`Encontrados ${exercisesData.length} ejercicios para subir...\n`);

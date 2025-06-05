@@ -26,7 +26,7 @@ import 'utils/error_handler.dart'; // Importar ErrorHandler
 import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
 import 'utils/platform_utils.dart'; // Importar PlatformUtils
 import 'utils/overflow_utils.dart'; // Importar OverflowUtils y NavigationService
-import 'services/audio_service.dart'; // Importar AudioService
+// import 'services/audio_service.dart'; // Importar AudioService - Comentado temporalmente
 
 // Clave global para ScaffoldMessenger
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -63,7 +63,7 @@ void main() async {
         );
 
         // Inicializar servicio de audio
-        await AudioService().initialize();
+        // await AudioService().initialize(); // Comentado temporalmente
 
         runApp(const MyApp());
       } catch (e, stack) {
@@ -174,19 +174,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       case AppLifecycleState.paused:
       case AppLifecycleState.inactive:
         // App se minimiza o pierde el foco
-        AudioService().pauseOnAppBackground();
+        // AudioService().pauseOnAppBackground(); // Comentado temporalmente
         break;
       case AppLifecycleState.resumed:
         // App vuelve al primer plano
-        AudioService().resumeOnAppForeground();
+        // AudioService().resumeOnAppForeground(); // Comentado temporalmente
         break;
       case AppLifecycleState.detached:
         // App se está cerrando
-        AudioService().stopAllAudio();
+        // AudioService().stopAllAudio(); // Comentado temporalmente
         break;
       case AppLifecycleState.hidden:
         // App está oculta (solo en algunas plataformas)
-        AudioService().pauseOnAppBackground();
+        // AudioService().pauseOnAppBackground(); // Comentado temporalmente
         break;
     }
   }

@@ -1,135 +1,375 @@
 [
   {
-    "id": "7ELwgp0v9F3jWwMjCZEE",
-    "name": "Experto en Arrays",
-    "description": "Derrota 3 ArrayIndexOutOfBoundsExceptions.",
-    "iconUrl": "assets/images/badge_array_expert.svg",
-    "category": "enemy",
-    "points": 20,
-    "conditions": {
-      "enemyId": "enemigo_arrayindexoutofboundsexception",
-      "defeatsRequired": 3
-    },
-    "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_arrayindexoutofboundsexception",
-    "requiredEnemyDefeats": 3,
-    "rewardId": "recompensa_array_expert"
-  },
-  {
-    "id": "CTulxY4yqplOssxhfyFK",
-    "name": "Rompe Bucles",
-    "description": "Derrota 2 Bugs de Bucle Infinito.",
-    "iconUrl": "assets/images/badge_loop_breaker.svg",
-    "category": "enemy",
-    "points": 15,
-    "conditions": {
-      "enemyId": "enemigo_bug_de_bucle_infinito",
-      "defeatsRequired": 2
-    },
-    "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_bug_de_bucle_infinito",
-    "requiredEnemyDefeats": 2,
-    "rewardId": "recompensa_loop_breaker"
-  },
-  {
-    "id": "DXitvzW9AhXcYjr6qfgE",
-    "name": "Primer Bug Vencido",
-    "description": "Derrota tu primer Bug del Punto y Coma.",
-    "iconUrl": "assets/images/badge_primer_bug.svg",
-    "category": "enemy",
+    "id": "logro_despertar_guardian",
+    "name": "El Despertar del Guardián",
+    "description": "Completa tu primera misión y aprende los fundamentos de la programación.",
+    "iconUrl": "assets/images/badge_guardian_awakened.svg",
+    "category": "progression",
     "points": 10,
     "conditions": {
-      "enemyId": "enemigo_bug_del_punto_y_coma",
-      "defeatsRequired": 1
+      "completedMissionId": "mision_1_1"
     },
     "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_bug_del_punto_y_coma",
-    "requiredEnemyDefeats": 1,
-    "rewardId": "recompensa_primer_bug"
+    "rewardId": "recompensa_experiencia_pequena",
+    "achievementType": "mission_completion"
   },
   {
-    "id": "JsUV4uZQnev75ia6o5H4",
-    "name": "Maestro del Stack",
-    "description": "Derrota 1 StackOverflowError.",
-    "iconUrl": "assets/images/badge_stack_master.svg",
-    "category": "enemy",
-    "points": 30,
+    "id": "logro_maestro_variables",
+    "name": "Maestro de Variables",
+    "description": "Domina el manejo de variables y tipos de datos en Java.",
+    "iconUrl": "assets/images/badge_variable_master.svg",
+    "category": "progression",
+    "points": 15,
     "conditions": {
-      "enemyId": "enemigo_stackoverflowerror",
-      "defeatsRequired": 1
+      "completedMissionId": "mision_1_2"
     },
     "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_stackoverflowerror",
-    "requiredEnemyDefeats": 1,
-    "rewardId": "recompensa_stack_master"
+    "rewardId": "recompensa_monedas_basicas",
+    "achievementType": "mission_completion"
   },
   {
-    "id": "JzWNIsedsMyILkUGwUtN",
-    "name": "Cazador de Nulls",
-    "description": "Derrota 3 NullPointerExceptions.",
-    "iconUrl": "assets/images/badge_null_hunter.svg",
-    "category": "enemy",
+    "id": "logro_artesano_instrucciones",
+    "name": "Artesano de Instrucciones",
+    "description": "Crea tus primeros programas completos en Java.",
+    "iconUrl": "assets/images/badge_instruction_artisan.svg",
+    "category": "progression",
     "points": 20,
     "conditions": {
-      "enemyId": "enemigo_nullpointerexception",
-      "defeatsRequired": 3
+      "completedMissionId": "mision_1_3"
     },
     "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_nullpointerexception",
-    "requiredEnemyDefeats": 3,
-    "rewardId": "recompensa_null_hunter"
+    "rewardId": "recompensa_experiencia_media",
+    "achievementType": "mission_completion"
   },
   {
-    "id": "TG7dNvqQsqe83RVQygn2",
+    "id": "logro_primer_error_derrotado",
+    "name": "Primer Error Derrotado",
+    "description": "Supera la Batalla Inicial contra el Error Sintáctico.",
+    "iconUrl": "assets/images/badge_first_bug_defeated.svg",
+    "category": "battle",
+    "points": 30,
+    "conditions": {
+      "battleId": "mision_batalla_1",
+      "victoriesRequired": 1
+    },
+    "requiredMissionIds": [
+      "mision_batalla_1"
+    ],
+    "rewardId": "recompensa_escudo_entendimiento",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_logica_decisiones",
+    "name": "Lógica de Decisiones",
+    "description": "Aprende a controlar el flujo de tu programa con condicionales.",
+    "iconUrl": "assets/images/badge_logic_decisions.svg",
+    "category": "progression",
+    "points": 25,
+    "conditions": {
+      "completedMissionId": "mision_2_1"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_maestro_ciclos",
+    "name": "Maestro de Ciclos",
+    "description": "Domina las estructuras de repetición en Java.",
+    "iconUrl": "assets/images/badge_loop_master.svg",
+    "category": "progression",
+    "points": 30,
+    "conditions": {
+      "completedMissionId": "mision_2_2"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_coleccionista_datos",
+    "name": "Coleccionista de Datos",
+    "description": "Organiza información con arrays y colecciones.",
+    "iconUrl": "assets/images/badge_data_collector.svg",
+    "category": "progression",
+    "points": 35,
+    "conditions": {
+      "completedMissionId": "mision_2_3"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_estrategia_logica",
+    "name": "Estrategia Lógica",
+    "description": "Supera la Batalla Intermedia aplicando lógica y control de flujo.",
+    "iconUrl": "assets/images/badge_logic_strategist.svg",
+    "category": "battle",
+    "points": 50,
+    "conditions": {
+      "battleId": "mision_batalla_2",
+      "victoriesRequired": 1
+    },
+    "requiredMissionIds": [
+      "mision_batalla_2"
+    ],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_arquitecto_objetos",
+    "name": "Arquitecto de Objetos",
+    "description": "Comprende los pilares de la Programación Orientada a Objetos.",
+    "iconUrl": "assets/images/badge_object_architect.svg",
+    "category": "progression",
+    "points": 40,
+    "conditions": {
+      "completedMissionId": "mision_3_1"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_extra",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_legado_codigo",
+    "name": "Legado del Código",
+    "description": "Domina el concepto de herencia en la POO.",
+    "iconUrl": "assets/images/badge_code_legacy.svg",
+    "category": "progression",
+    "points": 45,
+    "conditions": {
+      "completedMissionId": "mision_3_2"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_maestro_formas",
+    "name": "Maestro de las Formas",
+    "description": "Entiende y aplica el polimorfismo en tus programas.",
+    "iconUrl": "assets/images/badge_forms_master.svg",
+    "category": "progression",
+    "points": 50,
+    "conditions": {
+      "completedMissionId": "mision_3_3"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_maestro_poo",
+    "name": "Maestro de POO",
+    "description": "Derrota al desafío de la Programación Orientada a Objetos en la Batalla Avanzada.",
+    "iconUrl": "assets/images/badge_poo_master.svg",
+    "category": "battle",
+    "points": 75,
+    "conditions": {
+      "battleId": "mision_batalla_3",
+      "victoriesRequired": 1
+    },
+    "requiredMissionIds": [
+      "mision_batalla_3"
+    ],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "mission_completion"
+  },
+  {
+    "id": "logro_todos_los_enemigos",
+    "name": "Exterminador de Errores",
+    "description": "Derrota a cada tipo de Error Sintáctico al menos una vez.",
+    "iconUrl": "assets/images/badge_bug_exterminator.svg",
+    "category": "combat",
+    "points": 100,
+    "conditions": {
+      "defeatedEnemies": [
+        "enemigo_syntax_error",
+        "enemigo_nullpointerexception",
+        "enemigo_outofmemoryerror",
+        "enemigo_stack_overflow_error",
+        "enemigo_illegalargumentexception",
+        "enemigo_classnotfoundexception",
+        "enemigo_ioexception",
+        "enemigo_arithmeticexception",
+        "enemigo_illegalstateexception"
+      ]
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_primer_bug",
+    "achievementType": "enemy_defeat"
+  },
+
+  {
+    "id": "logro_batalla_final_conquistador",
     "name": "Conquistador Supremo",
     "description": "Derrota al Bug Supremo en la Batalla Final.",
     "iconUrl": "assets/images/badge_bug_supremo.svg",
-    "category": "mission",
+    "category": "battle",
     "points": 100,
-    "conditions": {},
+    "conditions": {
+      "battleId": "mision_batalla_final",
+      "victoriesRequired": 1
+    },
     "requiredMissionIds": [
       "mision_batalla_final"
     ],
-    "rewardId": "recompensa_bug_supremo",
-    "achievementType": "mission"
+    "rewardId": "recompensa_batalla_final",
+    "achievementType": "mission_completion"
   },
   {
-    "id": "UjXG6dBWwzkRgEf45sW3",
-    "name": "Cazador de Bugs",
-    "description": "Derrota 5 Bugs del Punto y Coma.",
-    "iconUrl": "assets/images/badge_cazador_bugs.svg",
-    "category": "enemy",
-    "points": 25,
+    "id": "logro_primer_ejercicio_codigo",
+    "name": "Primer Paso en el Código",
+    "description": "Completa tu primer ejercicio de código en Java.",
+    "iconUrl": "assets/images/badge_first_code.svg",
+    "category": "progression",
+    "points": 15,
     "conditions": {
-      "enemyId": "enemigo_bug_del_punto_y_coma",
-      "defeatsRequired": 5
+      "completedCodeExerciseId": "variables_declaracion_asignacion"
     },
     "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_bug_del_punto_y_coma",
-    "requiredEnemyDefeats": 5,
-    "rewardId": "recompensa_cazador_bugs"
+    "rewardId": "recompensa_experiencia_pequena",
+    "achievementType": "code_exercise_completion"
   },
   {
-    "id": "ktx6iaPLzo6x6N8SHE4O",
-    "name": "Controlador de Excepciones",
-    "description": "Derrota 4 Manejadores de Excepciones.",
-    "iconUrl": "assets/images/badge_exception_handler.svg",
-    "category": "enemy",
-    "points": 25,
+    "id": "logro_hola_mundo_maestro",
+    "name": "Maestro del Hola Mundo",
+    "description": "Domina el clásico programa 'Hola Mundo' en Java.",
+    "iconUrl": "assets/images/badge_hello_world.svg",
+    "category": "progression",
+    "points": 10,
     "conditions": {
-      "enemyId": "enemigo_manejador_de_excepciones",
-      "defeatsRequired": 4
+      "completedCodeExerciseId": "imprimir_hola_mundo"
     },
     "requiredMissionIds": [],
-    "achievementType": "enemy",
-    "requiredEnemyId": "enemigo_manejador_de_excepciones",
-    "requiredEnemyDefeats": 4,
-    "rewardId": "recompensa_exception_handler"
+    "rewardId": "recompensa_monedas_basicas",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_operaciones_basicas",
+    "name": "Calculadora Humana",
+    "description": "Realiza operaciones matemáticas básicas en Java.",
+    "iconUrl": "assets/images/badge_calculator.svg",
+    "category": "progression",
+    "points": 15,
+    "conditions": {
+      "completedCodeExerciseId": "operaciones_basicas"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_pequena",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_condicionales_maestro",
+    "name": "Maestro de Decisiones",
+    "description": "Controla el flujo de tu programa con condicionales if.",
+    "iconUrl": "assets/images/badge_conditionals.svg",
+    "category": "progression",
+    "points": 20,
+    "conditions": {
+      "completedCodeExerciseId": "condicional_if_basico"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_media",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_bucles_for",
+    "name": "Repetidor Experto",
+    "description": "Domina los bucles for para repetir acciones.",
+    "iconUrl": "assets/images/badge_loops.svg",
+    "category": "progression",
+    "points": 25,
+    "conditions": {
+      "completedCodeExerciseId": "bucle_for_basico"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_media",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_clases_simples",
+    "name": "Arquitecto de Clases",
+    "description": "Crea tu primera clase simple en Java.",
+    "iconUrl": "assets/images/badge_class_architect.svg",
+    "category": "progression",
+    "points": 30,
+    "conditions": {
+      "completedCodeExerciseId": "clase_simple_personaje"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_constructores",
+    "name": "Constructor Maestro",
+    "description": "Aprende a inicializar objetos con constructores.",
+    "iconUrl": "assets/images/badge_constructor.svg",
+    "category": "progression",
+    "points": 35,
+    "conditions": {
+      "completedCodeExerciseId": "constructor_personaje"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_herencia_basica",
+    "name": "Heredero del Código",
+    "description": "Comprende el concepto de herencia en POO.",
+    "iconUrl": "assets/images/badge_inheritance.svg",
+    "category": "progression",
+    "points": 40,
+    "conditions": {
+      "completedCodeExerciseId": "herencia_basica"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_extra",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_arrays_basicos",
+    "name": "Organizador de Datos",
+    "description": "Maneja colecciones de datos con arrays.",
+    "iconUrl": "assets/images/badge_arrays.svg",
+    "category": "progression",
+    "points": 30,
+    "conditions": {
+      "completedCodeExerciseId": "array_basico"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_cinco_ejercicios",
+    "name": "Programador Persistente",
+    "description": "Completa 5 ejercicios de código diferentes.",
+    "iconUrl": "assets/images/badge_persistent_coder.svg",
+    "category": "milestone",
+    "points": 50,
+    "conditions": {
+      "completedCodeExercisesCount": 5
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_extra",
+    "achievementType": "code_exercise_milestone"
+  },
+  {
+    "id": "logro_todos_ejercicios",
+    "name": "Maestro del Código",
+    "description": "Completa todos los ejercicios de código disponibles.",
+    "iconUrl": "assets/images/badge_code_master.svg",
+    "category": "milestone",
+    "points": 100,
+    "conditions": {
+      "completedAllCodeExercises": true
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_batalla_final",
+    "achievementType": "code_exercise_milestone"
   }
 ]

@@ -1,0 +1,156 @@
+[
+  {
+    "id": "logro_primer_ejercicio_codigo",
+    "name": "Primer Paso en el Código",
+    "description": "Completa tu primer ejercicio de código en Java.",
+    "iconUrl": "assets/images/badge_first_code.svg",
+    "category": "progression",
+    "points": 15,
+    "conditions": {
+      "completedCodeExerciseId": "variables_declaracion_asignacion"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_pequena",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_hola_mundo_maestro",
+    "name": "Maestro del Hola Mundo",
+    "description": "Domina el clásico programa 'Hola Mundo' en Java.",
+    "iconUrl": "assets/images/badge_hello_world.svg",
+    "category": "progression",
+    "points": 10,
+    "conditions": {
+      "completedCodeExerciseId": "imprimir_hola_mundo"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_monedas_basicas",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_operaciones_basicas",
+    "name": "Calculadora Humana",
+    "description": "Realiza operaciones matemáticas básicas en Java.",
+    "iconUrl": "assets/images/badge_calculator.svg",
+    "category": "progression",
+    "points": 15,
+    "conditions": {
+      "completedCodeExerciseId": "operaciones_basicas"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_pequena",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_condicionales_maestro",
+    "name": "Maestro de Decisiones",
+    "description": "Controla el flujo de tu programa con condicionales if.",
+    "iconUrl": "assets/images/badge_conditionals.svg",
+    "category": "progression",
+    "points": 20,
+    "conditions": {
+      "completedCodeExerciseId": "condicional_if_basico"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_media",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_bucles_for",
+    "name": "Repetidor Experto",
+    "description": "Domina los bucles for para repetir acciones.",
+    "iconUrl": "assets/images/badge_loops.svg",
+    "category": "progression",
+    "points": 25,
+    "conditions": {
+      "completedCodeExerciseId": "bucle_for_basico"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_media",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_clases_simples",
+    "name": "Arquitecto de Clases",
+    "description": "Crea tu primera clase simple en Java.",
+    "iconUrl": "assets/images/badge_class_architect.svg",
+    "category": "progression",
+    "points": 30,
+    "conditions": {
+      "completedCodeExerciseId": "clase_simple_personaje"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_constructores",
+    "name": "Constructor Maestro",
+    "description": "Aprende a inicializar objetos con constructores.",
+    "iconUrl": "assets/images/badge_constructor.svg",
+    "category": "progression",
+    "points": 35,
+    "conditions": {
+      "completedCodeExerciseId": "constructor_personaje"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_herencia_basica",
+    "name": "Heredero del Código",
+    "description": "Comprende el concepto de herencia en POO.",
+    "iconUrl": "assets/images/badge_inheritance.svg",
+    "category": "progression",
+    "points": 40,
+    "conditions": {
+      "completedCodeExerciseId": "herencia_basica"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_extra",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_arrays_basicos",
+    "name": "Organizador de Datos",
+    "description": "Maneja colecciones de datos con arrays.",
+    "iconUrl": "assets/images/badge_arrays.svg",
+    "category": "progression",
+    "points": 30,
+    "conditions": {
+      "completedCodeExerciseId": "array_basico"
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_considerable",
+    "achievementType": "code_exercise_completion"
+  },
+  {
+    "id": "logro_cinco_ejercicios",
+    "name": "Programador Persistente",
+    "description": "Completa 5 ejercicios de código diferentes.",
+    "iconUrl": "assets/images/badge_persistent_coder.svg",
+    "category": "milestone",
+    "points": 50,
+    "conditions": {
+      "completedCodeExercisesCount": 5
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_experiencia_extra",
+    "achievementType": "code_exercise_milestone"
+  },
+  {
+    "id": "logro_todos_ejercicios",
+    "name": "Maestro del Código",
+    "description": "Completa todos los ejercicios de código disponibles.",
+    "iconUrl": "assets/images/badge_code_master.svg",
+    "category": "milestone",
+    "points": 100,
+    "conditions": {
+      "completedAllCodeExercises": true
+    },
+    "requiredMissionIds": [],
+    "rewardId": "recompensa_batalla_final",
+    "achievementType": "code_exercise_milestone"
+  }
+]

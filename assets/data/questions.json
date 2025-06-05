@@ -1,7 +1,306 @@
 [
   {
+    "id": "q_java_intro_1",
+    "text": "¿Cuál es la firma correcta del método main en Java?",
+    "options": [
+      "public static void main(String[] args)",
+      "public void main(String[] args)",
+      "static void main(String[] args)",
+      "void main()"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El método main debe ser public static void y aceptar un array de String como argumento.",
+    "originalId": "pregunta_metodo_main"
+  },
+  {
+    "id": "q_java_intro_2",
+    "text": "¿Cómo se clasifica Java en términos de compilación/interpretación?",
+    "options": [
+      "Solo compilado",
+      "Solo interpretado",
+      "Compilado e interpretado",
+      "Ninguna de las anteriores"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Java es compilado a bytecode (`.class` files) y luego interpretado por la Máquina Virtual de Java (JVM).",
+    "originalId": "pregunta_tipo_lenguaje"
+  },
+  {
+    "id": "q_java_intro_3",
+    "text": "¿Cómo se escribe un comentario de una sola línea en Java?",
+    "options": [
+      "/* Este es un comentario */",
+      "// Este es un comentario",
+      "# Este es un comentario",
+      ""
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los comentarios de una sola línea comienzan con `//`.",
+    "originalId": "pregunta_comentario_simple"
+  },
+  {
+    "id": "q_java_intro_4",
+    "text": "¿Cuál es la instrucción correcta para imprimir la frase 'Hola Mundo' en la consola y saltar de línea en Java?",
+    "options": [
+      "System.out.println(\"Hola Mundo\");",
+      "print(\"Hola Mundo\");",
+      "console.log(\"Hola Mundo\");",
+      "System.console.writeLine(\"Hola Mundo\");"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `System.out.println()` se usa para imprimir texto en la consola y añadir una nueva línea al final.",
+    "originalId": "pregunta_imprimir_consola"
+  },
+  {
+    "id": "q_java_tipos_1",
+    "text": "¿Qué tipo de dato se usa en Java para almacenar texto, como nombres o frases?",
+    "options": [
+      "num",
+      "text",
+      "character",
+      "String"
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. El tipo `String` se usa para almacenar cadenas de texto. Es una clase, no un tipo primitivo.",
+    "originalId": "pregunta_tipo_string"
+  },
+  {
+    "id": "q_java_tipos_2",
+    "text": "¿Qué tipo de dato primitivo se usa para almacenar números enteros en Java, como la edad o una cantidad?",
+    "options": [
+      "float",
+      "int",
+      "double",
+      "long"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El tipo `int` se usa para almacenar números enteros de tamaño estándar.",
+    "originalId": "pregunta_tipo_entero"
+  },
+  {
+    "id": "q_java_tipos_3",
+    "text": "¿Qué tipo de dato primitivo se usa para almacenar valores de verdad (verdadero o falso) en Java?",
+    "options": [
+      "boolean",
+      "bool",
+      "truth",
+      "logic"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El tipo `boolean` solo puede almacenar los valores `true` o `false`.",
+    "originalId": "pregunta_tipo_boolean"
+  },
+  {
+    "id": "q_java_variables_1",
+    "text": "¿Cuál es la forma correcta de declarar e inicializar una variable entera llamada `myVariable` con el valor 10 en Java?",
+    "options": [
+      "myVariable = 10;",
+      "int = 10;",
+      "int myVariable = 10;",
+      "variable myVariable = 10;"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. En Java, se especifica el tipo de dato (`int`), seguido del nombre de la variable (`myVariable`), el operador de asignación (`=`) y el valor (`10`), terminando con un punto y coma.",
+    "originalId": "pregunta_declarar_variable"
+  },
+  {
+    "id": "q_java_operadores_1",
+    "text": "¿Qué operador en Java se usa tanto para la suma de números como para la concatenación de cadenas de texto?",
+    "options": [
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El operador `+` es polivalente: realiza sumas aritméticas y une cadenas de texto.",
+    "originalId": "pregunta_operador_suma_cadena"
+  },
+  {
+    "id": "q_java_operadores_2",
+    "text": "¿Qué operador aritmético se usa para obtener el resto de una división en Java?",
+    "options": [
+      "/",
+      "%",
+      "",
+      "//"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El operador `%` se conoce como el operador de módulo y devuelve el resto de la división entera.",
+    "originalId": "pregunta_operador_modulo"
+  },
+  {
+    "id": "q_java_operadores_3",
+    "text": "¿Qué operador lógico representa el AND (y) en Java, donde ambos operandos deben ser verdaderos para que el resultado sea verdadero?",
+    "options": [
+      "&&",
+      "||",
+      "!",
+      "=="
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El operador `&&` es el AND lógico. Si el primer operando es falso, el segundo no se evalúa (cortocircuito).",
+    "originalId": "pregunta_operador_and_logico"
+  },
+  {
+    "id": "q_java_control_1",
+    "text": "¿Qué palabra clave se usa para crear una estructura de control condicional 'si' en Java?",
+    "options": [
+      "if",
+      "for",
+      "while",
+      "switch"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La palabra clave `if` se utiliza para ejecutar un bloque de código solo si una condición específica es verdadera.",
+    "originalId": "pregunta_condicional_simple"
+  },
+  {
+    "id": "q_java_control_2",
+    "text": "¿Cuál es la sintaxis correcta de un bloque `if-else` en Java para decidir si la temperatura es 'Calor' o 'Frío'?",
+    "options": [
+      "if (temperatura > 25) { System.out.println(\"Calor\"); } else { System.out.println(\"Frío\"); }",
+      "if (temperatura > 25) { System.out.println(\"Calor\"); } else { System.out.println(\"Frío\"); }",
+      "si (temperatura > 25) { System.out.println(\"Calor\"); } sino { System.out.println(\"Frío\"); }",
+      "cuando (temperatura > 25) { System.out.println(\"Calor\"); } otro { System.out.println(\"Frío\"); }"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La sintaxis de `if-else` en Java utiliza las palabras clave `if` y `else` seguidas de los bloques de código entre llaves `{}`.",
+    "originalId": "pregunta_if_else"
+  },
+  {
+    "id": "q_java_control_3",
+    "text": "¿Qué palabra clave se usa para crear un bucle 'para' (iteración con un número fijo de veces o sobre una colección) en Java?",
+    "options": [
+      "for",
+      "foreach",
+      "loop",
+      "repeat"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La palabra clave `for` se utiliza para bucles con un número predefinido de iteraciones o para iterar sobre colecciones.",
+    "originalId": "pregunta_bucle_for"
+  },
+  {
+    "id": "q_java_control_4",
+    "text": "¿Qué tipo de bucle en Java se ejecuta mientras una condición especificada sea verdadera?",
+    "options": [
+      "do-while",
+      "while",
+      "for",
+      "loop"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El bucle `while` evalúa la condición al principio y se ejecuta mientras esta sea verdadera. Si la condición es falsa desde el inicio, el bucle no se ejecuta ninguna vez.",
+    "originalId": "pregunta_bucle_while"
+  },
+  {
+    "id": "q_java_control_5",
+    "text": "¿Qué palabra clave se usa para salir de un bucle inmediatamente en Java, sin completar las iteraciones restantes?",
+    "options": [
+      "break",
+      "stop",
+      "exit",
+      "end"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `break` interrumpe la ejecución del bucle más interno y el control del programa pasa a la instrucción siguiente al bucle.",
+    "originalId": "pregunta_salir_bucle"
+  },
+  {
+    "id": "q_java_control_6",
+    "text": "¿Qué palabra clave se usa para saltar la iteración actual de un bucle y pasar a la siguiente en Java?",
+    "options": [
+      "break",
+      "continue",
+      "skip",
+      "next"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `continue` omite el resto del código en la iteración actual del bucle y procede a la siguiente iteración.",
+    "originalId": "pregunta_saltar_iteracion"
+  },
+  {
+    "id": "q_java_arrays_1",
+    "text": "¿Cómo se declara un array de enteros llamado `numeros` en Java?",
+    "options": [
+      "int[] numeros;",
+      "int numeros[];",
+      "array<int> numeros;",
+      "IntArray numeros;"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La forma preferida y más común de declarar un array en Java es `Tipo[] nombreArray;`. La opción `int numeros[];` también es válida, pero menos común.",
+    "originalId": "pregunta_declarar_array"
+  },
+  {
+    "id": "q_java_arrays_2",
+    "text": "¿Cuál de las siguientes afirmaciones es verdadera sobre los arrays en Java?",
+    "options": [
+      "Su tamaño puede cambiar dinámicamente.",
+      "Sus elementos pueden ser de diferentes tipos de datos.",
+      "Tienen un tamaño fijo una vez creados.",
+      "El primer elemento se accede con el índice 1."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Los arrays en Java tienen un tamaño fijo que se define en el momento de su creación y no puede cambiarse. Además, sus elementos deben ser del mismo tipo y se indexan desde 0.",
+    "originalId": "pregunta_caracteristica_array"
+  },
+  {
+    "id": "q_java_arrays_3",
+    "text": "Si tienes un array llamado `miArray`, ¿cómo obtienes su longitud (número de elementos) en Java?",
+    "options": [
+      "miArray.length",
+      "miArray.size()",
+      "length(miArray)",
+      "size(miArray)"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Los arrays en Java tienen una propiedad `length` que devuelve su tamaño. A diferencia de las colecciones, no es un método.",
+    "originalId": "pregunta_longitud_array"
+  },
+  {
+    "id": "q_java_arrays_4",
+    "text": "Para acceder al tercer elemento de un array llamado `miArray` en Java, ¿qué índice usarías?",
+    "options": [
+      "miArray[3]",
+      "miArray[2]",
+      "miArray.get(3)",
+      "miArray.get(2)"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los arrays en Java están basados en índices de cero, lo que significa que el primer elemento está en el índice 0, el segundo en el 1, y así sucesivamente.",
+    "originalId": "pregunta_acceso_array"
+  },
+  {
+    "id": "q_java_poo_1",
+    "text": "¿Qué es una clase en Java en el contexto de la Programación Orientada a Objetos (POO)?",
+    "options": [
+      "Un plano o plantilla para crear objetos.",
+      "Una instancia de un objeto.",
+      "Un método dentro de un objeto.",
+      "Un tipo de dato primitivo."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Una clase es la definición de un tipo de objeto, describiendo sus atributos y comportamientos. Los objetos son instancias de esa clase.",
+    "originalId": "pregunta_que_es_clase"
+  },
+  {
+    "id": "q_java_poo_2",
+    "text": "¿Qué es un objeto en Java en el contexto de la Programación Orientada a Objetos (POO)?",
+    "options": [
+      "Una plantilla para crear clases.",
+      "Una instancia de una clase.",
+      "Un método estático.",
+      "Un tipo de dato abstracto."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Un objeto es una entidad real y concreta creada a partir de una clase, representando una instancia de esa clase.",
+    "originalId": "pregunta_que_es_objeto"
+  },
+  {
     "id": "q_constructor_4",
-    "text": "Observa el siguiente código:\n\n```java\npublic class Robot {\n    String nombre;\n    public Robot(String n) {\n        nombre = n;\n    }\n}\n```\n\n¿Cómo crearías un objeto Robot llamado 'WallE'?",
+    "text": "Observa el siguiente código:\n\n```java\npublic class Robot {\n    String nombre;\n    public Robot(String n) {\n        nombre = n;\n    }\n}\n```\n\n¿Cómo crearías un objeto `Robot` llamado 'WallE'?",
     "options": [
       "Robot wallE = Robot(\"WallE\");",
       "Robot wallE = new Robot(\"WallE\");",
@@ -9,462 +308,1333 @@
       "Robot wallE.Robot(\"WallE\");"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "Correcto. Se usa `new Robot(\"WallE\")`. `new` crea el objeto, `Robot` es el tipo y `(\"WallE\")` pasa el argumento al constructor.",
+    "explanation": "Correcto. Se usa `new Robot(\"WallE\")`. `new` es el operador para instanciar una clase, `Robot` es el nombre de la clase y `(\"WallE\")` invoca su constructor, pasando el argumento 'WallE'.",
     "originalId": "pregunta_que_es_un_programa"
   },
   {
-    "id": "pregunta_estructura_if_java",
-    "text": "Si quieres que un mensaje '¡Has ganado!' solo se muestre si la puntuacion del jugador es mayor que 100, ¿cuál es la estructura correcta de un if en Java?",
+    "id": "q_java_poo_3",
+    "text": "¿Cuál es el propósito principal de un constructor en una clase Java?",
     "options": [
-      "if puntuacion > 100 { System.out.println(\"¡Has ganado!\"); }",
-      "if (puntuacion > 100) System.out.println(\"¡Has ganado!\");",
-      "if (puntuacion > 100) { System.out.println(\"¡Has ganado!\"); }",
-      "if (puntuacion es mayor que 100) { System.out.println(\"¡Has ganado!\"); }"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) if (puntuacion > 100) { System.out.println(\"¡Has ganado!\"); }. En Java, la condición de un if siempre debe ir entre paréntesis (), y el bloque de código a ejecutar si la condición es verdadera debe ir entre llaves {}. La opción b) es técnicamente válida para una sola línea, pero la c) es la forma estándar y recomendada para claridad y cuando hay múltiples líneas de código.",
-    "originalId": "pregunta_multiplataforma_java"
-  },
-  {
-    "id": "pregunta_bucle_for_java",
-    "text": "¿Cuántas veces se ejecutará el mensaje 'Ataque!' en el siguiente código Java?\n\n```java\nfor (int i = 0; i < 3; i++) {\n    System.out.println(\"Ataque!\");\n}\n```",
-    "options": [
-      "0 veces",
-      "1 vez",
-      "3 veces",
-      "4 veces"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) 3 veces. Cuando i es 0, 0 < 3 es true, se imprime 'Ataque!'. i se convierte en 1. Cuando i es 1, 1 < 3 es true, se imprime 'Ataque!'. i se convierte en 2. Cuando i es 2, 2 < 3 es true, se imprime 'Ataque!'. i se convierte en 3. Cuando i es 3, 3 < 3 es false, el bucle termina.",
-    "originalId": "pregunta_estructura_principal_java_clase_main"
-  },
-  {
-    "id": "pregunta_expresion_calculo_vidas_java",
-    "text": "Si tienes dos variables, vidas = 5 y daño = 2, ¿qué expresión Java usarías para calcular cuántas vidas te quedan si te quitan el daño?",
-    "options": [
-      "vidas + daño",
-      "vidas * daño",
-      "vidas - daño",
-      "vidas / daño"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) vidas - daño. Para saber cuántas vidas te quedan después de recibir daño, debes restar el daño a tus vidas actuales. El operador - realiza la resta.",
-    "originalId": "pregunta_instruccion_hola_mundo_java"
-  },
-  {
-    "id": "pregunta_clase_vs_objeto_java",
-    "text": "En Java, si una Clase es como un plano o molde (ej: Clase Jugador), ¿qué representa un 'objeto' (ej: jugador1)?",
-    "options": [
-      "Otra clase diferente.",
-      "Un error en el programa.",
-      "Una instancia concreta creada a partir de ese plano, con sus propios valores para los atributos.",
-      "Un tipo de dato primitivo."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) Una instancia concreta creada a partir de ese plano, con sus propios valores para los atributos. Un objeto es la materialización de una clase. Si la clase Jugador define que los jugadores tienen un nombre y una vida, jugador1 y jugador2 serían dos objetos diferentes, cada uno con su propio nombre y valor de vida, pero ambos creados siguiendo el molde de la clase Jugador.",
-    "originalId": "pregunta_que_es_una_variable"
-  },
-  {
-    "id": "pregunta_instruccion_hola_mundo_java",
-    "text": "¿Cuál es la instrucción correcta en Java para mostrar el mensaje 'Hola Mundo' en la consola, y luego saltar a la siguiente línea?",
-    "options": [
-      "print(\"Hola Mundo\");",
-      "System.in.println(\"Hola Mundo\");",
-      "System.out.println(\"Hola Mundo\");",
-      "console.log(\"Hola Mundo\");"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) System.out.println(\"Hola Mundo\");. Esta es la sintaxis estándar en Java para imprimir texto en la consola de salida y añadir un salto de línea al final, lo que es muy útil para depurar o mostrar información al usuario. Las otras opciones son incorrectas para Java: print no es el comando completo, System.in es para la entrada, y console.log es de otros lenguajes.",
-    "originalId": "pregunta_tipo_dato_edad_java"
-  },
-  {
-    "id": "pregunta_declaracion_variable_entera_java",
-    "text": "¿Cuál de las siguientes líneas de código declara correctamente una variable entera llamada puntuacion y le asigna un valor inicial de 100 en Java?",
-    "options": [
-      "puntuacion = 100;",
-      "int puntuacion;",
-      "int puntuacion = 100;",
-      "Puntuacion int = 100;"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) int puntuacion = 100;. Esta línea declara una variable de tipo entero (int), la nombra puntuacion, y le asigna el valor 100 en el mismo momento. a) Solo asigna un valor, la variable no está declarada. b) Declara la variable, pero no le asigna un valor inicial. d) La sintaxis es incorrecta; el tipo de dato siempre va antes del nombre de la variable.",
-    "originalId": "pregunta_nombre_variable_valido_java"
-  },
-  {
-    "id": "pregunta_evitar_nullpointerexception",
-    "text": "Una forma de proteger tu código contra una NullPointerException antes de usar un objeto es:",
-    "options": [
-      "Ignorar el problema y esperar que no ocurra.",
-      "Usar siempre nombres de variables muy cortos.",
-      "Verificar si el objeto es 'null' antes de intentar acceder a sus miembros (ej: `if (miObjeto != null)`).",
-      "Añadir muchos comentarios al código."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "Comprobar explícitamente si una referencia de objeto es `null` antes de usarla (por ejemplo, con una sentencia `if (objeto != null)`) es una práctica defensiva clave para prevenir las NullPointerExceptions y hacer tu código más robusto.",
-    "originalId": "pregunta_declaracion_variable_entera_java"
-  },
-  {
-    "id": "pregunta_que_es_un_programa",
-    "text": "¿Qué es un 'programa' en el contexto de la programación?",
-    "options": [
-      "Un dibujo de un ordenador.",
-      "Un conjunto de instrucciones para que el ordenador realice una tarea.",
-      "Un tipo de música.",
-      "Un juego de mesa."
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) Un conjunto de instrucciones para que el ordenador realice una tarea. Un programa es precisamente eso: una serie de pasos detallados que le decimos a una máquina para que la ejecute y logre un objetivo, como mostrar un mensaje en pantalla o procesar información.",
-    "originalId": "pregunta_expresion_calculo_vidas_java"
-  },
-  {
-    "id": "pregunta_nombre_variable_valido_java",
-    "text": "¿Cuál de los siguientes nombres de variable es válido en Java?",
-    "options": [
-      "1puntuacion",
-      "nombre jugador",
-      "mi_nombre",
-      "public"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) mi_nombre. a) 1puntuacion es inválido porque un nombre de variable no puede empezar con un número. b) nombre jugador es inválido porque no puede contener espacios. d) public es inválido porque es una palabra reservada del lenguaje Java. mi_nombre sigue las reglas: no empieza con número, no tiene espacios y no es una palabra reservada.",
-    "originalId": "pregunta_division_enteros_java"
-  },
-  {
-    "id": "pregunta_que_es_una_excepcion_java",
-    "text": "¿Qué es una 'excepción' en Java?",
-    "options": [
-      "Un tipo de variable que guarda texto.",
-      "Un método especial para imprimir mensajes.",
-      "Un evento inesperado o un problema que ocurre durante la ejecución de un programa y que interrumpe su flujo normal.",
-      "Una forma de hacer que el programa sea más rápido."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) Un evento inesperado o un problema que ocurre durante la ejecución de un programa y que interrumpe su flujo normal. Las excepciones son como alarmas que suenan cuando algo va mal. Java nos permite 'capturar' estas alarmas para poder gestionarlas y evitar que el programa se bloquee, mostrando un mensaje de error al usuario o intentando una acción alternativa.",
-    "originalId": "pregunta_estructura_if_java"
-  },
-  {
-    "id": "pregunta_razon_usar_metodo_java",
-    "text": "¿Cuál de las siguientes es una buena razón para usar un 'método' en programación?",
-    "options": [
-      "Para hacer el código más difícil de entender.",
-      "Para repetir la misma instrucción muchas veces seguidas sin control.",
-      "Para organizar el código en tareas específicas y reutilizarlo, evitando la repetición.",
-      "Para hacer que el programa se ejecute más lento."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) Para organizar el código en tareas específicas y reutilizarlo, evitando la repetición. Los métodos son una herramienta fundamental para mantener el código limpio, modular y fácil de mantener. Al encapsular una tarea en un método, puedes llamarlo desde cualquier lugar del programa sin tener que reescribir el mismo conjunto de instrucciones.",
-    "originalId": "pregunta_condicion_if_else_java"
-  },
-  {
-    "id": "pregunta_llamar_metodo_java",
-    "text": "Dado el siguiente método en Java:\n\npublic void mostrarMensaje() {\n    System.out.println(\"¡Bienvenido a CodeQuest!\");\n}\n\n¿Cómo llamarías a este método para que imprima el mensaje?",
-    "options": [
-      "System.out.println(mostrarMensaje);",
-      "mostrarMensaje();",
-      "call mostrarMensaje();",
-      "run mostrarMensaje;"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) mostrarMensaje();. Para llamar a un método sin parámetros, simplemente escribes su nombre seguido de paréntesis vacíos y un punto y coma. Las otras opciones usan sintaxis incorrecta o comandos que no existen en Java para llamar a un método.",
-    "originalId": "pregunta_bucle_for_java"
-  },
-  {
-    "id": "pregunta_estructura_principal_java_clase_main",
-    "text": "En Java, ¿dentro de qué estructura principal se organiza casi todo el código y dónde se encuentra el método main (el punto de inicio de un programa)?",
-    "options": [
-      "Un archivo de texto.",
-      "Una carpeta.",
-      "Una clase.",
-      "Una función."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) Una clase. En Java, la programación es 'orientada a objetos', y las clases son los bloques de construcción fundamentales. Todo el código que escribimos, incluyendo el método main (que es el primer lugar donde el programa comienza a ejecutarse), debe estar encapsulado dentro de una clase.",
-    "originalId": "pregunta_razon_usar_metodo_java"
-  },
-  {
-    "id": "pregunta_identificar_bucle_infinito",
-    "text": "Si sospechas que tienes un bucle infinito, ¿qué síntoma podrías observar en tu programa?",
-    "options": [
-      "El programa termina inmediatamente sin errores.",
-      "El programa se ejecuta más rápido de lo esperado.",
-      "El programa no responde, consume muchos recursos del CPU o imprime el mismo resultado repetidamente.",
-      "El programa muestra un mensaje de 'error de sintaxis'."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "Un bucle infinito a menudo hace que el programa parezca colgado, use mucha CPU porque está constantemente ejecutando el cuerpo del bucle, o si hay una instrucción de impresión dentro, la verás repetirse sin parar en la consola.",
-    "originalId": "pregunta_llamar_metodo_java"
-  },
-  {
-    "id": "pregunta_funcion_array_java",
-    "text": "¿Cuál es la función principal de un Array en programación Java?",
-    "options": [
-      "Realizar operaciones matemáticas complejas.",
-      "Almacenar un único valor de texto.",
-      "Almacenar una colección de elementos del mismo tipo de dato, organizados por un índice.",
-      "Dibujar gráficos en la pantalla."
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) Almacenar una colección de elementos del mismo tipo de dato, organizados por un índice. Los arrays son estructuras de datos que nos permiten guardar múltiples valores (como una lista de puntuaciones, nombres de enemigos o habilidades) bajo un solo nombre de variable, facilitando su manejo y acceso mediante posiciones numéricas.",
-    "originalId": "pregunta_funcion_array_java"
-  },
-  {
-    "id": "pregunta_division_enteros_java",
-    "text": "Considerando las variables monedas = 10 y precioObjeto = 3. ¿Qué valor obtendría la variable objetosComprados si ejecutas la siguiente línea de código en Java? int objetosComprados = monedas / precioObjeto;",
-    "options": [
-      "3.33",
-      "3",
-      "4",
-      "10"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) 3. Cuando divides dos números enteros (int) en Java usando el operador /, el resultado también es un entero y se trunca la parte decimal (se elimina, no se redondea). Entonces, 10 / 3 da como resultado 3.",
-    "originalId": "pregunta_acceder_elemento_array_java"
-  },
-  {
-    "id": "pregunta_acceder_elemento_array_java",
-    "text": "Dado el siguiente array en Java:\n\n```java\nString[] nombresEnemigos = {\"Goblin\", \"Orco\", \"Esqueleto\"};\n```\n\n¿Qué código imprimiría 'Orco' en la consola?",
-    "options": [
-      "System.out.println(nombresEnemigos[1]);",
-      "System.out.println(nombresEnemigos[2]);",
-      "System.out.println(nombresEnemigos[0]);",
-      "System.out.println(nombresEnemigos[\"Orco\"]);"
+      "Un método especial usado para inicializar objetos.",
+      "Un método que se ejecuta automáticamente al final del programa.",
+      "Una variable estática.",
+      "Un tipo de herencia."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "La respuesta correcta es a) System.out.println(nombresEnemigos[1]);. 'Goblin' está en el índice 0. 'Orco' está en el índice 1. 'Esqueleto' está en el índice 2. Para acceder a 'Orco', necesitamos el índice 1.",
-    "originalId": "pregunta_idea_central_poo_java"
+    "explanation": "Correcto. Los constructores son métodos especiales que se invocan cuando se crea un objeto para inicializar su estado.",
+    "originalId": "pregunta_que_es_constructor"
   },
   {
-    "id": "q_constructor_2",
-    "text": "Si no defines ningún constructor en tu clase Java, ¿qué sucede?",
+    "id": "q_java_poo_4",
+    "text": "¿Qué representan los métodos en el contexto de un objeto en Java?",
     "options": [
-      "El código no compilará",
-      "Java proporciona un constructor por defecto sin argumentos",
-      "Se produce un error en tiempo de ejecución al crear un objeto",
-      "Debes llamar a un método 'crearObjeto' especial"
+      "Variables que describen el estado de un objeto.",
+      "Las plantillas para crear objetos.",
+      "La herencia entre clases.",
+      "Las acciones que un objeto puede realizar."
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "Correcto. Si una clase no tiene constructores explícitamente definidos, el compilador de Java añade automáticamente un constructor público por defecto sin argumentos.",
-    "originalId": "pregunta_clase_vs_objeto_java"
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. Los métodos definen el comportamiento de un objeto, es decir, las operaciones que puede realizar o las acciones que puede tomar.",
+    "originalId": "pregunta_que_son_metodos"
   },
   {
-    "id": "pregunta_arraylist_vs_array_java",
-    "text": "Si necesitas una lista en Java que pueda cambiar de tamaño (añadir o eliminar elementos dinámicamente) para, por ejemplo, gestionar el inventario de un jugador, ¿cuál de las siguientes opciones es la más adecuada?",
+    "id": "q_java_poo_5",
+    "text": "¿Qué representan los atributos (o campos/variables de instancia) en el contexto de un objeto en Java?",
     "options": [
-      "Un array (String[] inventario)",
-      "Un int",
-      "Un ArrayList<String>",
-      "Un boolean"
-    ],
-    "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) Un ArrayList<String>. Mientras que un array (String[]) tiene un tamaño fijo una vez creado, un ArrayList es una colección dinámica que puede crecer y encogerse. Es perfecto para situaciones como un inventario donde el número de objetos cambia constantemente. El <String> entre > indica que es un ArrayList que guarda elementos de tipo String.",
-    "originalId": "pregunta_que_es_una_excepcion_java"
-  },
-  {
-    "id": "pregunta_que_es_bucle_infinito",
-    "text": "Un 'Bug de Bucle Infinito' es un problema donde un bucle en tu programa se repite sin fin, usualmente congelando la aplicación. ¿Cuál podría ser una causa común?",
-    "options": [
-      "Una variable que nunca se declara.",
-      "Una condición de terminación del bucle que nunca se cumple.",
-      "Usar un tipo de dato incorrecto para un contador.",
-      "Escribir un comentario demasiado largo dentro del bucle."
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Los bucles (como `for` o `while`) necesitan una condición que eventualmente se vuelva falsa para detenerse. Si esta condición siempre es verdadera (por ejemplo, `while(true)` sin un `break` interno, o un contador que nunca alcanza el límite), el bucle se ejecutará indefinidamente.",
-    "originalId": "pregunta_arraylist_vs_array_java"
-  },
-  {
-    "id": "pregunta_compilador_ayuda",
-    "text": "Cuando tu código tiene un error de sintaxis, como un punto y coma faltante, ¿qué herramienta te avisa de este problema antes de que intentes ejecutar el programa?",
-    "options": [
-      "El sistema operativo",
-      "El editor de texto simple",
-      "El compilador",
-      "El navegador web"
+      "Las acciones que un objeto puede realizar.",
+      "Las funciones estáticas de una clase.",
+      "Las variables que describen el estado de un objeto.",
+      "Los constructores de una clase."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "El compilador es el programa que traduce tu código fuente a un lenguaje que la máquina puede entender. Durante este proceso, revisa la sintaxis y te informa de errores como la falta de un punto y coma, ayudándote a corregirlos.",
-    "originalId": "pregunta_error_sintaxis_comun"
+    "explanation": "Correcto. Los atributos son las características o propiedades que definen el estado de un objeto, como su color, tamaño o nombre.",
+    "originalId": "pregunta_que_son_atributos"
   },
   {
-    "id": "q_constructor_6",
-    "text": "¿Cuál es el propósito principal de un constructor parametrizado?",
+    "id": "q_java_poo_6",
+    "text": "¿Qué principio de la POO describe el encapsulamiento en Java?",
     "options": [
-      "Crear objetos siempre con los mismos valores iniciales",
-      "Inicializar un nuevo objeto con valores específicos pasados como argumentos",
-      "Evitar la creación de objetos",
-      "Solo se usa para herencia"
+      "Ocultar los detalles internos de un objeto y exponer solo una interfaz pública.",
+      "La capacidad de una clase de heredar propiedades y métodos de otra clase.",
+      "Permitir que un objeto tome múltiples formas.",
+      "La creación de una instancia de una clase."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El encapsulamiento implica agrupar datos (atributos) y los métodos que operan sobre esos datos dentro de una unidad (la clase), ocultando los detalles internos y exponiendo solo lo necesario.",
+    "originalId": "pregunta_encapsulamiento"
+  },
+  {
+    "id": "q_java_herencia_1",
+    "text": "¿Qué palabra clave se usa para indicar que una clase hereda de otra en Java?",
+    "options": [
+      "implements",
+      "extends",
+      "inherits",
+      "uses"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "Correcto. Un constructor parametrizado permite pasar valores al momento de la creación del objeto para inicializar sus atributos con esos valores específicos, ofreciendo flexibilidad.",
-    "originalId": "pregunta_compilador_ayuda"
+    "explanation": "Correcto. La palabra clave `extends` se utiliza para establecer una relación de herencia entre clases, donde una subclase hereda de una superclase.",
+    "originalId": "pregunta_palabra_clave_herencia"
   },
   {
-    "id": "pregunta_condicion_if_else_java",
-    "text": "Considera el siguiente código Java:\n\n```java\nint nivel = 7;\nif (nivel >= 10) {\n    System.out.println(\"Eres un héroe legendario.\");\n} else {\n    System.out.println(\"Sigue entrenando.\");\n}\n```\n\n¿Qué mensaje se imprimirá en la consola cuando se ejecute este código?",
+    "id": "q_java_herencia_2",
+    "text": "¿Cuál es el beneficio principal de la herencia en Java?",
     "options": [
-      "Eres un héroe legendario.",
-      "Sigue entrenando.",
-      "Ambos mensajes.",
-      "Ningún mensaje."
+      "Hereda atributos y métodos de la clase padre.",
+      "No puede tener sus propios métodos.",
+      "Solo puede heredar de una interfaz.",
+      "No puede ser instanciada directamente."
     ],
-    "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) 'Sigue entrenando.'. La variable nivel tiene un valor de 7. La condición nivel >= 10 (7 es mayor o igual que 10) es false (falsa). Por lo tanto, el código dentro del bloque if no se ejecuta, y en su lugar se ejecuta el código dentro del bloque else.",
-    "originalId": "pregunta_causa_nullpointerexception"
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La herencia permite que una subclase reutilice y extienda la funcionalidad (atributos y métodos) de una superclase, promoviendo la reutilización de código.",
+    "originalId": "pregunta_clase_hija"
   },
   {
-    "id": "q_constructor_1",
-    "text": "¿Qué es un constructor en Java?",
+    "id": "q_java_herencia_3",
+    "text": "¿Cuáles son los términos correctos para la clase de la que se hereda y la clase que hereda, respectivamente, en Java?",
     "options": [
-      "Un método para destruir objetos",
-      "Un método especial para inicializar objetos",
-      "Una variable que almacena el nombre de un objeto",
-      "Un tipo de bucle para la creación de objetos"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Correcto. Un constructor es un bloque de código similar a un método que se llama cuando se crea una instancia de un objeto (se inicializa).",
-    "originalId": "pregunta_evitar_nullpointerexception"
-  },
-  {
-    "id": "pregunta_multiplataforma_java",
-    "text": "Una característica clave de Java es que sus programas pueden ejecutarse en diferentes sistemas operativos (como Windows, macOS o Linux) sin cambios importantes. ¿Cómo se describe esta característica?",
-    "options": [
-      "Monoplataforma",
-      "Multiplataforma",
-      "Hiperplataforma",
-      "Uniplataforma"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) Multiplataforma. El prefijo 'multi-' significa 'muchos', y 'plataforma' se refiere al sistema donde el programa se ejecuta. Por lo tanto, 'multiplataforma' significa que funciona en muchas plataformas.",
-    "originalId": "pregunta_que_es_bucle_infinito"
-  },
-  {
-    "id": "pregunta_por_que_java",
-    "text": "¿Por qué Java es un buen lenguaje para aprender programación?",
-    "correctAnswerIndex": 2,
-    "originalId": "pregunta_por_que_java",
-    "options": [
-      "Porque es muy difícil",
-      "Porque solo funciona en un ordenador",
-      "Porque es fácil de leer y funciona en muchos tipos de ordenadores",
-      "Porque es muy antiguo"
-    ],
-    "explanation": "La respuesta correcta es c) Porque es fácil de leer y funciona en muchos tipos de ordenadores. Java fue diseñado para ser claro y comprensible, y tiene la ventaja de que un programa escrito en Java puede ejecutarse en Windows, Mac, Linux y otros sistemas sin cambios."
-  },
-  {
-    "id": "pregunta_que_es_programar",
-    "correctAnswerIndex": 1,
-    "originalId": "pregunta_que_es_programar",
-    "options": [
-      "Encender y apagar el ordenador",
-      "Darle instrucciones paso a paso para que haga algo específico",
-      "Cambiar el color de la pantalla",
-      "Conectarlo a internet"
-    ],
-    "text": "¿Qué significa \"programar\" un ordenador?",
-    "explanation": "La respuesta correcta es b) Darle instrucciones paso a paso para que haga algo específico. Programar es como enseñarle al ordenador cómo resolver un problema o realizar una tarea, escribiendo las instrucciones en un lenguaje que él pueda entender."
-  },
-  {
-    "id": "pregunta_que_hace_programa",
-    "options": [
-      "Solo mostrar texto en la pantalla",
-      "Resolver problemas, procesar información y automatizar tareas",
-      "Solo reproducir música",
-      "Solo navegar por internet"
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) Resolver problemas, procesar información y automatizar tareas. Los programas son increíblemente versátiles: pueden calcular, organizar datos, controlar dispositivos, crear juegos, gestionar redes sociales y mucho más.",
-    "originalId": "pregunta_que_hace_programa",
-    "text": "¿Qué puede hacer un programa de ordenador?"
-  },
-  {
-    "id": "pregunta_causa_nullpointerexception",
-    "text": "La temida 'NullPointerException' ocurre en Java cuando intentas usar un objeto que en realidad no apunta a ninguna instancia en memoria (es decir, su valor es 'null'). ¿Cuál de las siguientes acciones podría causar una NullPointerException?",
-    "options": [
-      "Sumar dos números enteros.",
-      "Llamar a un método de un objeto que es 'null'.",
-      "Imprimir un mensaje en la consola.",
-      "Declarar una variable sin inicializarla (si no se usa después)."
-    ],
-    "correctAnswerIndex": 1,
-    "explanation": "Si tienes una variable de objeto que es 'null' e intentas acceder a uno de sus métodos o atributos (ej: `miObjeto.hacerAlgo()` cuando `miObjeto` es `null`), el programa lanzará una NullPointerException porque no hay ningún objeto real sobre el cual operar.",
-    "originalId": "pregunta_identificar_bucle_infinito"
-  },
-  {
-    "id": "q_constructor_3",
-    "text": "¿Cuál es la palabra clave utilizada para crear una instancia de un objeto e invocar su constructor?",
-    "options": [
-      "create",
-      "instance",
-      "new",
-      "build"
+      "Clase Base / Clase Derivada",
+      "Clase Superior / Clase Inferior",
+      "Superclase / Subclase",
+      "Clase Raíz / Clase Rama"
     ],
     "correctAnswerIndex": 2,
-    "explanation": "Correcto. La palabra clave `new` se usa para crear nuevas instancias de objetos, lo que implica llamar al constructor de la clase.",
-    "originalId": "q_constructor_1"
+    "explanation": "Correcto. La clase de la que se hereda se llama superclase (o clase padre), y la clase que hereda se llama subclase (o clase hija).",
+    "originalId": "pregunta_terminologia_herencia"
   },
   {
-    "id": "pregunta_error_sintaxis_comun",
-    "text": "En muchos lenguajes de programación como Java o C#, ¿cuál es un error de sintaxis muy común que a menudo impide que el código compile, relacionado con la finalización de una instrucción?",
+    "id": "q_java_polimorfismo_1",
+    "text": "¿Qué anotación se usa para indicar que un método en una subclase está sobrescribiendo (overriding) un método de su superclase?",
     "options": [
-      "Usar demasiados espacios",
-      "Olvidar un punto y coma al final de una instrucción",
-      "Escribir comentarios muy largos",
-      "Nombrar una variable con mayúsculas"
+      "`static`",
+      "`@Override`",
+      "`abstract`",
+      "`final`"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "El punto y coma (;) es crucial en lenguajes como Java, C# o JavaScript para indicar el final de una instrucción. Olvidarlo es una de las causas más frecuentes de errores de compilación, ¡un verdadero 'Bug del Punto y Coma'!",
-    "originalId": "q_constructor_2"
+    "explanation": "Correcto. `@Override` es una anotación de compilación que indica al compilador que se pretende sobrescribir un método de la superclase. Ayuda a detectar errores si la firma del método no coincide.",
+    "originalId": "pregunta_sobreescritura_anotacion"
   },
   {
-    "id": "q_constructor_5",
-    "text": "¿Puede un constructor en Java tener un tipo de retorno (por ejemplo, `void` o `int`)?",
+    "id": "q_java_polimorfismo_2",
+    "text": "¿Qué principio de la POO describe el polimorfismo en Java?",
     "options": [
-      "Sí, siempre debe devolver un booleano",
-      "Sí, puede devolver cualquier tipo de dato",
-      "No, los constructores no tienen un tipo de retorno explícito",
-      "Solo si es un constructor privado"
+      "Permitir que un objeto tome múltiples formas, generalmente a través de la herencia.",
+      "Ocultar los detalles de implementación de un objeto.",
+      "La creación de una instancia de una clase.",
+      "La capacidad de una clase de heredar de múltiples clases."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El polimorfismo permite que objetos de diferentes clases (relacionadas por herencia o interfaz) sean tratados como objetos de un tipo común, permitiendo que un mismo método tenga diferentes comportamientos según el objeto que lo invoque.",
+    "originalId": "pregunta_que_es_polimorfismo"
+  },
+  {
+    "id": "q_java_polimorfismo_3",
+    "text": "¿Qué es la sobrecarga (overloading) de métodos en Java?",
+    "options": [
+      "Dos métodos con el mismo nombre en diferentes clases que tienen la misma firma.",
+      "Un método en una subclase que tiene el mismo nombre y firma que un método en su superclase.",
+      "Múltiples métodos con el mismo nombre pero diferente número o tipo de parámetros en la misma clase.",
+      "Un método que puede devolver diferentes tipos de datos."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "Correcto. Los constructores no tienen un tipo de retorno explícito, ni siquiera `void`. Su 'retorno' implícito es la instancia del objeto que crean.",
-    "originalId": "q_constructor_3"
+    "explanation": "Correcto. La sobrecarga de métodos ocurre cuando en una misma clase existen varios métodos con el mismo nombre pero que se diferencian por la cantidad, el tipo o el orden de sus parámetros.",
+    "originalId": "pregunta_sobrecarga_metodos"
   },
   {
-    "id": "pregunta_idea_central_poo_java",
-    "text": "¿Cuál es la idea central de la Programación Orientada a Objetos (POO) en Java?",
+    "id": "q_java_abstractas_1",
+    "text": "¿Qué es una clase abstracta en Java?",
     "options": [
-      "Escribir todo el código en una sola línea.",
-      "Organizar el código alrededor de 'objetos' que tienen atributos (características) y métodos (acciones).",
-      "Usar solo números en el programa.",
-      "Programar solo para computadoras muy antiguas."
+      "Una clase que no puede ser instanciada directamente y puede contener métodos abstractos.",
+      "Una clase que solo contiene métodos estáticos.",
+      "Una clase que no tiene constructor.",
+      "Una clase que solo se usa para heredar."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Una clase abstracta es una clase que no se puede instanciar directamente y que puede tener métodos abstractos (sin implementación) que deben ser implementados por sus subclases concretas.",
+    "originalId": "pregunta_clase_abstracta"
+  },
+  {
+    "id": "q_java_abstractas_2",
+    "text": "Si una clase hereda de una clase abstracta y no implementa todos sus métodos abstractos, ¿qué debe hacerse con la subclase?",
+    "options": [
+      "Puede ser instanciada directamente.",
+      "Debe ser declarada como abstracta o implementar todos los métodos abstractos heredados.",
+      "No puede tener sus propios métodos.",
+      "Solo puede heredar de otras clases abstractas."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) Organizar el código alrededor de 'objetos' que tienen atributos (características) y métodos (acciones). La POO es un paradigma de programación que nos permite modelar el mundo real en el código, facilitando la creación de programas complejos, modulares y fáciles de mantener.",
-    "originalId": "q_constructor_4"
+    "explanation": "Correcto. Si una subclase no implementa todos los métodos abstractos de su superclase, entonces la subclase también debe ser declarada como `abstracta`, impidiendo su instanciación directa.",
+    "originalId": "pregunta_subclase_abstracta"
   },
   {
-    "id": "pregunta_que_es_una_variable",
-    "text": "En programación, ¿qué es una 'variable'?",
+    "id": "q_java_abstractas_3",
+    "text": "¿Cuál es la sintaxis correcta para declarar un método abstracto sin retorno y sin parámetros en Java?",
     "options": [
-      "Un error en el código.",
-      "Una caja de almacenamiento en la memoria del ordenador que guarda un valor que puede cambiar.",
-      "Un programa completo.",
-      "Un tipo de teclado."
+      "public void miMetodoAbstracto() { }",
+      "public abstract void miMetodoAbstracto() throws Exception;",
+      "abstract public void miMetodoAbstracto;",
+      "public abstract void miMetodoAbstracto();"
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. Un método abstracto se declara con la palabra clave `abstract` y no tiene cuerpo de implementación (termina con punto y coma).",
+    "originalId": "pregunta_sintaxis_metodo_abstracto"
+  },
+  {
+    "id": "q_java_interfaces_1",
+    "text": "¿Qué es una interfaz en Java?",
+    "options": [
+      "Un contrato de métodos que las clases deben implementar.",
+      "Una clase abstracta que solo contiene variables.",
+      "Un tipo de herencia múltiple.",
+      "Un mecanismo para ocultar datos."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Una interfaz define un conjunto de métodos abstractos (y constantes) que una clase debe implementar si desea adherirse a ese contrato.",
+    "originalId": "pregunta_que_es_interfaz"
+  },
+  {
+    "id": "q_java_interfaces_2",
+    "text": "¿Qué palabra clave se usa para indicar que una clase implementa una interfaz en Java?",
+    "options": [
+      "extends",
+      "implements",
+      "uses",
+      "inherits"
     ],
     "correctAnswerIndex": 1,
-    "explanation": "La respuesta correcta es b) Una caja de almacenamiento en la memoria del ordenador que guarda un valor que puede cambiar. Las variables son esenciales en programación porque nos permiten almacenar y manipular información mientras el programa se ejecuta, como la puntuación de un juego o el nombre de un usuario.",
-    "originalId": "q_constructor_5"
+    "explanation": "Correcto. La palabra clave `implements` se utiliza para que una clase se comprometa a proporcionar implementaciones para todos los métodos definidos en una o varias interfaces.",
+    "originalId": "pregunta_implementar_interfaz"
   },
   {
-    "id": "pregunta_tipo_dato_edad_java",
-    "text": "Si necesitas guardar la edad de una persona (por ejemplo, 25) en una variable en Java, ¿cuál es el tipo de dato más adecuado para esa variable?",
+    "id": "q_java_interfaces_3",
+    "text": "¿Cuál de las siguientes afirmaciones es verdadera sobre las interfaces en Java (considerando versiones modernas de Java, ignorando los métodos `default` y `static` pre-Java 8)?",
     "options": [
-      "double",
-      "boolean",
+      "Una clase solo puede implementar una interfaz.",
+      "Una interfaz puede contener métodos implementados.",
+      "Una interfaz puede tener constructores.",
+      "Una clase puede implementar múltiples interfaces."
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. A diferencia de la herencia de clases (que solo permite una superclase), una clase Java puede implementar múltiples interfaces, lo que simula la herencia múltiple de comportamiento.",
+    "originalId": "pregunta_caracteristica_interfaz"
+  },
+  {
+    "id": "q_java_excepciones_1",
+    "text": "¿Qué es una excepción en Java?",
+    "options": [
+      "Un error de compilación.",
+      "Un problema de sintaxis.",
+      "Un evento que interrumpe el flujo normal del programa.",
+      "Un mensaje de advertencia."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Una excepción es un evento que ocurre durante la ejecución de un programa que perturba el flujo normal de las instrucciones.",
+    "originalId": "pregunta_que_es_excepcion"
+  },
+  {
+    "id": "q_java_excepciones_2",
+    "text": "¿Qué bloque de código se usa para manejar excepciones (intentar un código y 'atrapar' errores) en Java?",
+    "options": [
+      "try-catch",
+      "if-else",
+      "switch-case",
+      "for-loop"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El bloque `try` contiene el código que podría lanzar una excepción, y el bloque `catch` maneja la excepción si ocurre.",
+    "originalId": "pregunta_manejo_excepciones"
+  },
+  {
+    "id": "q_java_excepciones_3",
+    "text": "¿Cuál es la característica principal del bloque `finally` en el manejo de excepciones en Java?",
+    "options": [
+      "Se ejecuta solo si ocurre una excepción.",
+      "Se ejecuta siempre, ocurra o no una excepción.",
+      "Solo se ejecuta si no ocurre una excepción.",
+      "Es opcional y rara vez se usa."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El bloque `finally` se garantiza que se ejecutará, independientemente de si el bloque `try` se completó normalmente o si se lanzó y capturó una excepción. Es útil para liberar recursos (cerrar archivos, conexiones).",
+    "originalId": "pregunta_bloque_finally"
+  },
+  {
+    "id": "q_java_excepciones_4",
+    "text": "¿Qué palabra clave se usa en la firma de un método para indicar que puede lanzar una excepción (pero no la maneja él mismo) en Java?",
+    "options": [
+      "throw",
+      "catch",
+      "try",
+      "throws"
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. La palabra clave `throws` se utiliza en la declaración de un método para indicar qué tipo de excepciones puede lanzar dicho método.",
+    "originalId": "pregunta_declarar_excepcion"
+  },
+  {
+    "id": "q_java_colecciones_1",
+    "text": "¿Qué clase de la API de colecciones de Java representa una lista redimensionable de elementos, similar a un array pero que puede crecer?",
+    "options": [
+      "ArrayList",
+      "Array",
+      "ListArray",
+      "DynamicArray"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `ArrayList` es una implementación de la interfaz `List` que utiliza un array dinámico interno para almacenar elementos. Es muy flexible para añadir o eliminar elementos.",
+    "originalId": "pregunta_coleccion_redimensionable"
+  },
+  {
+    "id": "q_java_colecciones_2",
+    "text": "¿Qué clase de la API de colecciones de Java almacena elementos como pares clave-valor y permite un acceso rápido a los valores usando sus claves?",
+    "options": [
+      "ArrayList",
+      "HashMap",
+      "HashSet",
+      "LinkedList"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `HashMap` implementa la interfaz `Map` y almacena elementos en pares clave-valor, lo que permite una recuperación eficiente de los valores a través de sus claves.",
+    "originalId": "pregunta_coleccion_clave_valor"
+  },
+  {
+    "id": "q_java_colecciones_3",
+    "text": "¿Qué clase de la API de colecciones de Java garantiza que no haya elementos duplicados y no mantiene un orden específico?",
+    "options": [
+      "ArrayList",
+      "LinkedList",
+      "HashSet",
+      "TreeMap"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. `HashSet` implementa la interfaz `Set`, que por definición no permite elementos duplicados. El orden de los elementos no está garantizado.",
+    "originalId": "pregunta_coleccion_sin_duplicados"
+  },
+  {
+    "id": "q_java_genericos_1",
+    "text": "¿Cuál es el propósito principal de los genéricos en Java?",
+    "options": [
+      "Permiten escribir código que funciona con diferentes tipos de datos de forma segura.",
+      "Son un mecanismo para ocultar los detalles de implementación.",
+      "Son la base de la herencia en Java.",
+      "Se usan para el manejo de excepciones."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Los genéricos permiten crear clases, interfaces y métodos que operan con objetos de diferentes tipos, al tiempo que proporcionan seguridad de tipos en tiempo de compilación, evitando `ClassCastException` en tiempo de ejecución.",
+    "originalId": "pregunta_que_son_genericos"
+  },
+  {
+    "id": "q_java_wrappers_1",
+    "text": "¿Cuál es la clase envoltorio (wrapper class) para el tipo primitivo `int` en Java?",
+    "options": [
       "int",
-      "String"
+      "Integer",
+      "Int",
+      "Number"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `Integer` es la clase que 'envuelve' el tipo primitivo `int`, permitiendo que un valor `int` se trate como un objeto (útil en colecciones o genéricos).",
+    "originalId": "pregunta_wrapper_int"
+  },
+  {
+    "id": "q_java_autoboxing_1",
+    "text": "¿Qué es el autoboxing en Java?",
+    "options": [
+      "La conversión automática de un tipo primitivo a su clase envoltorio.",
+      "La conversión explícita de un objeto a su tipo primitivo.",
+      "La creación de una instancia de una clase envoltorio.",
+      "La conversión de un String a un int."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El autoboxing es la conversión automática que realiza el compilador de Java de un tipo primitivo (ej. `int`) a su correspondiente clase envoltorio (ej. `Integer`). El unboxing es lo opuesto.",
+    "originalId": "pregunta_que_es_autoboxing"
+  },
+  {
+    "id": "q_java_compilacion_1",
+    "text": "¿Qué significa la extensión de archivo `.jar` en Java?",
+    "options": [
+      "Java Archive (Archivo Java)",
+      "Java Application Resource",
+      "Just Another Runtime",
+      "Join All Resources"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Un archivo `JAR` (Java ARchive) es un formato de archivo que permite agrupar muchas clases de Java, recursos y metadatos en un solo archivo para su distribución.",
+    "originalId": "pregunta_que_es_jar"
+  },
+  {
+    "id": "q_java_compilacion_2",
+    "text": "¿Qué comando se usa para compilar un archivo de código fuente Java (`.java`) a un archivo de bytecode (`.class`)?",
+    "options": [
+      "java",
+      "javac",
+      "javadoc",
+      "jar"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `javac` es el compilador de Java. Transforma el código fuente legible por humanos en bytecode que la JVM puede entender.",
+    "originalId": "pregunta_compilar_java"
+  },
+  {
+    "id": "q_java_jvm_1",
+    "text": "¿Qué significan las siglas JVM en Java?",
+    "options": [
+      "Java Virtual Machine",
+      "Java Vector Method",
+      "Joint Venture Module",
+      "Just Very Modern"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La JVM es el componente crucial de la plataforma Java que permite ejecutar programas Java en diferentes sistemas operativos, proporcionando un entorno de ejecución estandarizado.",
+    "originalId": "pregunta_que_es_jvm"
+  },
+  {
+    "id": "q_java_jre_1",
+    "text": "¿Qué significan las siglas JRE en Java?",
+    "options": [
+      "Java Runtime Environment",
+      "Java Runtime Engine",
+      "Java Resource Executor",
+      "Java Remote Environment"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La JRE es un paquete de software que contiene la JVM, las bibliotecas de clases de la API de Java y otros archivos necesarios para ejecutar aplicaciones Java.",
+    "originalId": "pregunta_que_es_jre"
+  },
+  {
+    "id": "q_java_jdk_1",
+    "text": "¿Qué significan las siglas JDK en Java?",
+    "options": [
+      "Java Development Kernel",
+      "Java Development Kit",
+      "Java Developer's Key",
+      "Java Data Kit"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El JDK es un kit de desarrollo de software completo para Java, que incluye la JRE, el compilador (javac) y otras herramientas de desarrollo.",
+    "originalId": "pregunta_que_es_jdk"
+  },
+  {
+    "id": "q_java_modificadores_1",
+    "text": "¿Qué significa que una clase sea declarada como `final` en Java?",
+    "options": [
+      "No puede ser heredada por otras clases.",
+      "Sus métodos no pueden ser sobrescritos.",
+      "No puede tener constructores.",
+      "No puede ser instanciada."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Una clase `final` no puede tener subclases, lo que impide la herencia y garantiza que su implementación no sea modificada. Ejemplos: `String`, `Integer`.",
+    "originalId": "pregunta_clase_final"
+  },
+  {
+    "id": "q_java_modificadores_2",
+    "text": "¿Qué significa que un método sea declarado como `final` en Java?",
+    "options": [
+      "Debe ser abstracto.",
+      "No puede ser sobrescrito por ninguna subclase.",
+      "Solo puede ser llamado desde la misma clase.",
+      "Debe devolver un valor fijo."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Un método `final` en una superclase no puede ser modificado o sobrescrito por ninguna subclase, asegurando un comportamiento constante.",
+    "originalId": "pregunta_metodo_final"
+  },
+  {
+    "id": "q_java_modificadores_3",
+    "text": "¿Qué significa que una variable sea declarada como `final` en Java?",
+    "options": [
+      "Su valor puede ser modificado solo por métodos estáticos.",
+      "No puede ser accedida desde fuera de su clase.",
+      "Su valor no puede ser modificado después de la primera asignación.",
+      "Debe ser inicializada en el constructor."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "La respuesta correcta es c) int. El tipo int (de 'integer') se utiliza para números enteros, y la edad de una persona es típicamente un número entero sin decimales. double sería para números con decimales, boolean para verdadero/falso, y String para texto.",
-    "originalId": "q_constructor_6"
+    "explanation": "Correcto. Una variable `final` es una constante cuyo valor se asigna una única vez (ya sea en su declaración o en el constructor) y no puede cambiarse posteriormente.",
+    "originalId": "pregunta_variable_final"
+  },
+  {
+    "id": "q_java_acceso_1",
+    "text": "¿Cuáles son los cuatro modificadores de acceso en Java, ordenados de mayor a menor visibilidad?",
+    "options": [
+      "public, protected, default (package-private), private",
+      "public, private, internal, protected",
+      "global, local, restricted, hidden",
+      "all, inherited, package, class"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `public` (cualquiera), `protected` (misma clase, subclases, mismo paquete), `default` o 'package-private' (solo mismo paquete), `private` (solo la misma clase).",
+    "originalId": "pregunta_modificadores_acceso"
+  },
+  {
+    "id": "q_java_acceso_2",
+    "text": "¿Qué modificador de acceso restringe la visibilidad de un miembro de clase solo a la propia clase en Java?",
+    "options": [
+      "public",
+      "protected",
+      "default (package-private)",
+      "private"
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. El modificador `private` proporciona el nivel más estricto de encapsulamiento, haciendo que el miembro sea accesible solo dentro de la clase en la que está declarado.",
+    "originalId": "pregunta_acceso_mas_restrictivo"
+  },
+  {
+    "id": "q_java_acceso_3",
+    "text": "¿Qué modificador de acceso permite que un miembro sea visible dentro de su propia clase, subclases y clases dentro del mismo paquete en Java?",
+    "options": [
+      "public",
+      "protected",
+      "private",
+      "default (package-private)"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El modificador `protected` es ideal para miembros que deben ser accesibles por clases relacionadas en la jerarquía de herencia y dentro del mismo paquete, pero no por clases externas.",
+    "originalId": "pregunta_acceso_subclases"
+  },
+  {
+    "id": "q_java_static_1",
+    "text": "¿Cuál es la característica principal de un método `static` en Java?",
+    "options": [
+      "Pertenece a la clase, no a una instancia específica.",
+      "Solo puede acceder a variables de instancia.",
+      "Debe ser sobrescrito por subclases.",
+      "No puede tener parámetros."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Los métodos `static` se asocian con la clase en sí y no con objetos individuales. Se pueden llamar directamente usando el nombre de la clase (Ej: `Clase.metodoEstatico()`).",
+    "originalId": "pregunta_metodo_static"
+  },
+  {
+    "id": "q_java_static_2",
+    "text": "¿Cuál es la característica principal de una variable `static` en Java?",
+    "options": [
+      "Solo puede ser accedida desde métodos no estáticos.",
+      "Es única para cada instancia de la clase.",
+      "Es compartida por todas las instancias de la clase.",
+      "No puede ser modificada después de su inicialización."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Una variable `static` es una variable de clase; hay una única copia de esta variable para todas las instancias de la clase.",
+    "originalId": "pregunta_variable_static"
+  },
+  {
+    "id": "q_java_hilos_1",
+    "text": "¿Qué es un hilo (thread) en Java?",
+    "options": [
+      "Un camino de ejecución independiente dentro de un programa.",
+      "Una clase que puede ser instanciada múltiples veces.",
+      "Un tipo de dato abstracto.",
+      "Un mecanismo para el manejo de excepciones."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Un hilo es una unidad de procesamiento ligera que permite que un programa realice múltiples tareas concurrentemente dentro del mismo proceso.",
+    "originalId": "pregunta_que_es_hilo"
+  },
+  {
+    "id": "q_java_hilos_2",
+    "text": "¿Cuáles son las dos formas principales de crear un hilo (thread) en Java?",
+    "options": [
+      "Creando una instancia de `Object`.",
+      "Extendiendo la clase `Thread` o implementando la interfaz `Runnable`.",
+      "Usando la palabra clave `async`.",
+      "Definiendo un método estático."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La forma más común es implementar `Runnable` (para reutilización de código y evitar la herencia múltiple) o extender `Thread` (si no se necesita heredar de otra clase).",
+    "originalId": "pregunta_crear_hilo"
+  },
+  {
+    "id": "q_java_hilos_3",
+    "text": "Una vez que has creado un objeto `Thread` o implementado `Runnable`, ¿cómo se inicia la ejecución de un hilo en Java?",
+    "options": [
+      "Llamando directamente al método `run()`.",
+      "Creando una nueva instancia de la clase y ejecutándola.",
+      "Llamando al método `start()` del objeto `Thread`.",
+      "Usando `Thread.execute()`."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. El método `start()` es el que invoca a la JVM para crear un nuevo hilo de ejecución y luego llama al método `run()` en ese nuevo hilo. Llamar `run()` directamente lo ejecuta en el hilo actual.",
+    "originalId": "pregunta_iniciar_hilo"
+  },
+  {
+    "id": "q_java_hilos_4",
+    "text": "¿Cuál es el propósito de la palabra clave `synchronized` en Java en el contexto de la concurrencia?",
+    "options": [
+      "Sincronizar el acceso a recursos compartidos entre múltiples hilos.",
+      "Asegurar que un método se ejecute en el hilo principal.",
+      "Detener la ejecución de un hilo hasta que se complete otro.",
+      "Crear un nuevo hilo de ejecución."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `synchronized` se usa para implementar exclusión mutua, garantizando que solo un hilo pueda acceder a una sección crítica de código (un método o bloque) a la vez, evitando problemas de corrupción de datos en entornos multihilo.",
+    "originalId": "pregunta_palabra_clave_sincronizada"
+  },
+  {
+    "id": "q_java_avanzado_1",
+    "text": "¿Qué es la reflexión (Reflection) en Java?",
+    "options": [
+      "Un mecanismo para ocultar los detalles de implementación de una clase.",
+      "La capacidad de un programa para examinar o modificar su propia estructura y comportamiento en tiempo de ejecución.",
+      "La capacidad de una clase de heredar de múltiples clases.",
+      "La conversión automática de tipos de datos."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La reflexión permite que un programa Java inspeccione sus propias clases, interfaces, campos y métodos en tiempo de ejecución, e incluso que instancie objetos y llame métodos dinámicamente.",
+    "originalId": "pregunta_que_es_reflexion"
+  },
+  {
+    "id": "q_java_avanzado_2",
+    "text": "¿Cuál es el propósito de las anotaciones en Java (ej. `@Override`, `@Deprecated`)?",
+    "options": [
+      "Proporcionan metadatos sobre el código y pueden ser procesadas en tiempo de compilación o ejecución.",
+      "Son un reemplazo de las interfaces.",
+      "Sirven para definir constructores de forma dinámica.",
+      "Se usan exclusivamente para el manejo de excepciones."
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. Las anotaciones son una forma de añadir metadatos (información adicional) al código fuente de Java, que pueden ser utilizados por el compilador, herramientas de desarrollo o en tiempo de ejecución por frameworks.",
+    "originalId": "pregunta_que_son_anotaciones"
+  },
+  {
+    "id": "q_java_io_1",
+    "text": "¿Qué es un 'stream' (flujo) de datos en Java I/O (Input/Output)?",
+    "options": [
+      "Una colección de objetos.",
+      "Un método de ordenamiento.",
+      "Una secuencia de datos que se lee o se escribe.",
+      "Un tipo de variable."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. En Java I/O, un stream es una abstracción que representa un flujo continuo de datos, ya sea de entrada (lectura) o de salida (escritura).",
+    "originalId": "pregunta_que_es_stream"
+  },
+  {
+    "id": "q_java_io_2",
+    "text": "¿Cuáles son las clases base para los flujos de entrada y salida de bytes en Java I/O?",
+    "options": [
+      "InputStream y OutputStream",
+      "FileReader y FileWriter",
+      "BufferedReader y BufferedWriter",
+      "Scanner y PrintWriter"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `InputStream` es la superclase abstracta de todos los flujos de entrada de bytes, y `OutputStream` es la superclase abstracta de todos los flujos de salida de bytes.",
+    "originalId": "pregunta_clases_base_flujos_bytes"
+  },
+  {
+    "id": "q_java_io_3",
+    "text": "¿Qué clases se usan comúnmente para añadir funcionalidad de 'buffering' (almacenamiento en búfer) a los flujos de caracteres (para mejorar el rendimiento de lectura/escritura) en Java I/O?",
+    "options": [
+      "FileInputStream y FileOutputStream",
+      "BufferedReader y BufferedWriter",
+      "DataInputStream y DataOutputStream",
+      "ObjectInputStream y ObjectOutputStream"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `BufferedReader` y `BufferedWriter` leen o escriben caracteres en bloques más grandes (buffer), lo que reduce el número de accesos al disco y mejora el rendimiento.",
+    "originalId": "pregunta_flujos_buffer"
+  },
+  {
+    "id": "q_java_io_4",
+    "text": "¿Qué interfaz debe implementar una clase para que sus objetos puedan ser serializados (convertidos en una secuencia de bytes para guardar en un archivo o enviar por red) en Java?",
+    "options": [
+      "Serializable",
+      "Comparable",
+      "Cloneable",
+      "AutoCloseable"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La interfaz `java.io.Serializable` es una interfaz de marcador (no tiene métodos) que indica a la JVM que los objetos de esa clase pueden ser serializados y deserializados.",
+    "originalId": "pregunta_interfaz_serializable"
+  },
+  {
+    "id": "q_java_genericos_2",
+    "text": "Dado el siguiente fragmento de código:\n\n```java\nArrayList<String> nombres = new ArrayList<>();\nnombres.add(\"Alice\");\nnombres.add(\"Bob\");\nString primero = nombres.get(0);\n```\n\n¿Qué beneficio principal obtenemos al usar `<String>` (genéricos) con `ArrayList`?",
+    "options": [
+      "Permite almacenar cualquier tipo de objeto en la lista.",
+      "Garantiza la seguridad de tipos en tiempo de compilación, evitando `ClassCastException`.",
+      "Mejora el rendimiento de las operaciones de añadir y eliminar.",
+      "Permite acceder a los elementos por clave en lugar de por índice."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El uso de genéricos como `<String>` asegura que el `ArrayList` solo pueda contener objetos de tipo `String`, y el compilador puede verificar esto, eliminando la necesidad de casts explícitos y evitando errores de `ClassCastException` en tiempo de ejecución.",
+    "originalId": "pregunta_beneficio_genericos_arraylist"
+  },
+  {
+    "id": "q_java_lambdas_1",
+    "text": "¿Qué característica de Java introducida en Java 8 permite escribir funciones de forma más concisa y se utiliza comúnmente con interfaces funcionales?",
+    "options": [
+      "Clases abstractas",
+      "Expresiones Lambda",
+      "Inner classes",
+      "Anotaciones"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Las expresiones Lambda son una forma concisa de representar interfaces funcionales (interfaces con un único método abstracto), muy útiles para programación funcional y para simplificar el código de los listeners o callbacks.",
+    "originalId": "pregunta_que_es_lambda"
+  },
+  {
+    "id": "q_java_lambdas_2",
+    "text": "Dada la siguiente interfaz funcional:\n\n```java\ninterface Calculadora {\n    int operar(int a, int b);\n}\n```\n\n¿Cuál de las siguientes es una expresión Lambda válida para implementar un método que sume `a` y `b`?",
+    "options": [
+      "Calculadora suma = (a, b) -> a + b;",
+      "Calculadora suma = a, b -> return a + b;",
+      "Calculadora suma = function(a, b) { return a + b; };",
+      "Calculadora suma = new Calculadora() { int operar(int a, int b) { return a + b; } };"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. La sintaxis `(parámetros) -> { cuerpo }` es la forma estándar de una expresión Lambda. Si el cuerpo es una sola expresión, las llaves y el `return` son opcionales.",
+    "originalId": "pregunta_sintaxis_lambda"
+  },
+  {
+    "id": "q_java_streams_1",
+    "text": "¿Qué característica de Java 8 se utiliza para procesar colecciones de datos de forma funcional, permitiendo operaciones como filtrar, mapear y reducir?",
+    "options": [
+      "Iteradores",
+      "Streams API",
+      "Loops anidados",
+      "Arrays"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La Streams API (Flujos) es una característica potente de Java 8 que permite procesar colecciones de elementos de forma declarativa y en paralelo, facilitando operaciones complejas sobre datos.",
+    "originalId": "pregunta_que_es_streams_api"
+  },
+  {
+    "id": "q_java_streams_2",
+    "text": "Dado un `List<String> nombres`, ¿cómo filtrarías los nombres que comienzan con la letra 'A' usando la Streams API y expresiones Lambda?",
+    "options": [
+      "nombres.filter(n -> n.startsWith(\"A\")).collect(Collectors.toList());",
+      "nombres.stream().filter(n -> n.startsWith(\"A\")).collect(Collectors.toList());",
+      "nombres.forEach(n -> if (n.startsWith(\"A\")) { /* ... */ });",
+      "for (String n : nombres) { if (n.startsWith(\"A\")) { /* ... */ } }"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Primero se obtiene un `stream()` de la lista, luego se usa `filter()` con una Lambda para la condición y finalmente `collect(Collectors.toList())` para recopilar los resultados en una nueva lista.",
+    "originalId": "pregunta_streams_filtrar"
+  },
+  {
+    "id": "q_java_optional_1",
+    "text": "¿Qué clase introducida en Java 8 se utiliza para representar un valor que puede estar presente o ausente, ayudando a reducir los errores `NullPointerException`?",
+    "options": [
+      "Nullable",
+      "Optional",
+      "Maybe",
+      "None"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `Optional<T>` es una clase contenedora que puede contener o no un valor no nulo. Está diseñada para evitar el manejo explícito de valores nulos y hacer el código más robusto.",
+    "originalId": "pregunta_que_es_optional"
+  },
+  {
+    "id": "q_java_optional_2",
+    "text": "Dado un objeto `Optional<String> maybeNombre;`, ¿cómo verificarías si contiene un valor y, si lo tiene, imprimirlo, sin riesgo de `NullPointerException`?",
+    "options": [
+      "if (maybeNombre != null) { System.out.println(maybeNombre.get()); }",
+      "maybeNombre.ifPresent(nombre -> System.out.println(nombre));",
+      "System.out.println(maybeNombre.orElse(null));",
+      "String nombre = maybeNombre.get(); System.out.println(nombre);"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El método `ifPresent()` de `Optional` toma una `Consumer` (una Lambda en este caso) y ejecuta la acción solo si el `Optional` contiene un valor, de lo contrario, no hace nada, evitando `NullPointerException`.",
+    "originalId": "pregunta_optional_ifpresent"
+  },
+  {
+    "id": "q_java_concurrency_1",
+    "text": "¿Cuál es la clase base en Java para manejar tareas asíncronas que devuelven un resultado en el futuro, sin bloquear el hilo principal?",
+    "options": [
+      "Thread",
+      "Runnable",
+      "Future",
+      "Callable"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. La interfaz `Future` representa el resultado de una computación asíncrona. Los métodos como `get()` permiten recuperar el resultado cuando esté disponible, o bloquear hasta que lo esté.",
+    "originalId": "pregunta_concurrencia_future"
+  },
+  {
+    "id": "q_java_concurrency_2",
+    "text": "¿Qué clase en Java se usa para representar una tarea que se puede enviar a un `ExecutorService` para su ejecución asíncrona y devuelve un resultado?",
+    "options": [
+      "Runnable",
+      "Thread",
+      "Callable",
+      "Consumer"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. La interfaz `Callable` es similar a `Runnable` pero puede devolver un resultado (de un tipo genérico `V`) y lanzar una excepción `Exception`.",
+    "originalId": "pregunta_concurrencia_callable"
+  },
+  {
+    "id": "q_java_concurrency_3",
+    "text": "¿Qué clase de la API `java.util.concurrent` se utiliza para gestionar un pool de hilos y ejecutar tareas de forma eficiente?",
+    "options": [
+      "ThreadManager",
+      "ExecutorService",
+      "ThreadPool",
+      "ConcurrencyManager"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `ExecutorService` es la interfaz principal para un pool de hilos. Permite enviar tareas para su ejecución y gestionar los hilos subyacentes.",
+    "originalId": "pregunta_concurrencia_executorservice"
+  },
+  {
+    "id": "q_java_nio_1",
+    "text": "¿Cuál es la característica principal de la API NIO.2 (New I/O) en Java, introducida en Java 7?",
+    "options": [
+      "Uso de flujos de bytes y caracteres tradicionales.",
+      "Operaciones de I/O no bloqueantes y manejo mejorado de archivos.",
+      "Diseñada exclusivamente para I/O de red.",
+      "Solo para la gestión de archivos JAR."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. NIO.2 mejora las capacidades de I/O de Java, introduciendo un modelo de I/O no bloqueante (`Channels` y `Buffers`), y una API más robusta para la gestión de sistemas de archivos (`java.nio.file`).",
+    "originalId": "pregunta_que_es_nio2"
+  },
+  {
+    "id": "q_java_nio_2",
+    "text": "¿Qué clase en la API `java.nio.file` se utiliza para representar un archivo o directorio en un sistema de archivos, y es inmutable?",
+    "options": [
+      "File",
+      "Path",
+      "Directory",
+      "FileSystem"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La clase `Path` representa la ruta a un archivo o directorio en un sistema de archivos, siendo una mejora significativa sobre la clase `java.io.File` al ser más orientada a objetos y con métodos más potentes.",
+    "originalId": "pregunta_nio2_path"
+  },
+  {
+    "id": "q_java_jdbc_1",
+    "text": "¿Qué significan las siglas JDBC en el contexto de Java?",
+    "options": [
+      "Java Database Connection",
+      "Java Data Binding Classes",
+      "Java Database Connectivity",
+      "Java Driver for Basic Computing"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. JDBC es una API de Java que permite a las aplicaciones Java interactuar con bases de datos relacionales, proporcionando una interfaz común para diferentes sistemas de gestión de bases de datos.",
+    "originalId": "pregunta_que_es_jdbc"
+  },
+  {
+    "id": "q_java_jdbc_2",
+    "text": "¿Qué interfaz de JDBC se utiliza para ejecutar sentencias SQL precompiladas con parámetros, lo que ayuda a prevenir ataques de inyección SQL?",
+    "options": [
+      "Statement",
+      "PreparedStatement",
+      "CallableStatement",
+      "Connection"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. `PreparedStatement` es más eficiente para ejecutar sentencias SQL repetidamente y es esencial para la seguridad, ya que los parámetros se envían por separado de la consulta, previniendo la inyección SQL.",
+    "originalId": "pregunta_jdbc_preparedstatement"
+  },
+  {
+    "id": "q_java_servlets_1",
+    "text": "¿Qué tecnología de Java se utiliza para construir aplicaciones web dinámicas y extender las capacidades de un servidor web, funcionando como componentes del lado del servidor?",
+    "options": [
+      "Applets",
+      "Servlets",
+      "Swing",
+      "JavaFX"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los Servlets son componentes de Java que se ejecutan en un servidor web para generar contenido web dinámico, siendo la base de muchas aplicaciones web Java.",
+    "originalId": "pregunta_que_es_servlet"
+  },
+  {
+    "id": "q_java_jps_1",
+    "text": "¿Qué tecnología de Java, comúnmente usada junto con Servlets, permite incrustar código Java directamente en páginas HTML para generar contenido dinámico?",
+    "options": [
+      "XML",
+      "JSP (JavaServer Pages)",
+      "CSS",
+      "JavaScript"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. JSP es una tecnología que facilita la creación de páginas web dinámicas al permitir que el código Java se mezcle con el contenido HTML, generando una respuesta HTML dinámica al cliente.",
+    "originalId": "pregunta_que_es_jsp"
+  },
+  {
+    "id": "q_java_spring_1",
+    "text": "¿Cuál de los siguientes es un framework de desarrollo de aplicaciones para Java, conocido por su soporte para Inversión de Control (IoC) e Inyección de Dependencias (DI)?",
+    "options": [
+      "Hibernate",
+      "Spring Framework",
+      "Maven",
+      "JUnit"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Spring Framework es uno de los frameworks más populares para construir aplicaciones empresariales en Java, ofreciendo un amplio conjunto de características, incluyendo IoC/DI, AOP, acceso a datos, y MVC para web.",
+    "originalId": "pregunta_que_es_spring"
+  },
+  {
+    "id": "q_java_spring_2",
+    "text": "¿Qué característica de Spring Framework reduce el acoplamiento entre componentes al permitir que las dependencias se 'inyecten' en lugar de que el objeto las cree directamente?",
+    "options": [
+      "Programación Orientada a Aspectos (AOP)",
+      "Inyección de Dependencias (DI)",
+      "Manejo de Transacciones",
+      "Data Binding"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La Inyección de Dependencias (DI) es un patrón de diseño fundamental en Spring que promueve la modularidad y la facilidad de prueba, gestionando la creación y provisión de dependencias entre objetos.",
+    "originalId": "pregunta_spring_di"
+  },
+  {
+    "id": "q_java_hibernate_1",
+    "text": "¿Cuál es un framework de mapeo objeto-relacional (ORM) para Java que facilita la interacción entre aplicaciones Java y bases de datos relacionales, eliminando gran parte del código JDBC manual?",
+    "options": [
+      "JDBC",
+      "Hibernate",
+      "JPA",
+      "MyBatis"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Hibernate es una implementación popular del estándar JPA y proporciona una capa de abstracción sobre JDBC, permitiendo a los desarrolladores trabajar con objetos Java en lugar de sentencias SQL directas para persistencia de datos.",
+    "originalId": "pregunta_que_es_hibernate"
+  },
+  {
+    "id": "q_java_jpa_1",
+    "text": "¿Qué significa JPA en el contexto de la persistencia de datos en Java?",
+    "options": [
+      "Java Persistence API",
+      "Java Programming Architecture",
+      "Java Provider Access",
+      "Java Persistent Adapter"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. JPA es la API de persistencia de Java, una especificación estándar de Java para el mapeo objeto-relacional, que define cómo los objetos Java se mapean a tablas de bases de datos relacionales y cómo se interactúa con ellas.",
+    "originalId": "pregunta_que_es_jpa"
+  },
+  {
+    "id": "q_java_testing_1",
+    "text": "¿Cuál es el framework más utilizado para la escritura de pruebas unitarias en Java?",
+    "options": [
+      "Maven",
+      "JUnit",
+      "Mockito",
+      "Selenium"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. JUnit es el framework de pruebas unitarias de facto para Java, proporcionando anotaciones y aserciones para escribir y ejecutar pruebas de forma eficiente.",
+    "originalId": "pregunta_que_es_junit"
+  },
+  {
+    "id": "q_java_testing_2",
+    "text": "¿Qué framework se utiliza para crear 'mocks' (simulaciones) de objetos en pruebas unitarias en Java, permitiendo aislar el código bajo prueba de sus dependencias reales?",
+    "options": [
+      "JUnit",
+      "Mockito",
+      "Cucumber",
+      "TestNG"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Mockito es una popular biblioteca de mocking para Java que permite crear objetos 'mock' (simulados) y definir su comportamiento, facilitando las pruebas unitarias de componentes con dependencias complejas.",
+    "originalId": "pregunta_que_es_mockito"
+  },
+  {
+    "id": "q_java_functional_interfaces_1",
+    "text": "¿Qué es una interfaz funcional en Java 8?",
+    "options": [
+      "Una interfaz que no tiene métodos.",
+      "Una interfaz que solo puede ser implementada por Lambdas.",
+      "Una interfaz con un único método abstracto.",
+      "Una interfaz que no puede ser heredada."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Una interfaz funcional es aquella que declara exactamente un único método abstracto. Esto las hace compatibles con las expresiones Lambda.",
+    "originalId": "pregunta_interfaz_funcional"
+  },
+  {
+    "id": "q_java_functional_interfaces_2",
+    "text": "¿Qué anotación se utiliza en Java para marcar una interfaz como funcional y para que el compilador la valide como tal?",
+    "options": [
+      "`@FunctionalInterface`",
+      "`@SingleMethod`",
+      "`@LambdaCompatible`",
+      "`@Functional`"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `@FunctionalInterface` es una anotación opcional pero recomendada para marcar interfaces funcionales, lo que ayuda a la legibilidad y permite al compilador detectar si la interfaz no cumple con los requisitos de ser funcional.",
+    "originalId": "pregunta_anotacion_interfaz_funcional"
+  },
+  {
+    "id": "q_java_method_references_1",
+    "text": "¿Qué característica de Java 8, estrechamente relacionada con las Lambdas, permite hacer referencia a métodos existentes por su nombre, haciendo el código más conciso?",
+    "options": [
+      "Clases anónimas",
+      "Referencias a métodos (Method References)",
+      "Expresiones regulares",
+      "Anotaciones de tipo"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Las referencias a métodos son una sintaxis abreviada para las expresiones Lambda que solo llaman a un método existente. Pueden ser referencias a métodos estáticos, de instancia, de objetos arbitrarios o a constructores.",
+    "originalId": "pregunta_que_es_method_reference"
+  },
+  {
+    "id": "q_java_method_references_2",
+    "text": "Dada una `List<String> palabras` y un método estático `public static void imprimir(String s)`, ¿cuál es la referencia a método correcta para imprimir cada palabra de la lista usando Streams?",
+    "options": [
+      "palabras.stream().forEach(imprimir);",
+      "palabras.stream().forEach(String::imprimir);",
+      "palabras.stream().forEach(this::imprimir);",
+      "palabras.stream().forEach(ClaseContenedora::imprimir);"
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. Para referenciar un método estático de una clase, se usa `NombreClase::nombreMetodo`. En este caso, asumimos que `imprimir` está en la clase donde se ejecuta el código o en una clase accesible.",
+    "originalId": "pregunta_method_reference_static"
+  },
+  {
+    "id": "q_java_default_methods_1",
+    "text": "¿Qué característica introducida en Java 8 permite añadir métodos con implementaciones a las interfaces sin romper las clases existentes que las implementan?",
+    "options": [
+      "Métodos abstractos",
+      "Métodos estáticos",
+      "Métodos por defecto (Default Methods)",
+      "Métodos finales"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Los métodos `default` en las interfaces permiten extender la funcionalidad de una interfaz sin obligar a todas las clases que la implementan a modificar su código, manteniendo la compatibilidad hacia atrás.",
+    "originalId": "pregunta_que_es_default_method"
+  },
+  {
+    "id": "q_java_date_time_api_1",
+    "text": "¿Cuál es la clase principal en la nueva API de Fecha y Hora de Java 8 (`java.time`) para representar una fecha sin zona horaria, como el 1 de enero de 2025?",
+    "options": [
+      "Date",
+      "Calendar",
+      "LocalDate",
+      "LocalDateTime"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. `LocalDate` representa una fecha (año, mes, día) sin información de hora ni zona horaria. Es inmutable y thread-safe.",
+    "originalId": "pregunta_datetime_localdate"
+  },
+  {
+    "id": "q_java_date_time_api_2",
+    "text": "¿Qué clase en la nueva API de Fecha y Hora de Java 8 se utiliza para representar una combinación de fecha y hora sin zona horaria, como '2025-01-01T10:30:00'?",
+    "options": [
+      "LocalDate",
+      "LocalTime",
+      "LocalDateTime",
+      "ZonedDateTime"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. `LocalDateTime` combina `LocalDate` y `LocalTime` para representar una fecha y hora específicas sin considerar la zona horaria, lo que la hace útil para eventos que ocurren en un momento universal sin depender del huso horario local.",
+    "originalId": "pregunta_datetime_localdatetime"
+  },
+  {
+    "id": "q_java_annotations_processing_1",
+    "text": "¿Qué técnica en Java permite a las herramientas de desarrollo generar código o archivos adicionales basándose en las anotaciones presentes en el código fuente?",
+    "options": [
+      "Reflexión en tiempo de ejecución",
+      "Procesamiento de anotaciones (Annotation Processing)",
+      "Programación Orientada a Aspectos (AOP)",
+      "Generación de bytecode en tiempo de ejecución"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El procesamiento de anotaciones es un mecanismo de Java que permite a los desarrolladores crear procesadores personalizados que se ejecutan durante la fase de compilación para generar archivos o modificar el código fuente basándose en las anotaciones. Un ejemplo común es Lombok.",
+    "originalId": "pregunta_annotation_processing"
+  },
+  {
+    "id": "q_java_collections_advanced_1",
+    "text": "¿Qué interfaz de la API de colecciones de Java representa una colección de elementos ordenados donde cada elemento se asocia con un índice, permitiendo duplicados?",
+    "options": [
+      "Set",
+      "Map",
+      "List",
+      "Queue"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. La interfaz `List` es una colección ordenada que permite elementos duplicados y proporciona acceso posicional a los elementos mediante su índice (ej. `ArrayList`, `LinkedList`).",
+    "originalId": "pregunta_colecciones_list"
+  },
+  {
+    "id": "q_java_collections_advanced_2",
+    "text": "¿Qué interfaz de la API de colecciones de Java representa una colección que no contiene elementos duplicados y no garantiza un orden específico?",
+    "options": [
+      "List",
+      "Set",
+      "Map",
+      "Deque"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La interfaz `Set` garantiza la unicidad de sus elementos. Las implementaciones comunes son `HashSet` (sin orden) y `LinkedHashSet` (mantiene el orden de inserción).",
+    "originalId": "pregunta_colecciones_set"
+  },
+  {
+    "id": "q_java_collections_advanced_3",
+    "text": "¿Qué interfaz de la API de colecciones de Java representa una estructura de datos basada en clave-valor, donde cada clave es única y mapea a un único valor?",
+    "options": [
+      "Collection",
+      "List",
+      "Set",
+      "Map"
+    ],
+    "correctAnswerIndex": 3,
+    "explanation": "Correcto. La interfaz `Map` no extiende `Collection` y almacena elementos como pares clave-valor, donde las claves deben ser únicas.",
+    "originalId": "pregunta_colecciones_map"
+  },
+  {
+    "id": "q_java_gc_1",
+    "text": "¿Qué es el Garbage Collector (GC) en Java?",
+    "options": [
+      "Un programa que elimina archivos temporales del sistema.",
+      "Un proceso automático que libera memoria de objetos que ya no están referenciados.",
+      "Una herramienta para compilar código Java.",
+      "Un mecanismo para depurar errores de sintaxis."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El Garbage Collector es una parte fundamental de la JVM que automatiza la gestión de memoria, identificando y eliminando objetos que ya no son accesibles para liberar recursos.",
+    "originalId": "pregunta_que_es_gc"
+  },
+  {
+    "id": "q_java_gc_2",
+    "text": "¿Qué método se puede sobrescribir en una clase para que el Garbage Collector lo llame justo antes de que un objeto sea recolectado, aunque no se garantiza su ejecución?",
+    "options": [
+      "cleanUp()",
+      "dispose()",
+      "finalize()",
+      "destroy()"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. El método `finalize()` es llamado por el Garbage Collector (si está implementado y no ha sido llamado antes) en el objeto antes de que sea destruido. Sin embargo, su uso está desaconsejado debido a la falta de garantía de ejecución y problemas de rendimiento.",
+    "originalId": "pregunta_gc_finalize"
+  },
+  {
+    "id": "q_java_serialization_1",
+    "text": "¿Cuál es el proceso de convertir el estado de un objeto en una secuencia de bytes para su almacenamiento o transmisión, y luego reconstruir el objeto a partir de esos bytes?",
+    "options": [
+      "Encriptación",
+      "Serialización",
+      "Compilación",
+      "Hashing"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La serialización es el proceso de transformar un objeto en un formato que puede ser almacenado (por ejemplo, en un archivo) o transmitido (por ejemplo, a través de una red), y la deserialización es el proceso inverso.",
+    "originalId": "pregunta_que_es_serializacion"
+  },
+  {
+    "id": "q_java_reflection_advanced_1",
+    "text": "¿Qué clase de la API de Reflexión de Java se usa para representar una clase o interfaz en tiempo de ejecución, y a partir de ella se pueden obtener detalles de sus miembros?",
+    "options": [
+      "Object",
+      "Type",
+      "Class",
+      "MetaData"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. La clase `java.lang.Class` es el punto de entrada para la reflexión. Permite obtener información sobre los campos, métodos, constructores y otras propiedades de una clase en tiempo de ejecución.",
+    "originalId": "pregunta_reflection_class"
+  },
+  {
+    "id": "q_java_reflection_advanced_2",
+    "text": "Para invocar un método de una clase en tiempo de ejecución utilizando Reflexión, ¿qué objeto de la API de Reflexión necesitas?",
+    "options": [
+      "Field",
+      "Constructor",
+      "Method",
+      "Parameter"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. El objeto `java.lang.reflect.Method` representa un método de una clase y permite invocar ese método dinámicamente usando el método `invoke()`.",
+    "originalId": "pregunta_reflection_invoke_method"
+  },
+  {
+    "id": "q_java_threads_advanced_1",
+    "text": "¿Qué problema ocurre en programación concurrente cuando el resultado de la ejecución depende del orden o la temporización de eventos incontrolables, como la ejecución de hilos?",
+    "options": [
+      "Deadlock",
+      "Race condition (Condición de carrera)",
+      "Livelock",
+      "Starvation"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Una condición de carrera ocurre cuando múltiples hilos acceden y manipulan un recurso compartido concurrentemente, y el resultado final depende de la secuencia de ejecución de los hilos, que no es predecible.",
+    "originalId": "pregunta_concurrencia_race_condition"
+  },
+  {
+    "id": "q_java_threads_advanced_2",
+    "text": "¿Qué situación en programación concurrente ocurre cuando dos o más hilos están bloqueados indefinidamente, esperando cada uno que el otro libere un recurso que necesita?",
+    "options": [
+      "Race condition",
+      "Deadlock (Interbloqueo)",
+      "Livelock",
+      "Starvation"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Un deadlock es una situación en la que dos o más hilos están permanentemente bloqueados porque cada uno está esperando un recurso que el otro posee.",
+    "originalId": "pregunta_concurrencia_deadlock"
+  },
+  {
+    "id": "q_java_threads_advanced_3",
+    "text": "¿Qué método se utiliza para esperar la finalización de un hilo antes de que el hilo actual continúe su ejecución?",
+    "options": [
+      "sleep()",
+      "wait()",
+      "join()",
+      "notify()"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. El método `join()` de un hilo hace que el hilo actual pause su ejecución hasta que el hilo en el que se llama a `join()` termine.",
+    "originalId": "pregunta_concurrencia_join"
+  },
+  {
+    "id": "q_java_threads_advanced_4",
+    "text": "¿Qué clase en `java.util.concurrent` proporciona una forma atómica de actualizar valores, sin la necesidad de `synchronized` explícito, para operaciones como incrementos de contador?",
+    "options": [
+      "AtomicInteger",
+      "SynchronizedInt",
+      "VolatileInt",
+      "ConcurrentInteger"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. `AtomicInteger` y otras clases atómicas (`AtomicLong`, `AtomicBoolean`, etc.) proporcionan operaciones atómicas sobre valores individuales, lo que significa que las operaciones son indivisibles y garantizan la seguridad de hilos sin usar bloqueos explícitos, lo que puede mejorar el rendimiento.",
+    "originalId": "pregunta_concurrencia_atomicinteger"
+  },
+  {
+    "id": "q_java_classloaders_1",
+    "text": "¿Qué componente de la JVM es responsable de cargar dinámicamente las clases Java en la memoria a medida que son necesarias?",
+    "options": [
+      "Compilador JIT (Just-In-Time)",
+      "Garbage Collector",
+      "Cargador de clases (Classloader)",
+      "Intérprete de bytecode"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. El subsistema de cargadores de clases de Java es crucial para la seguridad y la modularidad, cargando las clases desde el sistema de archivos, la red u otros orígenes en tiempo de ejecución.",
+    "originalId": "pregunta_jvm_classloader"
+  },
+  {
+    "id": "q_java_security_1",
+    "text": "¿Qué mecanismo en Java proporciona un entorno de ejecución seguro para código no confiable, permitiendo controlar los permisos de acceso a recursos del sistema?",
+    "options": [
+      "Sandbox de seguridad (Security Sandbox)",
+      "Encapsulamiento",
+      "Polimorfismo",
+      "Garbage Collection"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Correcto. El sandbox de seguridad de Java, gestionado por el Security Manager, permite definir políticas de seguridad estrictas para el código, controlando su acceso a recursos como archivos, red o propiedades del sistema.",
+    "originalId": "pregunta_seguridad_sandbox"
+  },
+  {
+    "id": "q_java_jigsaw_1",
+    "text": "¿Qué característica principal fue introducida por el Proyecto Jigsaw en Java 9, que permite modularizar la plataforma Java y las aplicaciones?",
+    "options": [
+      "Expresiones Lambda",
+      "La API de Streams",
+      "Sistema de Módulos (Java Platform Module System - JPMS)",
+      "Tipos `var`"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. El Sistema de Módulos de la Plataforma Java (JPMS) es una de las mayores adiciones a Java 9, permitiendo la modularización de aplicaciones y del JDK, lo que mejora el rendimiento, la seguridad y la mantenibilidad.",
+    "originalId": "pregunta_jigsaw_jpms"
+  },
+  {
+    "id": "q_java_jigsaw_2",
+    "text": "¿Qué beneficio principal ofrece el Sistema de Módulos de Java (JPMS) introducido en Java 9?",
+    "options": [
+      "Mayor velocidad de compilación de archivos `.java`.",
+      "Reducción del tamaño de las aplicaciones (creando runtimes más pequeños) y mejor encapsulamiento.",
+      "Eliminación de la necesidad de archivos `.jar`.",
+      "Simplificación de la sintaxis de las clases."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. JPMS ayuda a crear aplicaciones más pequeñas y eficientes al permitir empaquetar solo los módulos necesarios, y mejora el encapsulamiento al controlar explícitamente qué paquetes se exportan y se usan entre módulos.",
+    "originalId": "pregunta_jpms_beneficios"
+  },
+  {
+    "id": "q_java_records_1",
+    "text": "¿Qué característica de Java, introducida en Java 16, está diseñada para ser una forma concisa de declarar clases que son portadoras de datos inmutables?",
+    "options": [
+      "Enums",
+      "Records",
+      "Data Classes",
+      "Tuples"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los `records` son una nueva forma de declarar clases en Java que simplifica la creación de clases inmutables que solo contienen datos, generando automáticamente constructores, métodos `equals()`, `hashCode()` y `toString()`. Son ideales para DTOs (Data Transfer Objects).",
+    "originalId": "pregunta_que_es_record"
+  },
+  {
+    "id": "q_java_records_2",
+    "text": "Observa el siguiente código:\n\n```java\npublic record Punto(int x, int y) {}\n```\n\n¿Qué métodos se generan automáticamente para esta clase `Punto` (además de un constructor canónico)?",
+    "options": [
+      "Solo `getters` para `x` e `y`.",
+      "`equals()`, `hashCode()` y `toString()`.",
+      "Solo `setters` para `x` e `y`.",
+      "No se genera ningún método automáticamente."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los `records` generan automáticamente un constructor canónico, un método `equals()`, un método `hashCode()` y un método `toString()` que incluyen todos los componentes del record, además de métodos accesores implícitos para cada componente (`x()`, `y()`).",
+    "originalId": "pregunta_record_metodos_generados"
+  },
+  {
+    "id": "q_java_pattern_matching_1",
+    "text": "¿Qué mejora en Java, a partir de Java 16, permite reducir la verbosidad en el uso de `instanceof` al combinar la prueba de tipo con la declaración de una variable de patrón?",
+    "options": [
+      "Tipos genéricos",
+      "Pattern Matching para `instanceof`",
+      "Expresiones Switch",
+      "Guards de tipo"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. El Pattern Matching para `instanceof` permite escribir `if (obj instanceof String s)` y usar directamente la variable `s` dentro del bloque `if`, eliminando la necesidad de un cast explícito y redundante.",
+    "originalId": "pregunta_pattern_matching_instanceof"
+  },
+  {
+    "id": "q_java_sealed_classes_1",
+    "text": "¿Qué característica de Java, introducida en Java 17, permite restringir qué clases o interfaces pueden extender o implementar una clase o interfaz dada?",
+    "options": [
+      "Clases abstractas",
+      "Clases finales",
+      "Clases selladas (Sealed Classes)",
+      "Interfaces funcionales"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Correcto. Las clases y interfaces selladas (`sealed`) permiten al autor de un módulo o biblioteca controlar qué clases o interfaces pueden extender o implementar las suyas, lo que mejora la seguridad y la claridad en los diseños jerárquicos.",
+    "originalId": "pregunta_que_es_sealed_class"
+  },
+  {
+    "id": "q_java_sealed_classes_2",
+    "text": "Dada la siguiente clase sellada:\n\n```java\npublic sealed class Forma permits Circulo, Cuadrado {}\n```\n\n¿Qué significa la palabra clave `permits`?",
+    "options": [
+      "Indica que `Forma` hereda de `Circulo` y `Cuadrado`.",
+      "Lista las únicas clases que tienen permitido extender `Forma`.",
+      "Define los métodos abstractos que `Circulo` y `Cuadrado` deben implementar.",
+      "Especifica que `Circulo` y `Cuadrado` son interfaces."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. La cláusula `permits` en una clase sellada especifica de forma explícita el conjunto limitado de clases o interfaces que pueden extender o implementar esa clase sellada. Esto permite un control preciso sobre la jerarquía.",
+    "originalId": "pregunta_sealed_classes_permits"
+  },
+  {
+    "id": "q_java_virtual_threads_1",
+    "text": "¿Qué tipo de hilos, introducidos como 'preview' en Java 19 y finalizados en Java 21 (Proyecto Loom), están diseñados para ser hilos ligeros y de alto rendimiento que no se mapean directamente a hilos del sistema operativo?",
+    "options": [
+      "Hilos nativos",
+      "Hilos virtuales (Virtual Threads)",
+      "Hilos de sistema",
+      "Hilos de usuario"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los Hilos Virtuales están diseñados para escalar drásticamente las aplicaciones concurrentes al permitir millones de hilos ligeros, manejados por la JVM, sin la sobrecarga de los hilos tradicionales del sistema operativo.",
+    "originalId": "pregunta_que_es_virtual_thread"
+  },
+  {
+    "id": "q_java_virtual_threads_2",
+    "text": "¿Cuál es un beneficio clave de los Hilos Virtuales en Java 21 para el desarrollo de aplicaciones concurrentes?",
+    "options": [
+      "Requieren la reescritura de todo el código multihilo existente.",
+      "Reducen significativamente el consumo de memoria y la sobrecarga de cambio de contexto en aplicaciones de alta concurrencia.",
+      "Solo se pueden usar con programación reactiva.",
+      "Eliminan la necesidad de colecciones concurrentes."
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Correcto. Los Hilos Virtuales están optimizados para la concurrencia a gran escala, permitiendo que las aplicaciones manejen muchas más solicitudes concurrentes con la misma cantidad de hardware, ya que son muy ligeros y eficientes en el uso de recursos.",
+    "originalId": "pregunta_virtual_threads_beneficio"
   }
 ]

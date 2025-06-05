@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:audioplayers/audioplayers.dart'; // Comentado temporalmente
+// import 'package:flutter/foundation.dart'; // Comentado temporalmente - no utilizado
 import 'dart:async';
 
 class AudioService {
@@ -7,18 +7,18 @@ class AudioService {
   factory AudioService() => _instance;
   AudioService._internal();
 
-  final AudioPlayer _backgroundPlayer = AudioPlayer();
-  final AudioPlayer _effectPlayer = AudioPlayer();
+  // final AudioPlayer _backgroundPlayer = AudioPlayer(); // Comentado temporalmente
+  // final AudioPlayer _effectPlayer = AudioPlayer(); // Comentado temporalmente
   
   bool _isBackgroundMusicEnabled = true;
   bool _areSoundEffectsEnabled = true;
   double _backgroundVolume = 0.5;
   double _effectVolume = 0.7;
   
-  String? _currentBackgroundTrack;
-  bool _isInitialized = false;
-  StreamSubscription<void>? _victoryCompleteSubscription;
-  bool _isAppInBackground = false;
+  // Campos comentados temporalmente - funcionalidad de audio deshabilitada
+  // String? _currentBackgroundTrack;
+  // bool _isInitialized = false;
+  // StreamSubscription<void>? _victoryCompleteSubscription;
 
   // Getters
   bool get isBackgroundMusicEnabled => _isBackgroundMusicEnabled;
@@ -27,6 +27,8 @@ class AudioService {
   double get effectVolume => _effectVolume;
 
   Future<void> initialize() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    /*
     if (_isInitialized) return;
     
     try {
@@ -46,9 +48,12 @@ class AudioService {
         print('Error initializing audio service: $e');
       }
     }
+    */
   }
 
   Future<void> playMainTheme() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    /*
     if (!_isBackgroundMusicEnabled) return;
     
     try {
@@ -64,9 +69,12 @@ class AudioService {
         print('Error playing main theme: $e');
       }
     }
+    */
   }
 
   Future<void> playBattleTheme() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    /*
     if (!_isBackgroundMusicEnabled || _currentBackgroundTrack == 'battle_theme') return;
     
     try {
@@ -82,9 +90,12 @@ class AudioService {
         print('Error playing battle theme: $e');
       }
     }
+    */
   }
 
   Future<void> playVictoryTheme() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+    /*
     if (!_areSoundEffectsEnabled) return;
     
     try {
@@ -98,101 +109,63 @@ class AudioService {
       if (kDebugMode) {
         print('Playing victory theme');
       }
-      
-      // Escuchar cuando termine el tema de victoria
-      _victoryCompleteSubscription = _effectPlayer.onPlayerComplete.listen((event) {
-        if (kDebugMode) {
-          print('Victory theme completed, returning to main theme');
-        }
-        // Cuando termine el tema de victoria, volver al tema principal
-        playMainTheme();
-      });
     } catch (e) {
       if (kDebugMode) {
         print('Error playing victory theme: $e');
       }
     }
+    */
+  }
+
+  Future<void> playClickSound() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+  }
+
+  Future<void> playSuccessSound() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+  }
+
+  Future<void> playErrorSound() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+  }
+
+  Future<void> stopBackgroundMusic() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
+  }
+
+  Future<void> stopAllAudio() async {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
   Future<void> setBackgroundMusicEnabled(bool enabled) async {
     _isBackgroundMusicEnabled = enabled;
-    
-    if (!enabled) {
-      await _backgroundPlayer.stop();
-      _currentBackgroundTrack = null;
-    } else {
-      await playMainTheme();
-    }
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
   Future<void> setSoundEffectsEnabled(bool enabled) async {
     _areSoundEffectsEnabled = enabled;
-    
-    if (!enabled) {
-      await _effectPlayer.stop();
-    }
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
   Future<void> setBackgroundVolume(double volume) async {
     _backgroundVolume = volume.clamp(0.0, 1.0);
-    await _backgroundPlayer.setVolume(_backgroundVolume);
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
   Future<void> setEffectVolume(double volume) async {
     _effectVolume = volume.clamp(0.0, 1.0);
-    await _effectPlayer.setVolume(_effectVolume);
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
-  Future<void> pauseBackgroundMusic() async {
-    await _backgroundPlayer.pause();
+  void pauseOnAppBackground() {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
-  Future<void> resumeBackgroundMusic() async {
-    if (_isBackgroundMusicEnabled) {
-      await _backgroundPlayer.resume();
-    }
-  }
-
-  Future<void> stopAllAudio() async {
-    await _backgroundPlayer.stop();
-    await _effectPlayer.stop();
-    _currentBackgroundTrack = null;
-  }
-
-  // Métodos para manejar el ciclo de vida de la app
-  Future<void> pauseOnAppBackground() async {
-    if (_isAppInBackground) return;
-    
-    _isAppInBackground = true;
-    await _backgroundPlayer.pause();
-    await _effectPlayer.pause();
-    
-    if (kDebugMode) {
-      print('Audio paused - app in background');
-    }
-  }
-  
-  Future<void> resumeOnAppForeground() async {
-    if (!_isAppInBackground) return;
-    
-    _isAppInBackground = false;
-    
-    if (_isBackgroundMusicEnabled) {
-      await _backgroundPlayer.resume();
-    }
-    
-    if (_areSoundEffectsEnabled) {
-      await _effectPlayer.resume();
-    }
-    
-    if (kDebugMode) {
-      print('Audio resumed - app in foreground');
-    }
+  void resumeOnAppForeground() {
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 
   void dispose() {
-    _victoryCompleteSubscription?.cancel();
-    _backgroundPlayer.dispose();
-    _effectPlayer.dispose();
+    // Comentado temporalmente - funcionalidad de audio deshabilitada
   }
 }

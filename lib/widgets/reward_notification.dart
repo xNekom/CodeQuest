@@ -136,14 +136,7 @@ class _RewardNotificationState extends State<RewardNotification> with SingleTick
                       ),
                     ),
                     child: Center(
-                      child: Image.network(
-                        widget.reward.iconUrl,
-                        width: 60,
-                        height: 60,
-                        errorBuilder: (context, error, stackTrace) {
-                          return _getRewardIcon(widget.reward.type);
-                        },
-                      ),
+                      child: _getRewardIcon(widget.reward.type),
                     ),
                   ),
                   const SizedBox(height: 16),

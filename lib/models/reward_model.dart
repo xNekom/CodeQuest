@@ -3,7 +3,7 @@ class Reward {
   final String id; // ID único de la recompensa.
   final String name; // Nombre de la recompensa.
   final String description; // Descripción de la recompensa.
-  final String iconUrl; // URL o ruta al icono de la recompensa.
+
   final String type; // Tipo de recompensa (ej. 'points', 'item', 'badge'). Se usa String para flexibilidad con Firestore.
   final int value; // Valor numérico de la recompensa (ej. cantidad de puntos, ID del ítem si type es 'item').
   final Map<String, dynamic> conditions; // Condiciones adicionales para recibir la recompensa.
@@ -13,7 +13,7 @@ class Reward {
     required this.id,
     required this.name,
     required this.description,
-    required this.iconUrl,
+
     required this.type,
     required this.value,
     this.conditions = const {},
@@ -24,7 +24,7 @@ class Reward {
       'id': id,
       'name': name,
       'description': description,
-      'iconUrl': iconUrl,
+
       'type': type,
       'value': value,
       'conditions': conditions,
@@ -36,7 +36,7 @@ class Reward {
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       description: map['description'] ?? '',
-      iconUrl: map['iconUrl'] ?? '',
+
       type: map['type'] ?? 'points',
       value: map['value'] ?? 0,
       conditions: Map<String, dynamic>.from(map['conditions'] ?? {}),

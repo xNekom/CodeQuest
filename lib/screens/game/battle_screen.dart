@@ -490,17 +490,7 @@ class _BattleScreenState extends State<BattleScreen> {
                             ),
                           ],
                         ),
-                        child:
-                            _currentEnemy!.assetPath != null &&
-                                    _currentEnemy!.assetPath!.isNotEmpty
-                                ? Image.asset(
-                                  _currentEnemy!.assetPath!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return _buildEnemyPlaceholder();
-                                  },
-                                )
-                                : _buildEnemyPlaceholder(),
+                        child: _buildEnemyPlaceholder(),
                       ),
                       const SizedBox(height: 12),
 
@@ -648,8 +638,9 @@ class _BattleScreenState extends State<BattleScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      FormattedTextWidget(
-                        text: _currentQuestion!.explanation,
+                      Text(
+                        _currentQuestion!.explanation,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         textAlign: TextAlign.left,
                       ),
                     ],

@@ -3,7 +3,7 @@ class EnemyModel {
   final String enemyId; // ID único del enemigo, usualmente el ID del documento en Firestore.
   final String name; // Nombre del enemigo.
   final String? description; // Descripción opcional del enemigo.
-  final String? assetPath; // Path to the enemy's image asset (opcional)
+
   final List<Map<String, dynamic>>? lootTable; // Tabla de loot que define qué ítems puede soltar el enemigo y con qué probabilidad.
   final List<Map<String, dynamic>>? drops; // Lista de ítems específicos que el enemigo puede soltar.
   final Map<String, String>? dialogue; // Diálogos del enemigo para diferentes situaciones (encuentro, victoria, derrota).
@@ -13,7 +13,6 @@ class EnemyModel {
     required this.enemyId,
     required this.name,
     this.description,
-    this.assetPath,
     this.lootTable,
     this.drops,
     this.dialogue,
@@ -29,7 +28,6 @@ class EnemyModel {
       enemyId: documentId,
       name: json['name'] as String,
       description: json['description'] as String?,
-      assetPath: json['assetPath'] as String?,
       lootTable: (json['lootTable'] as List<dynamic>?)
           ?.map((loot) => loot as Map<String, dynamic>)
           .toList(),
@@ -54,7 +52,6 @@ class EnemyModel {
       enemyId: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
-      assetPath: json['assetPath'] as String?,
       lootTable: (json['lootTable'] as List<dynamic>?)
           ?.map((loot) => loot as Map<String, dynamic>)
           .toList(),
@@ -73,7 +70,7 @@ class EnemyModel {
     return {
       'name': name,
       if (description != null) 'description': description,
-      if (assetPath != null) 'assetPath': assetPath,
+
       if (lootTable != null) 'lootTable': lootTable,
       if (drops != null) 'drops': drops,
       if (dialogue != null) 'dialogue': dialogue,

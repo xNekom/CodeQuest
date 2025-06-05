@@ -159,7 +159,7 @@ class _RewardsTabState extends State<RewardsTab> {
     
     final nameController = TextEditingController(text: reward?.name ?? '');
     final descriptionController = TextEditingController(text: reward?.description ?? '');
-    final iconUrlController = TextEditingController(text: reward?.iconUrl ?? '');
+
     final valueController = TextEditingController(text: reward?.value.toString() ?? '0');
     
     String selectedType = reward?.type ?? 'points';
@@ -181,10 +181,7 @@ class _RewardsTabState extends State<RewardsTab> {
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                 ),
-                TextField(
-                  controller: iconUrlController,
-                  decoration: const InputDecoration(labelText: 'URL del Icono'),
-                ),
+
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
@@ -226,7 +223,7 @@ class _RewardsTabState extends State<RewardsTab> {
               onPressed: () async {
                 final name = nameController.text.trim();
                 final description = descriptionController.text.trim();
-                final iconUrl = iconUrlController.text.trim();
+
                 final value = int.tryParse(valueController.text) ?? 0;
                 
                 if (name.isEmpty) {
@@ -240,7 +237,6 @@ class _RewardsTabState extends State<RewardsTab> {
                   id: reward?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
                   name: name,
                   description: description,
-                  iconUrl: iconUrl,
                   type: selectedType,
                   value: value,
                 );
@@ -399,7 +395,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
     
     final nameController = TextEditingController(text: achievement?.name ?? '');
     final descriptionController = TextEditingController(text: achievement?.description ?? '');
-    final iconUrlController = TextEditingController(text: achievement?.iconUrl ?? '');
+
     final pointsController = TextEditingController(text: achievement?.points.toString() ?? '10');
     
     String selectedCategory = achievement?.category ?? 'general';
@@ -424,10 +420,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                 ),
-                TextField(
-                  controller: iconUrlController,
-                  decoration: const InputDecoration(labelText: 'URL del Icono'),
-                ),
+
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
@@ -520,7 +513,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
               onPressed: () async {
                 final name = nameController.text.trim();
                 final description = descriptionController.text.trim();
-                final iconUrl = iconUrlController.text.trim();
+
                 final points = int.tryParse(pointsController.text) ?? 10;
                 
                 if (name.isEmpty) {
@@ -541,7 +534,6 @@ class _AchievementsTabState extends State<AchievementsTab> {
                   id: achievement?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
                   name: name,
                   description: description,
-                  iconUrl: iconUrl,
                   category: selectedCategory,
                   points: points,
                   conditions: _buildConditions(selectedCategory, requiredMissionIds),
