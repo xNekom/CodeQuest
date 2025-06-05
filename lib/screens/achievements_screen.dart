@@ -9,6 +9,7 @@ import '../models/achievement_model.dart';
 import '../models/reward_model.dart'; // Importar Reward
 import '../widgets/achievement_card.dart';
 import '../widgets/pixel_art_background.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/tutorial_floating_button.dart';
 
@@ -102,10 +103,9 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: PixelAppBar(
         key: _backButtonKey,
-        title: const Text('LOGROS', style: TextStyle(fontFamily: 'PixelFont', fontWeight: FontWeight.bold)),
-        elevation: 0,
+        title: 'LOGROS',
       ),
       body: PixelArtBackground(
         child: _isLoading

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/user_model.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 // Components
 import 'components/admin_grid_item.dart';
@@ -40,37 +41,37 @@ class _AdminScreenState extends State<AdminScreen> {
   void _initializeAdminItems() {
     _adminGridItems = [
       AdminGridItem(
-        title: 'Leaderboards',
+        title: 'Clasificaciones',
         icon: Icons.leaderboard,
         color: Colors.orange,
         onTap: () => _navigateToSection('Leaderboards'),
       ),
       AdminGridItem(
-        title: 'Coin Management',
+        title: 'Gestión Monedas',
         icon: Icons.monetization_on,
         color: Colors.green,
         onTap: () => _navigateToSection('Coin Management'),
       ),
       AdminGridItem(
-        title: 'Experience Management',
+        title: 'Gestión Experiencia',
         icon: Icons.trending_up,
         color: Colors.blue,
         onTap: () => _navigateToSection('Experience Management'),
       ),
       AdminGridItem(
-        title: 'Level Management',
+        title: 'Gestión Niveles',
         icon: Icons.bar_chart,
         color: Colors.purple,
         onTap: () => _navigateToSection('Level Management'),
       ),
       AdminGridItem(
-        title: 'Hack Presets',
+        title: 'Config',
         icon: Icons.settings,
         color: Colors.red,
         onTap: () => _navigateToSection('Hack Presets'),
       ),
       AdminGridItem(
-        title: 'My Achievements',
+        title: 'Mis Logros',
         icon: Icons.emoji_events,
         color: Colors.amber,
         onTap: () => _navigateToSection('My Achievements'),
@@ -228,19 +229,10 @@ class _AdminScreenState extends State<AdminScreen> {
             }
           },
           child: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                'Panel de Administración',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              backgroundColor: Colors.deepPurple,
-              elevation: 0,
-              iconTheme: IconThemeData(color: Colors.white),
+            appBar: PixelAdminAppBar(
+              title: 'Panel Admin',
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context, true);
                 },

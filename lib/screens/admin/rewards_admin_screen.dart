@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../models/reward_model.dart';
 import '../../models/achievement_model.dart';
 import '../../../services/reward_service.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 class RewardsAdminScreen extends StatefulWidget {
   const RewardsAdminScreen({super.key});
@@ -18,9 +19,9 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Administrar Recompensas y Logros'),
-          bottom: const TabBar(
+        appBar: const PixelAdminAppBar(
+          title: 'Administrar Recompensas y Logros',
+          bottom: TabBar(
             tabs: [
               Tab(text: 'Recompensas'),
               Tab(text: 'Logros'),

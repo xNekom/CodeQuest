@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'mission_list_screen.dart';
 import '../../services/tutorial_service.dart';
 import '../../widgets/tutorial_floating_button.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 class MissionsScreen extends StatefulWidget {
   const MissionsScreen({super.key});
@@ -43,13 +44,9 @@ class _MissionsScreenState extends State<MissionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: PixelAppBar(
         key: _backButtonKey,
-        title: const Text(
-          'MISIÓN',
-          style: TextStyle(fontFamily: 'PixelFont', fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
+        title: 'MISIÓN',
         // Leading por defecto para volver atrás
       ),
       body: SafeArea(

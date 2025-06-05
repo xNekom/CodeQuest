@@ -9,6 +9,7 @@ import '../../services/question_service.dart'; // Importar QuestionService
 import '../../models/mission_model.dart'; // Incluye Objective
 import '../../models/question_model.dart'; // Importar QuestionModel
 import '../../widgets/pixel_widgets.dart'; // Asegúrate de que esta importación esté presente y sea correcta
+import '../../widgets/pixel_app_bar.dart';
 import 'package:codequest/widgets/formatted_text_widget.dart';
 import '../mission_completed_screen.dart'; // Importar MissionCompletedScreen
 
@@ -322,15 +323,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Reemplazado PixelAppBar con AppBar estándar por ahora
-        title: Text(
-          _isLoading
-              ? "Cargando Misión..."
-              : (_missionName.isNotEmpty ? _missionName : "Misión"),
-        ),
-        // Si tienes una fuente pixelada, aplícala aquí:
-        // style: TextStyle(fontFamily: 'PixelFont'),
+      appBar: PixelAppBar(
+        title: _isLoading
+            ? "Cargando Misión..."
+            : (_missionName.isNotEmpty ? _missionName : "Misión"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

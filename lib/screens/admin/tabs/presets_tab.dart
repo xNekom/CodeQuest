@@ -158,77 +158,69 @@ class _PresetsTabState extends State<PresetsTab> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        Column(
                           children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    final changed = await _applyHackPreset(currentUserId, 'beginner');
-                                    if (changed) widget.onDataUpdated?.call();
-                                  },
-                                  icon: const Icon(Icons.child_care, size: 16),
-                                  label: const Text('Principiante',
-                                    style: TextStyle(fontSize: 11),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 8,
-                                    ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final changed = await _applyHackPreset(currentUserId, 'beginner');
+                                  if (changed) widget.onDataUpdated?.call();
+                                },
+                                icon: const Icon(Icons.child_care, size: 16),
+                                label: const Text('Principiante',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
                                   ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    final changed = await _applyHackPreset(currentUserId, 'advanced');
-                                    if (changed) widget.onDataUpdated?.call();
-                                  },
-                                  icon: const Icon(Icons.school, size: 16),
-                                  label: const Text('Avanzado',
-                                    style: TextStyle(fontSize: 11),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.orange,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 8,
-                                    ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final changed = await _applyHackPreset(currentUserId, 'advanced');
+                                  if (changed) widget.onDataUpdated?.call();
+                                },
+                                icon: const Icon(Icons.school, size: 16),
+                                label: const Text('Avanzado',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
                                   ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 2),
-                                child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    final changed = await _applyHackPreset(currentUserId, 'master');
-                                    if (changed) widget.onDataUpdated?.call();
-                                  },
-                                  icon: const Icon(Icons.emoji_events, size: 16),
-                                  label: const Text('Maestro',
-                                    style: TextStyle(fontSize: 11),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 8,
-                                    ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final changed = await _applyHackPreset(currentUserId, 'master');
+                                  if (changed) widget.onDataUpdated?.call();
+                                },
+                                icon: const Icon(Icons.emoji_events, size: 16),
+                                label: const Text('Maestro',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
                                   ),
                                 ),
                               ),

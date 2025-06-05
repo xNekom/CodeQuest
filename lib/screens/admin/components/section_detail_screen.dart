@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../widgets/pixel_app_bar.dart';
 
 // Helper StatelessWidget to display individual admin sections
 class SectionDetailScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class SectionDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: PixelAdminAppBar(title: title),
       body: contentWidget,
     );
   }

@@ -7,6 +7,7 @@ import 'theory_screen.dart';
 import '../game/enemy_encounter_screen.dart';
 import 'question_screen.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../widgets/pixel_app_bar.dart';
 import '../../utils/custom_page_route.dart'; // Import FadePageRoute
 import '../../services/tutorial_service.dart';
 import '../../widgets/tutorial_floating_button.dart';
@@ -74,7 +75,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detalle de Misión')),
+      appBar: const PixelAppBar(title: 'Detalle de Misión'),
       body: Container(
         width: double.infinity,
         height: double.infinity,

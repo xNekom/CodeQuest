@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 // Tipo público para usar en API pública
 typedef ToggleViewCallback = void Function();
@@ -21,8 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
+      appBar: const PixelAppBar(
+        title: 'Iniciar Sesión',
       ),
       body: Container(
         width: double.infinity,

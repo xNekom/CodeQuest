@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/code_exercise_model.dart';
 import '../utils/overflow_utils.dart';
+import 'pixel_app_bar.dart';
 
 /// Widget del playground de código donde el usuario completa líneas faltantes
 class CodePlayground extends StatefulWidget {
@@ -269,8 +270,8 @@ class _CodePlaygroundState extends State<CodePlayground> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.exercise.title),
+      appBar: PixelAppBar(
+        title: widget.exercise.title,
         backgroundColor: Colors.blue[800],
         foregroundColor: Colors.white,
         actions: [

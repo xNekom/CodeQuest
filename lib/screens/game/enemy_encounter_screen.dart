@@ -4,6 +4,7 @@ import '../../widgets/pixel_widgets.dart';
 import '../../models/enemy_model.dart';
 import '../../models/battle_config_model.dart';
 import '../../services/enemy_service.dart';
+import '../../services/audio_service.dart';
 import './battle_screen.dart';
 
 class EnemyEncounterScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   late Animation<double> _slideInAnim;
 
   final EnemyService _enemyService = EnemyService();
+  final AudioService _audioService = AudioService();
   EnemyModel? _enemy;
   bool _isLoading = true;
   String _errorMessage = '';
@@ -50,6 +52,8 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
     );
 
     _loadEnemyData();
+    // Reproducir música de batalla al entrar en el encuentro
+    _audioService.playBattleTheme();
   }
 
   @override
@@ -61,6 +65,8 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
       Future.microtask(() {
         if (mounted) {
           _loadEnemyData();
+    // Reproducir música de batalla al entrar en el encuentro
+    _audioService.playBattleTheme();
         }
       });
     }
@@ -181,6 +187,8 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   @override
   void dispose() {
     _controller.dispose();
+    // Volver a la música principal al salir del encuentro
+    _audioService.playMainTheme();
     super.dispose();
   }
 
@@ -352,6 +360,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                           end: Offset.zero,
                         ).animate(_slideInAnim),
                         child: Container(
+                          width: double.infinity,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade900.withValues(alpha: 0.9),
@@ -368,52 +377,32 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                               ),
                             ],
                           ),
-                          child: Column(
+                          child: Row(
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.format_quote,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Diálogo de Encuentro',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black,
-                                          blurRadius: 2,
-                                          offset: const Offset(1, 1),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.format_quote,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ],
+                              Icon(
+                                Icons.format_quote,
+                                color: Colors.white,
+                                size: 24,
                               ),
-
-                              const SizedBox(height: 12),
-                              Text(
-                                _enemy?.dialogue?['encounter'] ??
-                                    'El enemigo te mira amenazadoramente...',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontStyle: FontStyle.italic,
-                                  height: 1.4,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _enemy?.dialogue?['encounter'] ??
+                                      'El enemigo te mira amenazadoramente...',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontStyle: FontStyle.italic,
+                                    height: 1.4,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(width: 12),
+                              Icon(
+                                Icons.format_quote,
+                                color: Colors.white,
+                                size: 24,
                               ),
                             ],
                           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/error_logger.dart';
+import '../widgets/pixel_app_bar.dart';
 
 /// Pantalla para visualizar los logs de errores de la aplicación
 class ErrorLogScreen extends StatefulWidget {
@@ -52,58 +53,20 @@ class _ErrorLogScreenState extends State<ErrorLogScreen> {
     }
   }
 
-  Future<void> _clearLogs() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Limpiar logs'),
-            content: const Text(
-              '¿Estás seguro de que quieres eliminar todos los logs?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Aceptar'),
-              ),
-            ],
-          ),
-    );
 
-    if (confirmed == true) {
-      await ErrorLogger.clearLogs();
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Logs eliminados')));
-        _loadLogs();
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro de Errores'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadLogs,
-            tooltip: 'Actualizar',
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: _clearLogs,
-            tooltip: 'Limpiar logs',
-          ),
-        ],
+      appBar: PixelAppBar(
+        title: 'Registro de Errores',
+        backgroundColor: Colors.red[800],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

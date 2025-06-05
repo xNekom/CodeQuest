@@ -6,6 +6,7 @@ import '../../services/user_service.dart';
 import '../../services/mission_service.dart';
 import '../../utils/overflow_utils.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../widgets/pixel_app_bar.dart';
 import '../../theme/pixel_theme.dart';
 import 'story_screen.dart';
 import 'question_screen.dart';
@@ -481,10 +482,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
     // Si no hay contenido, mostrar mensaje
     if (_totalPages == 0) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Teoría'),
-          backgroundColor: Colors.purple[700],
-          foregroundColor: Colors.white,
+        appBar: const PixelAppBar(
+          title: 'Teoría',
         ),
         body: const Center(
           child: Text(
@@ -497,10 +496,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Teoría'),
-        backgroundColor: Colors.purple[700],
-        foregroundColor: Colors.white,
+      appBar: const PixelAppBar(
+        title: 'Teoría',
       ),
       body: Column(
         children: [

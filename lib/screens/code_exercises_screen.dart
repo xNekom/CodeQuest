@@ -4,6 +4,7 @@ import '../services/code_exercise_service.dart';
 import '../services/tutorial_service.dart';
 import '../widgets/code_playground.dart';
 import '../widgets/tutorial_floating_button.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../utils/overflow_utils.dart';
 
 /// Pantalla que muestra la lista de ejercicios de código disponibles
@@ -305,11 +306,8 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ejercicios de Programación'),
-        backgroundColor: Colors.blue[800],
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: PixelAppBar(
+        title: 'Ejercicios de Código',
         leading: IconButton(
           key: _backButtonKey,
           icon: const Icon(Icons.arrow_back),

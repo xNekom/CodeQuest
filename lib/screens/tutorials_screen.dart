@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/tutorial_service.dart';
 import '../widgets/pixel_widgets.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../utils/error_handler.dart';
 
 class TutorialsScreen extends StatefulWidget {
@@ -19,14 +20,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tutoriales'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+      appBar: const PixelAppBar(
+        title: 'TUTORIALES',
       ),
       body: Container(
         decoration: BoxDecoration(
