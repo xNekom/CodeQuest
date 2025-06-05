@@ -20,7 +20,7 @@ class QuestionService {
           return QuestionModel.fromFirestore(querySnapshot.docs.first);
         }
       } catch (e) {
-        print('Error al obtener pregunta por ID desde Firebase: $e');
+        // Error al obtener pregunta por ID desde Firebase: $e
       }
       return null;
     } else {
@@ -32,7 +32,7 @@ class QuestionService {
     if (AppConfig.shouldUseFirebase) {
       List<QuestionModel> questions = [];
       try {
-        print('[QServ] Loading questions from Firebase for IDs: $questionIds');
+        // [QServ] Loading questions from Firebase for IDs: $questionIds
         for (String id in questionIds) {
           QuerySnapshot querySnapshot = await _firestore
               .collection('questions')
@@ -41,27 +41,27 @@ class QuestionService {
               .get();
           if (querySnapshot.docs.isNotEmpty) {
             questions.add(QuestionModel.fromFirestore(querySnapshot.docs.first));
-            print('[QServ] Found Firebase question for ID "$id"');
+            // [QServ] Found Firebase question for ID "$id"
           } else {
-            print('[QServ] Question not found in Firebase for ID "$id"');
+            // [QServ] Question not found in Firebase for ID "$id"
           }
         }
-        print('[QServ] Total questions loaded from Firebase: ${questions.length}');
+        // [QServ] Total questions loaded from Firebase: ${questions.length}
       } catch (e) {
-        print('Error al obtener preguntas por IDs desde Firebase: $e');
+        // Error al obtener preguntas por IDs desde Firebase: $e
       }
       return questions;
     } else { // Carga local
-      print('[QServ] Loading questions locally for IDs: $questionIds');
+      // [QServ] Loading questions locally for IDs: $questionIds
       List<QuestionModel> questions = [];
       final allLocalQuestions = await _loadQuestionsFromLocalJson(); // Este método ya tiene logs
-      print('[QServ] Total local questions available from _loadQuestionsFromLocalJson: ${allLocalQuestions.length}');
+      // [QServ] Total local questions available from _loadQuestionsFromLocalJson: ${allLocalQuestions.length}
       if (allLocalQuestions.isEmpty && questionIds.isNotEmpty) {
-        print('[QServ] Warning: No local questions found in questions.json, but IDs were requested: $questionIds');
+        // [QServ] Warning: No local questions found in questions.json, but IDs were requested: $questionIds
       }
 
       for (String id in questionIds) {
-        print('[QServ] Searching for local question with ID: "$id"');
+        // [QServ] Searching for local question with ID: "$id"
         try {
           // Cuando se cargan desde JSON local, QuestionModel.fromJson(jsonData, idFromJson)
           // establece questionId = idFromJson (que es jsonData['id']).
@@ -70,19 +70,19 @@ class QuestionService {
             (q) => q.questionId == id,
           );
           questions.add(foundQuestion);
-          print('[QServ] Found local question for ID "$id": ${foundQuestion.text.substring(0,_print_text_length(foundQuestion.text))}...');
+          // [QServ] Found local question for ID "$id": ${foundQuestion.text.substring(0,_print_text_length(foundQuestion.text))}...
         } catch (e) {
-          print('[QServ] Local question with ID "$id" NOT FOUND in allLocalQuestions. Error: $e');
+          // [QServ] Local question with ID "$id" NOT FOUND in allLocalQuestions. Error: $e
         }
       }
-      print('[QServ] Returning ${questions.length} local questions for requested IDs: $questionIds');
+      // [QServ] Returning ${questions.length} local questions for requested IDs: $questionIds
       return questions;
     }
   }
 
   Future<List<QuestionModel>> _loadQuestionsFromLocalJson() async {
     try {
-      print('[QServ] Attempting to load questions from local JSON: assets/data/questions.json');
+      // [QServ] Attempting to load questions from local JSON: assets/data/questions.json
       final String jsonString = await rootBundle.loadString('assets/data/questions.json');
       final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
       List<QuestionModel> questions = [];
@@ -92,10 +92,10 @@ class QuestionService {
           // print('[QServ] Parsing local question from JSON with idFromJson: $idFromJson');
           questions.add(QuestionModel.fromJson(jsonData, idFromJson));
       }
-      print('[QServ] Successfully loaded ${questions.length} questions from local JSON.');
+      // [QServ] Successfully loaded ${questions.length} questions from local JSON.
       return questions;
     } catch (e) {
-      print("[QServ] CRITICAL Error loading or decoding local questions from assets/data/questions.json: $e");
+      // [QServ] CRITICAL Error loading or decoding local questions from assets/data/questions.json: $e
       if (e is FlutterError && e.message.contains('Unable to load asset')) {
         // print("[QServ] Asset loading error details: ${e.diagnostics}"); // Puede ser muy verboso
       }
@@ -114,8 +114,5 @@ class QuestionService {
     }
   }
 
-  // Helper para el log, para no imprimir textos de preguntas muy largos
-  int _print_text_length(String text) {
-    return text.length > 50 ? 50 : text.length;
-  }
+
 }

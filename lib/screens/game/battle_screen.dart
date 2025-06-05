@@ -52,9 +52,7 @@ class _BattleScreenState extends State<BattleScreen> {
   Future<void> _loadInitialData() async {
     // Cargar información del enemigo una sola vez al inicio
     try {
-      print(
-        '[BattleScreen] Loading enemy data for ID: ${widget.battleConfig.enemyId}',
-      );
+      // [BattleScreen] Loading enemy data for ID: ${widget.battleConfig.enemyId}
       final enemy = await _enemyService.getEnemyById(
         widget.battleConfig.enemyId,
       );
@@ -64,14 +62,12 @@ class _BattleScreenState extends State<BattleScreen> {
         });
       }
       if (enemy != null) {
-        print('[BattleScreen] Enemy loaded successfully: ${enemy.name}');
+        // [BattleScreen] Enemy loaded successfully: ${enemy.name}
       } else {
-        print(
-          '[BattleScreen] Warning: Enemy not found for ID: ${widget.battleConfig.enemyId}',
-        );
+        // [BattleScreen] Warning: Enemy not found for ID: ${widget.battleConfig.enemyId}
       }
     } catch (e) {
-      print('[BattleScreen] Error loading enemy: $e');
+      // [BattleScreen] Error loading enemy: $e
     }
 
     // Cargar la primera pregunta
@@ -90,7 +86,7 @@ class _BattleScreenState extends State<BattleScreen> {
       if (_questionIds.isNotEmpty &&
           _currentQuestionIndex < _questionIds.length) {
         final questionId = _questionIds[_currentQuestionIndex];
-        print('[BattleScreen] Loading question: $questionId');
+        // [BattleScreen] Loading question: $questionId
 
         // Cargar la pregunta real desde el servicio
         final questions = await _questionService.getQuestionsByIds([
@@ -105,7 +101,7 @@ class _BattleScreenState extends State<BattleScreen> {
             });
           }
         } else {
-          print('[BattleScreen] No question found for ID: $questionId');
+          // [BattleScreen] No question found for ID: $questionId
           if (mounted) {
             setState(() {
               _isLoading = false;
@@ -120,9 +116,7 @@ class _BattleScreenState extends State<BattleScreen> {
           }
         }
       } else {
-        print(
-          '[BattleScreen] No more questions to load or invalid question index',
-        );
+        // [BattleScreen] No more questions to load or invalid question index
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -130,7 +124,7 @@ class _BattleScreenState extends State<BattleScreen> {
         }
       }
     } catch (e) {
-      print('[BattleScreen] Error loading question: $e');
+      // [BattleScreen] Error loading question: $e
       if (mounted) {
         setState(() {
           _isLoading = false;

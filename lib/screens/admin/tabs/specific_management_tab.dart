@@ -75,8 +75,8 @@ class _SpecificManagementTabState extends State<SpecificManagementTab> {
           padding: const EdgeInsets.all(16),
           margin: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: widget.color.withOpacity(0.1),
-            border: Border.all(color: widget.color.withOpacity(0.3)),
+            color: widget.color.withValues(alpha: 0.1),
+            border: Border.all(color: widget.color.withValues(alpha: 0.3)),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -100,7 +100,7 @@ class _SpecificManagementTabState extends State<SpecificManagementTab> {
                       'Gestiona específicamente tus valores de ${widget.fieldName}.',
                       style: TextStyle(
                         fontSize: 12,
-                        color: widget.color.withOpacity(0.8),
+                        color: widget.color.withValues(alpha: 0.8),
                       ),
                     ),
                   ],
@@ -338,6 +338,7 @@ class _SpecificManagementTabState extends State<SpecificManagementTab> {
             onPressed: () async {
               final value = int.tryParse(controller.text);
               if (value == null || value < 0 || value > maxValue) {
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -349,12 +350,16 @@ class _SpecificManagementTabState extends State<SpecificManagementTab> {
                 return;
               }
 
+              // Capturar contextos antes de operaciones async
+              final navigatorContext = Navigator.of(context);
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+              
               try {
                 await _usersCol.doc(userId).update({field: value});
                 if (!mounted) return;
                 widget.onDataUpdated?.call(); // Notificar cambios
-                Navigator.pop(context, true); // Notificar que hubo cambios
-                ScaffoldMessenger.of(context).showSnackBar(
+                navigatorContext.pop(true); // Notificar que hubo cambios
+                scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       '$fieldName actualizado correctamente a $value',
@@ -363,7 +368,8 @@ class _SpecificManagementTabState extends State<SpecificManagementTab> {
                   ),
                 );
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                if (!mounted) return;
+                scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text('Error al actualizar: $e'),
                     backgroundColor: Colors.red,

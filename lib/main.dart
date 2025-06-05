@@ -19,6 +19,8 @@ import 'screens/inventory_screen.dart'; // Importar InventoryScreen
 import 'screens/leaderboard_screen.dart'; // Importar LeaderboardScreen
 import 'screens/error_log_screen.dart'; // Importar ErrorLogScreen
 import 'screens/debug_firebase_screen.dart'; // Importar DebugFirebaseScreen
+import 'screens/tutorials_screen.dart'; // Importar TutorialsScreen
+import 'screens/code_exercises_screen.dart'; // Importar CodeExercisesScreen
 import 'utils/error_handler.dart'; // Importar ErrorHandler
 import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
 import 'utils/platform_utils.dart'; // Importar PlatformUtils
@@ -290,6 +292,12 @@ class MyApp extends StatelessWidget {
         '/leaderboard':
             (context) =>
                 const RewardNotificationManager(child: LeaderboardScreen()),
+        '/tutorials':
+            (context) =>
+                const RewardNotificationManager(child: TutorialsScreen()),
+        '/code-exercises':
+            (context) =>
+                const RewardNotificationManager(child: CodeExercisesScreen()),
         '/error-logs':
             (context) => const ErrorLogScreen(), // Nueva ruta para ver los logs
         '/debug-firebase':
@@ -461,10 +469,11 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
               }
 
               // Navegar usando Future.microtask para evitar infinite rebuilds
+              final navigator = Navigator.of(context);
               Future.microtask(() {
                 if (mounted) {
                   // Asegurarse que el widget sigue montado antes de navegar
-                  Navigator.pushReplacementNamed(context, routeToGo);
+                  navigator.pushReplacementNamed(routeToGo);
                 }
               });
               // Muestra el splash screen mientras la navegación ocurre
@@ -473,9 +482,10 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
           );
         } else {
           // Usuario no autenticado
+          final navigator = Navigator.of(context);
           Future.microtask(() {
             if (mounted) {
-              Navigator.pushReplacementNamed(context, '/auth');
+              navigator.pushReplacementNamed('/auth');
             }
           });
           return _buildSplashScreen(); // Muestra splash mientras navega a /auth

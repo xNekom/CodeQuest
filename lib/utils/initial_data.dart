@@ -41,9 +41,9 @@ class InitialData {
       );
       await _rewardService.createReward(reward2);
 
-      print('Recompensas iniciales creadas exitosamente');
+      // Recompensas iniciales creadas exitosamente
     } catch (e) {
-      print('Error al crear recompensas iniciales: $e');
+      // Error al crear recompensas iniciales: $e
     }
   }
 
@@ -83,9 +83,9 @@ class InitialData {
       );
       await _rewardService.createAchievement(achievement2);
 
-      print('Logros iniciales creados exitosamente');
+      // Logros iniciales creados exitosamente
     } catch (e) {
-      print('Error al crear logros iniciales: $e');
+      // Error al crear logros iniciales: $e
     }
   }
 }

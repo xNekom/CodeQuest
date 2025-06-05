@@ -9,11 +9,11 @@ class UserAchievementsTab extends StatefulWidget {
   final Map<String, dynamic>? userData;
 
   const UserAchievementsTab({
-    Key? key,
+    super.key,
     required this.usersCol,
     required this.achievementsCol,
     required this.userData,
-  }) : super(key: key);
+  });
 
   @override
   State<UserAchievementsTab> createState() => _UserAchievementsTabState();
@@ -276,8 +276,8 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
       }
     }
 
-
-
+    if (!mounted) return;
+    
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -295,7 +295,7 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
               ),
             ],
           ),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             height: 400,
             child: Column(
@@ -437,13 +437,16 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
       return;
     }
 
+    // Capture ScaffoldMessenger before async operation
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
     try {
       await widget.usersCol.doc(currentUserId).update({
         'unlockedAchievements': achievements,
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Row(
               children: [
@@ -458,7 +461,7 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Row(
               children: [
@@ -495,9 +498,13 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
       return;
     }
 
+    // Capture context and ScaffoldMessenger before async operations
+    final dialogContext = context;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    
     // Mostrar diálogo de confirmación
     final confirmed = await showDialog<bool>(
-      context: context,
+      context: dialogContext,
       builder:
           (context) => AlertDialog(
             title: Row(
@@ -528,13 +535,13 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     );
 
     if (confirmed != true) return;
-
+    
     try {
       await widget.usersCol.doc(currentUserId).update({
         'unlockedAchievements': FieldValue.arrayRemove([achievementId]),
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Row(
               children: [
@@ -549,7 +556,7 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Row(
               children: [

@@ -25,8 +25,8 @@ class AchievementCard extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isUnlocked
-                  ? PixelTheme.secondaryColor.withOpacity(0.7)
-                  : Colors.grey.withOpacity(0.5),
+                  ? PixelTheme.secondaryColor.withValues(alpha: 0.7)
+                  : Colors.grey.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isUnlocked ? PixelTheme.accentColor : Colors.grey.shade600,
@@ -36,7 +36,7 @@ class AchievementCard extends StatelessWidget {
               isUnlocked
                   ? [
                     BoxShadow(
-                      color: PixelTheme.accentColor.withOpacity(0.3),
+                      color: PixelTheme.accentColor.withValues(alpha: 0.3),
                       spreadRadius: 1,
                       blurRadius: 4,
                       offset: const Offset(0, 3),
@@ -98,7 +98,7 @@ class AchievementCard extends StatelessWidget {
                             isUnlocked
                                 ? Theme.of(
                                   context,
-                                ).colorScheme.onSurface.withOpacity(0.8)
+                                ).colorScheme.onSurface.withValues(alpha: 0.8)
                                 : Colors.grey.shade600,
                       ),
                     ),
@@ -112,7 +112,7 @@ class AchievementCard extends StatelessWidget {
                             fontStyle: FontStyle.italic,
                             color: Theme.of(
                               context,
-                            ).colorScheme.onSurface.withOpacity(0.6),
+                            ).colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                       ),

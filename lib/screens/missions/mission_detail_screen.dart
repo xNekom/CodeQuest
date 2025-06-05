@@ -133,7 +133,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                 Container(
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.8),
+                    color: Colors.black.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Theme.of(context).colorScheme.primary,
@@ -149,7 +149,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                         Shadow(
                           offset: const Offset(2, 2),
                           blurRadius: 4,
-                          color: Colors.black.withOpacity(0.9),
+                          color: Colors.black.withValues(alpha: 0.9),
                         ),
                       ],
                     ),
@@ -160,7 +160,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                 Container(
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -172,7 +172,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                         Shadow(
                           offset: const Offset(1, 1),
                           blurRadius: 3,
-                          color: Colors.black.withOpacity(0.9),
+                          color: Colors.black.withValues(alpha: 0.9),
                         ),
                       ],
                     ),
@@ -203,7 +203,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                         Container(
                           padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
+                            color: Colors.black.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -215,7 +215,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                                 Shadow(
                                   offset: const Offset(1, 1),
                                   blurRadius: 2,
-                                  color: Colors.black.withOpacity(0.8),
+                                  color: Colors.black.withValues(alpha: 0.8),
                                 ),
                               ],
                             ),

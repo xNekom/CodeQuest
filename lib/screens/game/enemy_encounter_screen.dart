@@ -136,7 +136,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.red.withOpacity(0.3),
+            color: Colors.red.withValues(alpha: 0.3),
             blurRadius: 15,
             spreadRadius: 2,
           ),
@@ -151,7 +151,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
             color: Colors.white,
             shadows: [
               Shadow(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 blurRadius: 4,
                 offset: const Offset(2, 2),
               ),
@@ -166,7 +166,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
               fontWeight: FontWeight.bold,
               shadows: [
                 Shadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   blurRadius: 2,
                   offset: const Offset(1, 1),
                 ),
@@ -313,7 +313,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                 color: Colors.white,
                                 shadows: [
                                   Shadow(
-                                    color: Colors.black.withOpacity(0.7),
+                                    color: Colors.black.withValues(alpha: 0.7),
                                     blurRadius: 4,
                                     offset: const Offset(2, 2),
                                   ),
@@ -354,7 +354,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                         child: Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade900.withOpacity(0.9),
+                            color: Colors.grey.shade900.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: Colors.red.shade400,
@@ -362,7 +362,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.red.withOpacity(0.2),
+                                color: Colors.red.withValues(alpha: 0.2),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               ),

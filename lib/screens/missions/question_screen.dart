@@ -59,20 +59,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
       _questions = [];
     });
     try {
-      print('[QS] Loading mission structure for ID: ${widget.missionId}');
+      // [QS] Loading mission structure for ID: ${widget.missionId}
       final MissionModel? mission = await _missionService.getMissionById(
         widget.missionId,
       );
 
       if (mission != null) {
         _missionName = mission.name;
-        print(
-          '[QS] Mission loaded: ${mission.name}. Objectives count: ${mission.objectives.length}',
-        );
+        // [QS] Mission loaded: ${mission.name}. Objectives count: ${mission.objectives.length}
         mission.objectives.asMap().forEach((idx, obj) {
-          print(
-            '[QS] Objective $idx: type=${obj.type}, description=${obj.description}, questionIds=${obj.questionIds}',
-          );
+          // [QS] Objective $idx: type=${obj.type}, description=${obj.description}, questionIds=${obj.questionIds}
         });
 
         Objective? questionObjective;
@@ -81,28 +77,20 @@ class _QuestionScreenState extends State<QuestionScreen> {
           questionObjective = mission.objectives.firstWhere(
             (obj) => obj.type == 'questions' && obj.questionIds.isNotEmpty,
           );
-          print(
-            '[QS] Found question objective: ${questionObjective.description}, questionIds: ${questionObjective.questionIds}',
-          );
+          // [QS] Found question objective: ${questionObjective.description}, questionIds: ${questionObjective.questionIds}
         } catch (e) {
           questionObjective =
               null; // No se encontró un objetivo de tipo 'questions' con questionIds no vacíos
-          print(
-            '[QS] No question objective with non-empty questionIds found for mission ${mission.name}. Error: $e',
-          );
+          // [QS] No question objective with non-empty questionIds found for mission ${mission.name}. Error: $e
         }
 
         // questionObjective.questionIds != null ya no es necesario debido al cambio en Objective.fromJson
         if (questionObjective != null &&
             questionObjective.questionIds.isNotEmpty) {
-          print(
-            '[QS] Objective has questionIds: ${questionObjective.questionIds}',
-          );
+          // [QS] Objective has questionIds: ${questionObjective.questionIds}
           final List<QuestionModel> loadedQuestions = await _questionService
               .getQuestionsByIds(questionObjective.questionIds);
-          print(
-            '[QS] Loaded ${loadedQuestions.length} questions from QuestionService.',
-          );
+          // [QS] Loaded ${loadedQuestions.length} questions from QuestionService.
 
           if (loadedQuestions.isNotEmpty) {
             setState(() {
@@ -110,9 +98,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
               _isLoading = false;
             });
           } else {
-            print(
-              "[QS] Warning: QuestionService returned no questions for IDs: ${questionObjective.questionIds}. Mission: ${widget.missionId}.",
-            );
+            // [QS] Warning: QuestionService returned no questions for IDs: ${questionObjective.questionIds}. Mission: ${widget.missionId}.
             setState(() {
               _isLoading = false;
               _errorMessage =
@@ -120,27 +106,21 @@ class _QuestionScreenState extends State<QuestionScreen> {
             });
           }
         } else {
-          print(
-            "[QS] Mission ${mission.name} (ID: ${widget.missionId}) has no valid questionIds in its objectives or no objectives of type 'questions' with IDs.",
-          );
+          // [QS] Mission ${mission.name} (ID: ${widget.missionId}) has no valid questionIds in its objectives or no objectives of type 'questions' with IDs.
           setState(() {
             _isLoading = false;
             _errorMessage = "No se encontraron preguntas para esta misión.";
           });
         }
       } else {
-        print(
-          "[QS] Error: Mission with ID ${widget.missionId} not found by MissionService.",
-        );
+        // [QS] Error: Mission with ID ${widget.missionId} not found by MissionService.
         setState(() {
           _isLoading = false;
           _errorMessage = "Misión no encontrada.";
         });
       }
     } catch (e) {
-      print(
-        "[QS] CRITICAL Error loading mission structure for ${widget.missionId}: $e",
-      );
+      // [QS] CRITICAL Error loading mission structure for ${widget.missionId}: $e
       setState(() {
         _isLoading = false;
         _errorMessage =
@@ -377,8 +357,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
             if (_answerSubmitted) {
               if (isSelected) {
                 btnColor = _isCurrentAnswerCorrect! ? Colors.green : Colors.red;
-              } else if (isCorrectOpt)
+              } else if (isCorrectOpt) {
                 btnColor = Colors.green;
+              }
             }
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
