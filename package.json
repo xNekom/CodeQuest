@@ -8,7 +8,11 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "analyze-firestore": "node scripts/firestore_analyzer.js",
+    "check-missions": "node scripts/firestore_analyzer.js",
+    "fix-missions": "node scripts/fix_missions_firestore.js",
+    "remove-character-stats": "node scripts/remove_character_stats.js"
   },
   "keywords": [],
   "author": "",
