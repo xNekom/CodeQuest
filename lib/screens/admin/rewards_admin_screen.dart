@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../models/reward_model.dart';
 import '../../models/achievement_model.dart';
 import '../../../services/reward_service.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 class RewardsAdminScreen extends StatefulWidget {
   const RewardsAdminScreen({super.key});
@@ -18,9 +19,9 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Administrar Recompensas y Logros'),
-          bottom: const TabBar(
+        appBar: const PixelAdminAppBar(
+          title: 'Administrar Recompensas y Logros',
+          bottom: TabBar(
             tabs: [
               Tab(text: 'Recompensas'),
               Tab(text: 'Logros'),
@@ -80,7 +81,7 @@ class _RewardsTabState extends State<RewardsTab> {
               
               return ListView.separated(
                 itemCount: rewards.length,
-                separatorBuilder: (_, __) => const Divider(),
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final reward = rewards[index];
                   return ListTile(
@@ -158,7 +159,7 @@ class _RewardsTabState extends State<RewardsTab> {
     
     final nameController = TextEditingController(text: reward?.name ?? '');
     final descriptionController = TextEditingController(text: reward?.description ?? '');
-    final iconUrlController = TextEditingController(text: reward?.iconUrl ?? '');
+
     final valueController = TextEditingController(text: reward?.value.toString() ?? '0');
     
     String selectedType = reward?.type ?? 'points';
@@ -180,28 +181,29 @@ class _RewardsTabState extends State<RewardsTab> {
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                 ),
-                TextField(
-                  controller: iconUrlController,
-                  decoration: const InputDecoration(labelText: 'URL del Icono'),
-                ),
+
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedType,
-                  decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
-                  items: const [
-                    DropdownMenuItem(value: 'points', child: Text('Puntos')),
-                    DropdownMenuItem(value: 'item', child: Text('Objeto')),
-                    DropdownMenuItem(value: 'badge', child: Text('Insignia')),
-                    DropdownMenuItem(value: 'coins', child: Text('Monedas')),
-                    DropdownMenuItem(value: 'experience', child: Text('Experiencia')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedType = value;
-                      });
-                    }
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedType,
+                    decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(value: 'points', child: Text('Puntos', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'item', child: Text('Objeto', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'badge', child: Text('Insignia', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'coins', child: Text('Monedas', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'experience', child: Text('Experiencia', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedType = value;
+                        });
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -221,7 +223,7 @@ class _RewardsTabState extends State<RewardsTab> {
               onPressed: () async {
                 final name = nameController.text.trim();
                 final description = descriptionController.text.trim();
-                final iconUrl = iconUrlController.text.trim();
+
                 final value = int.tryParse(valueController.text) ?? 0;
                 
                 if (name.isEmpty) {
@@ -235,7 +237,6 @@ class _RewardsTabState extends State<RewardsTab> {
                   id: reward?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
                   name: name,
                   description: description,
-                  iconUrl: iconUrl,
                   type: selectedType,
                   value: value,
                 );
@@ -350,7 +351,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
               
               return ListView.separated(
                 itemCount: achievements.length,
-                separatorBuilder: (_, __) => const Divider(),
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final achievement = achievements[index];
                   return ListTile(
@@ -394,7 +395,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
     
     final nameController = TextEditingController(text: achievement?.name ?? '');
     final descriptionController = TextEditingController(text: achievement?.description ?? '');
-    final iconUrlController = TextEditingController(text: achievement?.iconUrl ?? '');
+
     final pointsController = TextEditingController(text: achievement?.points.toString() ?? '10');
     
     String selectedCategory = achievement?.category ?? 'general';
@@ -419,28 +420,29 @@ class _AchievementsTabState extends State<AchievementsTab> {
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                 ),
-                TextField(
-                  controller: iconUrlController,
-                  decoration: const InputDecoration(labelText: 'URL del Icono'),
-                ),
+
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedCategory,
-                  decoration: const InputDecoration(labelText: 'Categoría'),
-                  items: const [
-                    DropdownMenuItem(value: 'general', child: Text('General')),
-                    DropdownMenuItem(value: 'enemy', child: Text('Enemigos')),
-                    DropdownMenuItem(value: 'mission', child: Text('Misiones')),
-                    DropdownMenuItem(value: 'combat', child: Text('Combate')),
-                    DropdownMenuItem(value: 'exploration', child: Text('Exploración')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedCategory = value;
-                      });
-                    }
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    decoration: const InputDecoration(labelText: 'Categoría'),
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(value: 'general', child: Text('General', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'enemy', child: Text('Enemigos', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'mission', child: Text('Misiones', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'combat', child: Text('Combate', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                      DropdownMenuItem(value: 'exploration', child: Text('Exploración', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedCategory = value;
+                        });
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -458,18 +460,26 @@ class _AchievementsTabState extends State<AchievementsTab> {
                     
                     final rewards = snapshot.data!;
                     
-                    return DropdownButtonFormField<String>(
-                      value: selectedRewardId.isEmpty ? null : selectedRewardId,
-                      decoration: const InputDecoration(labelText: 'Recompensa'),
-                      items: rewards.map((reward) => DropdownMenuItem(
-                        value: reward.id,
-                        child: Text(reward.name),
-                      )).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedRewardId = value ?? '';
-                        });
-                      },
+                    return SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        value: selectedRewardId.isEmpty ? null : selectedRewardId,
+                        decoration: const InputDecoration(labelText: 'Recompensa'),
+                        isExpanded: true,
+                        items: rewards.map((reward) => DropdownMenuItem(
+                          value: reward.id,
+                          child: Text(
+                            reward.name,
+                            style: const TextStyle(fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedRewardId = value ?? '';
+                          });
+                        },
+                      ),
                     );
                   },
                 ),
@@ -503,7 +513,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
               onPressed: () async {
                 final name = nameController.text.trim();
                 final description = descriptionController.text.trim();
-                final iconUrl = iconUrlController.text.trim();
+
                 final points = int.tryParse(pointsController.text) ?? 10;
                 
                 if (name.isEmpty) {
@@ -524,7 +534,6 @@ class _AchievementsTabState extends State<AchievementsTab> {
                   id: achievement?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
                   name: name,
                   description: description,
-                  iconUrl: iconUrl,
                   category: selectedCategory,
                   points: points,
                   conditions: _buildConditions(selectedCategory, requiredMissionIds),

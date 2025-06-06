@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/story_page_model.dart';
 // Assuming PixelButton is in pixel_widgets.dart
-import '../../widgets/pixel_widgets.dart'; 
+import '../../widgets/pixel_widgets.dart';
+import '../../widgets/pixel_app_bar.dart'; 
 
 class StoryScreen extends StatefulWidget {
   final List<StoryPageModel> storyPages;
@@ -48,7 +49,10 @@ class _StoryScreenState extends State<StoryScreen> {
   Widget build(BuildContext context) {
     if (widget.storyPages.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Teoría de la Misión')),
+        appBar: const PixelAppBar(
+          title: 'Teoría de la Misión',
+          titleFontSize: 12,
+        ),
         body: const Center(child: Text('No hay páginas de historia disponibles.')),
       );
     }
@@ -57,10 +61,11 @@ class _StoryScreenState extends State<StoryScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Teoría: Página ${_currentPageIndex + 1}/${widget.storyPages.length}'),
+      appBar: PixelAppBar(
+        title: 'Teoría: Página ${_currentPageIndex + 1}/${widget.storyPages.length}',
         backgroundColor: theme.colorScheme.surface,
         foregroundColor: theme.colorScheme.onSurface,
+        titleFontSize: 12,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

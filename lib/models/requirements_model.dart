@@ -1,10 +1,12 @@
+// Define los requisitos que un jugador debe cumplir para acceder a cierto contenido (ej. misiones, ítems).
 class RequirementsModel {
-  final int? level;
-  final String? completedMissionId;
-  final String? itemRequired;
+  final int? level; // Nivel mínimo requerido del jugador.
+  final String? completedMissionId; // ID de una misión que debe haber sido completada previamente.
+  final String? itemRequired; // ID de un ítem que el jugador debe poseer.
   // Using Map<String, dynamic> for skillRequired to match JSON structure: "skillRequired": {"skillName": "navegacion", "level": 3}
-  final Map<String, dynamic>? skillRequired; 
+  final Map<String, dynamic>? skillRequired; // Habilidad y nivel requeridos (ej. {"skillName": "navegacion", "level": 3}). 
 
+  // Constructor para crear una instancia de RequirementsModel.
   RequirementsModel({
     this.level,
     this.completedMissionId,

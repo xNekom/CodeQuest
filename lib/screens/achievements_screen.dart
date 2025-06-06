@@ -9,6 +9,7 @@ import '../models/achievement_model.dart';
 import '../models/reward_model.dart'; // Importar Reward
 import '../widgets/achievement_card.dart';
 import '../widgets/pixel_art_background.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/tutorial_floating_button.dart';
 
@@ -79,7 +80,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
     if (mounted) {
       TutorialService.startTutorialIfNeeded(
         context,
-        TutorialService.achievementScreenTutorial,
+        TutorialService.achievementsTutorial,
         TutorialService.getAchievementsTutorial(
           progressKey: _progressBarKey,
           achievementGridKey: _achievementListKey,
@@ -102,10 +103,9 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: PixelAppBar(
         key: _backButtonKey,
-        title: const Text('LOGROS', style: TextStyle(fontFamily: 'PixelFont', fontWeight: FontWeight.bold)),
-        elevation: 0,
+        title: 'LOGROS',
       ),
       body: PixelArtBackground(
         child: _isLoading
@@ -113,7 +113,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
             : _buildContent(),
       ),
       floatingActionButton: TutorialFloatingButton(
-        tutorialKey: TutorialService.achievementScreenTutorial,
+        tutorialKey: TutorialService.achievementsTutorial,
         tutorialSteps: TutorialService.getAchievementsTutorial(
           progressKey: _progressBarKey,
           achievementGridKey: _achievementListKey,
@@ -292,12 +292,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
               ),
               child: unlocked
                   ? Center(
-                      child: Image.network(
-                        a.iconUrl,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.emoji_events, size: 48, color: Theme.of(context).colorScheme.tertiary);
-                        },
-                      ),
+                      child: Icon(Icons.emoji_events, size: 48, color: Theme.of(context).colorScheme.tertiary),
                     )
                   : const Center(
                       child: Icon(

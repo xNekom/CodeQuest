@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/code_exercise_model.dart';
 import '../config/app_config.dart';
-import 'package:flutter/foundation.dart';
+
 
 /// Servicio para manejar ejercicios de programación
 class CodeExerciseService {
@@ -19,7 +19,7 @@ class CodeExerciseService {
           return CodeExerciseModel.fromJson(doc.data() as Map<String, dynamic>);
         }
       } catch (e) {
-        debugPrint('Error al obtener ejercicio desde Firebase: $e');
+        // debugPrint('Error al obtener ejercicio desde Firebase: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
       return null;
     } else {
@@ -44,7 +44,7 @@ class CodeExerciseService {
         }
       }
     } catch (e) {
-      debugPrint('Error al cargar ejercicio desde JSON local: $e');
+      // debugPrint('Error al cargar ejercicio desde JSON local: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
     return null;
   }
@@ -53,17 +53,17 @@ class CodeExerciseService {
   Future<List<CodeExerciseModel>> getAllExercises() async {
     if (AppConfig.shouldUseFirebase) {
       try {
-        debugPrint('🔍 Intentando obtener ejercicios desde Firebase...');
+        // debugPrint('🔍 Intentando obtener ejercicios desde Firebase...'); // REMOVIDO PARA PRODUCCIÓN
         QuerySnapshot snapshot =
             await _firestore
                 .collection('code_exercises')
                 .orderBy('difficulty')
                 .get();
 
-        debugPrint('📊 Documentos encontrados: ${snapshot.docs.length}');
+        // debugPrint('📊 Documentos encontrados: ${snapshot.docs.length}'); // REMOVIDO PARA PRODUCCIÓN
 
         if (snapshot.docs.isEmpty) {
-          debugPrint('⚠️ No se encontraron ejercicios en Firestore');
+          // debugPrint('⚠️ No se encontraron ejercicios en Firestore'); // REMOVIDO PARA PRODUCCIÓN
           return [];
         }
 
@@ -71,22 +71,22 @@ class CodeExerciseService {
         for (var doc in snapshot.docs) {
           try {
             final data = doc.data() as Map<String, dynamic>;
-            debugPrint('📄 Procesando documento: ${doc.id}');
-            debugPrint('📋 Datos: ${data.keys.toList()}');
+            // debugPrint('📄 Procesando documento: ${doc.id}'); // REMOVIDO PARA PRODUCCIÓN
+            // debugPrint('📋 Datos: ${data.keys.toList()}'); // REMOVIDO PARA PRODUCCIÓN
 
             final exercise = CodeExerciseModel.fromJson(data);
             exercises.add(exercise);
-            debugPrint('✅ Ejercicio agregado: ${exercise.title}');
+            // debugPrint('✅ Ejercicio agregado: ${exercise.title}'); // REMOVIDO PARA PRODUCCIÓN
           } catch (docError) {
-            debugPrint('❌ Error procesando documento ${doc.id}: $docError');
+            // debugPrint('❌ Error procesando documento ${doc.id}: $docError'); // REMOVIDO PARA PRODUCCIÓN
           }
         }
 
-        debugPrint('🎯 Total de ejercicios procesados: ${exercises.length}');
+        // debugPrint('🎯 Total de ejercicios procesados: ${exercises.length}'); // REMOVIDO PARA PRODUCCIÓN
         return exercises;
       } catch (e) {
-        debugPrint('❌ Error al obtener ejercicios desde Firebase: $e');
-        debugPrint('📱 Stack trace: ${StackTrace.current}');
+        // debugPrint('❌ Error al obtener ejercicios desde Firebase: $e'); // REMOVIDO PARA PRODUCCIÓN
+        // debugPrint('📱 Stack trace: ${StackTrace.current}'); // REMOVIDO PARA PRODUCCIÓN
         // En lugar de devolver lista vacía, lanzar el error
         rethrow;
       }
@@ -109,7 +109,7 @@ class CodeExerciseService {
           )
           .toList();
     } catch (e) {
-      debugPrint('Error al cargar ejercicios desde JSON local: $e');
+      // debugPrint('Error al cargar ejercicios desde JSON local: $e'); // REMOVIDO PARA PRODUCCIÓN
       return [];
     }
   }

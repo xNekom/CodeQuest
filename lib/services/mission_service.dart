@@ -18,12 +18,12 @@ class MissionService {
           try {
             missions.add(MissionModel.fromFirestore(doc));
           } catch (e) {
-            print('[MissionService] Error parsing mission with ID ${doc.id}: $e');
-            print('[MissionService] Data for mission ${doc.id}: ${doc.data()}');
+            // [MissionService] Error parsing mission with ID ${doc.id}: $e
+            // [MissionService] Data for mission ${doc.id}: ${doc.data()}
           }
         }
         if (missions.isEmpty && snapshot.docs.isNotEmpty) {
-          print('[MissionService] All mission documents failed to parse.');
+          // [MissionService] All mission documents failed to parse.
         }
         return missions;
       });
@@ -43,7 +43,7 @@ class MissionService {
           return MissionModel.fromFirestore(doc);
         }
       } catch (e) {
-        print('Error al obtener misión por ID desde Firebase: $e');
+        // Error al obtener misión por ID desde Firebase: $e
       }
       return null;
     } else {
@@ -54,11 +54,11 @@ class MissionService {
   // Helper para cargar todas las misiones desde JSON local
   Future<List<MissionModel>> _loadMissionsFromLocalJson() async {
     try {
-      print('[MissionService] Attempting to load missions from local JSON...');
+      // [MissionService] Attempting to load missions from local JSON...
       final String jsonString = await rootBundle.loadString('assets/data/missions_data.json');
-      print('[MissionService] JSON string loaded: ${jsonString.substring(0, jsonString.length > 500 ? 500 : jsonString.length)}...'); // Log part of the string
+      // [MissionService] JSON string loaded: ${jsonString.substring(0, jsonString.length > 500 ? 500 : jsonString.length)}... // Log part of the string
       final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
-      print('[MissionService] JSON string decoded into list. Number of items: ${jsonList.length}');
+      // [MissionService] JSON string decoded into list. Number of items: ${jsonList.length}
       
       final List<MissionModel> missions = [];
       for (var data in jsonList) {
@@ -68,18 +68,18 @@ class MissionService {
           // print('[MissionService] Parsing mission with ID from JSON: $missionIdFromJson');
           missions.add(MissionModel.fromJson(jsonData, missionIdFromJson));
         } catch (e) {
-          print('[MissionService] Error parsing a single mission object: $e. Data: $data');
+          // [MissionService] Error parsing a single mission object: $e. Data: $data
           // Continuar con la siguiente misión en lugar de fallar todo
         }
       }
       
-      print('[MissionService] Missions parsed from local JSON. Count: ${missions.length}');
+      // [MissionService] Missions parsed from local JSON. Count: ${missions.length}
       if (jsonList.isNotEmpty && missions.isEmpty) {
-        print('[MissionService] CRITICAL: Decoded JSON list was not empty, but no missions were successfully parsed.');
+        // [MissionService] CRITICAL: Decoded JSON list was not empty, but no missions were successfully parsed.
       }
       return missions;
     } catch (e) {
-      print("[MissionService] CRITICAL Error loading or decoding local missions: $e");
+      // [MissionService] CRITICAL Error loading or decoding local missions: $e
       return [];
     }
   }

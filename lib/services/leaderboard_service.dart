@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import '../models/leaderboard_entry_model.dart';
 
 class LeaderboardService {
@@ -43,7 +42,7 @@ class LeaderboardService {
       }
       return null; // Usuario no encontrado en el leaderboard
     } catch (e) {
-      debugPrint('Error al obtener ranking del usuario: $e');
+      // debugPrint('Error al obtener ranking del usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       return null;
     }
   }
@@ -84,7 +83,7 @@ class LeaderboardService {
         });
       }
     } catch (e) {
-      debugPrint('Error al actualizar entrada del leaderboard: $e');
+      // debugPrint('Error al actualizar entrada del leaderboard: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -105,7 +104,7 @@ class LeaderboardService {
         );
       }).toList();
     } catch (e) {
-      debugPrint('Error al obtener top usuarios: $e');
+      // debugPrint('Error al obtener top usuarios: $e'); // REMOVIDO PARA PRODUCCIÓN
       return [];
     }
   }
@@ -140,7 +139,7 @@ class LeaderboardService {
         score: score,
       );
     } catch (e) {
-      debugPrint('Error al actualizar puntuación del usuario: $e');
+      // debugPrint('Error al actualizar puntuación del usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }

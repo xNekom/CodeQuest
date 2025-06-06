@@ -1,8 +1,10 @@
+// Representa una página individual dentro de una secuencia de historia o narrativa.
 class StoryPageModel {
-  final int pageNumber;
-  final String text;
-  final String? imageUrl; // Optional image URL
+  final int pageNumber; // Número de página, para ordenar la secuencia.
+  final String text; // Contenido de texto de la página.
+  final String? imageUrl; // URL opcional a una imagen para esta página de la historia.
 
+  // Constructor para crear una instancia de StoryPageModel.
   StoryPageModel({
     required this.pageNumber,
     required this.text,

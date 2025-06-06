@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../models/code_exercise_model.dart';
-import '../services/code_exercise_service.dart';
-import '../utils/error_handler.dart';
 import '../utils/overflow_utils.dart';
-import 'pixel_widgets.dart';
+import 'pixel_app_bar.dart';
+import '../theme/pixel_theme.dart';
 
 /// Widget del playground de código donde el usuario completa líneas faltantes
 class CodePlayground extends StatefulWidget {
@@ -24,7 +22,6 @@ class CodePlayground extends StatefulWidget {
 }
 
 class _CodePlaygroundState extends State<CodePlayground> {
-  final CodeExerciseService _exerciseService = CodeExerciseService();
   final TextEditingController _codeController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
 
@@ -41,7 +38,9 @@ class _CodePlaygroundState extends State<CodePlayground> {
     // Buscar solo la primera línea que necesita ser completada
     for (int i = 0; i < lines.length; i++) {
       if (!foundFirstMatch &&
-          lines[i].trim().startsWith('// Escribe aquí tu código')) {
+          (lines[i].trim().startsWith('// Escribe aquí tu código') ||
+           lines[i].trim().startsWith('// Escribe aquí tu respuesta') ||
+           lines[i].trim().startsWith('// ¿Cuál'))) {
         lines[i] = '    // COMPLETAR: Escribe aquí la línea de código';
         foundFirstMatch = true;
         break;
@@ -59,13 +58,20 @@ class _CodePlaygroundState extends State<CodePlayground> {
       case 'variables_basicas':
         return 'String nombre = "Juan"; System.out.println("Mi nombre es " + nombre);';
       case 'operaciones_matematicas':
-        return 'int suma = numero1 + numero2; System.out.println("Suma: " + suma);';
+      case 'operaciones_basicas':
+        return '31';
       case 'condicionales_if':
         return 'if (edad >= 18) System.out.println("Eres mayor de edad");';
       case 'bucle_for_basico':
         return 'for (int i = 1; i <= 3; i++) System.out.print(i + " ");';
       case 'metodo_simple':
         return 'System.out.println(saludar("Ana"));';
+      case 'clase_simple_personaje':
+        return 'A';
+      case 'constructor_personaje':
+        return 'B';
+      case 'herencia_basica':
+        return 'C';
       default:
         return '';
     }
@@ -220,7 +226,9 @@ class _CodePlaygroundState extends State<CodePlayground> {
               children: [
                 Icon(Icons.celebration, color: Colors.amber[600]),
                 const SizedBox(width: 8),
-                const Text('¡Excelente!'),
+                const Expanded(
+                  child: Text('¡Excelente!'),
+                ),
               ],
             ),
             content: Column(
@@ -274,8 +282,8 @@ class _CodePlaygroundState extends State<CodePlayground> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.exercise.title),
+      appBar: PixelAppBar(
+        title: widget.exercise.title,
         backgroundColor: Colors.blue[800],
         foregroundColor: Colors.white,
         actions: [
@@ -332,7 +340,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Colors.purple[25],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.purple[200]!),
                         ),
                         child: Column(
@@ -383,7 +391,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.purple[300]!),
                         ),
                         child: Column(
@@ -465,7 +473,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(6),
+                                  borderRadius: BorderRadius.circular(PixelTheme.borderRadiusSmall + 2),
                                   border: Border.all(color: Colors.blue[200]!),
                                 ),
                                 child: Row(
@@ -601,7 +609,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.green[300]!),
                         ),
                         child: Text(
@@ -651,7 +659,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.grey[50],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                           border: Border.all(color: Colors.grey[300]!),
                         ),
                         child: Column(
@@ -930,12 +938,14 @@ class _CodePlaygroundState extends State<CodePlayground> {
                             size: 20,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            'Error de compilación:',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red[700],
-                              fontSize: 16,
+                          Expanded(
+                            child: Text(
+                              'Error de compilación:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red[700],
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ],
@@ -946,7 +956,7 @@ class _CodePlaygroundState extends State<CodePlayground> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusSmall),
                           border: Border.all(color: Colors.red[300]!),
                         ),
                         child: Text(

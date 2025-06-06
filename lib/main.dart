@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'widgets/pixel_app_bar.dart';
 import 'dart:async';
 import 'firebase_options.dart';
 import 'screens/auth/auth_wrapper.dart';
@@ -18,10 +19,14 @@ import 'screens/shop_screen.dart'; // Importar ShopScreen
 import 'screens/inventory_screen.dart'; // Importar InventoryScreen
 import 'screens/leaderboard_screen.dart'; // Importar LeaderboardScreen
 import 'screens/error_log_screen.dart'; // Importar ErrorLogScreen
-import 'screens/debug_firebase_screen.dart'; // Importar DebugFirebaseScreen
+// import 'screens/debug_firebase_screen.dart'; // Importar DebugFirebaseScreen - REMOVIDO PARA PRODUCCIÓN
+import 'screens/tutorials_screen.dart'; // Importar TutorialsScreen
+import 'screens/code_exercises_screen.dart'; // Importar CodeExercisesScreen
 import 'utils/error_handler.dart'; // Importar ErrorHandler
 import 'utils/navigator_error_observer.dart'; // Importar ErrorHandlingNavigatorObserver
 import 'utils/platform_utils.dart'; // Importar PlatformUtils
+import 'utils/overflow_utils.dart'; // Importar OverflowUtils y NavigationService
+import 'services/audio_service.dart'; // Importar AudioService
 
 // Clave global para ScaffoldMessenger
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -35,6 +40,9 @@ void main() async {
     () async {
       // Asegura que Flutter esté inicializado
       WidgetsFlutterBinding.ensureInitialized();
+      
+      // Configurar el NavigationService con la clave global
+      NavigationService.navigatorKey = navigatorKey;
 
       try {
         // Configurar el manejador global de errores
@@ -54,11 +62,14 @@ void main() async {
           options: DefaultFirebaseOptions.currentPlatform,
         );
 
+        // Inicializar servicio de audio
+        await AudioService().initialize();
+
         runApp(const MyApp());
       } catch (e, stack) {
         // Manejar errores durante la inicialización
-        debugPrint('Error crítico durante la inicialización: $e');
-        debugPrint(stack.toString());
+        // debugPrint('Error crítico durante la inicialización: $e'); // REMOVIDO PARA PRODUCCIÓN
+    // debugPrint(stack.toString()); // REMOVIDO PARA PRODUCCIÓN
 
         // Intenta ejecutar una versión mínima de la app que permite reintentar
         runApp(_buildEmergencyApp(e, stack));
@@ -135,8 +146,50 @@ Widget _buildEmergencyApp(dynamic error, StackTrace stack) {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+        // App se minimiza o pierde el foco
+        AudioService().pauseOnAppBackground();
+        break;
+      case AppLifecycleState.resumed:
+        // App vuelve al primer plano
+        AudioService().resumeOnAppForeground();
+        break;
+      case AppLifecycleState.detached:
+        // App se está cerrando
+        AudioService().stopAllAudio();
+        break;
+      case AppLifecycleState.hidden:
+        // App está oculta (solo en algunas plataformas)
+        AudioService().pauseOnAppBackground();
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +200,8 @@ class MyApp extends StatelessWidget {
         ErrorHandler.logError(errorDetails.exception, errorDetails.stack);
       } catch (e) {
         // Si falla el logging, al menos imprimir en consola
-        debugPrint('Error logging failed: $e');
-        debugPrint('Original error: ${errorDetails.exception}');
+        // debugPrint('Error logging failed: $e'); // REMOVIDO PARA PRODUCCIÓN
+      // debugPrint('Original error: ${errorDetails.exception}'); // REMOVIDO PARA PRODUCCIÓN
       }
       
       // Crear un widget de error simple sin usar Theme.of(context) para evitar bucles infinitos
@@ -184,7 +237,7 @@ class MyApp extends StatelessWidget {
                     try {
                       navigatorKey.currentState?.pushNamedAndRemoveUntil('/home', (route) => false);
                     } catch (e) {
-                      debugPrint('Error en navegación desde ErrorWidget: $e');
+                      // debugPrint('Error en navegación desde ErrorWidget: $e'); // REMOVIDO PARA PRODUCCIÓN
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -218,7 +271,10 @@ class MyApp extends StatelessWidget {
         return MaterialPageRoute(
           builder:
               (context) => Scaffold(
-                appBar: AppBar(title: const Text('Ruta no encontrada')),
+                appBar: const PixelAppBar(
+                  title: 'Ruta no encontrada',
+                  titleFontSize: 12,
+                ),
                 body: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -286,11 +342,15 @@ class MyApp extends StatelessWidget {
         '/leaderboard':
             (context) =>
                 const RewardNotificationManager(child: LeaderboardScreen()),
+        '/tutorials':
+            (context) =>
+                const RewardNotificationManager(child: TutorialsScreen()),
+        '/code-exercises':
+            (context) =>
+                const RewardNotificationManager(child: CodeExercisesScreen()),
         '/error-logs':
             (context) => const ErrorLogScreen(), // Nueva ruta para ver los logs
-        '/debug-firebase':
-            (context) =>
-                const DebugFirebaseScreen(), // Ruta temporal para debug Firebase
+        // '/debug-firebase': (context) => const DebugFirebaseScreen(), // REMOVIDO PARA PRODUCCIÓN
       },
     );
   }
@@ -303,102 +363,32 @@ class AuthCheckScreen extends StatefulWidget {
   State<AuthCheckScreen> createState() => _AuthCheckScreenState();
 }
 
-class _AuthCheckScreenState extends State<AuthCheckScreen>
-    with SingleTickerProviderStateMixin {
+class _AuthCheckScreenState extends State<AuthCheckScreen> {
   final AuthService _authService = AuthService();
   final UserService _userService = UserService();
 
-  late AnimationController _animationController;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    // Limitar la animación a 3 repeticiones para evitar bucles infinitos
-    _startLimitedAnimation();
-  }
-
-  void _startLimitedAnimation() {
-    int repeatCount = 0;
-    const maxRepeats = 3;
-    
-    _animationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
-        repeatCount++;
-        if (repeatCount < maxRepeats * 2) { // *2 porque cada ciclo tiene completed y dismissed
-          if (status == AnimationStatus.completed) {
-            _animationController.reverse();
-          } else {
-            _animationController.forward();
-          }
-        }
-      }
-    });
-    
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
   Widget _buildSplashScreen() {
     return Scaffold(
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ScaleTransition(
-                scale: _animation,
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 2),
-                    color: Theme.of(context).colorScheme.surface,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(
-                          51,
-                        ), // Reemplazado .withOpacity(0.2)
-                        offset: const Offset(4, 4),
-                        blurRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.code,
-                        size: 80,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        'CodeQuest',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ],
-                  ),
-                ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo/logo_app.png',
+              width: 150,
+              height: 150,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'CodeQuest',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
-              const SizedBox(height: 20),
-              const Text('Aventura de programación en Java'),
-              const SizedBox(height: 40),
-              const CircularProgressIndicator(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -457,10 +447,11 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
               }
 
               // Navegar usando Future.microtask para evitar infinite rebuilds
+              final navigator = Navigator.of(context);
               Future.microtask(() {
                 if (mounted) {
                   // Asegurarse que el widget sigue montado antes de navegar
-                  Navigator.pushReplacementNamed(context, routeToGo);
+                  navigator.pushReplacementNamed(routeToGo);
                 }
               });
               // Muestra el splash screen mientras la navegación ocurre
@@ -469,9 +460,10 @@ class _AuthCheckScreenState extends State<AuthCheckScreen>
           );
         } else {
           // Usuario no autenticado
+          final navigator = Navigator.of(context);
           Future.microtask(() {
             if (mounted) {
-              Navigator.pushReplacementNamed(context, '/auth');
+              navigator.pushReplacementNamed('/auth');
             }
           });
           return _buildSplashScreen(); // Muestra splash mientras navega a /auth

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/pixel_widgets.dart';
 import '../../utils/error_handler.dart';
@@ -22,12 +23,50 @@ class _SignInScreenState extends State<SignInScreen> {
   
   String _error = '';
   bool _isLoading = false;
+  bool _rememberCredentials = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  // Cargar credenciales guardadas
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('saved_email') ?? '';
+    final savedPassword = prefs.getString('saved_password') ?? '';
+    final rememberMe = prefs.getBool('remember_credentials') ?? false;
+    
+    if (rememberMe && savedEmail.isNotEmpty) {
+      setState(() {
+        _emailController.text = savedEmail;
+        _passwordController.text = savedPassword;
+        _rememberCredentials = rememberMe;
+      });
+    }
+  }
+
+  // Guardar credenciales si está marcado el checkbox
+  Future<void> _saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    if (_rememberCredentials) {
+      await prefs.setString('saved_email', _emailController.text.trim());
+      await prefs.setString('saved_password', _passwordController.text);
+      await prefs.setBool('remember_credentials', true);
+    } else {
+      await prefs.remove('saved_email');
+      await prefs.remove('saved_password');
+      await prefs.setBool('remember_credentials', false);
+    }
   }
   // Método para manejar el inicio de sesión
   Future<void> _handleSignIn() async {
@@ -38,6 +77,9 @@ class _SignInScreenState extends State<SignInScreen> {
       });
       
       try {
+        // Guardar credenciales antes del login
+        await _saveCredentials();
+        
         await _authService.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
@@ -127,6 +169,28 @@ class _SignInScreenState extends State<SignInScreen> {
                             onFieldSubmitted: (_) => _handleSignIn(),
                           ),
                           
+                          const SizedBox(height: 16.0),
+                          
+                          // Checkbox para recordar credenciales
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberCredentials,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberCredentials = value ?? false;
+                                  });
+                                },
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Recordar correo y contraseña',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                          
                           const SizedBox(height: 24.0),
                           
                           if (_error.isNotEmpty)
@@ -146,34 +210,34 @@ class _SignInScreenState extends State<SignInScreen> {
                           
                           const SizedBox(height: 16.0),
                           
-                          PixelButton(
-                            isSecondary: true,
-                            onPressed: () {
+                          // Texto para olvidar contraseña
+                          GestureDetector(
+                            onTap: () {
                               Navigator.pushNamed(context, '/password-recovery');
                             },
-                            child: const Text('OLVIDÉ MI CONTRASEÑA'),
+                            child: Text(
+                              '¿Olvidaste tu contraseña?',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           
                           const SizedBox(height: 16.0),
                           
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            children: [
-                              const Text('¿No tienes cuenta? '),
-                              GestureDetector(
-                                onTap: () {
-                                  widget.toggleView?.call();
-                                },
-                                child: Text(
-                                  'Regístrate',
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          // Botón para registrarse
+                          PixelButton(
+                            isSecondary: true,
+                            onPressed: () {
+                              widget.toggleView?.call();
+                            },
+                            child: const Text('REGISTRARSE'),
                           ),
+                          
+                          const SizedBox(height: 8.0),
                         ],
                       ),
                     ),

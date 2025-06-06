@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <style>
+      .graduation-cap { fill: #2196F3; }
+      .tassel { fill: #FF9800; }
+      .book { fill: #4CAF50; }
+      .background { fill: #FFFFFF; }
+    </style>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" class="background" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- Book base -->
+  <rect x="8" y="18" width="16" height="8" rx="1" class="book"/>
+  <rect x="9" y="19" width="14" height="1" fill="#388E3C"/>
+  
+  <!-- Graduation cap -->
+  <path d="M6 14 L16 10 L26 14 L16 18 Z" class="graduation-cap"/>
+  <rect x="15" y="14" width="2" height="8" class="graduation-cap"/>
+  
+  <!-- Tassel -->
+  <circle cx="25" cy="13" r="1" class="tassel"/>
+  <line x1="25" y1="14" x2="25" y2="18" stroke="#FF9800" stroke-width="1"/>
+  <circle cx="25" cy="18" r="0.5" class="tassel"/>
+</svg>

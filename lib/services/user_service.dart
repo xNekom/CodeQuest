@@ -15,7 +15,7 @@ class UserService {
           await _firestore.collection('users').doc(uid).get();
       return doc.exists ? doc.data() as Map<String, dynamic> : null;
     } catch (e) {
-      debugPrint('Error al obtener datos del usuario: $e');
+      // debugPrint('Error al obtener datos del usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       return null;
     }
   }
@@ -25,7 +25,7 @@ class UserService {
     try {
       await _firestore.collection('users').doc(uid).update(data);
     } catch (e) {
-      debugPrint('Error al actualizar datos del usuario: $e');
+      // debugPrint('Error al actualizar datos del usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -71,31 +71,24 @@ class UserService {
       int currentExp = userData['experience'] ?? 0;
       int currentLevel = userData['level'] ?? 1;
 
-      // Calcular experiencia máxima para el nivel actual
-      int maxExpForCurrentLevel = currentLevel * 100;
-
       // Calcular nueva experiencia
       int newExp = currentExp + experiencePoints;
 
       Map<String, dynamic> updateData = {};
 
-      // Verificar si excede la experiencia máxima del nivel actual
-      if (newExp >= maxExpForCurrentLevel) {
-        // No se puede ganar más experiencia hasta subir de nivel por misiones
-        // Mantener la experiencia en el máximo del nivel actual
-        updateData['experience'] = maxExpForCurrentLevel;
+      // Verificar si alcanza o supera los 400 XP (límite por nivel)
+      if (newExp >= 400) {
+        // Subir de nivel y resetear experiencia a 0
+        int newLevel = currentLevel + 1;
+        updateData['level'] = newLevel;
+        updateData['experience'] = 0;
+        updateData['coins'] = FieldValue.increment(200); // Bonificación por subir de nivel
 
-        debugPrint(
-          '[UserService] Experiencia limitada al máximo del nivel $currentLevel: $maxExpForCurrentLevel XP',
-        );
-        debugPrint(
-          '[UserService] Para subir de nivel, completa 3 misiones de teoría y 1 de batalla',
-        );
+        debugPrint('[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel!');
+        debugPrint('[UserService] Experiencia reseteada a 0 XP');
       } else {
         updateData['experience'] = newExp;
-        debugPrint(
-          '[UserService] Experiencia actualizada: $newExp/$maxExpForCurrentLevel XP',
-        );
+        debugPrint('[UserService] Experiencia actualizada: $newExp/400 XP');
       }
 
       await _firestore.collection('users').doc(uid).update(updateData);
@@ -103,7 +96,7 @@ class UserService {
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      debugPrint('Error al añadir experiencia: $e');
+      // debugPrint('Error al añadir experiencia: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -124,7 +117,7 @@ class UserService {
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      debugPrint('Error al actualizar estadísticas: $e');
+      // debugPrint('Error al actualizar estadísticas: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -140,6 +133,7 @@ class UserService {
         userData['completedMissions'] ?? [],
       );
       int currentLevel = userData['level'] ?? 1;
+      int currentExp = userData['experience'] ?? 0;
 
       // Obtener información de todas las misiones para clasificarlas
       final missionsSnapshot = await _firestore.collection('missions').get();
@@ -183,41 +177,24 @@ class UserService {
 
       // Verificar si debe subir de nivel basado en misiones completadas
       if (newLevel > currentLevel) {
-        // Calcular experiencia redistribuida para el nuevo nivel
-        // Misiones de teoría restantes en el nivel actual (después de los grupos de 3)
-        int remainingTheoryMissions = theoryMissionsCompleted % 3;
-        // Experiencia base: 25 XP por misión de teoría restante, 50 XP por misión de batalla extra
-        int redistributedExp = (remainingTheoryMissions * 25);
-
-        // Si hay misiones de batalla extra (más allá de las necesarias para el nivel)
-        int extraBattleMissions = battleMissionsCompleted - completeLevels;
-        if (extraBattleMissions > 0) {
-          redistributedExp += (extraBattleMissions * 50);
-        }
-
-        // Limitar la experiencia al máximo del nuevo nivel
-        int maxExpForNewLevel = newLevel * 100;
-        redistributedExp = redistributedExp.clamp(0, maxExpForNewLevel);
-
+        // Con el nuevo sistema, simplemente subir de nivel y mantener experiencia actual
+        // Si la experiencia actual es >= 400, se reseteará a 0 en la próxima ganancia de XP
         Map<String, dynamic> updateData = {
           'level': newLevel,
-          'experience': redistributedExp, // Resetear y redistribuir experiencia
           'coins': FieldValue.increment(
             (newLevel - currentLevel) * 200,
           ), // Bonificación por subir de nivel
         };
 
+        // Solo resetear experiencia si está en 400 o más
+        if (currentExp >= 400) {
+          updateData['experience'] = 0;
+        }
+
         await _firestore.collection('users').doc(uid).update(updateData);
 
-        debugPrint(
-          '[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel por misiones completadas!',
-        );
-        debugPrint(
-          '[UserService] Misiones completadas: $theoryMissionsCompleted teoría, $battleMissionsCompleted batalla',
-        );
-        debugPrint(
-          '[UserService] Experiencia redistribuida: $redistributedExp/$maxExpForNewLevel XP',
-        );
+        debugPrint('[UserService] ¡Usuario $uid subió del nivel $currentLevel al nivel $newLevel por misiones completadas!');
+        debugPrint('[UserService] Misiones completadas: $theoryMissionsCompleted teoría, $battleMissionsCompleted batalla');
 
         // Actualizar puntuación en el leaderboard
         await _leaderboardService.updateUserScore(uid);
@@ -239,7 +216,7 @@ class UserService {
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      debugPrint('Error al actualizar estadísticas de batalla: $e');
+      // debugPrint('Error al actualizar estadísticas de batalla: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -252,7 +229,7 @@ class UserService {
         'stats.totalEnemiesDefeated': FieldValue.increment(1),
       });
     } catch (e) {
-      debugPrint('Error al actualizar estadísticas de enemigos: $e');
+      // debugPrint('Error al actualizar estadísticas de enemigos: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -275,13 +252,13 @@ class UserService {
         // Si la misión ya está completada, no hacer nada
         if (completedMissions.contains(missionId)) {
           debugPrint(
-            '[UserService] Misión $missionId ya está completada para el usuario $uid',
+            '[UserService] Misión $missionId ya está completada',
           );
           return;
         }
       }
     } catch (e) {
-      debugPrint('[UserService] Error al verificar misiones completadas: $e');
+      // debugPrint('[UserService] Error al verificar misiones completadas: $e'); // REMOVIDO PARA PRODUCCIÓN
       return;
     }
 
@@ -309,32 +286,66 @@ class UserService {
       // Verificar progreso de nivel después de completar la misión
       await _checkLevelProgression(uid, isBattleMission);
     } catch (e) {
-      debugPrint('[UserService] Error al actualizar misión en usuario: $e');
-    }
+        // debugPrint('[UserService] Error al actualizar misión en usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
 
     // Intentar desbloquear logros y otorgar recompensas sin propagar errores
     try {
       await _rewardService.checkAndUnlockAchievement(uid, missionId);
     } catch (e) {
-      debugPrint('[UserService] Error al desbloquear logros: $e');
-    }
+        // debugPrint('[UserService] Error al desbloquear logros: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
 
     // Actualizar puntuación en el leaderboard
     try {
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      debugPrint('[UserService] Error al actualizar leaderboard: $e');
-    }
+        // debugPrint('[UserService] Error al actualizar leaderboard: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
   }
 
   // Añadir un item al inventario
   Future<void> addItemToInventory(String uid, Map<String, dynamic> item) async {
     try {
+      // Obtener el inventario actual del usuario
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      if (!userDoc.exists) {
+        throw Exception('Usuario no encontrado');
+      }
+
+      final userData = userDoc.data() as Map<String, dynamic>;
+      final inventory = userData['inventory'] as Map<String, dynamic>? ?? {};
+      final items = List<Map<String, dynamic>>.from(inventory['items'] ?? []);
+      
+      final itemId = item['itemId'] as String;
+      final quantityToAdd = item['quantity'] as int? ?? 1;
+      
+      // Buscar si el item ya existe en el inventario
+      bool itemFound = false;
+      for (int i = 0; i < items.length; i++) {
+        if (items[i]['itemId'] == itemId) {
+          // El item ya existe, incrementar la cantidad
+          final currentQuantity = items[i]['quantity'] as int? ?? 1;
+          items[i]['quantity'] = currentQuantity + quantityToAdd;
+          itemFound = true;
+          break;
+        }
+      }
+      
+      // Si el item no existe, añadirlo al inventario
+      if (!itemFound) {
+        items.add({
+          'itemId': itemId,
+          'quantity': quantityToAdd,
+        });
+      }
+      
+      // Actualizar el inventario en Firestore
       await _firestore.collection('users').doc(uid).update({
-        'inventory.items': FieldValue.arrayUnion([item]),
+        'inventory.items': items,
       });
     } catch (e) {
-      debugPrint('Error al añadir item al inventario: $e');
+      // debugPrint('Error al añadir item al inventario: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -347,7 +358,7 @@ class UserService {
         'progressInMission': {},
       });
     } catch (e) {
-      debugPrint('Error al iniciar misión: $e');
+      // debugPrint('Error al iniciar misión: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -363,7 +374,7 @@ class UserService {
         'progressInMission.$questionId': isCorrect,
       });
     } catch (e) {
-      debugPrint('Error al actualizar progreso en misión: $e');
+      // debugPrint('Error al actualizar progreso en misión: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -384,10 +395,10 @@ class UserService {
           }, SetOptions(merge: true));
 
       debugPrint(
-        '[UserService] Teoría marcada como completada para usuario $uid, misión $missionId',
+        '[UserService] Teoría marcada como completada para misión $missionId',
       );
     } catch (e) {
-      debugPrint('[UserService] Error al marcar teoría como completada: $e');
+      // debugPrint('[UserService] Error al marcar teoría como completada: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }

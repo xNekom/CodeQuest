@@ -1,29 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Representa un logro que el usuario puede desbloquear en el juego.
 class Achievement {
-  final String id;
-  final String name;
-  final String description;
-  final String iconUrl; // URL al icono del logro
+  final String id; // Identificador único del logro.
+  final String name; // Nombre visible del logro.
+  final String description; // Descripción detallada de cómo obtener el logro.
+  final String? iconUrl; // URL del icono del logro (archivo SVG).
+
   final List<String> requiredMissionIds; // IDs de las misiones necesarias para desbloquear
   final String rewardId; // ID de la recompensa otorgada
-  final Timestamp? unlockedDate;
+  final Timestamp? unlockedDate; // Fecha y hora en que el usuario desbloqueó el logro. Null si aún no se ha desbloqueado.
   
   // Nuevos campos requeridos
   final String category; // Categoría del logro
   final int points; // Puntos que otorga el logro
-  final Map<String, dynamic> conditions; // Condiciones para desbloquear
+  final Map<String, dynamic> conditions; // Condiciones adicionales o específicas para desbloquear el logro (ej. completar X misiones de tipo Y).
   
   // Nuevos campos para logros basados en enemigos
   final String? requiredEnemyId; // ID del enemigo específico que debe ser derrotado
   final int? requiredEnemyDefeats; // Número de veces que debe ser derrotado
-  final String? achievementType; // 'mission' o 'enemy'
+  final String? achievementType; // Tipo de logro, por ejemplo, 'mission' (basado en misiones) o 'enemy' (basado en derrotar enemigos).
 
+  // Constructor para crear una instancia de Achievement.
   Achievement({
     required this.id,
     required this.name,
     required this.description,
-    required this.iconUrl,
+    this.iconUrl,
+
     required this.requiredMissionIds,
     required this.rewardId,
     required this.category,
@@ -39,6 +43,7 @@ class Achievement {
       'name': name,
       'description': description,
       'iconUrl': iconUrl,
+
       'requiredMissionIds': requiredMissionIds,
       'rewardId': rewardId,
       'category': category,
@@ -55,7 +60,8 @@ class Achievement {
       id: map['id'] is String ? map['id'] as String : throw ArgumentError('Invalid or missing "id"'),
       name: map['name'],
       description: map['description'],
-      iconUrl: map['iconUrl'],
+      iconUrl: map['iconUrl'] as String?,
+
       requiredMissionIds: map['requiredMissionIds'] is List
           ? List<String>.from(map['requiredMissionIds'])
           : [],

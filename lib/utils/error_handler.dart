@@ -53,9 +53,9 @@ class ErrorHandler {
            );
          } catch (e3) {
            // Como último recurso, mostrar un diálogo simple
-           debugPrint('Error mostrando SnackBar: $e2');
-           debugPrint('Error con ScaffoldMessenger global: $e3');
-           debugPrint('Mensaje de error original: $message');
+           // debugPrint('Error mostrando SnackBar: $e2'); // REMOVIDO PARA PRODUCCIÓN
+    // debugPrint('Error con ScaffoldMessenger global: $e3'); // REMOVIDO PARA PRODUCCIÓN
+    // debugPrint('Mensaje de error original: $message'); // REMOVIDO PARA PRODUCCIÓN
            showErrorDialog(context, 'Error', message);
          }
        }
@@ -100,7 +100,7 @@ class ErrorHandler {
     
     // Prevenir múltiples páginas de error simultáneas
     if (_isShowingErrorPage) {
-      debugPrint('Previniendo múltiples páginas de error simultáneas');
+      // debugPrint('Previniendo múltiples páginas de error simultáneas'); // REMOVIDO PARA PRODUCCIÓN
       return;
     }
     
@@ -126,14 +126,14 @@ class ErrorHandler {
         _isShowingErrorPage = false;
       });
     } catch (e) {
-      debugPrint('Error al mostrar página de error: $e');
+      // debugPrint('Error al mostrar página de error: $e'); // REMOVIDO PARA PRODUCCIÓN
       _isShowingErrorPage = false;
     }
   }
   /// Procesa un error y devuelve un mensaje amigable para el usuario
   static String handleError(dynamic error) {
     // Registrar el error para depuración
-    debugPrint('Error capturado: $error');
+    // debugPrint('Error capturado: $error'); // REMOVIDO PARA PRODUCCIÓN
     
     if (error is FirebaseAuthException) {
       return _handleFirebaseAuthError(error);
@@ -142,8 +142,32 @@ class ErrorHandler {
     } else if (error.toString().contains('SocketException') || 
                error.toString().contains('TimeoutException')) {
       return _handleNetworkError(error);
+    } else if (error is Exception) {
+      return _handleCustomException(error);
     } else {
       return 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
+    }
+  }
+
+  /// Maneja excepciones personalizadas de la aplicación
+  static String _handleCustomException(Exception error) {
+    final errorMessage = error.toString();
+    
+    // Remover el prefijo 'Exception: ' si existe
+    final cleanMessage = errorMessage.startsWith('Exception: ') 
+        ? errorMessage.substring(11) 
+        : errorMessage;
+    
+    // Verificar errores específicos conocidos
+    if (cleanMessage.contains('El nombre de usuario ya está en uso')) {
+      return 'Este nombre de usuario ya está registrado. Por favor elige otro nombre de usuario.';
+    } else if (cleanMessage.contains('username') && cleanMessage.contains('already')) {
+      return 'Este nombre de usuario ya está registrado. Por favor elige otro nombre de usuario.';
+    } else if (cleanMessage.contains('email') && cleanMessage.contains('already')) {
+      return 'Este correo electrónico ya está registrado. ¿Ya tienes una cuenta?';
+    } else {
+      // Para otros errores personalizados, devolver el mensaje limpio
+      return cleanMessage.isNotEmpty ? cleanMessage : 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
     }
   }
 
@@ -211,14 +235,14 @@ class ErrorHandler {
       stackTrace: stackTrace,
     );
     
-    // También mantener el log en consola para debugging
-    debugPrint('====== ERROR ======');
-    debugPrint(error.toString());
-    if (stackTrace != null) {
-      debugPrint('------ Stack Trace ------');
-      debugPrint(stackTrace.toString());
-    }
-    debugPrint('=====================');
+    // También mantener el log en consola para debugging - REMOVIDO PARA PRODUCCIÓN
+    // debugPrint('====== ERROR ======');
+    // debugPrint(error.toString());
+    // if (stackTrace != null) {
+    //   debugPrint('------ Stack Trace ------');
+    //   debugPrint(stackTrace.toString());
+    // }
+    // debugPrint('=====================');
   }  /// Configura manejadores globales de errores para toda la aplicación.
   /// Se debe llamar en el main() antes de runApp().
   static Future<void> setupGlobalErrorHandling() async {
@@ -247,7 +271,7 @@ class ErrorHandler {
     PlatformDispatcher.instance.onError = (error, stack) {
       // Verificar si es un error conocido de plataforma web
       if (kIsWeb && error.toString().contains('Unsupported operation: Platform._version')) {
-        debugPrint('Ignorando error conocido de Platform en Web: $error');
+        // debugPrint('Ignorando error conocido de Platform en Web: $error'); // REMOVIDO PARA PRODUCCIÓN
         return true; // Ignorar este error específico
       }
       
@@ -269,7 +293,7 @@ class ErrorHandler {
   }) {
     // Prevenir bucles infinitos
     if (_isHandlingCriticalError) {
-      debugPrint('Previniendo bucle infinito en handleCriticalError: $error');
+      // debugPrint('Previniendo bucle infinito en handleCriticalError: $error'); // REMOVIDO PARA PRODUCCIÓN
       return;
     }
     
@@ -278,7 +302,7 @@ class ErrorHandler {
     try {
       // Verificar si es un error web que podemos ignorar
       if (kIsWeb && WebPlatformHandler.shouldIgnoreWebError(error)) {
-        debugPrint('Ignorando error web en handleCriticalError: $error');
+        // debugPrint('Ignorando error web en handleCriticalError: $error'); // REMOVIDO PARA PRODUCCIÓN
         return;
       }
       
@@ -286,8 +310,8 @@ class ErrorHandler {
       try {
         logError(error, stackTrace);
       } catch (e) {
-        debugPrint('Error al registrar error crítico: $e');
-        debugPrint('Error original: $error');
+        // debugPrint('Error al registrar error crítico: $e'); // REMOVIDO PARA PRODUCCIÓN
+      // debugPrint('Error original: $error'); // REMOVIDO PARA PRODUCCIÓN
       }
       
       // Mostrar al usuario si se requiere y si tenemos un contexto
@@ -329,14 +353,14 @@ class ErrorHandler {
                   );
                 } catch (e) {
                   // Si falla la navegación, intentar con el contexto normal
-                  debugPrint('Error en navegación con rootNavigator, intentando navegación normal: $e');
+                  // debugPrint('Error en navegación con rootNavigator, intentando navegación normal: $e'); // REMOVIDO PARA PRODUCCIÓN
                   try {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       '/home',
                       (route) => false,
                     );
                   } catch (e2) {
-                    debugPrint('Error en navegación normal: $e2');
+                    // debugPrint('Error en navegación normal: $e2'); // REMOVIDO PARA PRODUCCIÓN
                     // Como último recurso, hacer pop
                     Navigator.of(context).pop();
                   }

@@ -7,7 +7,8 @@ import 'theory_screen.dart';
 import '../game/enemy_encounter_screen.dart';
 import 'question_screen.dart';
 import '../../widgets/pixel_widgets.dart';
-import '../../utils/custom_page_route.dart'; // Import FadePageRoute
+import '../../widgets/pixel_app_bar.dart';
+// Import FadePageRoute
 import '../../services/tutorial_service.dart';
 import '../../widgets/tutorial_floating_button.dart';
 
@@ -43,9 +44,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
       context,
       TutorialService.missionDetailTutorial,
       TutorialService.getMissionDetailTutorial(
-        missionTitleKey: _missionTitleKey,
-        missionDescriptionKey: _missionDescriptionKey,
-        startMissionButtonKey: _startMissionButtonKey,
+        descriptionKey: _missionDescriptionKey,
+        startButtonKey: _startMissionButtonKey,
       ),
     );
   }
@@ -75,7 +75,10 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detalle de Misión')),
+      appBar: const PixelAppBar(
+        title: 'Detalle de Misión',
+        titleFontSize: 12,
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -124,44 +127,60 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
 
           final name = mission.name;
           final description = mission.description;
-          final theory = mission.theory ?? 'Sin teoría disponible.';
-          final examples = mission.examples ?? <String>[];
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(2, 2),
-                        blurRadius: 4,
-                        color: Colors.black.withOpacity(0.8),
-                      ),
-                    ],
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
                   ),
-                  key: _missionTitleKey,
+                  child: Text(
+                    name,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(2, 2),
+                          blurRadius: 4,
+                          color: Colors.black.withValues(alpha: 0.9),
+                        ),
+                      ],
+                    ),
+                    key: _missionTitleKey,
+                  ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(1, 1),
-                        blurRadius: 3,
-                        color: Colors.black.withOpacity(0.7),
-                      ),
-                    ],
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  key: _missionDescriptionKey,
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(1, 1),
+                          blurRadius: 3,
+                          color: Colors.black.withValues(alpha: 0.9),
+                        ),
+                      ],
+                    ),
+                    key: _missionDescriptionKey,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 if (isMissionCompleted)
@@ -184,13 +203,29 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'Ya has completado esta misión y recibido las recompensas.',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey[600]),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Ya has completado esta misión y recibido las recompensas.',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  offset: const Offset(1, 1),
+                                  blurRadius: 2,
+                                  color: Colors.black.withValues(alpha: 0.8),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                         ),
+                         const SizedBox(height: 16),
                         PixelButton(
                           onPressed: () {
                             // Permitir repetir la lección sin recompensas
@@ -205,7 +240,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                               // Navegar directamente a la pantalla de encuentro con enemigo
                               Navigator.push(
                                 context,
-                                FadePageRoute(
+                                MaterialPageRoute(
                                   builder:
                                       (_) => EnemyEncounterScreen(
                                         battleConfig:
@@ -219,7 +254,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                               // Navegar a la pantalla de teoría
                               Navigator.push(
                                 context,
-                                FadePageRoute(
+                                MaterialPageRoute(
                                   builder:
                                       (_) => TheoryScreen(
                                         missionId: widget.missionId,
@@ -263,10 +298,11 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           // Navegar directamente a la pantalla de encuentro con enemigo
                           Navigator.push(
                             context,
-                            FadePageRoute(
+                            MaterialPageRoute(
                               builder:
                                   (_) => EnemyEncounterScreen(
-                                    battleConfig: firstObjective!.battleConfig!,
+                                    battleConfig:
+                                        firstObjective!.battleConfig!,
                                     isReplay: false,
                                   ),
                             ),
@@ -275,7 +311,7 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
                           // Navegar a la pantalla de teoría tradicional
                           final result = await Navigator.push(
                             context,
-                            FadePageRoute(
+                            MaterialPageRoute(
                               builder:
                                   (_) => TheoryScreen(
                                     missionId: widget.missionId,
@@ -307,9 +343,8 @@ class _MissionDetailScreenState extends State<MissionDetailScreen> {
           TutorialService.showTutorialDialog(
             context,
             TutorialService.getMissionDetailTutorial(
-              missionTitleKey: _missionTitleKey,
-              missionDescriptionKey: _missionDescriptionKey,
-              startMissionButtonKey: _startMissionButtonKey,
+              descriptionKey: _missionDescriptionKey,
+              startButtonKey: _startMissionButtonKey,
             ),
           );
         },

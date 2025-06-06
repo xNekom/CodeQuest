@@ -6,6 +6,8 @@ import '../../services/user_service.dart';
 import '../../services/mission_service.dart';
 import '../../utils/overflow_utils.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../widgets/pixel_app_bar.dart';
+import '../../theme/pixel_theme.dart';
 import 'story_screen.dart';
 import 'question_screen.dart';
 
@@ -31,6 +33,9 @@ class TheoryScreen extends StatefulWidget {
 
 class _TheoryScreenState extends State<TheoryScreen> {
   final PageController _pageController = PageController();
+  final ScrollController _theoryScrollController = ScrollController();
+  final ScrollController _examplesScrollController = ScrollController();
+  final ScrollController _storyScrollController = ScrollController();
   int _currentPage = 0;
   bool _showTechnicalExplanation = false;
   MissionModel? mission;
@@ -56,13 +61,16 @@ class _TheoryScreenState extends State<TheoryScreen> {
         });
       }
     } catch (e) {
-      print('Error loading mission: $e');
+      // Error loading mission: $e
     }
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _theoryScrollController.dispose();
+    _examplesScrollController.dispose();
+    _storyScrollController.dispose();
     super.dispose();
   }
 
@@ -252,20 +260,33 @@ class _TheoryScreenState extends State<TheoryScreen> {
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  return Scrollbar(
+                  return RawScrollbar(
+                    controller: _theoryScrollController,
                     thumbVisibility: true,
+                    thickness: 12,
+                    radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
+                    thumbColor: PixelTheme.primaryColor,
+                    trackColor: PixelTheme.primaryColor.withValues(alpha: 0.2),
+                    trackBorderColor: PixelTheme.primaryColor.withValues(alpha: 0.4),
+                    trackRadius: const Radius.circular(0),
+                    crossAxisMargin: 2,
+                    mainAxisMargin: 4,
                     child: SingleChildScrollView(
+                      controller: _theoryScrollController,
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,
                         ),
-                        child: Text(
-                          _showTechnicalExplanation &&
-                                  mission?.technicalExplanation != null
-                              ? mission!.technicalExplanation!
-                              : widget.theoryText!,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(height: 1.6, fontSize: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16), // Margen para la scrollbar
+                          child: Text(
+                            _showTechnicalExplanation &&
+                                    mission?.technicalExplanation != null
+                                ? mission!.technicalExplanation!
+                                : widget.theoryText!,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(height: 1.6, fontSize: 14), // Reducido de 16 a 14
+                          ),
                         ),
                       ),
                     ),
@@ -305,12 +326,24 @@ class _TheoryScreenState extends State<TheoryScreen> {
           ),
           const SizedBox(height: 24),
           Expanded(
-            child: ListView.builder(
-              itemCount: widget.examples!.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
+            child: RawScrollbar(
+              controller: _examplesScrollController,
+              thumbVisibility: true,
+              thickness: 12,
+              radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
+              thumbColor: PixelTheme.primaryColor,
+              trackColor: PixelTheme.primaryColor.withValues(alpha: 0.2),
+              trackBorderColor: PixelTheme.primaryColor.withValues(alpha: 0.4),
+              trackRadius: const Radius.circular(0),
+              crossAxisMargin: 2,
+              mainAxisMargin: 4,
+              child: ListView.builder(
+                controller: _examplesScrollController,
+                itemCount: widget.examples!.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16, right: 16), // Margen derecho para la scrollbar
+                    padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.grey[900],
                     borderRadius: BorderRadius.circular(8),
@@ -332,13 +365,14 @@ class _TheoryScreenState extends State<TheoryScreen> {
                         style: const TextStyle(
                           fontFamily: 'monospace',
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 12, // Reducido de 14 a 12
                         ),
                       ),
                     ],
                   ),
                 );
-              },
+                },
+              ),
             ),
           ),
         ],
@@ -374,17 +408,30 @@ class _TheoryScreenState extends State<TheoryScreen> {
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  return Scrollbar(
+                  return RawScrollbar(
+                    controller: _storyScrollController,
                     thumbVisibility: true,
+                    thickness: 12,
+                    radius: const Radius.circular(0), // Bordes cuadrados para estilo retro
+                    thumbColor: PixelTheme.primaryColor,
+                    trackColor: PixelTheme.primaryColor.withValues(alpha: 0.2),
+                    trackBorderColor: PixelTheme.primaryColor.withValues(alpha: 0.4),
+                    trackRadius: const Radius.circular(0),
+                    crossAxisMargin: 2,
+                    mainAxisMargin: 4,
                     child: SingleChildScrollView(
+                      controller: _storyScrollController,
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,
                         ),
-                        child: Text(
-                          storyPage.text,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(height: 1.6, fontSize: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16), // Margen para la scrollbar
+                          child: Text(
+                            storyPage.text,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(height: 1.6, fontSize: 14), // Reducido de 16 a 14
+                          ),
                         ),
                       ),
                     ),
@@ -435,10 +482,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
     // Si no hay contenido, mostrar mensaje
     if (_totalPages == 0) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Teoría'),
-          backgroundColor: Colors.purple[700],
-          foregroundColor: Colors.white,
+        appBar: const PixelAppBar(
+          title: 'Teoría',
         ),
         body: const Center(
           child: Text(
@@ -451,10 +496,8 @@ class _TheoryScreenState extends State<TheoryScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Teoría'),
-        backgroundColor: Colors.purple[700],
-        foregroundColor: Colors.white,
+      appBar: const PixelAppBar(
+        title: 'Teoría',
       ),
       body: Column(
         children: [

@@ -9,7 +9,6 @@ void main() {
         id: 'achievement_primer_bug',
         name: 'Primer Bug Vencido',
         description: 'Derrota tu primer Bug del Punto y Coma.',
-        iconUrl: 'assets/images/badge_primer_bug.png',
         category: 'enemy',
         points: 10,
         conditions: {
@@ -43,7 +42,6 @@ void main() {
         id: 'achievement_primer_bug',
         name: 'Primer Bug Vencido',
         description: 'Derrota tu primer Bug del Punto y Coma.',
-        iconUrl: 'assets/images/badge_primer_bug.png',
         category: 'enemy',
         points: 10,
         conditions: {

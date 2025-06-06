@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/pixel_widgets.dart'; // Asumiendo que quieres usar tus widgets personalizados
+import '../../widgets/pixel_app_bar.dart';
 
 class PasswordRecoveryScreen extends StatefulWidget {
   const PasswordRecoveryScreen({super.key});
@@ -50,10 +51,12 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recuperar Contraseña'),
-        backgroundColor: theme.colorScheme.surface,
-        foregroundColor: theme.colorScheme.onSurface,
+      appBar: PixelAppBar(
+        title: 'Recuperar Contraseña',
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -116,7 +119,10 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
                   },
                   child: Text(
                     'Volver a Iniciar Sesión',
-                    style: TextStyle(color: theme.colorScheme.secondary),
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import '../models/code_exercise_model.dart';
 import '../services/code_exercise_service.dart';
+import '../services/reward_service.dart';
+import '../services/tutorial_service.dart';
 import '../widgets/code_playground.dart';
+import '../widgets/tutorial_floating_button.dart';
+import '../widgets/pixel_app_bar.dart';
 import '../utils/overflow_utils.dart';
 
 /// Pantalla que muestra la lista de ejercicios de código disponibles
@@ -14,14 +19,42 @@ class CodeExercisesScreen extends StatefulWidget {
 
 class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   final CodeExerciseService _exerciseService = CodeExerciseService();
+  final RewardService _rewardService = RewardService();
+  final AuthService _authService = AuthService();
   List<CodeExerciseModel> _exercises = [];
   bool _isLoading = true;
   String? _error;
+
+  // GlobalKeys para el sistema de tutoriales
+  final GlobalKey _exerciseListKey = GlobalKey();
+  final GlobalKey _backButtonKey = GlobalKey();
+  final GlobalKey _difficultyFilterKey = GlobalKey();
+  final GlobalKey _searchBarKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _loadExercises();
+    _checkAndStartTutorial();
+  }
+  
+  /// Inicia el tutorial si es necesario
+  Future<void> _checkAndStartTutorial() async {
+    // Esperar a que la UI se construya completamente
+    await Future.delayed(const Duration(milliseconds: 1500));
+    
+    if (mounted) {
+      TutorialService.startTutorialIfNeeded(
+        context,
+        TutorialService.codeExercisesTutorial,
+        TutorialService.getCodeExercisesTutorial(
+          exerciseListKey: _exerciseListKey,
+          searchBarKey: _searchBarKey,
+          difficultyFilterKey: _difficultyFilterKey,
+          backButtonKey: _backButtonKey,
+        ),
+      );
+    }
   }
 
   @override
@@ -41,9 +74,9 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   /// Carga los ejercicios desde el servicio
   Future<void> _loadExercises() async {
     try {
-      debugPrint('🚀 Iniciando carga de ejercicios...');
+      // debugPrint('🚀 Iniciando carga de ejercicios...'); // REMOVIDO PARA PRODUCCIÓN
       final exercises = await _exerciseService.getAllExercises();
-      debugPrint('📚 Ejercicios recibidos: ${exercises.length}');
+      // debugPrint('📚 Ejercicios recibidos: ${exercises.length}'); // REMOVIDO PARA PRODUCCIÓN
 
       setState(() {
         _exercises = exercises;
@@ -52,10 +85,10 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
       });
 
       if (exercises.isEmpty) {
-        debugPrint('⚠️ Lista de ejercicios vacía');
+        // debugPrint('⚠️ Lista de ejercicios vacía'); // REMOVIDO PARA PRODUCCIÓN
       }
     } catch (e) {
-      debugPrint('❌ Error en _loadExercises: $e');
+      // debugPrint('❌ Error en _loadExercises: $e'); // REMOVIDO PARA PRODUCCIÓN
       setState(() {
         _error = 'Error al cargar los ejercicios: $e';
         _isLoading = false;
@@ -64,16 +97,16 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
     }
   }
 
-  /// Navega al playground del ejercicio seleccionado
+  /// Abre el playground para un ejercicio específico
   void _openExercise(CodeExerciseModel exercise) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder:
             (context) => CodePlayground(
               exercise: exercise,
-              onComplete: () {
+              onComplete: () async {
                 Navigator.of(context).pop();
-                // Aquí podrías actualizar el progreso del usuario
+                await _handleExerciseCompletion(exercise);
                 _showCompletionMessage(exercise);
               },
             ),
@@ -81,15 +114,34 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
     );
   }
 
+  /// Maneja la completación de un ejercicio
+  Future<void> _handleExerciseCompletion(CodeExerciseModel exercise) async {
+    final currentUser = _authService.currentUser;
+    if (currentUser != null) {
+      try {
+        // Verificar y otorgar logros por completar el ejercicio
+        await _rewardService.checkAndUnlockCodeExerciseAchievements(
+          currentUser.uid,
+          exercise.exerciseId,
+        );
+      } catch (e) {
+        // Error silencioso para no interrumpir la experiencia del usuario
+        debugPrint('Error al verificar logros: $e');
+      }
+    }
+  }
+
   /// Muestra mensaje de completación del ejercicio
   void _showCompletionMessage(CodeExerciseModel exercise) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('¡Has completado "${exercise.title}"!'),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('¡Has completado "${exercise.title}"!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   /// Construye la tarjeta de un ejercicio
@@ -277,11 +329,13 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ejercicios de Programación'),
-        backgroundColor: Colors.blue[800],
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: PixelAppBar(
+        title: 'Ejercicios de Código',
+        leading: IconButton(
+          key: _backButtonKey,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -354,6 +408,7 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                   children: [
                     // Header con estadísticas
                     Container(
+                      key: _difficultyFilterKey,
                       padding: const EdgeInsets.all(16),
                       child: Card(
                         child: Padding(
@@ -436,6 +491,7 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
 
                     // Lista de ejercicios
                     Expanded(
+                      key: _exerciseListKey,
                       child: ListView.builder(
                         itemCount: _exercises.length,
                         itemBuilder: (context, index) {
@@ -445,6 +501,15 @@ class _CodeExercisesScreenState extends State<CodeExercisesScreen> {
                     ),
                   ],
                 ),
+      ),
+      floatingActionButton: TutorialFloatingButton(
+        tutorialKey: TutorialService.codeExercisesTutorial,
+        tutorialSteps: TutorialService.getCodeExercisesTutorial(
+          exerciseListKey: _exerciseListKey,
+          searchBarKey: _searchBarKey,
+          difficultyFilterKey: _difficultyFilterKey,
+          backButtonKey: _backButtonKey,
+        ),
       ),
     );
   }

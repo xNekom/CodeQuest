@@ -1,44 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Modelo que representa los datos de un usuario en la aplicación.
 class UserModel {
-  // Campos básicos requeridos
-  final String userId;
-  final String username;
-  final String email;
+  // --- Campos básicos de identificación del usuario ---
+  final String userId; // ID único del usuario (generalmente de Firebase Auth).
+  final String username; // Nombre de usuario elegido.
+  final String email; // Correo electrónico del usuario.
 
-  // Campos de progreso del juego
-  String? currentMissionId;
-  List<String>? completedMissions; // Array de strings según Firebase
-  int level;
-  int experience; // Campo principal usado en el código
-  int experiencePoints; // Campo legacy mantenido por compatibilidad
-  int coins; // Campo principal usado en el código
-  int gameCurrency; // Campo legacy mantenido por compatibilidad
+  // --- Campos de progreso en el juego ---
+  String? currentMissionId; // ID de la misión actual en la que está el usuario.
+  List<String>? completedMissions; // Lista de IDs de misiones completadas.
+  int level; // Nivel actual del jugador.
+  int experience; // Puntos de experiencia actuales (campo principal).
+  int experiencePoints; // Puntos de experiencia (campo legacy, mantener por compatibilidad si es necesario).
+  int coins; // Monedas del juego actuales (campo principal).
+  int gameCurrency; // Monedas del juego (campo legacy, mantener por compatibilidad si es necesario).
 
-  // Campos de selección y personalización del personaje
-  bool? characterSelected; // Si el personaje ha sido seleccionado
-  String? characterName; // Nombre del personaje
-  String? adminRole; // Para permisos de admin (user/admin)
-  int characterAssetIndex; // Índice del asset del personaje (0-8)
-  String? programmingRole; // Rol de programación del personaje
+  // --- Campos de personalización del personaje y roles ---
+  bool? characterSelected; // Indica si el usuario ya ha seleccionado su personaje inicial.
+  String? characterName; // Nombre elegido para el personaje del juego.
+  String? role; // Rol del usuario en el sistema (ej. 'user', 'admin').
+  int characterAssetIndex; // Índice del asset visual para el personaje (rango 0-8).
+  String? programmingRole; // Rol de programación elegido por el usuario (ej. 'Desarrollador Full Stack').
 
-  // Campos de progreso y estadísticas
-  Map<String, dynamic>?
-  progressInMission; // Para progreso detallado de misiones
-  Map<String, dynamic>? inventory; // Para sistema de inventario
-  List<String>? unlockedAbilities; // Para habilidades desbloqueadas
-  Map<String, dynamic>? equippedItems; // Para equipamiento
-  Map<String, dynamic>?
-  characterStats; // Para stats de combate (battlesWon, battlesLost, etc.)
-  Map<String, dynamic>?
-  stats; // Para estadísticas generales (questionsAnswered, correctAnswers)
-  Map<String, dynamic>?
-  difficultConcepts; // Para sistema de aprendizaje adaptivo
-  Map<String, dynamic>? settings; // Para configuraciones del usuario
+  // --- Campos de progreso detallado, inventario y estadísticas ---
+  Map<String, dynamic>? progressInMission; // Almacena el progreso detallado dentro de misiones específicas (ej. objetivos completados).
+  Map<String, dynamic>? inventory; // Representa el inventario del jugador (ej. ítems y sus cantidades).
+  List<String>? unlockedAbilities; // Lista de IDs de habilidades desbloqueadas por el jugador.
+  Map<String, dynamic>? equippedItems; // Mapa de ítems equipados por el personaje (ej. 'arma': 'id_espada').
 
-  // Campos de auditoría
-  Timestamp? lastLogin;
-  Timestamp? creationDate;
+  Map<String, dynamic>? stats; // Estadísticas generales del jugador (ej. preguntas respondidas, respuestas correctas).
+  Map<String, dynamic>? difficultConcepts; // Registra conceptos con los que el usuario tiene dificultad, para aprendizaje adaptativo.
+  Map<String, dynamic>? settings; // Configuraciones personalizadas del usuario (ej. volumen, notificaciones).
+
+  // --- Campos de auditoría y timestamps ---
+  Timestamp? lastLogin; // Fecha y hora del último inicio de sesión.
+  Timestamp? creationDate; // Fecha y hora de creación de la cuenta.
+
+  // Getter para verificar fácilmente si el usuario tiene rol de administrador.
+  bool get isAdmin => role == 'admin';
+  // Constructor para crear una instancia de UserModel.
   UserModel({
     required this.userId,
     required this.username,
@@ -52,14 +53,14 @@ class UserModel {
     this.gameCurrency = 0,
     this.characterSelected,
     this.characterName,
-    this.adminRole = 'user',
+    this.role = 'user',
     this.characterAssetIndex = 0,
     this.programmingRole = 'Desarrollador Full Stack',
     this.progressInMission,
     this.inventory,
     this.unlockedAbilities,
     this.equippedItems,
-    this.characterStats,
+
     this.stats,
     this.difficultConcepts,
     this.settings,
@@ -83,8 +84,7 @@ class UserModel {
       gameCurrency: json['gameCurrency'] as int? ?? 0,
       characterSelected: json['characterSelected'] as bool?,
       characterName: json['characterName'] as String?,
-      adminRole:
-          json['adminRole'] as String? ?? json['role'] as String? ?? 'user',
+      role: json['role'] as String? ?? json['adminRole'] as String? ?? 'user',
       characterAssetIndex: json['characterAssetIndex'] as int? ?? 0,
       programmingRole:
           json['programmingRole'] as String? ?? 'Desarrollador Full Stack',
@@ -95,7 +95,7 @@ class UserModel {
               ?.map((e) => e.toString())
               .toList(),
       equippedItems: json['equippedItems'] as Map<String, dynamic>?,
-      characterStats: json['characterStats'] as Map<String, dynamic>?,
+
       stats:
           json['stats'] as Map<String, dynamic>? ??
           {
@@ -124,14 +124,14 @@ class UserModel {
 
       'characterSelected': characterSelected,
       'characterName': characterName,
-      'adminRole': adminRole,
+      'role': role,
       'characterAssetIndex': characterAssetIndex,
       'programmingRole': programmingRole,
       'progressInMission': progressInMission,
       'inventory': inventory,
       'unlockedAbilities': unlockedAbilities,
       'equippedItems': equippedItems,
-      'characterStats': characterStats,
+
       'stats': stats,
       'difficultConcepts': difficultConcepts,
       'settings': settings,

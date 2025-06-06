@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/pixel_theme.dart';
 
 /// Botón personalizado con estilo pixel art
 class PixelButton extends StatefulWidget {
@@ -62,25 +63,29 @@ class _PixelButtonState extends State<PixelButton> {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: widget.width ?? 0.0,
-            minHeight: widget.height ?? (widget.isSmall ? 36.0 : 48.0),
+            minHeight: widget.height ?? (widget.isSmall ? 44.0 : 56.0),
           ),
           child: ElevatedButton(
             onPressed: widget.onPressed, // Changed to directly use widget.onPressed
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.isSecondary
-                  ? Colors.white
+                  ? Theme.of(context).colorScheme.surface
                   : widget.color ?? Theme.of(context).colorScheme.primary,
               foregroundColor: widget.isSecondary
                   ? Theme.of(context).colorScheme.primary
                   : Colors.white,
-              side: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(77), // Replaced withOpacity
+              side: widget.isSecondary ? BorderSide(
+                color: Theme.of(context).colorScheme.primary,
                 width: 2.0,
+              ) : null,
+              padding: const EdgeInsets.symmetric(
+                horizontal: PixelTheme.spacingMedium, 
+                vertical: PixelTheme.spacingSmall
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              elevation: 0,
-              shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(0)),
+              elevation: widget.isSecondary ? 0 : 3,
+              shadowColor: widget.isSecondary ? null : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
               ),
             ),
             child: Center(child: widget.child),
@@ -127,27 +132,33 @@ class PixelTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: prefixIcon,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.surface,
         border: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
-            width: 2.0,
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+            width: 1.0,
           ),
-          borderRadius: BorderRadius.zero,
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
-            width: 2.0,
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+            width: 1.0,
           ),
-          borderRadius: BorderRadius.zero,
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primary,
             width: 2.0,
           ),
-          borderRadius: BorderRadius.zero,
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
         ),
+        contentPadding: const EdgeInsets.symmetric(
+           horizontal: PixelTheme.spacingMedium,
+           vertical: PixelTheme.spacingMedium,
+         ),
       ),
       obscureText: obscureText,
       keyboardType: keyboardType,
@@ -187,12 +198,17 @@ class PixelCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).colorScheme.surface,
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(128), width: 2), // Replaced withOpacity
+        borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1), 
+          width: 1
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(51), // Reemplazado .withOpacity(0.2)
-            offset: const Offset(4, 4),
-            blurRadius: 0,
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+            spreadRadius: 0,
           ),
         ],
       ),

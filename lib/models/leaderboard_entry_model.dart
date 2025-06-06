@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Representa una entrada en la tabla de clasificación (leaderboard).
 class LeaderboardEntryModel {
-  final String entryId; // El ID del documento en Firestore
-  final String userId;
-  final String username;
-  final int score;
-  final Timestamp lastUpdated;
+  final String entryId; // ID único de esta entrada en la tabla, usualmente el ID del documento de Firestore.
+  final String userId; // ID del usuario al que pertenece esta entrada.
+  final String username; // Nombre de usuario para mostrar en la tabla.
+  final int score; // Puntuación del usuario.
+  final Timestamp lastUpdated; // Fecha y hora de la última actualización de esta entrada.
 
+  // Constructor para una entrada de la tabla de clasificación.
   LeaderboardEntryModel({
     required this.entryId,
     required this.userId,
