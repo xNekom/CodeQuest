@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
@@ -10,7 +11,7 @@ import '../widgets/character_asset.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
 import '../widgets/test_error_widget.dart';
-import 'code_exercises_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey _missionsKey = GlobalKey();
   final GlobalKey _achievementsKey = GlobalKey();
   final GlobalKey _leaderboardKey = GlobalKey();
-  final GlobalKey _adminKey = GlobalKey();
+
   final GlobalKey _adventureButtonKey =
       GlobalKey(); // Nueva key para el botón de aventura
   final GlobalKey _shopButtonKey =
@@ -214,9 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Text(
+          Text(
             'CODEQUEST',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: GoogleFonts.pressStart2p(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const Spacer(),
           Flexible(
@@ -655,12 +658,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: PixelButton(
         key: _codeExercisesButtonKey, // Asignar la key al botón de ejercicios
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CodeExercisesScreen(),
-            ),
-          );
+          Navigator.pushNamed(context, '/code-exercises');
         },
         color: Colors.purple[600] ?? Colors.purple,
         child: Row(
@@ -768,7 +766,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int _getCurrentLevelMaxExp() {
-    int currentLevel = _userData!['level'] ?? 1;
-    return currentLevel * 100; // Nivel actual * 100 es la experiencia requerida
+    return 400; // Cada nivel requiere 400 XP
   }
 }

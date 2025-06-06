@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 
@@ -25,7 +24,7 @@ class PlatformErrorLogger {
         }
       }
     } catch (e) {
-      debugPrint('Error al inicializar el logger: $e');
+      // debugPrint('Error al inicializar el logger: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 
@@ -42,8 +41,8 @@ class PlatformErrorLogger {
           mode: FileMode.append,
         );
       } catch (e) {
-        debugPrint('Error al escribir en el log: $e');
-      }
+      // debugPrint('Error al escribir en el log: $e'); // REMOVIDO PARA PRODUCCIÓN
+    }
     }
   }
   
@@ -69,7 +68,7 @@ class PlatformErrorLogger {
         await _logFile!.writeAsString('');
       }
     } catch (e) {
-      debugPrint('Error al limpiar logs: $e');
+      // debugPrint('Error al limpiar logs: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 }

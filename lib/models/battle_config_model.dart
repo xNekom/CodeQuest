@@ -1,10 +1,12 @@
+// Define la configuración para una batalla específica, incluyendo el enemigo y las preguntas.
 class BattleConfigModel {
-  final String enemyId;
-  final List<String> questionIds; // List of 3 existing question IDs
-  final double? playerHealthMultiplier;
-  final double? enemyAttackMultiplier;
-  final String? environment; // e.g., "bosque_oscuro", "cueva_eco"
+  final String enemyId; // ID del enemigo contra el que se luchará.
+  final List<String> questionIds; // Lista de IDs de preguntas que aparecerán durante la batalla (generalmente 3).
+  final double? playerHealthMultiplier; // Multiplicador opcional para la salud del jugador en esta batalla.
+  final double? enemyAttackMultiplier; // Multiplicador opcional para el ataque del enemigo en esta batalla.
+  final String? environment; // Describe el entorno de la batalla, puede influir en la UI (ej. "bosque_oscuro", "cueva_eco").
 
+  // Constructor para crear una configuración de batalla.
   BattleConfigModel({
     required this.enemyId,
     required this.questionIds,

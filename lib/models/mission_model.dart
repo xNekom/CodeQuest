@@ -4,29 +4,31 @@ import 'requirements_model.dart';
 import 'reward_model.dart';
 import 'story_page_model.dart';
 
+// Define la estructura de una misión en el juego.
 class MissionModel {
-  final String missionId;
-  final String name; // Renamed from title
-  final String description;
-  final String zone;
-  final int levelRequired;
-  final String status; // e.g., 'disponible', 'bloqueada', 'completada'
+  final String missionId; // ID único de la misión.
+  final String name; // Nombre de la misión (anteriormente 'title').
+  final String description; // Descripción de lo que el jugador necesita hacer para completar este objetivo.
+  final String zone; // Zona o área del juego donde se desarrolla la misión.
+  final int levelRequired; // Nivel mínimo que el jugador debe tener para acceder a esta misión.
+  final String status; // Estado actual de la misión para el jugador (ej. 'disponible', 'bloqueada', 'completada').
   // final String? prerequisiteMissionId; // Removed, handled by requirements
-  final RequirementsModel? requirements;
-  final List<Objective> objectives;
-  final Reward rewards;
-  final bool isRepeatable;
-  final String? theory; // Theory content for theory missions
-  final String? technicalExplanation; // Technical explanation without narrative
-  final List<String>? examples; // Code examples
-  final List<StoryPageModel>? storyPages; // Story content
-  final BattleConfigModel? battleConfig;
-  final String? type; // 'teoria', 'batalla', etc.
-  final int? order; // For ordering missions
-  final List<String>? unlocks; // Mission IDs that this mission unlocks
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  final RequirementsModel? requirements; // Requisitos que el jugador debe cumplir para desbloquear o iniciar la misión.
+  final List<Objective> objectives; // Lista de objetivos que deben completarse para finalizar la misión.
+  final Reward rewards; // Recompensas que el jugador recibe al completar la misión.
+  final bool isRepeatable; // Indica si la misión se puede repetir una vez completada.
+  final String? theory; // Contenido teórico asociado a la misión, si es de tipo 'teoria'.
+  final String? technicalExplanation; // Explicación técnica del contenido, sin elementos narrativos.
+  final List<String>? examples; // Ejemplos de código relevantes para la misión.
+  final List<StoryPageModel>? storyPages; // Páginas de historia o narrativa asociadas a la misión.
+  final BattleConfigModel? battleConfig; // Configuración específica para una batalla dentro de este objetivo, si aplica.
+  final String? type; // Tipo de misión (ej. 'teoria', 'batalla', 'recoleccion').
+  final int? order; // Número para ordenar las misiones, útil para mostrarlas en una secuencia específica.
+  final List<String>? unlocks; // IDs de otras misiones que se desbloquean al completar esta.
+  final DateTime? createdAt; // Fecha de creación del registro de la misión en la base de datos.
+  final DateTime? updatedAt; // Fecha de la última actualización del registro de la misión.
 
+  // Constructor para crear una instancia de MissionModel.
   MissionModel({
     required this.missionId,
     required this.name,
@@ -166,21 +168,23 @@ class MissionModel {
   }
 }
 
+// Define un objetivo específico dentro de una misión.
 class Objective {
-  final String type; // e.g., 'questions', 'batalla', 'collect_items'
-  final String description;
-  final int target; // Number of questions to answer, enemies to defeat, etc.
-  final List<String> questionIds; // For question-based objectives
-  final int? timeLimitSeconds;
-  final String? itemId; // For item collection objectives
-  final int? quantity; // For item collection objectives
-  final String? enemyId; // For battle objectives
-  final int? targetKillCount; // For battle objectives
-  final String? location; // For location-based objectives
-  final String? collectionSource; // Where to collect items
-  final String? collectionSourceDescription;
-  final BattleConfigModel? battleConfig;
+  final String type; // Tipo de objetivo (ej. 'questions', 'batalla', 'collect_items', 'location'). Define cómo se completa.
+  final String description; // Descripción de lo que el jugador necesita hacer para completar este objetivo.
+  final int target; // Cantidad necesaria para completar el objetivo (ej. número de preguntas a responder, enemigos a derrotar).
+  final List<String> questionIds; // IDs de las preguntas, si el objetivo es de tipo 'questions'.
+  final int? timeLimitSeconds; // Límite de tiempo en segundos para completar el objetivo, si aplica.
+  final String? itemId; // ID del ítem a recolectar, si el objetivo es de tipo 'collect_items'.
+  final int? quantity; // Cantidad del ítem a recolectar.
+  final String? enemyId; // ID del enemigo a derrotar, si el objetivo es de tipo 'batalla' o 'defeat_enemy'.
+  final int? targetKillCount; // Número de veces que se debe derrotar al enemigo.
+  final String? location; // Nombre o ID de la ubicación a la que se debe llegar, si el objetivo es de tipo 'location'.
+  final String? collectionSource; // Descripción de dónde o cómo obtener los ítems de recolección.
+  final String? collectionSourceDescription; // Descripción adicional sobre la fuente de recolección.
+  final BattleConfigModel? battleConfig; // Configuración específica para una batalla dentro de este objetivo, si aplica.
 
+  // Constructor para un objetivo de misión.
   Objective({
     required this.type,
     required this.description,

@@ -4,6 +4,7 @@ import '../../widgets/pixel_widgets.dart';
 import '../../models/enemy_model.dart';
 import '../../models/battle_config_model.dart';
 import '../../services/enemy_service.dart';
+import '../../services/audio_service.dart';
 import './battle_screen.dart';
 
 class EnemyEncounterScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   late Animation<double> _slideInAnim;
 
   final EnemyService _enemyService = EnemyService();
+  final AudioService _audioService = AudioService();
   EnemyModel? _enemy;
   bool _isLoading = true;
   String _errorMessage = '';
@@ -50,19 +52,16 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
     );
 
     _loadEnemyData();
+    // Reproducir música de batalla al entrar en el encuentro
+    _audioService.playBattleTheme();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Recargar datos solo cuando la ruta se vuelve activa
-    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
-      // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
-      Future.microtask(() {
-        if (mounted) {
-          _loadEnemyData();
-        }
-      });
+    // Solo cargar datos si no se han cargado previamente
+    if (mounted && _enemy == null && _errorMessage.isEmpty && !_isLoading) {
+      _loadEnemyData();
     }
   }
 
@@ -101,22 +100,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   }
 
   Widget _buildEnemyImage() {
-    if (_enemy?.assetPath != null && _enemy!.assetPath!.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(
-          _enemy!.assetPath!,
-          width: 200,
-          height: 200,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return _buildEnemyPlaceholder();
-          },
-        ),
-      );
-    } else {
-      return _buildEnemyPlaceholder();
-    }
+    return _buildEnemyPlaceholder();
   }
 
   Widget _buildEnemyPlaceholder() {
@@ -125,22 +109,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.red.shade300,
-            Colors.red.shade600,
-            Colors.red.shade900,
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.red.withOpacity(0.3),
-            blurRadius: 15,
-            spreadRadius: 2,
-          ),
-        ],
+        color: Colors.red.shade600,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -149,13 +118,6 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
             Icons.bug_report,
             size: 80,
             color: Colors.white,
-            shadows: [
-              Shadow(
-                color: Colors.black.withOpacity(0.5),
-                blurRadius: 4,
-                offset: const Offset(2, 2),
-              ),
-            ],
           ),
           const SizedBox(height: 8),
           Text(
@@ -164,13 +126,6 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: Colors.black.withOpacity(0.5),
-                  blurRadius: 2,
-                  offset: const Offset(1, 1),
-                ),
-              ],
             ),
           ),
         ],
@@ -181,6 +136,8 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
   @override
   void dispose() {
     _controller.dispose();
+    // Volver a la música principal al salir del encuentro
+    _audioService.playMainTheme();
     super.dispose();
   }
 
@@ -232,35 +189,27 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: FadeTransition(
-        opacity: _fadeInAnim,
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/backgrounds/background_enemy.png'),
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/background_enemy.png'),
+            fit: BoxFit.cover,
           ),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight:
-                        MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top -
-                        MediaQuery.of(context).padding.bottom -
-                        48,
-                  ),
-                  child: Column(
-                    children: [
-                      // Título dramático
-                      SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, -0.5),
-                          end: Offset.zero,
-                        ).animate(_slideInAnim),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Título dramático
+                AnimatedBuilder(
+                  animation: _fadeInAnim,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _fadeInAnim.value.clamp(0.0, 1.0),
+                      child: Transform.translate(
+                        offset: Offset(0, -20 * (1 - _fadeInAnim.value)),
                         child: Text(
                           '¡UN ENEMIGO SALVAJE APARECE!',
                           style: TextStyle(
@@ -283,26 +232,32 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                           textAlign: TextAlign.center,
                         ),
                       ),
+                    );
+                  },
+                ),
 
-                      const SizedBox(height: 40),
-
-                      // Imagen del enemigo
-                      SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(-0.5, 0),
-                          end: Offset.zero,
-                        ).animate(_slideInAnim),
+                // Imagen del enemigo
+                AnimatedBuilder(
+                  animation: _slideInAnim,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _slideInAnim.value.clamp(0.0, 1.0),
+                      child: Transform.translate(
+                        offset: Offset(-50 * (1 - _slideInAnim.value), 0),
                         child: _buildEnemyImage(),
                       ),
+                    );
+                  },
+                ),
 
-                      const SizedBox(height: 24),
-
-                      // Información del enemigo
-                      SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0.5, 0),
-                          end: Offset.zero,
-                        ).animate(_slideInAnim),
+                // Información del enemigo
+                AnimatedBuilder(
+                  animation: _slideInAnim,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _slideInAnim.value.clamp(0.0, 1.0),
+                      child: Transform.translate(
+                        offset: Offset(50 * (1 - _slideInAnim.value), 0),
                         child: Column(
                           children: [
                             Text(
@@ -313,7 +268,7 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                 color: Colors.white,
                                 shadows: [
                                   Shadow(
-                                    color: Colors.black.withOpacity(0.7),
+                                    color: Colors.black.withValues(alpha: 0.7),
                                     blurRadius: 4,
                                     offset: const Offset(2, 2),
                                   ),
@@ -321,7 +276,6 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                               ),
                               textAlign: TextAlign.center,
                             ),
-
                             const SizedBox(height: 8),
                             Text(
                               _enemy?.description ??
@@ -338,96 +292,77 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                   ),
                                 ],
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
                       ),
+                    );
+                  },
+                ),
 
-                      const SizedBox(height: 32),
-
-                      // Diálogo del enemigo
-                      SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 0.5),
-                          end: Offset.zero,
-                        ).animate(_slideInAnim),
+                // Diálogo del enemigo
+                AnimatedBuilder(
+                  animation: _slideInAnim,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _slideInAnim.value.clamp(0.0, 1.0),
+                      child: Transform.translate(
+                        offset: Offset(0, 30 * (1 - _slideInAnim.value)),
                         child: Container(
+                          width: double.infinity,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade900.withOpacity(0.9),
+                            color: Colors.grey.shade900.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: Colors.red.shade400,
                               width: 2,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.red.withOpacity(0.2),
-                                blurRadius: 10,
-                                spreadRadius: 2,
-                              ),
-                            ],
                           ),
-                          child: Column(
+                          child: Row(
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.format_quote,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Diálogo de Encuentro',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black,
-                                          blurRadius: 2,
-                                          offset: const Offset(1, 1),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.format_quote,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ],
+                              Icon(
+                                Icons.format_quote,
+                                color: Colors.white,
+                                size: 24,
                               ),
-
-                              const SizedBox(height: 12),
-                              Text(
-                                _enemy?.dialogue?['encounter'] ??
-                                    'El enemigo te mira amenazadoramente...',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontStyle: FontStyle.italic,
-                                  height: 1.4,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _enemy?.dialogue?['encounter'] ??
+                                      'El enemigo te mira amenazadoramente...',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontStyle: FontStyle.italic,
+                                    height: 1.4,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(width: 12),
+                              Icon(
+                                Icons.format_quote,
+                                color: Colors.white,
+                                size: 24,
                               ),
                             ],
                           ),
                         ),
                       ),
+                    );
+                  },
+                ),
 
-                      const SizedBox(height: 32),
-
-                      // Botones de acción
-                      SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 1),
-                          end: Offset.zero,
-                        ).animate(_slideInAnim),
+                // Botones de acción
+                AnimatedBuilder(
+                  animation: _slideInAnim,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: _slideInAnim.value.clamp(0.0, 1.0),
+                      child: Transform.translate(
+                        offset: Offset(0, 50 * (1 - _slideInAnim.value)),
                         child: Column(
                           children: [
                             PixelButton(
@@ -438,20 +373,21 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                                 children: [
                                   Icon(Icons.flash_on, color: Colors.white),
                                   const SizedBox(width: 8),
-                                  const Text(
-                                    '¡ENTRAR EN BATALLA!',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                                  Flexible(
+                                     child: Text(
+                                       '¡ENTRAR EN BATALLA!',
+                                       style: TextStyle(
+                                         color: Colors.white,
+                                         fontWeight: FontWeight.bold,
+                                         fontSize: 14,
+                                       ),
+                                       textAlign: TextAlign.center,
+                                     ),
+                                   ),
                                 ],
                               ),
                             ),
-
                             const SizedBox(height: 12),
-
                             PixelButton(
                               onPressed: () => Navigator.pop(context),
                               isSecondary: true,
@@ -467,10 +403,10 @@ class _EnemyEncounterScreenState extends State<EnemyEncounterScreen>
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
-              ),
+              ],
             ),
           ),
         ),

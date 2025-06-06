@@ -1,6 +1,7 @@
 // ignore_for_file: use_super_parameters, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../models/achievement_model.dart';
 import '../theme/pixel_theme.dart';
 
@@ -21,13 +22,13 @@ class AchievementCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: PixelTheme.spacingSmall, horizontal: PixelTheme.spacingMedium),
         decoration: BoxDecoration(
           color:
               isUnlocked
-                  ? PixelTheme.secondaryColor.withOpacity(0.7)
-                  : Colors.grey.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(12),
+                  ? PixelTheme.secondaryColor.withValues(alpha: 0.7)
+                  : Colors.grey.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
           border: Border.all(
             color: isUnlocked ? PixelTheme.accentColor : Colors.grey.shade600,
             width: 2,
@@ -36,7 +37,7 @@ class AchievementCard extends StatelessWidget {
               isUnlocked
                   ? [
                     BoxShadow(
-                      color: PixelTheme.accentColor.withOpacity(0.3),
+                      color: PixelTheme.accentColor.withValues(alpha: 0.3),
                       spreadRadius: 1,
                       blurRadius: 4,
                       offset: const Offset(0, 3),
@@ -57,7 +58,7 @@ class AchievementCard extends StatelessWidget {
                       isUnlocked
                           ? Theme.of(context).colorScheme.surface
                           : Colors.black38,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
                   border: Border.all(
                     color:
                         isUnlocked
@@ -98,7 +99,7 @@ class AchievementCard extends StatelessWidget {
                             isUnlocked
                                 ? Theme.of(
                                   context,
-                                ).colorScheme.onSurface.withOpacity(0.8)
+                                ).colorScheme.onSurface.withValues(alpha: 0.8)
                                 : Colors.grey.shade600,
                       ),
                     ),
@@ -112,7 +113,7 @@ class AchievementCard extends StatelessWidget {
                             fontStyle: FontStyle.italic,
                             color: Theme.of(
                               context,
-                            ).colorScheme.onSurface.withOpacity(0.6),
+                            ).colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                       ),
@@ -143,43 +144,17 @@ class AchievementCard extends StatelessWidget {
   }
 
   Widget _buildAchievementIcon() {
-    // Si el iconUrl es una ruta de asset local, usar Image.asset
-    if (achievement.iconUrl.startsWith('assets/')) {
-      return Image.asset(
-        achievement.iconUrl,
+    if (achievement.iconUrl != null && achievement.iconUrl!.isNotEmpty) {
+      return SvgPicture.asset(
+        achievement.iconUrl!,
         width: 32,
         height: 32,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(
-            Icons.emoji_events,
-            size: 32,
-            color: PixelTheme.accentColor,
-          );
-        },
       );
     }
-    // Si es una URL de red, usar Image.network
-    else if (achievement.iconUrl.startsWith('http')) {
-      return Image.network(
-        achievement.iconUrl,
-        width: 32,
-        height: 32,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(
-            Icons.emoji_events,
-            size: 32,
-            color: PixelTheme.accentColor,
-          );
-        },
-      );
-    }
-    // Por defecto, mostrar icono
-    else {
-      return const Icon(
-        Icons.emoji_events,
-        size: 32,
-        color: PixelTheme.accentColor,
-      );
-    }
+    return const Icon(
+      Icons.emoji_events,
+      size: 32,
+      color: PixelTheme.accentColor,
+    );
   }
 }

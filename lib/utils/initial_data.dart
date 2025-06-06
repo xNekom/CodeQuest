@@ -24,7 +24,6 @@ class InitialData {
         description: 'Una pequeña cantidad de monedas de oro',
         type: 'coins',
         value: 50,
-        iconUrl: '',
         conditions: {},
       );
       await _rewardService.createReward(reward1);
@@ -36,14 +35,13 @@ class InitialData {
         description: 'Puntos de experiencia adicionales',
         type: 'experience',
         value: 100,
-        iconUrl: '',
         conditions: {},
       );
       await _rewardService.createReward(reward2);
 
-      print('Recompensas iniciales creadas exitosamente');
+      // Recompensas iniciales creadas exitosamente
     } catch (e) {
-      print('Error al crear recompensas iniciales: $e');
+      // Error al crear recompensas iniciales: $e
     }
   }
 
@@ -54,7 +52,6 @@ class InitialData {
         id: 'achievement_first_enemy',
         name: 'Primer Adversario',
         description: 'Derrota tu primer enemigo de programación',
-        iconUrl: '',
         category: 'enemy',
         points: 10,
         conditions: {
@@ -71,7 +68,6 @@ class InitialData {
         id: 'achievement_bug_hunter',
         name: 'Cazador de Bugs',
         description: 'Derrota 3 enemigos de programación',
-        iconUrl: '',
         category: 'combat',
         points: 25,
         conditions: {
@@ -83,9 +79,9 @@ class InitialData {
       );
       await _rewardService.createAchievement(achievement2);
 
-      print('Logros iniciales creados exitosamente');
+      // Logros iniciales creados exitosamente
     } catch (e) {
-      print('Error al crear logros iniciales: $e');
+      // Error al crear logros iniciales: $e
     }
   }
 }

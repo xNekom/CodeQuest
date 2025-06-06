@@ -44,5 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Scripts folder
+# Exclude assets/data and scripts folders from repository
+assets/data/
 scripts/

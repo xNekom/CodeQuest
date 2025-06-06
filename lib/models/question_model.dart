@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Representa una pregunta de opción múltiple utilizada en batallas o quizzes.
 class QuestionModel {
-  final String questionId; // ID del documento de Firestore
-  final String text;
-  final List<String> options; // Siempre 4 opciones
-  final int correctAnswerIndex; // 0-3
-  final String explanation;
-  final String? originalId; // Para mantener el 'id' del JSON original
+  final String questionId; // ID único de la pregunta, usualmente el ID del documento de Firestore.
+  final String text; // El texto de la pregunta.
+  final List<String> options; // Lista de opciones de respuesta (siempre debe haber 4).
+  final int correctAnswerIndex; // Índice de la respuesta correcta en la lista `options` (0 a 3).
+  final String explanation; // Explicación de por qué la respuesta correcta es correcta.
+  final String? originalId; // Campo opcional para mantener el ID original si la pregunta proviene de un JSON con un campo 'id' diferente.
   // Campos 'relatedConcepts', 'difficultyLevel', 'type' no están en el JSON, se omiten.
 
+  // Constructor para crear una instancia de QuestionModel.
   QuestionModel({
     required this.questionId,
     required this.text,

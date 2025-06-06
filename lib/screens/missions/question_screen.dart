@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 // import 'package:cloud_firestore/cloud_firestore.dart'; // No se usa directamente aquí
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
@@ -7,6 +9,7 @@ import '../../services/question_service.dart'; // Importar QuestionService
 import '../../models/mission_model.dart'; // Incluye Objective
 import '../../models/question_model.dart'; // Importar QuestionModel
 import '../../widgets/pixel_widgets.dart'; // Asegúrate de que esta importación esté presente y sea correcta
+import '../../widgets/pixel_app_bar.dart';
 import 'package:codequest/widgets/formatted_text_widget.dart';
 import '../mission_completed_screen.dart'; // Importar MissionCompletedScreen
 
@@ -36,7 +39,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool _isLoading = true;
   String _missionName = "";
   String _errorMessage = "";
-  final int _experiencePoints = 25;
+  int _experiencePoints = 0; // Se obtendrá de los datos de la misión
 
   int? _selectedOptionIndex; // Para rastrear la opción seleccionada
   bool _answerSubmitted =
@@ -52,6 +55,29 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _loadMissionStructure();
   }
 
+  // Método para obtener la experiencia directamente del JSON de la misión
+  Future<int> _getExperienceFromMissionData(String missionId) async {
+    try {
+      // Cargar el JSON directamente desde assets
+      final String jsonString = await rootBundle.loadString('assets/data/missions_data.json');
+      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      
+      // Buscar la misión por ID
+      for (var missionData in jsonList) {
+        if (missionData['id'] == missionId) {
+          // Acceder directamente al campo experience en rewards
+          return missionData['rewards']?['experience'] ?? 75;
+        }
+      }
+      
+      // Si no se encuentra la misión, devolver valor por defecto
+      return 100;
+    } catch (e) {
+      // En caso de error, devolver valor por defecto
+      return 100;
+    }
+  }
+
   Future<void> _loadMissionStructure() async {
     setState(() {
       _isLoading = true;
@@ -59,20 +85,20 @@ class _QuestionScreenState extends State<QuestionScreen> {
       _questions = [];
     });
     try {
-      print('[QS] Loading mission structure for ID: ${widget.missionId}');
+      // [QS] Loading mission structure for ID: ${widget.missionId}
       final MissionModel? mission = await _missionService.getMissionById(
         widget.missionId,
       );
 
       if (mission != null) {
         _missionName = mission.name;
-        print(
-          '[QS] Mission loaded: ${mission.name}. Objectives count: ${mission.objectives.length}',
-        );
+        // Obtener experiencia directamente del JSON de rewards
+        // El JSON tiene estructura: "rewards": {"experience": 75/175, "coins": 20, ...}
+        // Necesitamos acceder al JSON original ya que el modelo Reward no maneja esta estructura
+        _experiencePoints = await _getExperienceFromMissionData(widget.missionId);
+        // [QS] Mission loaded: ${mission.name}. Objectives count: ${mission.objectives.length}
         mission.objectives.asMap().forEach((idx, obj) {
-          print(
-            '[QS] Objective $idx: type=${obj.type}, description=${obj.description}, questionIds=${obj.questionIds}',
-          );
+          // [QS] Objective $idx: type=${obj.type}, description=${obj.description}, questionIds=${obj.questionIds}
         });
 
         Objective? questionObjective;
@@ -81,28 +107,20 @@ class _QuestionScreenState extends State<QuestionScreen> {
           questionObjective = mission.objectives.firstWhere(
             (obj) => obj.type == 'questions' && obj.questionIds.isNotEmpty,
           );
-          print(
-            '[QS] Found question objective: ${questionObjective.description}, questionIds: ${questionObjective.questionIds}',
-          );
+          // [QS] Found question objective: ${questionObjective.description}, questionIds: ${questionObjective.questionIds}
         } catch (e) {
           questionObjective =
               null; // No se encontró un objetivo de tipo 'questions' con questionIds no vacíos
-          print(
-            '[QS] No question objective with non-empty questionIds found for mission ${mission.name}. Error: $e',
-          );
+          // [QS] No question objective with non-empty questionIds found for mission ${mission.name}. Error: $e
         }
 
         // questionObjective.questionIds != null ya no es necesario debido al cambio en Objective.fromJson
         if (questionObjective != null &&
             questionObjective.questionIds.isNotEmpty) {
-          print(
-            '[QS] Objective has questionIds: ${questionObjective.questionIds}',
-          );
+          // [QS] Objective has questionIds: ${questionObjective.questionIds}
           final List<QuestionModel> loadedQuestions = await _questionService
               .getQuestionsByIds(questionObjective.questionIds);
-          print(
-            '[QS] Loaded ${loadedQuestions.length} questions from QuestionService.',
-          );
+          // [QS] Loaded ${loadedQuestions.length} questions from QuestionService.
 
           if (loadedQuestions.isNotEmpty) {
             setState(() {
@@ -110,9 +128,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
               _isLoading = false;
             });
           } else {
-            print(
-              "[QS] Warning: QuestionService returned no questions for IDs: ${questionObjective.questionIds}. Mission: ${widget.missionId}.",
-            );
+            // [QS] Warning: QuestionService returned no questions for IDs: ${questionObjective.questionIds}. Mission: ${widget.missionId}.
             setState(() {
               _isLoading = false;
               _errorMessage =
@@ -120,27 +136,21 @@ class _QuestionScreenState extends State<QuestionScreen> {
             });
           }
         } else {
-          print(
-            "[QS] Mission ${mission.name} (ID: ${widget.missionId}) has no valid questionIds in its objectives or no objectives of type 'questions' with IDs.",
-          );
+          // [QS] Mission ${mission.name} (ID: ${widget.missionId}) has no valid questionIds in its objectives or no objectives of type 'questions' with IDs.
           setState(() {
             _isLoading = false;
             _errorMessage = "No se encontraron preguntas para esta misión.";
           });
         }
       } else {
-        print(
-          "[QS] Error: Mission with ID ${widget.missionId} not found by MissionService.",
-        );
+        // [QS] Error: Mission with ID ${widget.missionId} not found by MissionService.
         setState(() {
           _isLoading = false;
           _errorMessage = "Misión no encontrada.";
         });
       }
     } catch (e) {
-      print(
-        "[QS] CRITICAL Error loading mission structure for ${widget.missionId}: $e",
-      );
+      // [QS] CRITICAL Error loading mission structure for ${widget.missionId}: $e
       setState(() {
         _isLoading = false;
         _errorMessage =
@@ -178,7 +188,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
       try {
         await _userService.updateStatsAfterQuestion(userId, isCorrect);
       } catch (e) {
-        debugPrint('Error al actualizar estadísticas de pregunta: $e');
+        // debugPrint('Error al actualizar estadísticas de pregunta: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
     }
   }
@@ -225,28 +235,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
     setState(() {
       _isLoading = true;
     });
+
     try {
-      // Solo otorgar recompensas si no es una repetición
-      if (!widget.isReplay) {
-        await _userService.addExperience(
-          userId,
-          _experiencePoints,
-          missionId: widget.missionId,
-        );
-        await _userService.completeMission(
-          userId,
-          widget.missionId,
-          isBattleMission: false,
-        );
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (mounted) {
-        if (widget.isReplay) {
-          // Si es repetición, mostrar mensaje y volver al home
+      if (widget.isReplay) {
+        // Si es repetición, navegar inmediatamente sin operaciones de BD
+        setState(() {
+          _isLoading = false;
+        });
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -257,30 +253,37 @@ class _QuestionScreenState extends State<QuestionScreen> {
           Navigator.of(
             context,
           ).pushNamedAndRemoveUntil('/home', (route) => false);
-        } else {
-          // Si no es repetición, mostrar pantalla de misión completada
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder:
-                  (context) => MissionCompletedScreen(
-                    missionId: widget.missionId,
-                    missionName: _missionName,
-                    experiencePoints: _experiencePoints,
-                    coinsEarned: 10, // Monedas por misión de teoría
-                    isBattleMission: false,
-                    onContinue: () {
-                      // Navegar directamente al home con reemplazo completo
-                      Navigator.of(
-                        context,
-                      ).pushNamedAndRemoveUntil('/home', (route) => false);
-                    },
-                    // unlockedAchievement: ..., // Opcional
-                    // earnedReward: ..., // Opcional
-                  ),
-            ),
-          );
         }
+        return;
       }
+
+      // Navegar inmediatamente a la pantalla de recompensas
+      setState(() {
+        _isLoading = false;
+      });
+      
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MissionCompletedScreen(
+              missionId: widget.missionId,
+              missionName: _missionName,
+              experiencePoints: _experiencePoints,
+              coinsEarned: 10, // Monedas por misión de teoría
+              isBattleMission: false,
+              onContinue: () {
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/home', (route) => false);
+              },
+            ),
+          ),
+        );
+      }
+
+      // Ejecutar operaciones de base de datos en segundo plano
+      _processRewardsInBackground(userId);
+      
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -295,18 +298,35 @@ class _QuestionScreenState extends State<QuestionScreen> {
     }
   }
 
+  // Procesar recompensas en segundo plano sin bloquear la UI
+  void _processRewardsInBackground(String userId) async {
+    try {
+      // Ejecutar operaciones de BD de forma asíncrona
+      await Future.wait([
+        _userService.addExperience(
+          userId,
+          _experiencePoints,
+          missionId: widget.missionId,
+        ),
+        _userService.completeMission(
+          userId,
+          widget.missionId,
+          isBattleMission: false,
+        ),
+      ]);
+    } catch (e) {
+      // Manejar errores silenciosamente o mostrar notificación discreta
+      debugPrint('Error procesando recompensas en segundo plano');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Reemplazado PixelAppBar con AppBar estándar por ahora
-        title: Text(
-          _isLoading
-              ? "Cargando Misión..."
-              : (_missionName.isNotEmpty ? _missionName : "Misión"),
-        ),
-        // Si tienes una fuente pixelada, aplícala aquí:
-        // style: TextStyle(fontFamily: 'PixelFont'),
+      appBar: PixelAppBar(
+        title: _isLoading
+            ? "Cargando Misión..."
+            : (_missionName.isNotEmpty ? _missionName : "Misión"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -377,8 +397,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
             if (_answerSubmitted) {
               if (isSelected) {
                 btnColor = _isCurrentAnswerCorrect! ? Colors.green : Colors.red;
-              } else if (isCorrectOpt)
+              } else if (isCorrectOpt) {
                 btnColor = Colors.green;
+              }
             }
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'leaderboard_service.dart';
 
@@ -41,7 +41,7 @@ class AuthService {
 
       return result;
     } catch (e) {
-      debugPrint('Error en inicio de sesión: $e');
+      // debugPrint('Error en inicio de sesión: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -68,7 +68,7 @@ class AuthService {
 
       return userCredential;
     } catch (e) {
-      debugPrint('Error en registro: $e');
+      // debugPrint('Error en registro: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -78,7 +78,7 @@ class AuthService {
     try {
       await _auth.signOut();
     } catch (e) {
-      debugPrint('Error en SignOut: $e');
+      // debugPrint('Error en SignOut: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -88,7 +88,7 @@ class AuthService {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      debugPrint('Error al enviar reset de contraseña: $e');
+      // debugPrint('Error al enviar reset de contraseña: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -106,7 +106,7 @@ class AuthService {
 
       return usernameDoc.exists;
     } catch (e) {
-      debugPrint('Error al verificar nombre de usuario: $e');
+      // debugPrint('Error al verificar nombre de usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       // Si hay error, permitir continuar para no bloquear el registro
       return false;
     }
@@ -138,7 +138,6 @@ class AuthService {
         'unlockedAchievements': [],
         'characterAssetIndex': 0,
         'programmingRole': 'Desarrollador Full Stack',
-        'adminRole': 'user',
         'characterSelected': false,
         'stats': {
           'questionsAnswered': 0,
@@ -148,12 +147,7 @@ class AuthService {
           'enemiesDefeated': {},
           'totalEnemiesDefeated': 0,
         },
-        'characterStats': {
-          'health': 100,
-          'attack': 10,
-          'defense': 5,
-          'speed': 8,
-        },
+
         'createdAt': FieldValue.serverTimestamp(),
         'lastLogin': FieldValue.serverTimestamp(),
       });
@@ -172,9 +166,9 @@ class AuthService {
         score: 1000, // Puntuación inicial (nivel 1 * 1000)
       );
 
-      debugPrint('Usuario creado exitosamente: $uid');
+      // debugPrint('Usuario creado exitosamente: $uid'); // REMOVIDO PARA PRODUCCIÓN
     } catch (e) {
-      debugPrint('Error al crear documento de usuario: $e');
+      // debugPrint('Error al crear documento de usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -196,12 +190,12 @@ class AuthService {
 
       await user.reauthenticateWithCredential(credential);
       return true;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (_) {
       // Manejar errores específicos de Firebase Auth, por ejemplo, contraseña incorrecta
-      debugPrint('Error de reautenticación: ${e.code} - ${e.message}');
+      // debugPrint('Error de reautenticación'); // REMOVIDO PARA PRODUCCIÓN
       return false;
-    } catch (e) {
-      debugPrint('Error inesperado durante la reautenticación: $e');
+    } catch (_) {
+      // debugPrint('Error inesperado durante la reautenticación'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -215,7 +209,7 @@ class AuthService {
       }
       await user.updatePassword(newPassword);
     } catch (e) {
-      debugPrint('Error al cambiar la contraseña: $e');
+      // debugPrint('Error al cambiar la contraseña: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
@@ -9,8 +10,10 @@ import '../widgets/pixel_widgets.dart';
 import '../widgets/character_asset.dart';
 import '../widgets/tutorial_floating_button.dart';
 import '../utils/error_handler.dart';
+import '../utils/overflow_utils.dart';
 import '../widgets/test_error_widget.dart';
-import 'code_exercises_screen.dart';
+import '../theme/pixel_theme.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,14 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
   bool _hasInitialized = false; // Bandera para evitar inicializaciones múltiples
-  bool _tutorialChecked = false; // Bandera para evitar verificaciones múltiples del tutorial
+  bool _showCompletedMissions = false; // Estado para mostrar/ocultar misiones completadas
 
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _profileKey = GlobalKey();
   final GlobalKey _missionsKey = GlobalKey();
   final GlobalKey _achievementsKey = GlobalKey();
   final GlobalKey _leaderboardKey = GlobalKey();
-  final GlobalKey _adminKey = GlobalKey();
+
   final GlobalKey _adventureButtonKey =
       GlobalKey(); // Nueva key para el botón de aventura
   final GlobalKey _shopButtonKey =
@@ -64,40 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// Inicia el tutorial si es necesario
+  /// Método para verificar tutoriales (ya no inicia automáticamente)
   Future<void> _checkAndStartTutorial() async {
-    // Verificar si ya se ejecutó la verificación del tutorial
-    if (_tutorialChecked) return;
-    
-    // Esperar a que la UI se construya completamente, pero con un tiempo menor
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Verificar si el widget sigue montado antes de continuar
-    if (!mounted) return;
-
-    // Marcar como verificado para evitar llamadas múltiples
-    _tutorialChecked = true;
-
-    try {
-      TutorialService.startTutorialIfNeeded(
-        context,
-        TutorialService.homeScreenTutorial,
-        TutorialService.getHomeScreenTutorial(
-          profileKey: _profileKey,
-          missionsKey: _missionsKey,
-          achievementsKey: _achievementsKey,
-          leaderboardKey: _leaderboardKey,
-          adventureButtonKey: _adventureButtonKey,
-          shopButtonKey: _shopButtonKey,
-          inventoryButtonKey: _inventoryButtonKey,
-          codeExercisesButtonKey: _codeExercisesButtonKey,
-        ),
-      );
-    } catch (e) {
-      // Capturar cualquier error que pueda ocurrir durante la inicialización del tutorial
-      ErrorHandler.logError(e, StackTrace.current);
-      // No mostrar error al usuario para no interrumpir la experiencia
-    }
+    // Este método ya no inicia tutoriales automáticamente
+    // Los tutoriales ahora se acceden desde la pantalla de tutoriales
+    return;
   }
 
   Future<void> _loadUserData() async {
@@ -220,8 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: PixelTheme.spacingMedium, vertical: PixelTheme.spacingSmall),
+      margin: const EdgeInsets.all(PixelTheme.spacingMedium),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
         color: Theme.of(
@@ -242,12 +216,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 32,
                   width: 32,
                 ),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Text(
-                    'CODEQUEST',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
+                const SizedBox(width: PixelTheme.spacingSmall),
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'CODEQUEST',
+                      style: GoogleFonts.pressStart2p(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -273,8 +252,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       minWidth: 32,
                       minHeight: 32,
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/admin');
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(context, '/admin');
+                      // Si regresa true, significa que hubo cambios en el admin
+                      if (result == true) {
+                        await _loadUserData();
+                      }
                     },
                   ),
                 ],
@@ -292,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                 ),
+
                 IconButton(
                   icon: const Icon(Icons.edit, size: 20),
                   tooltip: 'Editar Personaje',
@@ -316,111 +300,66 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildUserHeader() {
-    return PixelCard(
+    return Column(
       key: _profileKey, // Asignar la key al perfil
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isWide = constraints.maxWidth > 400;
-          return Column(
-            children: [
-              isWide
-                  ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Hero(
-                        tag: 'avatar_${_userData!['username']}',
-                        child: CharacterAsset(
-                          assetIndex:
-                              _userData!['characterAssetIndex'] as int? ?? 0,
-                          size: 80,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildUserInfo()),
-                    ],
-                  )
-                  : Column(
-                    children: [
-                      Hero(
-                        tag: 'avatar_${_userData!['username']}',
-                        child: CharacterAsset(
-                          assetIndex:
-                              _userData!['characterAssetIndex'] as int? ?? 0,
-                          size: 80,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildUserInfo(),
-                    ],
-                  ),
-              const SizedBox(height: 16),
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: _calculateExpProgress()),
-                duration: const Duration(seconds: 1),
-                builder: (context, value, child) {
-                  return Column(
-                    children: [
-                      const Text('Experiencia'),
-                      const SizedBox(height: 4),
-                      PixelProgressBar(
-                        value: value,
-                        label:
-                            '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP',
-                      ),
-                    ],
-                  );
-                },
+      children: [
+        // Icono del personaje y información del usuario en fila
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Icono del personaje más grande y sin recuadro
+            Flexible(
+              flex: 2,
+              child: Hero(
+                tag: 'avatar_${_userData!['username']}',
+                child: CharacterAsset(
+                  assetIndex: _userData!['characterAssetIndex'] as int? ?? 0,
+                  size: 200, // Aumentado para igualar el tamaño del widget de información
+                ),
               ),
-            ],
-          );
-        },
-      ),
+            ),
+            const SizedBox(width: 16),
+            // Información del usuario en un recuadro
+            Flexible(
+              flex: 3,
+              child: PixelCard(
+                child: _buildUserInfo(),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Barra de experiencia en un recuadro separado
+        PixelCard(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: _calculateExpProgress()),
+            duration: const Duration(seconds: 1),
+            builder: (context, value, child) {
+              return Column(
+                children: [
+                  const Text('Experiencia'),
+                  const SizedBox(height: 4),
+                  PixelProgressBar(
+                    value: value,
+                    label:
+                        '${(_userData!['experience'] ?? 0)} / ${_getCurrentLevelMaxExp()} XP',
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildUserInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '${_userData!['username']}',
-          style: Theme.of(context).textTheme.titleLarge,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Icon(Icons.star, size: 18),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                'Nivel: ${_userData!['level'] ?? 1}',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Icon(Icons.monetization_on, size: 18, color: Colors.amber),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                '${_userData!['coins'] ?? 0} monedas',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        TextButton.icon(
-          icon: const Icon(Icons.lock_reset),
-          label: const Text('Cambiar Contraseña'),
-          onPressed: _showChangePasswordDialog,
-          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-        ),
-      ],
+    return OverflowUtils.safeUserInfo(
+      username: '${_userData!['username']}',
+      level: '${_userData!['level'] ?? 1}',
+      coins: '${_userData!['coins'] ?? 0}',
+      usernameStyle: Theme.of(context).textTheme.titleLarge,
+      onChangePassword: _showChangePasswordDialog,
     );
   }
 
@@ -589,23 +528,45 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_userData!['completedMissions']?.isNotEmpty ?? false)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(
-                  _userData!['completedMissions'].length,
-                  (index) => ElevatedButton(
-                    onPressed: null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      disabledBackgroundColor: Colors.green.withAlpha(
-                        179,
-                      ), // Reemplazado .withOpacity(0.7)
-                      disabledForegroundColor: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _showCompletedMissions = !_showCompletedMissions;
+                      });
+                    },
+                    child: Text(
+                      _showCompletedMissions 
+                        ? 'Ocultar misiones completadas'
+                        : 'Ver misiones completadas',
+                      style: const TextStyle(color: Colors.blue),
                     ),
-                    child: Text('Misión ${index + 1}'),
                   ),
-                ),
+                  if (_showCompletedMissions)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: List.generate(
+                          _userData!['completedMissions'].length,
+                          (index) => ElevatedButton(
+                            onPressed: null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              disabledBackgroundColor: Colors.green.withAlpha(
+                                179,
+                              ),
+                              disabledForegroundColor: Colors.white,
+                            ),
+                            child: Text('Misión ${index + 1}'),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
         ],
@@ -620,11 +581,11 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon),
           const SizedBox(width: 12),
-          Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
-          Text(
+          OverflowUtils.expandedText(label, maxLines: 1),
+          const SizedBox(width: 8),
+          OverflowUtils.safeText(
             value,
-            style: TextStyle(fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ],
       ),
@@ -646,9 +607,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.sports_esports, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text('COMENZAR AVENTURA', overflow: TextOverflow.ellipsis),
-            ),
+            OverflowUtils.flexibleText('COMENZAR AVENTURA', maxLines: 1),
           ],
         ),
       ),
@@ -670,7 +629,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.store, size: 20),
             SizedBox(width: 8),
-            Flexible(child: Text('TIENDA', overflow: TextOverflow.ellipsis)),
+            OverflowUtils.flexibleText('TIENDA', maxLines: 1),
           ],
         ),
       ),
@@ -692,9 +651,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.inventory_2, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text('INVENTARIO', overflow: TextOverflow.ellipsis),
-            ),
+            OverflowUtils.flexibleText('INVENTARIO', maxLines: 1),
           ],
         ),
       ),
@@ -707,12 +664,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: PixelButton(
         key: _codeExercisesButtonKey, // Asignar la key al botón de ejercicios
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CodeExercisesScreen(),
-            ),
-          );
+          Navigator.pushNamed(context, '/code-exercises');
         },
         color: Colors.purple[600] ?? Colors.purple,
         child: Row(
@@ -721,12 +673,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.code, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                'EJERCICIOS DE CÓDIGO',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            OverflowUtils.flexibleText('EJERCICIOS DE CÓDIGO', maxLines: 1),
           ],
         ),
       ),
@@ -771,14 +718,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.emoji_events, size: 20),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        'VER MIS LOGROS',
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                    const SizedBox(width: PixelTheme.spacingSmall),
+                    OverflowUtils.flexibleText(
+                  'VER MIS LOGROS',
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                ),
                   ],
                 ),
               ),
@@ -804,9 +749,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.leaderboard, size: 20),
             SizedBox(width: 8),
-            Flexible(
-              child: Text('CLASIFICACIÓN', overflow: TextOverflow.ellipsis),
-            ),
+            OverflowUtils.flexibleText('CLASIFICACIÓN', maxLines: 1),
           ],
         ),
       ),
@@ -820,7 +763,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int _getCurrentLevelMaxExp() {
-    int currentLevel = _userData!['level'] ?? 1;
-    return currentLevel * 100; // Nivel actual * 100 es la experiencia requerida
+    return 400; // Cada nivel requiere 400 XP
   }
 }

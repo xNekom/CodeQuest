@@ -48,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // Verificamos si el widget sigue montado antes de usar context
         if (!mounted) return;
         
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/character-selection');
       } catch (e) {
         if (!mounted) return;
         

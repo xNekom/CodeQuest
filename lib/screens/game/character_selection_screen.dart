@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
-import '../../services/tutorial_service.dart';
 import '../../widgets/character_asset.dart';
-import '../../widgets/tutorial_floating_button.dart';
+import '../../widgets/pixel_app_bar.dart';
 
 class CharacterSelectionScreen extends StatefulWidget {
   const CharacterSelectionScreen({super.key});
@@ -47,7 +46,6 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
   void initState() {
     super.initState();
     _loadExistingData();
-    _checkAndStartTutorial();
   }
 
   @override
@@ -64,23 +62,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     }
   }
 
-  /// Inicia el tutorial si es necesario
-  Future<void> _checkAndStartTutorial() async {
-    // Esperar a que la UI se construya completamente
-    await Future.delayed(const Duration(milliseconds: 1500));
 
-    if (mounted) {
-      TutorialService.startTutorialIfNeeded(
-        context,
-        TutorialService.characterSelectionTutorial,
-        TutorialService.getCharacterSelectionTutorial(
-          characterPreviewKey: _characterPreviewKey,
-          customizationKey: _customizationKey,
-          saveButtonKey: _saveButtonKey,
-        ),
-      );
-    }
-  }
 
   Future<void> _loadExistingData() async {
     if (user != null) {
@@ -106,21 +88,11 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEditing
-              ? 'Editar Selección de Personaje'
-              : 'Selección de Personaje',
-        ),
-      ), // Título dinámico
-      floatingActionButton: TutorialFloatingButton(
-        tutorialKey: TutorialService.characterSelectionTutorial,
-        tutorialSteps: TutorialService.getCharacterSelectionTutorial(
-          characterPreviewKey: _characterPreviewKey,
-          customizationKey: _customizationKey,
-          saveButtonKey: _saveButtonKey,
-        ),
+      appBar: const PixelAppBar(
+        title: 'Selecciona tu Personaje',
+        titleFontSize: 12,
       ),
+
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -136,7 +108,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                     // Vista previa del personaje con navegación
                     SizedBox(
                       key: _characterPreviewKey,
-                      height: isPortrait ? 260 : 280,
+                      height: isPortrait ? 240 : 280,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -166,9 +138,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                                 children: [
                                   CharacterAsset(
                                     assetIndex: _selectedCharacterIndex,
-                                    size: isPortrait ? 200 : 220,
+                                    size: isPortrait ? 180 : 220,
                                   ),
-                                  SizedBox(height: 8),
+                                  SizedBox(height: 6),
                                   Text(
                                     CharacterAsset
                                         .characterNames[_selectedCharacterIndex],
@@ -205,7 +177,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: isPortrait ? 8 : 16),
+                    SizedBox(height: isPortrait ? 6 : 16),
                     TextFormField(
                       controller: _nameCtrl,
                       decoration: const InputDecoration(
@@ -218,29 +190,37 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                                   ? 'El nombre del héroe no puede estar vacío'
                                   : null,
                     ),
-                    SizedBox(height: isPortrait ? 8 : 12),
-                    DropdownButtonFormField<String>(
-                      key: _customizationKey,
-                      value: _selectedProgrammingRole,
-                      decoration: const InputDecoration(
-                        labelText: 'Rol de Programación',
-                        helperText:
-                            'Selecciona tu especialidad en programación',
+                    SizedBox(height: isPortrait ? 6 : 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<String>(
+                        key: _customizationKey,
+                        value: _selectedProgrammingRole,
+                        decoration: const InputDecoration(
+                          labelText: 'Rol de Programación',
+                          helperText:
+                              'Selecciona tu especialidad en programación',
+                        ),
+                        isExpanded: true,
+                        items:
+                            _programmingRoles.map((role) {
+                              return DropdownMenuItem(
+                                value: role,
+                                child: Text(
+                                  role,
+                                  style: const TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                        onChanged: (v) {
+                          if (v != null) {
+                            setState(() => _selectedProgrammingRole = v);
+                          }
+                        },
                       ),
-                      items:
-                          _programmingRoles.map((role) {
-                            return DropdownMenuItem(
-                              value: role,
-                              child: Text(role),
-                            );
-                          }).toList(),
-                      onChanged: (v) {
-                        if (v != null) {
-                          setState(() => _selectedProgrammingRole = v);
-                        }
-                      },
                     ),
-                    SizedBox(height: isPortrait ? 8 : 16),
+                    SizedBox(height: isPortrait ? 6 : 16),
                     ElevatedButton(
                       key: _saveButtonKey,
                       style: ElevatedButton.styleFrom(
@@ -258,6 +238,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             'characterSelected': true,
                           });
                           if (!context.mounted) return;
+                          
                           // Feedback visual dinámico
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -268,7 +249,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                               ),
                             ),
                           );
+                          
                           if (!context.mounted) return;
+                          
                           Navigator.pushReplacementNamed(context, '/home');
                         }
                       },

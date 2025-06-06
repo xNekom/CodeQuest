@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/enemy_model.dart';
@@ -8,7 +10,10 @@ import '../../services/question_service.dart';
 import '../../services/enemy_service.dart';
 import '../../services/user_service.dart';
 import '../../services/reward_service.dart';
+import '../../services/auth_service.dart';
+import '../../services/audio_service.dart';
 import '../../widgets/pixel_widgets.dart';
+import '../../widgets/pixel_app_bar.dart';
 import 'package:codequest/widgets/formatted_text_widget.dart';
 import '../mission_completed_screen.dart';
 
@@ -36,25 +41,28 @@ class _BattleScreenState extends State<BattleScreen> {
   final EnemyService _enemyService = EnemyService();
   final UserService _userService = UserService();
   final RewardService _rewardService = RewardService();
+  final AuthService _authService = AuthService();
   bool _isLoading = true;
   int? _selectedOptionIndex;
   bool _answerSubmitted = false;
   bool? _isCurrentAnswerCorrect;
   int _totalCorrectAnswers = 0;
   int _totalIncorrectAnswers = 0;
+  bool _isProcessingNextQuestion = false; // Variable para evitar doble clic
+  int _missionExperience = 175; // Experiencia que otorga la misión de batalla
   @override
   void initState() {
     super.initState();
     _questionIds = widget.battleConfig.questionIds;
+    // Asegurar que la música de batalla continúe durante las preguntas
+    AudioService().playBattleTheme();
     _loadInitialData();
   }
 
   Future<void> _loadInitialData() async {
     // Cargar información del enemigo una sola vez al inicio
     try {
-      print(
-        '[BattleScreen] Loading enemy data for ID: ${widget.battleConfig.enemyId}',
-      );
+      // [BattleScreen] Loading enemy data for ID: ${widget.battleConfig.enemyId}
       final enemy = await _enemyService.getEnemyById(
         widget.battleConfig.enemyId,
       );
@@ -64,14 +72,12 @@ class _BattleScreenState extends State<BattleScreen> {
         });
       }
       if (enemy != null) {
-        print('[BattleScreen] Enemy loaded successfully: ${enemy.name}');
+        // [BattleScreen] Enemy loaded successfully: ${enemy.name}
       } else {
-        print(
-          '[BattleScreen] Warning: Enemy not found for ID: ${widget.battleConfig.enemyId}',
-        );
+        // [BattleScreen] Warning: Enemy not found for ID: ${widget.battleConfig.enemyId}
       }
     } catch (e) {
-      print('[BattleScreen] Error loading enemy: $e');
+      // [BattleScreen] Error loading enemy: $e
     }
 
     // Cargar la primera pregunta
@@ -90,7 +96,7 @@ class _BattleScreenState extends State<BattleScreen> {
       if (_questionIds.isNotEmpty &&
           _currentQuestionIndex < _questionIds.length) {
         final questionId = _questionIds[_currentQuestionIndex];
-        print('[BattleScreen] Loading question: $questionId');
+        // [BattleScreen] Loading question: $questionId
 
         // Cargar la pregunta real desde el servicio
         final questions = await _questionService.getQuestionsByIds([
@@ -105,7 +111,7 @@ class _BattleScreenState extends State<BattleScreen> {
             });
           }
         } else {
-          print('[BattleScreen] No question found for ID: $questionId');
+          // [BattleScreen] No question found for ID: $questionId
           if (mounted) {
             setState(() {
               _isLoading = false;
@@ -120,9 +126,7 @@ class _BattleScreenState extends State<BattleScreen> {
           }
         }
       } else {
-        print(
-          '[BattleScreen] No more questions to load or invalid question index',
-        );
+        // [BattleScreen] No more questions to load or invalid question index
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -130,7 +134,7 @@ class _BattleScreenState extends State<BattleScreen> {
         }
       }
     } catch (e) {
-      print('[BattleScreen] Error loading question: $e');
+      // [BattleScreen] Error loading question: $e
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -160,11 +164,24 @@ class _BattleScreenState extends State<BattleScreen> {
   }
 
   void _nextQuestion() {
+    // Evitar múltiples clics
+    if (_isProcessingNextQuestion) return;
+    
+    setState(() {
+      _isProcessingNextQuestion = true;
+    });
+    
     if (_currentQuestionIndex < _questionIds.length - 1) {
       _currentQuestionIndex++;
       _loadData();
+      // Restablecer el estado después de cargar los datos
+      setState(() {
+        _isProcessingNextQuestion = false;
+      });
     } else {
       _finishBattle();
+      // No necesitamos restablecer _isProcessingNextQuestion aquí porque
+      // _finishBattle() navega a otra pantalla
     }
   }
 
@@ -172,6 +189,11 @@ class _BattleScreenState extends State<BattleScreen> {
     bool victory = _totalCorrectAnswers >= (_questionIds.length * 0.6);
     String? completedMissionId;
     String missionName = 'Batalla contra ${_currentEnemy?.name ?? "Enemigo"}';
+
+    // Reproducir música de victoria si ganó
+    if (victory) {
+      AudioService().playVictoryTheme();
+    }
 
     if (victory) {
       final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -201,14 +223,9 @@ class _BattleScreenState extends State<BattleScreen> {
           final currentMissionId =
               userDoc.data()?['currentMissionId'] as String?;
           if (currentMissionId != null && currentMissionId.isNotEmpty) {
-            await _userService.completeMission(
-              userId,
-              currentMissionId,
-              isBattleMission: true,
-            );
             completedMissionId = currentMissionId;
 
-            // Obtener el nombre real de la misión
+            // Obtener el nombre real de la misión y experiencia
             try {
               final missionDoc =
                   await FirebaseFirestore.instance
@@ -216,17 +233,20 @@ class _BattleScreenState extends State<BattleScreen> {
                       .doc(currentMissionId)
                       .get();
               if (missionDoc.exists) {
-                missionName = missionDoc.data()?['name'] ?? missionName;
+                final missionData = missionDoc.data();
+                missionName = missionData?['name'] ?? missionName;
+                // Guardar experiencia para usar en las recompensas usando el método confiable
+                _missionExperience = await _getExperienceFromMissionData(currentMissionId);
               }
             } catch (e) {
               debugPrint(
-                '[BattleScreen] Error al obtener nombre de misión: $e',
+                '[BattleScreen] Error al obtener datos de misión: $e',
               );
             }
           }
         } catch (e) {
-          debugPrint('[BattleScreen] Error al completar misión: $e');
-        }
+        // debugPrint('[BattleScreen] Error al completar misión: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
       }
     } else {
       // En caso de derrota, solo actualizar estadísticas de batalla si no es repetición
@@ -235,8 +255,8 @@ class _BattleScreenState extends State<BattleScreen> {
         try {
           await _userService.updateStatsAfterBattle(userId, false);
         } catch (e) {
-          debugPrint('[BattleScreen] Error al actualizar estadísticas: $e');
-        }
+        // debugPrint('[BattleScreen] Error al actualizar estadísticas: $e'); // REMOVIDO PARA PRODUCCIÓN
+      }
       }
     }
     if (!mounted) return; // Evitar usar contexto si el widget ya fue desmontado
@@ -330,7 +350,7 @@ class _BattleScreenState extends State<BattleScreen> {
                       (route) => false,
                     );
                   } else if (victory && completedMissionId != null) {
-                    // Si ganó y completó una misión, mostrar pantalla de misión completada
+                    // Si ganó y completó una misión, mostrar pantalla de misión completada inmediatamente
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -338,7 +358,7 @@ class _BattleScreenState extends State<BattleScreen> {
                             (context) => MissionCompletedScreen(
                               missionId: completedMissionId!,
                               missionName: missionName,
-                              experiencePoints: 50, // Experiencia por batalla
+                              experiencePoints: _missionExperience, // Usar el valor actualizado
                               coinsEarned: 50, // Monedas por batalla
                               isBattleMission: true,
                               onContinue: () {
@@ -351,6 +371,9 @@ class _BattleScreenState extends State<BattleScreen> {
                             ),
                       ),
                     );
+                    
+                    // Procesar recompensas en segundo plano
+                    _processBattleRewardsInBackground(completedMissionId);
                   } else {
                     // Si no completó misión o perdió, volver al home directamente
                     Navigator.pushNamedAndRemoveUntil(
@@ -367,13 +390,66 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 
+  // Método para obtener la experiencia directamente del JSON de la misión
+  Future<int> _getExperienceFromMissionData(String missionId) async {
+    try {
+      // Cargar el JSON directamente desde assets
+      final String jsonString = await rootBundle.loadString('assets/data/missions_data.json');
+      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      
+      // Buscar la misión por ID
+      for (var missionData in jsonList) {
+        if (missionData['id'] == missionId) {
+          // Acceder directamente al campo experience en rewards
+          return missionData['rewards']?['experience'] ?? 175;
+        }
+      }
+      
+      // Si no se encuentra la misión, devolver valor por defecto
+      return 175;
+    } catch (e) {
+      // En caso de error, devolver valor por defecto
+      return 175;
+    }
+  }
+
+  // Procesar recompensas de batalla en segundo plano sin bloquear la UI
+  void _processBattleRewardsInBackground(String? missionId) async {
+    final String? userId = _authService.currentUser?.uid;
+    if (userId == null || missionId == null) return;
+
+    try {
+      // Obtener la experiencia correcta directamente del JSON
+      final int experiencePoints = await _getExperienceFromMissionData(missionId);
+      
+      // Primero otorgar experiencia antes de marcar como completada
+      await _userService.addExperience(
+        userId,
+        experiencePoints, // Experiencia correcta desde el JSON
+        missionId: missionId,
+      );
+      
+      // Luego ejecutar las demás operaciones
+      await Future.wait([
+        _userService.completeMission(
+          userId,
+          missionId,
+          isBattleMission: true,
+        ),
+        _userService.updateStatsAfterBattle(userId, true), // Victoria
+      ]);
+    } catch (e) {
+      // Manejar errores silenciosamente
+      debugPrint('Error procesando recompensas de batalla en segundo plano');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      title: Text(
-        'Batalla - Pregunta ${_currentQuestionIndex + 1}/${_questionIds.length}',
-      ),
+    final appBar = PixelAppBar(
+      title: 'Batalla - Pregunta ${_currentQuestionIndex + 1}/${_questionIds.length}',
       backgroundColor: Theme.of(context).colorScheme.primary,
+      titleFontSize: 12,
     );
 
     if (_isLoading || _currentQuestion == null) {
@@ -414,17 +490,7 @@ class _BattleScreenState extends State<BattleScreen> {
                             ),
                           ],
                         ),
-                        child:
-                            _currentEnemy!.assetPath != null &&
-                                    _currentEnemy!.assetPath!.isNotEmpty
-                                ? Image.asset(
-                                  _currentEnemy!.assetPath!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return _buildEnemyPlaceholder();
-                                  },
-                                )
-                                : _buildEnemyPlaceholder(),
+                        child: _buildEnemyPlaceholder(),
                       ),
                       const SizedBox(height: 12),
 
@@ -572,8 +638,9 @@ class _BattleScreenState extends State<BattleScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      FormattedTextWidget(
-                        text: _currentQuestion!.explanation,
+                      Text(
+                        _currentQuestion!.explanation,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         textAlign: TextAlign.left,
                       ),
                     ],
@@ -588,15 +655,24 @@ class _BattleScreenState extends State<BattleScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: PixelButton(
-                  onPressed: () {
-                    _nextQuestion();
-                  },
-                  child: Text(
-                    _currentQuestionIndex < _questionIds.length - 1
-                        ? 'SIGUIENTE'
-                        : 'FINALIZAR',
-                    style: const TextStyle(fontFamily: 'PixelFont'),
-                  ),
+                  onPressed: _isProcessingNextQuestion ? null : () {
+                  _nextQuestion();
+                },
+                child: _isProcessingNextQuestion
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : Text(
+                        _currentQuestionIndex < _questionIds.length - 1
+                            ? 'SIGUIENTE'
+                            : 'FINALIZAR',
+                        style: const TextStyle(fontFamily: 'PixelFont'),
+                      ),
                 ),
               ),
             ],
@@ -730,5 +806,12 @@ class _BattleScreenState extends State<BattleScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Regresar a la música principal al salir de la batalla
+    AudioService().playMainTheme();
+    super.dispose();
   }
 }

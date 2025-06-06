@@ -72,7 +72,6 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     with TickerProviderStateMixin {
   int _currentStep = 0;
   bool _isVisible = false;
-  bool _isScrolling = false;
   Rect? _targetRect;
   late AnimationController _fadeController;
   late AnimationController _pulseController;
@@ -176,7 +175,6 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
 
     if (targetKey?.currentContext != null) {
       setState(() {
-        _isScrolling = true;
         _targetRect = null; // Limpiar el rect antes del scroll
       });
 
@@ -195,7 +193,7 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
           })
           .catchError((error) {
             // Si el scroll falla, actualizar el rect de todos modos
-            print('DEBUG: Error en scroll automático: $error');
+            // DEBUG: Error en scroll automático: $error
             Future.delayed(const Duration(milliseconds: 200), () {
               _updateTargetRect();
             });
@@ -222,31 +220,24 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
           size.width,
           size.height,
         );
-        _isScrolling = false;
       });
     } else {
       setState(() {
         _targetRect = null;
-        _isScrolling = false;
       });
     }
   }
 
   Widget _buildTooltipWithFade() {
-    final currentStepData = widget.steps[_currentStep];
-    final screenSize = MediaQuery.of(context).size;
-
-    print('DEBUG: _targetRect = $_targetRect');
-    print('DEBUG: screenSize = $screenSize');
-    print(
-      'DEBUG: targetKey context = ${currentStepData.targetKey?.currentContext}',
-    );
+    // DEBUG: _targetRect = $_targetRect
+    // DEBUG: screenSize = $screenSize
+    // DEBUG: targetKey context = ${widget.steps[_currentStep].targetKey?.currentContext}
 
     // Siempre centrar el tooltip en la pantalla para mantener consistencia visual
-    print('DEBUG: Centrando tooltip para mantener consistencia visual');
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Positioned.fill(
+    // DEBUG: Centrando tooltip para mantener consistencia visual
+    return Positioned.fill(
+      child: FadeTransition(
+        opacity: _fadeAnimation,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -409,9 +400,6 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     if (widget.steps.isEmpty || !_isVisible) {
       return widget.child;
     }
-
-    final currentStepData = widget.steps[_currentStep];
-    final targetKey = currentStepData.targetKey;
 
     return Stack(
       children: [
