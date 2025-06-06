@@ -1,7 +1,6 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/material.dart';
 import 'package:codequest/screens/shop_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:codequest/firebase_options.dart';
@@ -15,47 +14,21 @@ void main() {
     );
   });
 
-  // Construct sample JSON with 12 items: 1 item with price 0, 11 items with price 5
-  late String sampleJson;
-
   setUp(() {
-    // Build items list
-    final items = <Map<String, dynamic>>[];
-    items.add({
-      'id': 'item0',
-      'name': 'Item 0',
-      'description': 'Desc',
-      'icon': 'icon0.png',
-      'type': 'potion',
-      'rareza': 'Común',
-      'valor_monetario': 0,
-      'es_consumible': true
-    });
-    for (var i = 1; i <= 11; i++) {
-      items.add({
-        'id': 'item$i',
-        'name': 'Item $i',
-        'description': 'Desc',
-        'icon': 'icon$i.png',
-        'type': i % 2 == 0 ? 'potion' : 'weapon',
-        'rareza': 'Común',
-        'valor_monetario': 5,
-        'es_consumible': i % 2 == 0,
-      });
-    }
-    sampleJson = jsonEncode(items);
+    // Nota: Este test necesitaría ser actualizado para usar mocks de Firestore
+    // en lugar del asset bundle. Por ahora, mantenemos la funcionalidad básica
+    // pero comentamos el mock del asset bundle ya que ItemService ahora usa Firestore
+    
+    // TODO: Implementar mock de Firestore para ItemService
+    // Este test necesita ser actualizado para funcionar con la nueva implementación
     final codec = StandardMethodCodec();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
       'flutter/assets',
       (ByteData? message) async {
         if (message == null) return null;
         final call = codec.decodeMethodCall(message);
-        // Return shop items JSON
-        if (call.method == 'loadString' && call.arguments == 'assets/data/items_data.json') {
-          return codec.encodeSuccessEnvelope(sampleJson);
-        }
-        // Return empty JSON for other JSON reads (e.g., AssetManifest)
-        if (call.method == 'loadString' && (call.arguments.toString().endsWith('.json') || call.method == 'loadString')) {
+        // Return empty JSON for JSON reads (e.g., AssetManifest)
+        if (call.method == 'loadString' && call.arguments.toString().endsWith('.json')) {
           return codec.encodeSuccessEnvelope('{}');
         }
         // Return empty bytes for binary asset loads (e.g., images)
