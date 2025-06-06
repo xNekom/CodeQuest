@@ -85,13 +85,6 @@ flutter:
     - assets/images/logo/
     - assets/backgrounds/
     - assets/music/
-    - assets/data/questions.json
-    - assets/data/code_exercises.json
-    - assets/data/items_data.json
-    - assets/data/missions_data.json
-    - assets/data/achievements_data.json
-    - assets/data/enemies_data.json
-    - assets/data/rewards_data.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
