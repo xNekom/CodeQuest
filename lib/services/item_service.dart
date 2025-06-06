@@ -1,18 +1,17 @@
 // filepath: lib/services/item_service.dart
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/item_model.dart';
 
-/// Servicio para cargar items desde JSON local
+/// Servicio para cargar items desde Firestore
 class ItemService {
-  /// Carga la lista de items desde assets/data/items_data.json
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  /// Carga la lista de items desde Firestore
   Future<List<ItemModel>> getItems() async {
-    final jsonStr = await rootBundle.loadString('assets/data/items_data.json');
-    final List<dynamic> jsonList = json.decode(jsonStr) as List<dynamic>;
-    return jsonList.map((data) {
-      final map = data as Map<String, dynamic>;
-      final id = map['id'] as String;
-      return ItemModel.fromJson(map, id);
+    final QuerySnapshot snapshot = await _firestore.collection('items').get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return ItemModel.fromJson(data, doc.id);
     }).toList();
   }
 }
