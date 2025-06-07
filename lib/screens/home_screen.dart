@@ -261,11 +261,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUserDataContent() {
     return SafeArea(
-      child: Column(
-        children: [
-          _buildAppBar(),
-          Expanded(
-            child: SingleChildScrollView(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            children: [
+              _buildAppBar(),
+              Expanded(
+                child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +292,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -298,49 +303,41 @@ class _HomeScreenState extends State<HomeScreen> {
     // Determinar si el usuario es admin
     final bool isAdmin = _userData != null && _userData!['role'] == 'admin';
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      padding: const EdgeInsets.symmetric(
-        horizontal: PixelTheme.spacingMedium,
-        vertical: PixelTheme.spacingSmall,
-      ),
-      margin: const EdgeInsets.all(PixelTheme.spacingMedium),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 2),
-        color: Theme.of(
-          context,
-        ).colorScheme.surface.withAlpha(230), // 0.9 * 255 ≈ 230
-        boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2, 2)),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/images/logo/logo_no_background.png',
-                  height: 32,
-                  width: 32,
-                ),
-                const SizedBox(width: PixelTheme.spacingSmall),
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'CODEQUEST',
-                      style: GoogleFonts.pressStart2p(
-                        fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.all(PixelTheme.spacingMedium),
+      child: PixelCard(
+        padding: const EdgeInsets.symmetric(
+          horizontal: PixelTheme.spacingMedium,
+          vertical: PixelTheme.spacingSmall,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/images/logo/logo_no_background.png',
+                    height: 32,
+                    width: 32,
+                  ),
+                  const SizedBox(width: PixelTheme.spacingSmall),
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'CODEQUEST',
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           const SizedBox(width: 8),
           Expanded(
             flex: 3,
@@ -462,6 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

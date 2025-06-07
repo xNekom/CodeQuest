@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import '../theme/pixel_theme.dart';
 
 /// Botón personalizado con estilo pixel art
@@ -82,8 +83,8 @@ class _PixelButtonState extends State<PixelButton> {
                 horizontal: PixelTheme.spacingMedium, 
                 vertical: PixelTheme.spacingSmall
               ),
-              elevation: widget.isSecondary ? 0 : 3,
-              shadowColor: widget.isSecondary ? null : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              elevation: 0,
+              shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
               ),
@@ -193,26 +194,36 @@ class PixelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
-      padding: padding,
       decoration: BoxDecoration(
-        color: color ?? Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1), 
-          width: 1
-        ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
+            color: Colors.black.withValues(alpha: 0.05),
+            offset: const Offset(0, 8),
+            blurRadius: 24,
             spreadRadius: 0,
           ),
         ],
       ),
-      child: child,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            width: width,
+            height: height,
+            padding: padding,
+            decoration: BoxDecoration(
+              color: color ?? Theme.of(context).colorScheme.surface.withValues(alpha: 0.65),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2), 
+                width: 1
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -235,20 +246,32 @@ class PixelDialog extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(128), width: 2), // Replaced withOpacity
+        borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(51), // Reemplazado .withOpacity(0.2)
-            offset: const Offset(4, 4),
-            blurRadius: 0,
+            color: Colors.black.withValues(alpha: 0.1),
+            offset: const Offset(0, 10),
+            blurRadius: 30,
+            spreadRadius: 0,
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(PixelTheme.borderRadiusLarge),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.75),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 1
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -271,8 +294,11 @@ class PixelDialog extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
+     ),
+    ),
+   ),
+  );
+ }
 }
 
 /// Icono de pixel art con estilo personalizado
@@ -320,8 +346,9 @@ class PixelAvatar extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
-        border: Border.all(color: Colors.black, width: 2),
+        borderRadius: BorderRadius.circular(PixelTheme.borderRadiusMedium),
       ),
+      clipBehavior: Clip.antiAlias,
       child: imageUrl != null && imageUrl!.isNotEmpty
           ? Image.network(
               imageUrl!,
@@ -389,8 +416,14 @@ class PixelProgressBar extends StatelessWidget {
         Container(
           height: height,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 2),
+            color: theme.colorScheme.surface.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(height / 2),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+              width: 1,
+            ),
           ),
+          clipBehavior: Clip.antiAlias,
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxWidth = constraints.maxWidth;
