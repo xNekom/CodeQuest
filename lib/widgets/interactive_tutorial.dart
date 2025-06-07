@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:math' show min, max, sqrt;
 
 /// Representa un paso individual en un tutorial interactivo
 class InteractiveTutorialStep {
@@ -70,30 +72,19 @@ class InteractiveTutorial extends StatefulWidget {
 
 class _InteractiveTutorialState extends State<InteractiveTutorial>
     with TickerProviderStateMixin {
-  int _currentStep = 0;
+  int _currentStepIndex = 0;
   bool _isVisible = false;
   Rect? _targetRect;
-  late AnimationController _fadeController;
-  late AnimationController _pulseController;
-  late Animation<double> _fadeAnimation;
+  // Eliminado: _fadeController y _fadeAnimation ya que no se necesitan para transiciones instantáneas
 
   @override
   void initState() {
     super.initState();
+    debugPrint('InteractiveTutorial: initState llamado');
+    debugPrint('InteractiveTutorial: autoStart = ${widget.autoStart}');
+    debugPrint('InteractiveTutorial: steps count = ${widget.steps.length}');
+    
 
-    _fadeController = AnimationController(
-      duration: widget.stepTransitionDuration,
-      vsync: this,
-    );
-
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
-    );
 
     if (widget.autoStart && widget.steps.isNotEmpty) {
       Future.microtask(() {
@@ -104,73 +95,63 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     }
   }
 
-  @override
-  void dispose() {
-    _fadeController.dispose();
-    _pulseController.dispose();
-    super.dispose();
-  }
+
 
   void _startTutorial() {
-    if (widget.steps.isEmpty) return;
-
+    debugPrint('InteractiveTutorial: _startTutorial llamado');
+    if (widget.steps.isEmpty) {
+      debugPrint('InteractiveTutorial: No hay pasos para mostrar');
+      return;
+    }
+    
+    debugPrint('InteractiveTutorial: Iniciando con step 0');
     setState(() {
-      _currentStep = 0;
       _isVisible = true;
+      _currentStepIndex = 0;
+      _ensureTargetVisible();
     });
-
-    _ensureTargetVisible();
-    _fadeController.forward();
   }
 
   void _nextStep() {
-    if (_currentStep < widget.steps.length - 1) {
-      _fadeController.reverse().then((_) {
-        setState(() {
-          _currentStep++;
-        });
-        _ensureTargetVisible();
-        _fadeController.forward();
+    if (_currentStepIndex < widget.steps.length - 1) {
+      setState(() {
+        _currentStepIndex++;
       });
+      _ensureTargetVisible();
     } else {
       _completeTutorial();
     }
   }
 
   void _previousStep() {
-    if (_currentStep > 0) {
-      _fadeController.reverse().then((_) {
-        setState(() {
-          _currentStep--;
-        });
-        _ensureTargetVisible();
-        _fadeController.forward();
+    if (_currentStepIndex > 0) {
+      setState(() {
+        _currentStepIndex--;
       });
+      _ensureTargetVisible();
     }
   }
 
   void _completeTutorial() {
-    _fadeController.reverse().then((_) {
-      setState(() {
-        _isVisible = false;
-        _targetRect = null;
-      });
-      widget.onComplete?.call();
+    debugPrint('InteractiveTutorial: Tutorial completado');
+    setState(() {
+      _isVisible = false;
+      _targetRect = null;
     });
+    widget.onComplete?.call();
   }
 
   void _cancelTutorial() {
-    _fadeController.reverse().then((_) {
-      setState(() {
-        _isVisible = false;
-        _targetRect = null;
-      });
-      widget.onCancel?.call();
+    debugPrint('InteractiveTutorial: Tutorial cancelado');
+    setState(() {
+      _isVisible = false;
+      _targetRect = null;
     });
+    widget.onCancel?.call();
   }
 
   void _ensureTargetVisible() {
-    final currentStepData = widget.steps[_currentStep];
+    final currentStepData = widget.steps[_currentStepIndex];
     final targetKey = currentStepData.targetKey;
 
     if (targetKey?.currentContext != null) {
@@ -178,309 +159,581 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
         _targetRect = null; // Limpiar el rect antes del scroll
       });
 
-      // Hacer scroll automático al elemento objetivo
+      // Hacer scroll automático al elemento objetivo - INSTANTÁNEO
       Scrollable.ensureVisible(
             targetKey!.currentContext!,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
+            duration: Duration.zero, // INSTANTÁNEO
+            curve: Curves.linear,
             alignment: 0.5, // Centrar el elemento en la pantalla
           )
           .then((_) {
-            // Esperar un poco más después del scroll para asegurar que se complete
-            Future.delayed(const Duration(milliseconds: 300), () {
-              _updateTargetRect();
-            });
+            // Actualizar inmediatamente sin espera adicional
+            _updateTargetRect();
           })
           .catchError((error) {
-            // Si el scroll falla, actualizar el rect de todos modos
-            // DEBUG: Error en scroll automático: $error
-            Future.delayed(const Duration(milliseconds: 200), () {
-              _updateTargetRect();
-            });
+            if (kDebugMode) {
+              debugPrint('Error al hacer scroll al objetivo: $error');
+            }
+            // Si falla el scroll, actualizar el rect de todos modos
+            _updateTargetRect();
           });
     } else {
+      // Si no hay contexto válido, actualizar el rect directamente
       _updateTargetRect();
     }
   }
 
   void _updateTargetRect() {
-    final currentStepData = widget.steps[_currentStep];
+    final currentStepData = widget.steps[_currentStepIndex];
     final targetKey = currentStepData.targetKey;
 
     if (targetKey?.currentContext != null) {
-      final RenderBox renderBox =
-          targetKey!.currentContext!.findRenderObject() as RenderBox;
-      final position = renderBox.localToGlobal(Offset.zero);
-      final size = renderBox.size;
+      try {
+        final RenderBox renderBox =
+            targetKey!.currentContext!.findRenderObject() as RenderBox;
+        final position = renderBox.localToGlobal(Offset.zero);
+        final size = renderBox.size;
 
-      setState(() {
-        _targetRect = Rect.fromLTWH(
+        // Usar el rectángulo exacto del elemento sin margen extra
+        // El margen se manejará en el cálculo del tooltip
+        final targetRect = Rect.fromLTWH(
           position.dx,
           position.dy,
           size.width,
           size.height,
         );
-      });
+
+        setState(() {
+          _targetRect = targetRect;
+        });
+        
+        debugPrint('Target rect actualizado: $_targetRect');
+      } catch (e) {
+        debugPrint('Error calculando rectángulo objetivo: $e');
+        setState(() {
+          _targetRect = null;
+        });
+      }
     } else {
-      setState(() {
-        _targetRect = null;
-      });
+      // Si no hay targetKey, intentar usar customPosition
+      if (currentStepData.customPosition != null) {
+        final customPos = currentStepData.customPosition!;
+        setState(() {
+          _targetRect = Rect.fromLTWH(
+            customPos.dx - 20.0,
+            customPos.dy - 20.0, 
+            40.0, 
+            40.0
+          );
+        });
+      } else {
+        setState(() {
+          _targetRect = null;
+        });
+      }
     }
   }
 
   Widget _buildTooltipWithFade() {
-    // DEBUG: _targetRect = $_targetRect
-    // DEBUG: screenSize = $screenSize
-    // DEBUG: targetKey context = ${widget.steps[_currentStep].targetKey?.currentContext}
+    final screenSize = MediaQuery.of(context).size;
+    final padding = MediaQuery.of(context).padding;
 
-    // Siempre centrar el tooltip en la pantalla para mantener consistencia visual
-    // DEBUG: Centrando tooltip para mantener consistencia visual
-    return Positioned.fill(
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Center(child: _buildTooltip()),
-          ),
-        ),
+    // Calcular la mejor posición para el tooltip considerando SafeArea
+    Offset tooltipPosition = _calculateTooltipPosition(screenSize);
+
+    // Ajustar para SafeArea con límites más restrictivos para evitar desbordamiento
+    final adjustedPosition = Offset(
+      tooltipPosition.dx.clamp(
+        padding.left + 20.0, 
+        screenSize.width - padding.right - 20.0
       ),
+      tooltipPosition.dy.clamp(
+        padding.top + 20.0,
+        screenSize.height - padding.bottom - 20.0
+      ),
+    );
+
+    return Positioned(
+      left: adjustedPosition.dx,
+      top: adjustedPosition.dy,
+      child: _buildTooltip(),
     );
   }
 
-  Widget _buildTooltip() {
-    final currentStepData = widget.steps[_currentStep];
-    final screenSize = MediaQuery.of(context).size;
+  Offset _calculateTooltipPosition(Size screenSize) {
+    final currentStep = widget.steps[_currentStepIndex];
+    final targetRect = _targetRect;
+    
+    // Calcular dimensiones basadas en el espacio disponible
+    final bool isSmallScreen = screenSize.width < 600;
+    final EdgeInsets padding = MediaQuery.of(context).padding;
+    
+    final double maxAvailableWidth = screenSize.width - padding.horizontal - 40.0;
+    final double maxAvailableHeight = screenSize.height - padding.vertical - 40.0;
+    
+    // Calcular dimensiones del tooltip
+    final int textLength = currentStep.title.length + currentStep.description.length;
+    final double baseWidth = isSmallScreen ? 280.0 : 360.0;
+    final double tooltipWidth = (baseWidth + min(textLength * 2.0, 100.0)).clamp(
+      isSmallScreen ? 240.0 : 300.0,
+      maxAvailableWidth * 0.9
+    );
+    
+    final double baseHeight = 120.0;
+    final double lineHeight = 22.0;
+    final int estimatedLines = (textLength / 40).ceil();
+    final double tooltipHeight = (baseHeight + estimatedLines * lineHeight).clamp(
+      100.0,
+      maxAvailableHeight * 0.8
+    );
 
-    return Material(
-      elevation: 0,
-      color: Colors.transparent,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: screenSize.width * 0.9,
-          minWidth: 280,
-          maxHeight: screenSize.height * 0.6,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.blue, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha((0.2 * 255).round()),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: SingleChildScrollView(
+    const double safeMargin = 20.0;
+    const double highlightMargin = 8.0; // Margen reducido para el área iluminada
+    const double separationMargin = 40.0; // Aumentar espacio entre tooltip y área iluminada
+    
+    // Si no hay target, centrar en la pantalla
+    if (targetRect == null) {
+      return Offset(
+        padding.left + (maxAvailableWidth - tooltipWidth) / 2,
+        padding.top + (maxAvailableHeight - tooltipHeight) / 2
+      );
+    }
+
+    // Calcular el área iluminada completa (elemento + margen de resaltado)
+    // Usar un margen más pequeño para evitar áreas iluminadas demasiado grandes
+    final Rect highlightRect = targetRect.inflate(highlightMargin * 0.5);
+    
+    // Generar posiciones prioritarias alrededor del área iluminada
+    final List<Offset> positions = [];
+    
+    // 1. Posición ABAJO del área iluminada (preferida)
+    positions.add(Offset(
+      highlightRect.center.dx - tooltipWidth / 2,
+      highlightRect.bottom + separationMargin
+    ));
+    
+    // 2. Posición ARRIBA del área iluminada
+    positions.add(Offset(
+      highlightRect.center.dx - tooltipWidth / 2,
+      highlightRect.top - tooltipHeight - separationMargin
+    ));
+    
+    // 3. Posición DERECHA del área iluminada
+    positions.add(Offset(
+      highlightRect.right + separationMargin,
+      highlightRect.center.dy - tooltipHeight / 2
+    ));
+    
+    // 4. Posición IZQUIERDA del área iluminada
+    positions.add(Offset(
+      highlightRect.left - tooltipWidth - separationMargin,
+      highlightRect.center.dy - tooltipHeight / 2
+    ));
+    
+    // Función para verificar límites y ajustar posiciones
+    Offset adjustPosition(Offset pos) {
+      double x = pos.dx.clamp(
+        padding.left + safeMargin,
+        screenSize.width - tooltipWidth - padding.right - safeMargin
+      );
+      
+      double y = pos.dy.clamp(
+        padding.top + safeMargin,
+        screenSize.height - tooltipHeight - padding.bottom - safeMargin
+      );
+      
+      return Offset(x, y);
+    }
+    
+    // Función para verificar si la posición evita superponer el área iluminada
+    bool avoidsHighlight(Offset pos) {
+      final tooltipRect = Rect.fromLTWH(pos.dx, pos.dy, tooltipWidth, tooltipHeight);
+      return !tooltipRect.overlaps(highlightRect);
+    }
+    
+    // Función para calcular la distancia desde el tooltip al área iluminada
+    double distanceToHighlight(Offset pos) {
+      final tooltipRect = Rect.fromLTWH(pos.dx, pos.dy, tooltipWidth, tooltipHeight);
+      
+      // Calcular la distancia más corta entre los rectángulos
+      final dx = max(0.0, max(highlightRect.left - tooltipRect.right, tooltipRect.left - highlightRect.right));
+      final dy = max(0.0, max(highlightRect.top - tooltipRect.bottom, tooltipRect.top - highlightRect.bottom));
+      
+      return sqrt(dx * dx + dy * dy);
+    }
+    
+    // Probar posiciones en orden de preferencia
+    for (final position in positions) {
+      final adjusted = adjustPosition(position);
+      if (avoidsHighlight(adjusted)) {
+        return adjusted;
+      }
+    }
+    
+    // Fallback: encontrar la mejor posición disponible
+    // Crear posiciones alternativas más alejadas
+    final List<Offset> fallbackPositions = [];
+    
+    // Posiciones más alejadas con mayor separación
+    const double fallbackSeparation = 70.0;
+    
+    fallbackPositions.add(Offset(
+      highlightRect.center.dx - tooltipWidth / 2,
+      highlightRect.bottom + fallbackSeparation
+    ));
+    
+    fallbackPositions.add(Offset(
+      highlightRect.center.dx - tooltipWidth / 2,
+      highlightRect.top - tooltipHeight - fallbackSeparation
+    ));
+    
+    fallbackPositions.add(Offset(
+      highlightRect.right + fallbackSeparation,
+      highlightRect.center.dy - tooltipHeight / 2
+    ));
+    
+    fallbackPositions.add(Offset(
+      highlightRect.left - tooltipWidth - fallbackSeparation,
+      highlightRect.center.dy - tooltipHeight / 2
+    ));
+    
+    // Buscar la posición que maximice la distancia al área iluminada
+    Offset bestPosition = adjustPosition(fallbackPositions.first);
+    double maxDistance = distanceToHighlight(bestPosition);
+    
+    for (final position in fallbackPositions.skip(1)) {
+      final adjusted = adjustPosition(position);
+      final distance = distanceToHighlight(adjusted);
+      if (distance > maxDistance) {
+        maxDistance = distance;
+        bestPosition = adjusted;
+      }
+    }
+    
+    // Si aún hay superposición, usar posición opuesta al centro de la pantalla
+    final screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
+    final targetDirection = highlightRect.center - screenCenter;
+    
+    Offset finalFallback;
+    const double finalSeparation = 90.0;
+    
+    if (targetDirection.dx.abs() > targetDirection.dy.abs()) {
+      // Más horizontal - posicionar verticalmente
+      if (highlightRect.center.dy < screenSize.height / 2) {
+        // Parte superior - posicionar abajo
+        finalFallback = Offset(
+          highlightRect.center.dx - tooltipWidth / 2,
+          highlightRect.bottom + finalSeparation
+        );
+      } else {
+        // Parte inferior - posicionar arriba
+        finalFallback = Offset(
+          highlightRect.center.dx - tooltipWidth / 2,
+          highlightRect.top - tooltipHeight - finalSeparation
+        );
+      }
+    } else {
+      // Más vertical - posicionar horizontalmente
+      if (highlightRect.center.dx < screenSize.width / 2) {
+        // Lado izquierdo - posicionar derecha
+        finalFallback = Offset(
+          highlightRect.right + finalSeparation,
+          highlightRect.center.dy - tooltipHeight / 2
+        );
+      } else {
+        // Lado derecho - posicionar izquierda
+        finalFallback = Offset(
+          highlightRect.left - tooltipWidth - finalSeparation,
+          highlightRect.center.dy - tooltipHeight / 2
+        );
+      }
+    }
+    
+    // Asegurar límites finales
+    return adjustPosition(finalFallback);
+  }
+
+  // Funciones auxiliares eliminadas - el posicionamiento ahora es más inteligente
+
+  Widget _buildTooltip() {
+    final currentStep = widget.steps[_currentStepIndex];
+    
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenSize = MediaQuery.of(context).size;
+        final tooltipPosition = _calculateTooltipPosition(screenSize);
+        
+        // Calcular dimensiones dinámicamente
+        final bool isSmallScreen = screenSize.width < 600;
+        final EdgeInsets padding = MediaQuery.of(context).padding;
+        
+        final double maxAvailableWidth = screenSize.width - padding.horizontal - 40.0;
+        final double maxAvailableHeight = screenSize.height - padding.vertical - 40.0;
+        
+        final int textLength = currentStep.title.length + currentStep.description.length;
+        final double baseWidth = isSmallScreen ? 280.0 : 360.0;
+        final double tooltipWidth = (baseWidth + min(textLength * 2.0, 100.0)).clamp(
+          isSmallScreen ? 240.0 : 300.0,
+          maxAvailableWidth * 0.9
+        );
+        
+        final double baseHeight = 120.0;
+        final double lineHeight = 22.0;
+        final int estimatedLines = (textLength / 40).ceil();
+        final double tooltipHeight = (baseHeight + estimatedLines * lineHeight).clamp(
+          100.0,
+          maxAvailableHeight * 0.8
+        );
+
+        return Positioned(
+          left: tooltipPosition.dx,
+          top: tooltipPosition.dy,
+          child: Container(
+            width: tooltipWidth,
+            constraints: BoxConstraints(
+              maxHeight: tooltipHeight,
+              minHeight: 100.0,
+            ),
+            padding: EdgeInsets.all(isSmallScreen ? 16.0 : 20.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 10.0,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header con icono y título
+                // Header
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withAlpha((0.1 * 255).round()),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        currentStepData.icon,
-                        color: Colors.blue,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        currentStepData.title,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        currentStep.title,
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 16.0 : 18.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(Icons.close, size: 20.0),
                       onPressed: _cancelTutorial,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      style: IconButton.styleFrom(
+                        minimumSize: const Size(24, 24),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 12),
-
-                // Descripción
-                Text(
-                  currentStepData.description,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                    height: 1.4,
+                const SizedBox(height: 8.0),
+                // Description
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      currentStep.description,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 14.0 : 16.0,
+                        color: Colors.black54,
+                        height: 1.4,
+                      ),
+                    ),
                   ),
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
                 ),
-
-                const SizedBox(height: 16),
-
-                // Indicador de progreso
+                const SizedBox(height: 16.0),
+                // Navigation buttons
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Paso ${_currentStep + 1} de ${widget.steps.length}',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    TextButton(
+                      onPressed: _currentStepIndex > 0 ? _previousStep : null,
+                      child: Text(
+                        'Anterior',
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 14.0 : 16.0,
+                          color: _currentStepIndex > 0 ? Colors.blue : Colors.grey,
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: LinearProgressIndicator(
-                        value: (_currentStep + 1) / widget.steps.length,
-                        backgroundColor: Colors.grey[300],
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.blue,
+                    Text(
+                      '${_currentStepIndex + 1} / ${widget.steps.length}',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 12.0 : 14.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: _currentStepIndex < widget.steps.length - 1 ? _nextStep : widget.onComplete,
+                      child: Text(
+                        _currentStepIndex < widget.steps.length - 1 ? 'Siguiente' : 'Finalizar',
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 14.0 : 16.0,
+                          color: Colors.blue,
                         ),
                       ),
                     ),
                   ],
-                ),
-
-                const SizedBox(height: 16),
-
-                // Botones de navegación
-                Center(
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 8,
-                    children: [
-                      if (_currentStep > 0)
-                        ElevatedButton.icon(
-                          onPressed: _previousStep,
-                          icon: const Icon(Icons.arrow_back),
-                          label: const Text('Anterior'),
-                        ),
-
-                      ElevatedButton.icon(
-                        onPressed: _nextStep,
-                        icon: Icon(
-                          _currentStep == widget.steps.length - 1
-                              ? Icons.check
-                              : Icons.arrow_forward,
-                        ),
-                        label: Text(
-                          _currentStep == widget.steps.length - 1
-                              ? 'Finalizar'
-                              : 'Siguiente',
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Si no hay pasos o no es visible, solo mostrar el widget hijo
-    if (widget.steps.isEmpty || !_isVisible) {
+    debugPrint('InteractiveTutorial: build llamado - isVisible: $_isVisible, steps: ${widget.steps.length}');
+    
+    if (!_isVisible || widget.steps.isEmpty) {
+      debugPrint('InteractiveTutorial: Retornando solo child - invisible o sin pasos');
       return widget.child;
-    }    return PopScope(
+    }
+
+    debugPrint('InteractiveTutorial: Mostrando overlay completo');
+    return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          // Cuando se presiona el botón de retroceso, cancelar el tutorial
-          if (widget.onCancel != null) {
-            widget.onCancel!();
-          } else {
-            _cancelTutorial();
-          }
+        if (didPop) {
+          _cancelTutorial();
         }
       },
       child: Stack(
         children: [
           // Widget hijo original
           widget.child,
-
-          // Overlay semi-transparente
-          Positioned.fill(
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: Container(
-                color: Colors.black.withAlpha(128),
+          
+          // Overlay oscuro con agujero para el elemento objetivo - CORREGIDO
+          if (_isVisible)
+            Positioned.fill(
+              child: CustomPaint(
+                painter: HolePainter(
+                  targetRect: _targetRect,
+                  backgroundColor: Colors.black.withValues(alpha: 0.75), // Fondo oscuro transparente restaurado
+                  holeRadius: 16.0, // Bordes suaves
+                  glowColor: Colors.blue.withValues(alpha: 0.8), // Brillo azul sutil
+                  glowRadius: 30.0, // Brillo moderado
+                  borderWidth: 2.0, // Borde delgado
+                ),
               ),
             ),
-          ),
-
-          // Agujero para resaltar el elemento objetivo
-          if (_targetRect != null)
-            Positioned.fill(
-              child: CustomPaint(painter: HolePainter(_targetRect!)),
-            ),
-
-          // Tooltip con información del paso actual
-          _buildTooltipWithFade(),
+          
+          // Tooltip - POSICIONADO PARA EVITAR SUPERPOSICIÓN
+          if (_isVisible) _buildTooltipWithFade(),
         ],
       ),
     );
   }
 }
 
-/// Painter personalizado para crear un agujero en el overlay
+/// Pintor personalizado para crear un overlay con un agujero
 class HolePainter extends CustomPainter {
-  final Rect holeRect;
+  final Rect? targetRect;
+  final Color backgroundColor;
+  final double holeRadius;
+  final Color glowColor;
+  final double glowRadius;
+  final double borderWidth;
 
-  HolePainter(this.holeRect);
+  HolePainter({
+    required this.targetRect,
+    required this.backgroundColor,
+    this.holeRadius = 16.0, // Radio aumentado para bordes más suaves
+    this.glowColor = Colors.blue,
+    this.glowRadius = 40.0, // Brillo más amplio y suave
+    this.borderWidth = 4.0, // Borde más prominente
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.black.withAlpha(128)
-          ..style = PaintingStyle.fill;
+    // Fondo oscuro transparente - RESTAURADO
+    final backgroundPaint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.fill;
 
-    final path =
-        Path()
-          ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
-          ..addRRect(
-            RRect.fromRectAndRadius(
-              holeRect.inflate(8),
-              const Radius.circular(8),
-            ),
-          )
-          ..fillType = PathFillType.evenOdd;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
 
-    canvas.drawPath(path, paint);
+    if (targetRect != null) {
+      // Área de iluminación con márgenes ajustados
+      final illuminationRect = Rect.fromLTRB(
+        targetRect!.left - 8.0,
+        targetRect!.top - 8.0,
+        targetRect!.right + 8.0,
+        targetRect!.bottom + 8.0,
+      );
 
-    // Dibujar borde alrededor del agujero
-    final borderPaint =
-        Paint()
-          ..color = Colors.blue
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
+      // Crear el path para el área iluminada
+      final Path highlightPath = Path()
+        ..addRRect(RRect.fromRectAndRadius(
+          illuminationRect,
+          Radius.circular(holeRadius),
+        ));
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(holeRect.inflate(8), const Radius.circular(8)),
-      borderPaint,
-    );
+      // Crear el path para toda la pantalla excepto el área iluminada
+      final Path inversePath = Path()
+        ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
+        ..addPath(highlightPath, Offset.zero)
+        ..fillType = PathFillType.evenOdd;
+
+      // Dibujar el fondo oscuro con el "agujero" transparente
+      final Paint darkPaint = Paint()
+        ..color = backgroundColor
+        ..style = PaintingStyle.fill;
+
+      canvas.drawPath(inversePath, darkPaint);
+
+      // Efectos visuales sutiles alrededor del área iluminada
+      final glowPaint = Paint()
+        ..color = glowColor.withValues(alpha: 0.3)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, glowRadius)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          illuminationRect.inflate(4.0),
+          Radius.circular(holeRadius + 2.0),
+        ),
+        glowPaint,
+      );
+
+      // Borde definido
+      final borderPaint = Paint()
+        ..color = glowColor.withValues(alpha: 0.6)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = borderWidth;
+
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          illuminationRect,
+          Radius.circular(holeRadius),
+        ),
+        borderPaint,
+      );
+    }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate is HolePainter && oldDelegate.holeRect != holeRect;
+  bool shouldRepaint(HolePainter oldDelegate) {
+    return oldDelegate.targetRect != targetRect ||
+        oldDelegate.backgroundColor != backgroundColor ||
+        oldDelegate.holeRadius != holeRadius ||
+        oldDelegate.glowColor != glowColor ||
+        oldDelegate.glowRadius != glowRadius ||
+        oldDelegate.borderWidth != borderWidth;
   }
 }

@@ -124,6 +124,8 @@ class _MissionListScreenState extends State<MissionListScreen> {
     return "Requisitos no cumplidos";
   }
 
+
+
   List<MissionModel> _applyFilters(List<MissionModel> missions) {
     return missions.where((mission) {
       final bool isUnlocked = _isMissionUnlocked(mission, _userData);
@@ -166,6 +168,56 @@ class _MissionListScreenState extends State<MissionListScreen> {
     }).toList();
   }
 
+  Widget _buildModernRadioOption(String title, String value, String groupValue, ValueChanged<String> onChanged) {
+    final isSelected = value == groupValue;
+    
+    return InkWell(
+      onTap: () => onChanged(value),
+      borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+        child: Row(
+          children: [
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+                  width: 2,
+                ),
+                color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+              ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isSelected ? Theme.of(context).primaryColor : null,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showFilterDialog() {
     showDialog(
       context: context,
@@ -179,88 +231,16 @@ class _MissionListScreenState extends State<MissionListScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('Estado de completado:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  RadioListTile<String>(
-                    title: const Text('Todas'),
-                    value: 'all',
-                    groupValue: _filterType,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _filterType = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Completadas'),
-                    value: 'completed',
-                    groupValue: _filterType,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _filterType = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Disponibles'),
-                    value: 'available',
-                    groupValue: _filterType,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _filterType = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Bloqueadas'),
-                    value: 'locked',
-                    groupValue: _filterType,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _filterType = value!;
-                      });
-                    },
-                  ),
+                  _buildModernRadioOption('Todas', 'all', _filterType, (value) => setDialogState(() => _filterType = value)),
+                  _buildModernRadioOption('Completadas', 'completed', _filterType, (value) => setDialogState(() => _filterType = value)),
+                  _buildModernRadioOption('Disponibles', 'available', _filterType, (value) => setDialogState(() => _filterType = value)),
+                  _buildModernRadioOption('Bloqueadas', 'locked', _filterType, (value) => setDialogState(() => _filterType = value)),
                   const SizedBox(height: 16),
                   const Text('Nivel de dificultad:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  RadioListTile<String>(
-                    title: const Text('Todos los niveles'),
-                    value: 'all',
-                    groupValue: _levelFilter,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _levelFilter = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Principiante (1-3)'),
-                    value: 'beginner',
-                    groupValue: _levelFilter,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _levelFilter = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Intermedio (4-6)'),
-                    value: 'intermediate',
-                    groupValue: _levelFilter,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _levelFilter = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Avanzado (7+)'),
-                    value: 'advanced',
-                    groupValue: _levelFilter,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        _levelFilter = value!;
-                      });
-                    },
-                  ),
+                  _buildModernRadioOption('Todos los niveles', 'all', _levelFilter, (value) => setDialogState(() => _levelFilter = value)),
+                  _buildModernRadioOption('Principiante (1-3)', 'beginner', _levelFilter, (value) => setDialogState(() => _levelFilter = value)),
+                  _buildModernRadioOption('Intermedio (4-6)', 'intermediate', _levelFilter, (value) => setDialogState(() => _levelFilter = value)),
+                  _buildModernRadioOption('Avanzado (7+)', 'advanced', _levelFilter, (value) => setDialogState(() => _levelFilter = value)),
                 ],
               ),
               actions: [

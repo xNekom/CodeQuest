@@ -198,7 +198,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                       width: double.infinity,
                       child: DropdownButtonFormField<String>(
                         key: _customizationKey,
-                        value: _selectedProgrammingRole,
+                        initialValue: _selectedProgrammingRole,
                         decoration: const InputDecoration(
                           labelText: 'Rol de Programación',
                           helperText:
