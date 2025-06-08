@@ -612,17 +612,21 @@ class TutorialService {
   // Variable para almacenar la referencia al OverlayEntry actual
   OverlayEntry? _currentOverlayEntry;
 
+  // Flag síncrono para evitar race conditions al insertar el overlay
+  bool _isStarting = false;
+
   // Método privado para iniciar el tutorial interactivo
   void _startInteractiveTutorial(
     BuildContext context,
     List<InteractiveTutorialStep> steps,
     String? tutorialKey,
   ) {
-    // Si ya hay un tutorial en curso, no hagas nada
-    if (_currentOverlayEntry != null) {
-      debugPrint('TutorialService: Ya hay un tutorial en curso');
+    // Protección síncrona contra doble inicio (race condition + overlay ya activo)
+    if (_isStarting || _currentOverlayEntry != null) {
+      debugPrint('TutorialService: Bloqueando inicio duplicado (_isStarting=$_isStarting, overlay=${_currentOverlayEntry != null})');
       return;
     }
+    _isStarting = true;
 
     debugPrint('TutorialService: Iniciando tutorial con ${steps.length} pasos');
     debugPrint('TutorialService: Tutorial key: $tutorialKey');
@@ -639,6 +643,7 @@ class TutorialService {
               debugPrint('TutorialService: Tutorial completado');
               _currentOverlayEntry?.remove();
               _currentOverlayEntry = null;
+              _isStarting = false;
               if (tutorialKey != null) {
                 markTutorialCompleted(tutorialKey);
               }
@@ -647,6 +652,7 @@ class TutorialService {
               debugPrint('TutorialService: Tutorial cancelado');
               _currentOverlayEntry?.remove();
               _currentOverlayEntry = null;
+              _isStarting = false;
             },
             child: Container(color: Colors.transparent),
           ),
@@ -655,8 +661,15 @@ class TutorialService {
     );
 
     debugPrint('TutorialService: Insertando OverlayEntry');
-    Overlay.of(context).insert(_currentOverlayEntry!);
-    debugPrint('TutorialService: OverlayEntry insertado exitosamente');
+    try {
+      Overlay.of(context).insert(_currentOverlayEntry!);
+      debugPrint('TutorialService: OverlayEntry insertado exitosamente');
+    } catch (e) {
+      debugPrint('TutorialService: Error al insertar overlay: $e');
+      _currentOverlayEntry = null;
+    } finally {
+      _isStarting = false;
+    }
   }
 
   /// Tutorial para la pantalla de misiones (alias para compatibilidad)
