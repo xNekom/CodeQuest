@@ -15,6 +15,7 @@ class CharacterSelectionScreen extends StatefulWidget {
 class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
   bool _isLoading = true;
   bool _isEditing = false; // Nueva variable de estado
+  bool _hasUserMadeChanges = false; // Bandera para detectar cambios del usuario
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   int _selectedCharacterIndex = 0;
@@ -51,11 +52,11 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Recargar datos solo cuando la ruta se vuelve activa
-    if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+    // Recargar datos solo cuando la ruta se vuelve activa y no se están editando datos
+    if (mounted && ModalRoute.of(context)?.isCurrent == true && !_hasUserMadeChanges) {
       // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
       Future.microtask(() {
-        if (mounted) {
+        if (mounted && !_hasUserMadeChanges) {
           _loadExistingData();
         }
       });
@@ -125,6 +126,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                                         _selectedCharacterIndex > 0
                                             ? _selectedCharacterIndex - 1
                                             : 8; // Volver al último asset (índice 8)
+                                    _hasUserMadeChanges = true;
                                   }),
                               icon: const Icon(Icons.keyboard_arrow_left),
                               iconSize: 32,
@@ -168,6 +170,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                                         _selectedCharacterIndex < 8
                                             ? _selectedCharacterIndex + 1
                                             : 0; // Volver al primer asset (índice 0)
+                                    _hasUserMadeChanges = true;
                                   }),
                               icon: const Icon(Icons.keyboard_arrow_right),
                               iconSize: 32,
@@ -215,7 +218,10 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             }).toList(),
                         onChanged: (v) {
                           if (v != null) {
-                            setState(() => _selectedProgrammingRole = v);
+                            setState(() {
+                              _selectedProgrammingRole = v;
+                              _hasUserMadeChanges = true; // Marcar que el usuario ha hecho cambios
+                            });
                           }
                         },
                       ),
@@ -237,6 +243,12 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             'programmingRole': _selectedProgrammingRole,
                             'characterSelected': true,
                           });
+                          
+                          // Resetear la bandera de cambios después de guardar
+                          setState(() {
+                            _hasUserMadeChanges = false;
+                          });
+                          
                           if (!context.mounted) return;
                           
                           // Feedback visual dinámico
