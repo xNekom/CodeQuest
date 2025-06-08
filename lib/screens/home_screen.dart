@@ -102,14 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
       // Obtener todos los estados para debug
       final allStates = await tutorialService.debugGetAllTutorialStates();
 
-      debugPrint('🔍 Tutorial Debug: Estado del tutorial home: $completed');
-      debugPrint('🔍 Tutorial Debug: Clave usada: homeScreenTutorial');
-      debugPrint('🔍 Tutorial Debug: Todos los estados: $allStates');
+      debugPrint('Tutorial Debug: Estado del tutorial home: $completed');
+      debugPrint('Tutorial Debug: Clave usada: homeScreenTutorial');
+      debugPrint('Tutorial Debug: Todos los estados: $allStates');
 
       if (!mounted) return;
 
       if (!completed) {
-        debugPrint('🔍 Tutorial Debug: Iniciando tutorial porque no está completado');
+        debugPrint('Tutorial Debug: Iniciando tutorial porque no está completado');
         // Reproducir música después de interacción del usuario
         AudioService().playBackgroundMusicWithUserInteraction();
 
@@ -129,11 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
           tutorialKey: 'homeScreenTutorial',
         );
       } else {
-        debugPrint('🔍 Tutorial Debug: Tutorial ya completado, no se iniciará');
+        debugPrint('Tutorial Debug: Tutorial ya completado, no se iniciará');
       }
     } catch (e) {
       // Registrar el error pero no interrumpir la experiencia del usuario
-      debugPrint('🔍 Tutorial Debug: Error al verificar tutorial: $e');
+      debugPrint('Tutorial Debug: Error al verificar tutorial: $e');
       ErrorHandler.logError(e, StackTrace.current);
     }
   }

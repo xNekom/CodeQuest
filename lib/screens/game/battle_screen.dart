@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/enemy_model.dart';
@@ -12,6 +10,7 @@ import '../../services/user_service.dart';
 import '../../services/reward_service.dart';
 import '../../services/auth_service.dart';
 import '../../services/audio_service.dart';
+import '../../services/mission_service.dart';
 import '../../widgets/pixel_widgets.dart';
 import '../../widgets/pixel_app_bar.dart';
 import 'package:codequest/widgets/formatted_text_widget.dart';
@@ -42,6 +41,7 @@ class _BattleScreenState extends State<BattleScreen> {
   final UserService _userService = UserService();
   final RewardService _rewardService = RewardService();
   final AuthService _authService = AuthService();
+  final MissionService _missionService = MissionService();
   bool _isLoading = true;
   int? _selectedOptionIndex;
   bool _answerSubmitted = false;
@@ -245,7 +245,6 @@ class _BattleScreenState extends State<BattleScreen> {
             }
           }
         } catch (e) {
-        // debugPrint('[BattleScreen] Error al completar misión: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
       }
     } else {
@@ -255,7 +254,6 @@ class _BattleScreenState extends State<BattleScreen> {
         try {
           await _userService.updateStatsAfterBattle(userId, false);
         } catch (e) {
-        // debugPrint('[BattleScreen] Error al actualizar estadísticas: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
       }
     }
@@ -390,25 +388,11 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 
-  // Método para obtener la experiencia directamente del JSON de la misión
   Future<int> _getExperienceFromMissionData(String missionId) async {
     try {
-      // Cargar el JSON directamente desde assets
-      final String jsonString = await rootBundle.loadString('assets/data/missions_data.json');
-      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
-      
-      // Buscar la misión por ID
-      for (var missionData in jsonList) {
-        if (missionData['id'] == missionId) {
-          // Acceder directamente al campo experience en rewards
-          return missionData['rewards']?['experience'] ?? 175;
-        }
-      }
-      
-      // Si no se encuentra la misión, devolver valor por defecto
-      return 175;
+      final mission = await _missionService.getMissionById(missionId);
+      return mission?.rewards.value ?? 175;
     } catch (e) {
-      // En caso de error, devolver valor por defecto
       return 175;
     }
   }
@@ -419,7 +403,6 @@ class _BattleScreenState extends State<BattleScreen> {
     if (userId == null || missionId == null) return;
 
     try {
-      // Obtener la experiencia correcta directamente del JSON
       final int experiencePoints = await _getExperienceFromMissionData(missionId);
       
       // Primero otorgar experiencia antes de marcar como completada

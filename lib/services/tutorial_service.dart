@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/interactive_tutorial.dart';
 
@@ -34,11 +34,11 @@ class TutorialService {
   Future<void> markTutorialCompleted(String tutorialKey) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(tutorialKey, true);
-    debugPrint('✅ Tutorial marcado como completado: $tutorialKey');
+    debugPrint('Tutorial marcado como completado: $tutorialKey');
     
     // Verificar que se guardó correctamente
     final verified = await isTutorialCompleted(tutorialKey);
-    debugPrint('✅ Verificación post-guardado: $tutorialKey = $verified');
+    debugPrint('Verificación post-guardado: $tutorialKey = $verified');
   }
 
   /// Resetea todos los tutoriales (para pruebas)
@@ -65,7 +65,7 @@ class TutorialService {
       'achievementsTutorial': await isTutorialCompleted(achievementsTutorial),
     };
     
-    debugPrint('📊 Estado de tutoriales: $states');
+    debugPrint('Estado de tutoriales: $states');
     return states;
   }
 
@@ -545,11 +545,9 @@ class TutorialService {
         // Tutorial disponible pero no se inicia automáticamente
         // debugPrint(
         //   'Tutorial $tutorialKey disponible pero no se inicia automáticamente',
-        // ); // REMOVIDO PARA PRODUCCIÓN
       }
     } catch (e) {
       // Capturar cualquier error que pueda ocurrir
-      // debugPrint('Error al verificar tutorial: $e'); // REMOVIDO PARA PRODUCCIÓN
     }
   }
 
@@ -873,3 +871,4 @@ class TutorialService {
   static const String welcomeTutorial = 'welcome_tutorial_completed';
   static const String theoryScreenTutorial = 'theory_screen_tutorial_completed';
 }
+

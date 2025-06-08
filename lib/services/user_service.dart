@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../services/reward_service.dart';
 import '../services/leaderboard_service.dart';
@@ -15,7 +15,6 @@ class UserService {
           await _firestore.collection('users').doc(uid).get();
       return doc.exists ? doc.data() as Map<String, dynamic> : null;
     } catch (e) {
-      // debugPrint('Error al obtener datos del usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       return null;
     }
   }
@@ -25,7 +24,6 @@ class UserService {
     try {
       await _firestore.collection('users').doc(uid).update(data);
     } catch (e) {
-      // debugPrint('Error al actualizar datos del usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -96,7 +94,6 @@ class UserService {
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      // debugPrint('Error al añadir experiencia: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -117,7 +114,6 @@ class UserService {
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      // debugPrint('Error al actualizar estadísticas: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -216,7 +212,6 @@ class UserService {
       // Actualizar puntuación en el leaderboard
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-      // debugPrint('Error al actualizar estadísticas de batalla: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -229,7 +224,6 @@ class UserService {
         'stats.totalEnemiesDefeated': FieldValue.increment(1),
       });
     } catch (e) {
-      // debugPrint('Error al actualizar estadísticas de enemigos: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -258,7 +252,6 @@ class UserService {
         }
       }
     } catch (e) {
-      // debugPrint('[UserService] Error al verificar misiones completadas: $e'); // REMOVIDO PARA PRODUCCIÓN
       return;
     }
 
@@ -286,21 +279,18 @@ class UserService {
       // Verificar progreso de nivel después de completar la misión
       await _checkLevelProgression(uid, isBattleMission);
     } catch (e) {
-        // debugPrint('[UserService] Error al actualizar misión en usuario: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
 
     // Intentar desbloquear logros y otorgar recompensas sin propagar errores
     try {
       await _rewardService.checkAndUnlockAchievement(uid, missionId);
     } catch (e) {
-        // debugPrint('[UserService] Error al desbloquear logros: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
 
     // Actualizar puntuación en el leaderboard
     try {
       await _leaderboardService.updateUserScore(uid);
     } catch (e) {
-        // debugPrint('[UserService] Error al actualizar leaderboard: $e'); // REMOVIDO PARA PRODUCCIÓN
       }
   }
 
@@ -345,7 +335,6 @@ class UserService {
         'inventory.items': items,
       });
     } catch (e) {
-      // debugPrint('Error al añadir item al inventario: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -358,7 +347,6 @@ class UserService {
         'progressInMission': {},
       });
     } catch (e) {
-      // debugPrint('Error al iniciar misión: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
@@ -374,13 +362,12 @@ class UserService {
         'progressInMission.$questionId': isCorrect,
       });
     } catch (e) {
-      // debugPrint('Error al actualizar progreso en misión: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
 
-  /// Marks the theory part of a mission as completed for the user.
-  /// This would typically update a specific field in the user's progress for that mission.
+  /// Marca como completada la parte de teoría de una misión para el usuario.
+  /// Actualiza el progreso de esa misión en el documento del usuario.
   Future<void> markTheoryAsComplete(String uid, String missionId) async {
     try {
       // Actualizar el progreso de la misión en Firestore
@@ -398,13 +385,12 @@ class UserService {
         '[UserService] Teoría marcada como completada para misión $missionId',
       );
     } catch (e) {
-      // debugPrint('[UserService] Error al marcar teoría como completada: $e'); // REMOVIDO PARA PRODUCCIÓN
       rethrow;
     }
   }
 
-  /// Checks if the theory part of a mission has been completed by the user.
-  /// This would read the corresponding status from Firestore.
+  /// Comprueba si el usuario ha completado la parte de teoría de una misión.
+  /// Lee el estado correspondiente en Firestore.
   Future<bool> isTheoryCompleted(String uid, String missionId) async {
     try {
       final doc =
@@ -448,3 +434,4 @@ class UserService {
     return null;
   }
 }
+

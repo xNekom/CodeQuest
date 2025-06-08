@@ -33,11 +33,11 @@ class _DebugFirebaseScreenState extends State<DebugFirebaseScreen> {
     });
 
     try {
-      _addLog('🔍 Iniciando test de conexión Firebase...');
-      _addLog('⚙️ shouldUseFirebase: ${AppConfig.shouldUseFirebase}');
+      _addLog('Iniciando test de conexión Firebase...');
+      _addLog('shouldUseFirebase: ${AppConfig.shouldUseFirebase}');
 
       if (!AppConfig.shouldUseFirebase) {
-        _addLog('❌ Firebase está deshabilitado en AppConfig');
+        _addLog('Firebase está deshabilitado en AppConfig');
         setState(() {
           _error = 'Firebase está deshabilitado en la configuración';
           _isLoading = false;
@@ -46,20 +46,20 @@ class _DebugFirebaseScreenState extends State<DebugFirebaseScreen> {
       }
 
       // Test 1: Conexión básica
-      _addLog('📡 Test 1: Verificando conexión básica...');
+      _addLog('Test 1: Verificando conexión básica...');
       final firestore = FirebaseFirestore.instance;
 
       // Test 2: Verificar colección
-      _addLog('📊 Test 2: Verificando colección code_exercises...');
+      _addLog('Test 2: Verificando colección code_exercises...');
       final collection = firestore.collection('code_exercises');
 
       // Test 3: Contar documentos
-      _addLog('🔢 Test 3: Contando documentos...');
+      _addLog('Test 3: Contando documentos...');
       final countSnapshot = await collection.get();
-      _addLog('📋 Documentos encontrados: ${countSnapshot.docs.length}');
+      _addLog('Documentos encontrados: ${countSnapshot.docs.length}');
 
       if (countSnapshot.docs.isEmpty) {
-        _addLog('⚠️ La colección está vacía');
+        _addLog('La colección está vacía');
         setState(() {
           _error = 'No hay ejercicios en Firestore';
           _isLoading = false;
@@ -68,30 +68,30 @@ class _DebugFirebaseScreenState extends State<DebugFirebaseScreen> {
       }
 
       // Test 4: Consulta con orderBy
-      _addLog('🔄 Test 4: Ejecutando consulta con orderBy...');
+      _addLog('Test 4: Ejecutando consulta con orderBy...');
       final snapshot = await collection.orderBy('difficulty').get();
-      _addLog('✅ Consulta orderBy exitosa: ${snapshot.docs.length} documentos');
+      _addLog('Consulta orderBy exitosa: ${snapshot.docs.length} documentos');
 
       // Test 5: Deserialización
-      _addLog('🔄 Test 5: Deserializando documentos...');
+      _addLog('Test 5: Deserializando documentos...');
       List<CodeExerciseModel> exercises = [];
 
       for (int i = 0; i < snapshot.docs.length; i++) {
         final doc = snapshot.docs[i];
         try {
-          _addLog('📄 Procesando documento ${i + 1}: ${doc.id}');
+          _addLog('Procesando documento ${i + 1}: ${doc.id}');
           final data = doc.data();
-          _addLog('📋 Campos: ${data.keys.join(', ')}');
+          _addLog('Campos: ${data.keys.join(', ')}');
 
           final exercise = CodeExerciseModel.fromJson(data);
           exercises.add(exercise);
-          _addLog('✅ Ejercicio deserializado: ${exercise.title}');
+          _addLog('Ejercicio deserializado: ${exercise.title}');
         } catch (e) {
-          _addLog('❌ Error deserializando documento ${doc.id}: $e');
+          _addLog('Error deserializando documento ${doc.id}: $e');
         }
       }
 
-      _addLog('🎯 Total de ejercicios procesados: ${exercises.length}');
+      _addLog('Total de ejercicios procesados: ${exercises.length}');
 
       setState(() {
         _exercises = exercises;
@@ -99,16 +99,16 @@ class _DebugFirebaseScreenState extends State<DebugFirebaseScreen> {
       });
 
       if (exercises.isEmpty) {
-        _addLog('⚠️ No se pudo deserializar ningún ejercicio');
+        _addLog('No se pudo deserializar ningún ejercicio');
         setState(() {
           _error = 'Error en la deserialización de ejercicios';
         });
       } else {
-        _addLog('🎉 Test completado exitosamente!');
+        _addLog('Test completado exitosamente!');
       }
     } catch (e, stackTrace) {
-      _addLog('❌ Error en test Firebase: $e');
-      _addLog('📱 Stack trace: $stackTrace');
+      _addLog('Error en test Firebase: $e');
+      _addLog('Stack trace: $stackTrace');
       setState(() {
         _error = e.toString();
         _isLoading = false;

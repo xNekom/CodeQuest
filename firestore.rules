@@ -1,89 +1,70 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Reglas para usuarios - Permitir todas las operaciones sin autenticación para registro
+    // ─── Helper functions ───────────────────────────────────────────────
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuth()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ─── Users ──────────────────────────────────────────────────────────
+    // Own document: full access for owner; admin override.
+    // Other users' documents: admin only.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth != null; // Permitir lectura para leaderboard
-      allow create: if true; // Permitir creación durante registro sin autenticación
-      allow read: if true; // Permitir lectura sin autenticación para verificación de username
-      
-      // Reglas para progreso de misiones
-      match /missionProgress/{missionId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isAdmin();
+
+      // Sub-collections (missionProgress, inventory, badges)
+      match /{document=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
       }
     }
-    
-    // Permitir todas las operaciones en la colección users para verificación de usernames
-    match /users {
-      allow read, list, get: if true; // Permitir todas las operaciones de lectura sin autenticación
-    }
-    
-    // Reglas para la colección usernames (verificación de disponibilidad)
+
+    // ─── Usernames (checked before Firebase Auth exists) ────────────────
     match /usernames/{username} {
-      allow read: if true; // Permitir lectura para verificar disponibilidad
-      allow create: if true; // Permitir creación durante registro
-      allow write: if request.auth != null; // Solo usuarios autenticados pueden modificar
+      allow read:   if true;                                         // username availability check before sign-up
+      allow create: if isAuth() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAuth() && resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
     }
-    
-    // Reglas para leaderboard
+
+    // ─── Leaderboard ────────────────────────────────────────────────────
     match /leaderboard/{entryId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && 
-                      request.auth.uid == resource.data.userId;
-      allow create: if request.auth != null && 
-                       request.auth.uid == request.resource.data.userId;
-      // Permitir a administradores escribir cualquier entrada
-      allow write, delete: if request.auth != null && 
-                              exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-                              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-      allow create: if request.auth != null && 
-                       exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow read:   if isAuth();
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuth() && resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
     }
-    
-    // Permitir lectura de toda la colección leaderboard para rankings
-    match /leaderboard {
-      allow read: if request.auth != null;
-      // Permitir a administradores listar todas las entradas
-      allow list: if request.auth != null && 
-                     exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+
+    // ─── User Achievements ──────────────────────────────────────────────
+    match /user_achievements/{userId} {
+      allow read:   if isAuth();
+      allow write:  if isOwner(userId) || isAdmin();
+
+      match /achievements/{achievementId} {
+        allow read:   if isAuth();
+        allow write:  if isOwner(userId) || isAdmin();
+      }
     }
-    
-    // Reglas para preguntas
-    match /questions/{questionId} {
-      allow read: if request.auth != null;
-    }
-    
-    // Reglas para misiones
-    match /missions/{missionId} {
-      allow read: if request.auth != null;
-    }
-    
-    // Reglas para enemigos
-    match /enemies/{enemyId} {
-      allow read: if request.auth != null;
-    }
-    
-    // Reglas para items
-    match /items/{itemId} {
-      allow read: if request.auth != null;
-    }
-    
-    // Reglas para recompensas
-    match /rewards/{rewardId} {
-      allow read: if request.auth != null;
-    }
-    
-    // Reglas para logros
-    match /achievements/{achievementId} {
-      allow read: if request.auth != null;
-    }
-    
-    // Reglas para ejercicios de código
-    match /code_exercises/{exerciseId} {
-      allow read: if request.auth != null;
-    }
+
+    // ─── Reference Data (read for authenticated, write for admin) ──────
+    match /missions/{doc}         { allow read: if isAuth(); allow write: if isAdmin(); }
+    match /questions/{doc}        { allow read: if isAuth(); allow write: if isAdmin(); }
+    match /enemies/{doc}          { allow read: if isAuth(); allow write: if isAdmin(); }
+    match /items/{doc}            { allow read: if isAuth(); allow write: if isAdmin(); }
+    match /rewards/{doc}          { allow read: if isAuth(); allow write: if isAdmin(); }
+    match /achievements/{doc}     { allow read: if isAuth(); allow write: if isAdmin(); }
+    match /code_exercises/{doc}   { allow read: if isAuth(); allow write: if isAdmin(); }
   }
 }

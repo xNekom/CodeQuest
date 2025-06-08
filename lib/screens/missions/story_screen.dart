@@ -38,8 +38,8 @@ class _StoryScreenState extends State<StoryScreen> {
   }
 
   void _finishTheory() {
-    // TODO: Call UserService.markTheoryAsComplete(userId, widget.missionId)
-    // TODO: Navigate to the next part of the mission (e.g., BattleScreen or details)
+    // TODO: llamar a UserService.markTheoryAsComplete(userId, widget.missionId)
+    // TODO: navegar a la siguiente parte de la misión (BattleScreen o los detalles)
     if (Navigator.canPop(context)) {
       Navigator.pop(context); 
     }

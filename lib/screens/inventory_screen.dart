@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
@@ -102,7 +102,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
         });
       }
     } catch (e) {
-      // debugPrint('Error al cargar inventario: $e'); // REMOVIDO PARA PRODUCCIÓN
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -597,3 +596,4 @@ class _InventoryScreenState extends State<InventoryScreen> {
     }
   }
 }
+

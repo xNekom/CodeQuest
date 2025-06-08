@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/achievement_model.dart';
-import '../../../config/app_config.dart';
 import '../../../services/reward_service.dart';
 
 class UserAchievementsTab extends StatefulWidget {
@@ -37,8 +35,6 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
   Future<void> _loadUnlockedAchievements() async {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
     if (currentUserId != null) {
-      if (AppConfig.shouldUseFirebase) {
-        // Recargar datos actualizados del usuario desde Firebase
         try {
           final userDoc = await widget.usersCol.doc(currentUserId).get();
           if (userDoc.exists) {
@@ -46,7 +42,7 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
             final unlockedIds = List<String>.from(
               updatedUserData['unlockedAchievements'] ?? [],
             );
-            
+
             if (unlockedIds.isNotEmpty) {
               final List<Achievement> achievements = [];
               for (final id in unlockedIds) {
@@ -57,7 +53,6 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
                     achievements.add(Achievement.fromMap(data));
                   }
                 } catch (e) {
-                  // Error loading achievement
                 }
               }
               setState(() {
@@ -77,22 +72,10 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
             });
           }
         } catch (e) {
-          // Error al recargar datos del usuario
           setState(() {
             _isLoading = false;
           });
         }
-      } else {
-        // Usar datos locales de SharedPreferences
-        _rewardService.getUnlockedAchievements(currentUserId).listen((achievements) {
-          if (mounted) {
-            setState(() {
-              _unlockedAchievements = achievements;
-              _isLoading = false;
-            });
-          }
-        });
-      }
     } else {
       setState(() {
         _isLoading = false;
@@ -528,17 +511,9 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     
     try {
-      if (AppConfig.shouldUseFirebase) {
-        // Modo Firebase
-        await widget.usersCol.doc(currentUserId).update({
-          'unlockedAchievements': achievements,
-        });
-      } else {
-        // Modo local
-        final prefs = await SharedPreferences.getInstance();
-        final key = 'user_${currentUserId}_unlocked_achievements';
-        await prefs.setStringList(key, achievements);
-      }
+      await widget.usersCol.doc(currentUserId).update({
+        'unlockedAchievements': achievements,
+      });
 
       if (mounted) {
         scaffoldMessenger.showSnackBar(
@@ -654,23 +629,9 @@ class _UserAchievementsTabState extends State<UserAchievementsTab> {
     if (confirmed != true) return;
     
     try {
-      if (AppConfig.shouldUseFirebase) {
-        // Modo Firebase
-        await widget.usersCol.doc(currentUserId).update({
-          'unlockedAchievements': FieldValue.arrayRemove([achievementId]),
-        });
-      } else {
-        // Modo local
-        final prefs = await SharedPreferences.getInstance();
-        final key = 'user_${currentUserId}_unlocked_achievements';
-        final currentAchievements = prefs.getStringList(key) ?? [];
-        
-        // Remover el achievement de la lista
-        currentAchievements.remove(achievementId);
-        
-        // Guardar en SharedPreferences
-        await prefs.setStringList(key, currentAchievements);
-      }
+      await widget.usersCol.doc(currentUserId).update({
+        'unlockedAchievements': FieldValue.arrayRemove([achievementId]),
+      });
       
       if (mounted) {
         scaffoldMessenger.showSnackBar(

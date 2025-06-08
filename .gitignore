@@ -47,3 +47,6 @@ app.*.map.json
 # Exclude assets/data and scripts folders from repository
 assets/data/
 scripts/
+
+# Exclude generated analysis output (contains local absolute paths)
+analysis_output.json
