@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
@@ -29,6 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   bool _hasInitialized = false; // Bandera para evitar inicializaciones múltiples
   bool _showCompletedMissions = false; // Estado para mostrar/ocultar misiones completadas
+
+  // Variables para el sistema de doble tap para salir
+  DateTime? _lastBackPressed;
+  static const Duration _doubleTapThreshold = Duration(seconds: 2);
 
   // GlobalKeys para el sistema de tutoriales
   final GlobalKey _profileKey = GlobalKey();
@@ -112,42 +118,79 @@ class _HomeScreenState extends State<HomeScreen> {
           _isLoading = false;
         });
       }
+    }  }
+
+  /// Maneja el botón de atrás de Android con doble tap para salir
+  Future<bool> _handleBackButton() async {
+    // Solo aplicar en Android
+    if (!Platform.isAndroid) return false;
+
+    final now = DateTime.now();
+    
+    if (_lastBackPressed == null || 
+        now.difference(_lastBackPressed!) > _doubleTapThreshold) {
+      // Primera vez presionando o pasó mucho tiempo desde la última vez
+      _lastBackPressed = now;
+      
+      // Mostrar mensaje indicando que presione de nuevo para salir
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Presiona de nuevo para salir'),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      
+      return true; // No cerrar la aplicación
+    } else {
+      // Segunda vez presionando dentro del tiempo límite
+      SystemNavigator.pop(); // Cerrar la aplicación
+      return false;
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/backgrounds/background.png'),
-            fit: BoxFit.cover,
+  Widget build(BuildContext context) {    return PopScope(
+      canPop: false, // Evita que se cierre automáticamente
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          await _handleBackButton();
+        }
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/backgrounds/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child:
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _userData == null
+                  ? const Center(
+                    child: Text('No se encontraron datos del usuario'),
+                  )
+                  : _buildUserDataContent(),
           ),
         ),
-        child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        child:
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _userData == null
-                ? const Center(
-                  child: Text('No se encontraron datos del usuario'),
-                )
-                : _buildUserDataContent(),
-        ),
-      ),
-      floatingActionButton: TutorialFloatingButton(
-        tutorialKey: TutorialService.homeScreenTutorial,
-        tutorialSteps: TutorialService.getHomeScreenTutorial(
-          profileKey: _profileKey,
-          missionsKey: _missionsKey,
-          achievementsKey: _achievementsKey,
-          leaderboardKey: _leaderboardKey,
-          adventureButtonKey: _adventureButtonKey,
-          shopButtonKey: _shopButtonKey,
-          inventoryButtonKey: _inventoryButtonKey,
-          codeExercisesButtonKey: _codeExercisesButtonKey,
+        floatingActionButton: TutorialFloatingButton(
+          tutorialKey: TutorialService.homeScreenTutorial,
+          tutorialSteps: TutorialService.getHomeScreenTutorial(
+            profileKey: _profileKey,
+            missionsKey: _missionsKey,
+            achievementsKey: _achievementsKey,
+            leaderboardKey: _leaderboardKey,
+            adventureButtonKey: _adventureButtonKey,
+            shopButtonKey: _shopButtonKey,
+            inventoryButtonKey: _inventoryButtonKey,
+            codeExercisesButtonKey: _codeExercisesButtonKey,
+          ),
         ),
       ),
     );

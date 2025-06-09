@@ -399,32 +399,43 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
     // Si no hay pasos o no es visible, solo mostrar el widget hijo
     if (widget.steps.isEmpty || !_isVisible) {
       return widget.child;
-    }
+    }    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          // Cuando se presiona el botón de retroceso, cancelar el tutorial
+          if (widget.onCancel != null) {
+            widget.onCancel!();
+          } else {
+            _cancelTutorial();
+          }
+        }
+      },
+      child: Stack(
+        children: [
+          // Widget hijo original
+          widget.child,
 
-    return Stack(
-      children: [
-        // Widget hijo original
-        widget.child,
-
-        // Overlay semi-transparente
-        Positioned.fill(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Container(
-              color: Colors.black.withAlpha(128),
+          // Overlay semi-transparente
+          Positioned.fill(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Container(
+                color: Colors.black.withAlpha(128),
+              ),
             ),
           ),
-        ),
 
-        // Agujero para resaltar el elemento objetivo
-        if (_targetRect != null)
-          Positioned.fill(
-            child: CustomPaint(painter: HolePainter(_targetRect!)),
-          ),
+          // Agujero para resaltar el elemento objetivo
+          if (_targetRect != null)
+            Positioned.fill(
+              child: CustomPaint(painter: HolePainter(_targetRect!)),
+            ),
 
-        // Tooltip con información del paso actual
-        _buildTooltipWithFade(),
-      ],
+          // Tooltip con información del paso actual
+          _buildTooltipWithFade(),
+        ],
+      ),
     );
   }
 }
