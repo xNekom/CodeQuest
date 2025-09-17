@@ -41,16 +41,23 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     await Future.delayed(const Duration(milliseconds: 1500));
     
     if (mounted) {
-      TutorialService.startTutorialIfNeeded(
-        context,
+      final tutorialService = TutorialService();
+      final completed = await tutorialService.isTutorialCompleted(
         TutorialService.leaderboardTutorial,
-        TutorialService.getLeaderboardTutorial(
-          userRankingKey: _userRankingKey,
-          leaderboardListKey: _leaderboardListKey,
-          timeFilterKey: _topPlayersKey,
-          backButtonKey: _backButtonKey,
-        ),
       );
+      
+      if (!completed && mounted) {
+        TutorialService.startTutorial(
+          context,
+          TutorialService.getLeaderboardTutorial(
+            userRankingKey: _userRankingKey,
+            leaderboardListKey: _leaderboardListKey,
+            timeFilterKey: _topPlayersKey,
+            backButtonKey: _backButtonKey,
+          ),
+          tutorialKey: TutorialService.leaderboardTutorial,
+        );
+      }
     }
   }
 

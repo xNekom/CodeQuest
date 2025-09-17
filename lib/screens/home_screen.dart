@@ -1,13 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../services/tutorial_service.dart';
+import '../services/audio_service.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/character_asset.dart';
 import '../widgets/tutorial_floating_button.dart';
@@ -29,8 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
   final UserService _userService = UserService();
   Map<String, dynamic>? _userData;
   bool _isLoading = true;
-  bool _hasInitialized = false; // Bandera para evitar inicializaciones múltiples
-  bool _showCompletedMissions = false; // Estado para mostrar/ocultar misiones completadas
+  bool _hasInitialized =
+      false; // Bandera para evitar inicializaciones múltiples
+  bool _showCompletedMissions =
+      false; // Estado para mostrar/ocultar misiones completadas
 
   // Variables para el sistema de doble tap para salir
   DateTime? _lastBackPressed;
@@ -55,14 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadUserData();
-    _checkAndStartTutorial();
+    // El tutorial se verificará después de que los datos estén cargados
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Solo recargar datos si no se ha inicializado y la ruta está activa
-    if (!_hasInitialized && mounted && ModalRoute.of(context)?.isCurrent == true) {
+    if (!_hasInitialized &&
+        mounted &&
+        ModalRoute.of(context)?.isCurrent == true) {
       _hasInitialized = true;
       // Usar Future.microtask en lugar de addPostFrameCallback para evitar bucles infinitos
       Future.microtask(() {
@@ -73,11 +78,58 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// Método para verificar tutoriales (ya no inicia automáticamente)
+  /// Método para verificar y iniciar tutoriales automáticamente
   Future<void> _checkAndStartTutorial() async {
-    // Este método ya no inicia tutoriales automáticamente
-    // Los tutoriales ahora se acceden desde la pantalla de tutoriales
-    return;
+    // Esperar a que la UI se construya completamente y los datos estén cargados
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    if (!mounted) return;
+
+    try {
+      final tutorialService = TutorialService();
+      
+      // Verificar estado actual
+      final completed = await tutorialService.isTutorialCompleted(
+        'homeScreenTutorial',
+      );
+      
+      // Obtener todos los estados para debug
+      final allStates = await tutorialService.debugGetAllTutorialStates();
+
+      debugPrint('🔍 Tutorial Debug: Estado del tutorial home: $completed');
+      debugPrint('🔍 Tutorial Debug: Clave usada: homeScreenTutorial');
+      debugPrint('🔍 Tutorial Debug: Todos los estados: $allStates');
+
+      if (!mounted) return;
+
+      if (!completed) {
+        debugPrint('🔍 Tutorial Debug: Iniciando tutorial porque no está completado');
+        // Reproducir música después de interacción del usuario
+        AudioService().playBackgroundMusicWithUserInteraction();
+
+        // Iniciar el tutorial con exactamente los mismos pasos que el botón flotante
+        TutorialService.startTutorial(
+          context,
+          TutorialService.getHomeScreenTutorial(
+            profileKey: _profileKey,
+            missionsKey: _missionsKey,
+            achievementsKey: _achievementsKey,
+            leaderboardKey: _leaderboardKey,
+            adventureButtonKey: _adventureButtonKey,
+            shopButtonKey: _shopButtonKey,
+            inventoryButtonKey: _inventoryButtonKey,
+            codeExercisesButtonKey: _codeExercisesButtonKey,
+          ),
+          tutorialKey: 'homeScreenTutorial',
+        );
+      } else {
+        debugPrint('🔍 Tutorial Debug: Tutorial ya completado, no se iniciará');
+      }
+    } catch (e) {
+      // Registrar el error pero no interrumpir la experiencia del usuario
+      debugPrint('🔍 Tutorial Debug: Error al verificar tutorial: $e');
+      ErrorHandler.logError(e, StackTrace.current);
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -97,6 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
             _userData = userData;
             _isLoading = false;
           });
+          
+          // Verificar el tutorial después de que los datos estén cargados
+          await _checkAndStartTutorial();
         }
       } else {
         // No hay usuario autenticado, redirigir a la pantalla de inicio de sesión
@@ -118,7 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _isLoading = false;
         });
       }
-    }  }
+    }
+  }
 
   /// Maneja el botón de atrás de Android con doble tap para salir
   Future<bool> _handleBackButton() async {
@@ -126,12 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!Platform.isAndroid) return false;
 
     final now = DateTime.now();
-    
-    if (_lastBackPressed == null || 
+
+    if (_lastBackPressed == null ||
         now.difference(_lastBackPressed!) > _doubleTapThreshold) {
       // Primera vez presionando o pasó mucho tiempo desde la última vez
       _lastBackPressed = now;
-      
+
       // Mostrar mensaje indicando que presione de nuevo para salir
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -142,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       }
-      
+
       return true; // No cerrar la aplicación
     } else {
       // Segunda vez presionando dentro del tiempo límite
@@ -152,7 +208,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {    return PopScope(
+  Widget build(BuildContext context) {
+    return PopScope(
       canPop: false, // Evita que se cierre automáticamente
       onPopInvokedWithResult: (didPop, result) async {
         if (!didPop) {
@@ -168,15 +225,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          child:
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _userData == null
-                  ? const Center(
-                    child: Text('No se encontraron datos del usuario'),
-                  )
-                  : _buildUserDataContent(),
+            duration: const Duration(milliseconds: 500),
+            child:
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _userData == null
+                    ? const Center(
+                      child: Text('No se encontraron datos del usuario'),
+                    )
+                    : _buildUserDataContent(),
           ),
         ),
         floatingActionButton: TutorialFloatingButton(
@@ -237,7 +294,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      padding: const EdgeInsets.symmetric(horizontal: PixelTheme.spacingMedium, vertical: PixelTheme.spacingSmall),
+      padding: const EdgeInsets.symmetric(
+        horizontal: PixelTheme.spacingMedium,
+        vertical: PixelTheme.spacingSmall,
+      ),
       margin: const EdgeInsets.all(PixelTheme.spacingMedium),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
@@ -296,7 +356,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       minHeight: 32,
                     ),
                     onPressed: () async {
-                      final result = await Navigator.pushNamed(context, '/admin');
+                      final result = await Navigator.pushNamed(
+                        context,
+                        '/admin',
+                      );
                       // Si regresa true, significa que hubo cambios en el admin
                       if (result == true) {
                         await _loadUserData();
@@ -334,6 +397,61 @@ class _HomeScreenState extends State<HomeScreen> {
                     await _loadUserData();
                   },
                 ),
+                IconButton(
+                  icon: const Icon(Icons.bug_report, size: 20),
+                  tooltip: 'Debug Tutorial',
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  onPressed: () async {
+                    final tutorialService = TutorialService();
+                    final states = await tutorialService.debugGetAllTutorialStates();
+                    final homeCompleted = await tutorialService.isTutorialCompleted(TutorialService.homeScreenTutorial);
+                    
+                    if (!mounted) return;
+                    
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Debug Tutorial'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Home Tutorial: $homeCompleted'),
+                            Text('Key: ${TutorialService.homeScreenTutorial}'),
+                            const SizedBox(height: 8),
+                            Text('All States: ${states.toString()}'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cerrar'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await tutorialService.markTutorialCompleted(TutorialService.homeScreenTutorial);
+                              if (!mounted) return;
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Marcar Completado'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await tutorialService.resetAllTutorials();
+                              if (!mounted) return;
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Resetear Todos'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -357,18 +475,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 tag: 'avatar_${_userData!['username']}',
                 child: CharacterAsset(
                   assetIndex: _userData!['characterAssetIndex'] as int? ?? 0,
-                  size: 200, // Aumentado para igualar el tamaño del widget de información
+                  size:
+                      200, // Aumentado para igualar el tamaño del widget de información
                 ),
               ),
             ),
             const SizedBox(width: 16),
             // Información del usuario en un recuadro
-            Flexible(
-              flex: 3,
-              child: PixelCard(
-                child: _buildUserInfo(),
-              ),
-            ),
+            Flexible(flex: 3, child: PixelCard(child: _buildUserInfo())),
           ],
         ),
         const SizedBox(height: 16),
@@ -581,9 +695,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     },
                     child: Text(
-                      _showCompletedMissions 
-                        ? 'Ocultar misiones completadas'
-                        : 'Ver misiones completadas',
+                      _showCompletedMissions
+                          ? 'Ocultar misiones completadas'
+                          : 'Ver misiones completadas',
                       style: const TextStyle(color: Colors.blue),
                     ),
                   ),
@@ -626,10 +740,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 12),
           OverflowUtils.expandedText(label, maxLines: 1),
           const SizedBox(width: 8),
-          OverflowUtils.safeText(
-            value,
-            maxLines: 1,
-          ),
+          OverflowUtils.safeText(value, maxLines: 1),
         ],
       ),
     );
@@ -763,10 +874,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Icon(Icons.emoji_events, size: 20),
                     const SizedBox(width: PixelTheme.spacingSmall),
                     OverflowUtils.flexibleText(
-                  'VER MIS LOGROS',
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                ),
+                      'VER MIS LOGROS',
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),

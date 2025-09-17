@@ -21,19 +21,9 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
       child: Scaffold(
         appBar: const PixelAdminAppBar(
           title: 'Administrar Recompensas y Logros',
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'Recompensas'),
-              Tab(text: 'Logros'),
-            ],
-          ),
+          bottom: TabBar(tabs: [Tab(text: 'Recompensas'), Tab(text: 'Logros')]),
         ),
-        body: const TabBarView(
-          children: [
-            RewardsTab(),
-            AchievementsTab(),
-          ],
-        ),
+        body: const TabBarView(children: [RewardsTab(), AchievementsTab()]),
       ),
     );
   }
@@ -68,17 +58,19 @@ class _RewardsTabState extends State<RewardsTab> {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
-              
+
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-              
+
               final rewards = snapshot.data!;
-              
+
               if (rewards.isEmpty) {
-                return const Center(child: Text('No hay recompensas registradas.'));
+                return const Center(
+                  child: Text('No hay recompensas registradas.'),
+                );
               }
-              
+
               return ListView.separated(
                 itemCount: rewards.length,
                 separatorBuilder: (context, index) => const Divider(),
@@ -87,7 +79,9 @@ class _RewardsTabState extends State<RewardsTab> {
                   return ListTile(
                     leading: _getRewardIcon(reward.type),
                     title: Text(reward.name),
-                    subtitle: Text('${reward.description}\nTipo: ${_getRewardTypeDisplayName(reward.type)} | Valor: ${reward.value}'),
+                    subtitle: Text(
+                      '${reward.description}\nTipo: ${_getRewardTypeDisplayName(reward.type)} | Valor: ${reward.value}',
+                    ),
                     isThreeLine: true,
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -156,140 +150,200 @@ class _RewardsTabState extends State<RewardsTab> {
 
   void _showRewardDialog({Reward? reward}) {
     final isEditing = reward != null;
-    
-    final nameController = TextEditingController(text: reward?.name ?? '');
-    final descriptionController = TextEditingController(text: reward?.description ?? '');
 
-    final valueController = TextEditingController(text: reward?.value.toString() ?? '0');
-    
+    final nameController = TextEditingController(text: reward?.name ?? '');
+    final descriptionController = TextEditingController(
+      text: reward?.description ?? '',
+    );
+
+    final valueController = TextEditingController(
+      text: reward?.value.toString() ?? '0',
+    );
+
     String selectedType = reward?.type ?? 'points';
-    
+
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(isEditing ? 'Editar Recompensa' : 'Crear Nueva Recompensa'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Descripción'),
-                ),
-
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedType,
-                    decoration: const InputDecoration(labelText: 'Tipo de Recompensa'),
-                    isExpanded: true,
-                    items: const [
-                      DropdownMenuItem(value: 'points', child: Text('Puntos', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'item', child: Text('Objeto', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'badge', child: Text('Insignia', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'coins', child: Text('Monedas', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'experience', child: Text('Experiencia', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedType = value;
-                        });
-                      }
-                    },
+      builder:
+          (context) => StatefulBuilder(
+            builder:
+                (context, setState) => AlertDialog(
+                  title: Text(
+                    isEditing ? 'Editar Recompensa' : 'Crear Nueva Recompensa',
                   ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: valueController,
-                  decoration: const InputDecoration(labelText: 'Valor'),
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final name = nameController.text.trim();
-                final description = descriptionController.text.trim();
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Nombre',
+                          ),
+                        ),
+                        TextField(
+                          controller: descriptionController,
+                          decoration: const InputDecoration(
+                            labelText: 'Descripción',
+                          ),
+                        ),
 
-                final value = int.tryParse(valueController.text) ?? 0;
-                
-                if (name.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('El nombre es requerido')),
-                  );
-                  return;
-                }
-                
-                final newReward = Reward(
-                  id: reward?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-                  name: name,
-                  description: description,
-                  type: selectedType,
-                  value: value,
-                );
-                
-                try {
-                  if (isEditing) {
-                    await _rewardService.updateReward(newReward);
-                  } else {
-                    await _rewardService.createReward(newReward);
-                  }
-                  
-                  if (mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Recompensa ${isEditing ? 'actualizada' : 'creada'} exitosamente')),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
-                  }
-                }
-              },
-              child: Text(isEditing ? 'Actualizar' : 'Crear'),
-            ),
-          ],
-        ),
-      ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DropdownButtonFormField<String>(
+                            initialValue: selectedType,
+                            decoration: const InputDecoration(
+                              labelText: 'Tipo de Recompensa',
+                            ),
+                            isExpanded: true,
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'points',
+                                child: Text(
+                                  'Puntos',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'item',
+                                child: Text(
+                                  'Objeto',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'badge',
+                                child: Text(
+                                  'Insignia',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'coins',
+                                child: Text(
+                                  'Monedas',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'experience',
+                                child: Text(
+                                  'Experiencia',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  selectedType = value;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: valueController,
+                          decoration: const InputDecoration(labelText: 'Valor'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancelar'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final name = nameController.text.trim();
+                        final description = descriptionController.text.trim();
+
+                        final value = int.tryParse(valueController.text) ?? 0;
+
+                        if (name.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('El nombre es requerido'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final newReward = Reward(
+                          id:
+                              reward?.id ??
+                              DateTime.now().millisecondsSinceEpoch.toString(),
+                          name: name,
+                          description: description,
+                          type: selectedType,
+                          value: value,
+                        );
+
+                        try {
+                          if (isEditing) {
+                            await _rewardService.updateReward(newReward);
+                          } else {
+                            await _rewardService.createReward(newReward);
+                          }
+
+                          if (mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Recompensa ${isEditing ? 'actualizada' : 'creada'} exitosamente',
+                                ),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        }
+                      },
+                      child: Text(isEditing ? 'Actualizar' : 'Crear'),
+                    ),
+                  ],
+                ),
+          ),
     );
   }
 
   void _deleteReward(String rewardId) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar eliminación'),
-        content: const Text('¿Estás seguro de que quieres eliminar esta recompensa?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirmar eliminación'),
+            content: const Text(
+              '¿Estás seguro de que quieres eliminar esta recompensa?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Eliminar'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Eliminar'),
-          ),
-        ],
-      ),
     );
-    
+
     if (confirm == true) {
       try {
         await _rewardService.deleteReward(rewardId);
@@ -300,9 +354,9 @@ class _RewardsTabState extends State<RewardsTab> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al eliminar: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error al eliminar: $e')));
         }
       }
     }
@@ -338,33 +392,39 @@ class _AchievementsTabState extends State<AchievementsTab> {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
-              
+
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-              
+
               final achievements = snapshot.data!;
-              
+
               if (achievements.isEmpty) {
                 return const Center(child: Text('No hay logros registrados.'));
               }
-              
+
               return ListView.separated(
                 itemCount: achievements.length,
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final achievement = achievements[index];
                   return ListTile(
-                    leading: const Icon(Icons.emoji_events, color: Colors.amber),
+                    leading: const Icon(
+                      Icons.emoji_events,
+                      color: Colors.amber,
+                    ),
                     title: Text(achievement.name),
-                    subtitle: Text('${achievement.description}\nCategoría: ${achievement.category} | Puntos: ${achievement.points}'),
+                    subtitle: Text(
+                      '${achievement.description}\nCategoría: ${achievement.category} | Puntos: ${achievement.points}',
+                    ),
                     isThreeLine: true,
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.edit),
-                          onPressed: () => _showEditAchievementDialog(achievement),
+                          onPressed:
+                              () => _showEditAchievementDialog(achievement),
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
@@ -392,201 +452,280 @@ class _AchievementsTabState extends State<AchievementsTab> {
 
   void _showAchievementDialog({Achievement? achievement}) {
     final isEditing = achievement != null;
-    
-    final nameController = TextEditingController(text: achievement?.name ?? '');
-    final descriptionController = TextEditingController(text: achievement?.description ?? '');
 
-    final pointsController = TextEditingController(text: achievement?.points.toString() ?? '10');
-    
+    final nameController = TextEditingController(text: achievement?.name ?? '');
+    final descriptionController = TextEditingController(
+      text: achievement?.description ?? '',
+    );
+
+    final pointsController = TextEditingController(
+      text: achievement?.points.toString() ?? '10',
+    );
+
     String selectedCategory = achievement?.category ?? 'general';
     String selectedRewardId = achievement?.rewardId ?? '';
-    List<String> requiredMissionIds = List.from(achievement?.requiredMissionIds ?? []);
-    
+    List<String> requiredMissionIds = List.from(
+      achievement?.requiredMissionIds ?? [],
+    );
+
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(isEditing ? 'Editar Logro' : 'Crear Nuevo Logro'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Descripción'),
-                ),
-
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedCategory,
-                    decoration: const InputDecoration(labelText: 'Categoría'),
-                    isExpanded: true,
-                    items: const [
-                      DropdownMenuItem(value: 'general', child: Text('General', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'enemy', child: Text('Enemigos', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'mission', child: Text('Misiones', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'combat', child: Text('Combate', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                      DropdownMenuItem(value: 'exploration', child: Text('Exploración', style: TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis)),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedCategory = value;
-                        });
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: pointsController,
-                  decoration: const InputDecoration(labelText: 'Puntos'),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 16),
-                StreamBuilder<List<Reward>>(
-                  stream: _rewardService.getRewards(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const CircularProgressIndicator();
-                    }
-                    
-                    final rewards = snapshot.data!;
-                    
-                    return SizedBox(
-                      width: double.infinity,
-                      child: DropdownButtonFormField<String>(
-                        value: selectedRewardId.isEmpty ? null : selectedRewardId,
-                        decoration: const InputDecoration(labelText: 'Recompensa'),
-                        isExpanded: true,
-                        items: rewards.map((reward) => DropdownMenuItem(
-                          value: reward.id,
-                          child: Text(
-                            reward.name,
-                            style: const TextStyle(fontSize: 14),
-                            overflow: TextOverflow.ellipsis,
+      builder:
+          (context) => StatefulBuilder(
+            builder:
+                (context, setState) => AlertDialog(
+                  title: Text(isEditing ? 'Editar Logro' : 'Crear Nuevo Logro'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Nombre',
                           ),
-                        )).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRewardId = value ?? '';
-                          });
-                        },
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                const Text('Misiones Requeridas:'),
-                ElevatedButton(
-                  onPressed: () => _showSelectMissionsDialog(
-                    selectedMissions: requiredMissionIds,
-                    onSelectionChanged: (newSelection) {
-                      setState(() {
-                        requiredMissionIds.clear();
-                        requiredMissionIds.addAll(newSelection);
-                      });
-                    },
-                  ),
-                  child: const Text('Seleccionar Misiones'),
-                ),
-                Text(
-                  'Misiones seleccionadas: ${requiredMissionIds.length}',
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final name = nameController.text.trim();
-                final description = descriptionController.text.trim();
+                        ),
+                        TextField(
+                          controller: descriptionController,
+                          decoration: const InputDecoration(
+                            labelText: 'Descripción',
+                          ),
+                        ),
 
-                final points = int.tryParse(pointsController.text) ?? 10;
-                
-                if (name.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('El nombre es requerido')),
-                  );
-                  return;
-                }
-                
-                if (selectedRewardId.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Debe seleccionar una recompensa')),
-                  );
-                  return;
-                }
-                
-                final newAchievement = Achievement(
-                  id: achievement?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-                  name: name,
-                  description: description,
-                  category: selectedCategory,
-                  points: points,
-                  conditions: _buildConditions(selectedCategory, requiredMissionIds),
-                  requiredMissionIds: requiredMissionIds,
-                  rewardId: selectedRewardId,
-                );
-                
-                try {
-                  if (isEditing) {
-                    await _rewardService.updateAchievement(newAchievement);
-                  } else {
-                    await _rewardService.createAchievement(newAchievement);
-                  }
-                  
-                  if (mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Logro ${isEditing ? 'actualizado' : 'creado'} exitosamente')),
-                    );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
-                  }
-                }
-              },
-              child: Text(isEditing ? 'Actualizar' : 'Crear'),
-            ),
-          ],
-        ),
-      ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DropdownButtonFormField<String>(
+                            initialValue: selectedCategory,
+                            decoration: const InputDecoration(
+                              labelText: 'Categoría',
+                            ),
+                            isExpanded: true,
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'general',
+                                child: Text(
+                                  'General',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'enemy',
+                                child: Text(
+                                  'Enemigos',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'mission',
+                                child: Text(
+                                  'Misiones',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'combat',
+                                child: Text(
+                                  'Combate',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'exploration',
+                                child: Text(
+                                  'Exploración',
+                                  style: TextStyle(fontSize: 14),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  selectedCategory = value;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: pointsController,
+                          decoration: const InputDecoration(
+                            labelText: 'Puntos',
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 16),
+                        StreamBuilder<List<Reward>>(
+                          stream: _rewardService.getRewards(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircularProgressIndicator();
+                            }
+
+                            final rewards = snapshot.data!;
+
+                            return SizedBox(
+                              width: double.infinity,
+                              child: DropdownButtonFormField<String>(
+                                initialValue:
+                                    selectedRewardId.isEmpty
+                                        ? null
+                                        : selectedRewardId,
+                                decoration: const InputDecoration(
+                                  labelText: 'Recompensa',
+                                ),
+                                isExpanded: true,
+                                items:
+                                    rewards
+                                        .map(
+                                          (reward) => DropdownMenuItem(
+                                            value: reward.id,
+                                            child: Text(
+                                              reward.name,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedRewardId = value ?? '';
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        const Text('Misiones Requeridas:'),
+                        ElevatedButton(
+                          onPressed:
+                              () => _showSelectMissionsDialog(
+                                selectedMissions: requiredMissionIds,
+                                onSelectionChanged: (newSelection) {
+                                  setState(() {
+                                    requiredMissionIds.clear();
+                                    requiredMissionIds.addAll(newSelection);
+                                  });
+                                },
+                              ),
+                          child: const Text('Seleccionar Misiones'),
+                        ),
+                        Text(
+                          'Misiones seleccionadas: ${requiredMissionIds.length}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancelar'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final name = nameController.text.trim();
+                        final description = descriptionController.text.trim();
+
+                        final points =
+                            int.tryParse(pointsController.text) ?? 10;
+
+                        if (name.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('El nombre es requerido'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (selectedRewardId.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Debe seleccionar una recompensa'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final newAchievement = Achievement(
+                          id:
+                              achievement?.id ??
+                              DateTime.now().millisecondsSinceEpoch.toString(),
+                          name: name,
+                          description: description,
+                          category: selectedCategory,
+                          points: points,
+                          conditions: _buildConditions(
+                            selectedCategory,
+                            requiredMissionIds,
+                          ),
+                          requiredMissionIds: requiredMissionIds,
+                          rewardId: selectedRewardId,
+                        );
+
+                        try {
+                          if (isEditing) {
+                            await _rewardService.updateAchievement(
+                              newAchievement,
+                            );
+                          } else {
+                            await _rewardService.createAchievement(
+                              newAchievement,
+                            );
+                          }
+
+                          if (mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Logro ${isEditing ? 'actualizado' : 'creado'} exitosamente',
+                                ),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          }
+                        }
+                      },
+                      child: Text(isEditing ? 'Actualizar' : 'Crear'),
+                    ),
+                  ],
+                ),
+          ),
     );
   }
 
-  Map<String, dynamic> _buildConditions(String category, List<String> requiredMissionIds) {
+  Map<String, dynamic> _buildConditions(
+    String category,
+    List<String> requiredMissionIds,
+  ) {
     switch (category) {
       case 'enemy':
-        return {
-          'type': 'enemy_defeated',
-          'count': 1,
-        };
+        return {'type': 'enemy_defeated', 'count': 1};
       case 'mission':
         return {
           'type': 'missions_completed',
           'count': requiredMissionIds.length,
         };
       case 'combat':
-        return {
-          'type': 'battles_won',
-          'count': 5,
-        };
+        return {'type': 'battles_won', 'count': 5};
       default:
         return {};
     }
@@ -600,39 +739,45 @@ class _AchievementsTabState extends State<AchievementsTab> {
     // Por simplicidad, mostramos un diálogo básico
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Seleccionar Misiones'),
-        content: const Text('Funcionalidad de selección de misiones en desarrollo'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cerrar'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Seleccionar Misiones'),
+            content: const Text(
+              'Funcionalidad de selección de misiones en desarrollo',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cerrar'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void _deleteAchievement(String achievementId) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar eliminación'),
-        content: const Text('¿Estás seguro de que quieres eliminar este logro?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirmar eliminación'),
+            content: const Text(
+              '¿Estás seguro de que quieres eliminar este logro?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Eliminar'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Eliminar'),
-          ),
-        ],
-      ),
     );
-    
+
     if (confirm == true) {
       try {
         await _rewardService.deleteAchievement(achievementId);
@@ -643,9 +788,9 @@ class _AchievementsTabState extends State<AchievementsTab> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al eliminar: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error al eliminar: $e')));
         }
       }
     }

@@ -9,12 +9,12 @@ class AudioService {
 
   final AudioPlayer _backgroundPlayer = AudioPlayer();
   final AudioPlayer _effectPlayer = AudioPlayer();
-  
+
   bool _isBackgroundMusicEnabled = true;
   bool _areSoundEffectsEnabled = true;
   double _backgroundVolume = 0.5;
   double _effectVolume = 0.7;
-  
+
   String? _currentBackgroundTrack;
   bool _isInitialized = false;
   StreamSubscription<void>? _victoryCompleteSubscription;
@@ -27,19 +27,18 @@ class AudioService {
 
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     try {
       // Configurar el reproductor de fondo para loop
       await _backgroundPlayer.setReleaseMode(ReleaseMode.loop);
       await _backgroundPlayer.setVolume(_backgroundVolume);
-      
+
       // Configurar el reproductor de efectos
       await _effectPlayer.setVolume(_effectVolume);
-      
+
       _isInitialized = true;
-      
-      // Iniciar música de fondo principal
-      await playMainTheme();
+
+      // No reproducir automáticamente, esperar interacción del usuario
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Error initializing audio service: $e');
@@ -49,13 +48,13 @@ class AudioService {
 
   Future<void> playMainTheme() async {
     if (!_isBackgroundMusicEnabled) return;
-    
+
     try {
       await _backgroundPlayer.stop();
       await _backgroundPlayer.setReleaseMode(ReleaseMode.loop);
       await _backgroundPlayer.play(AssetSource('music/main_theme.mp3'));
       _currentBackgroundTrack = 'main_theme';
-      
+
       if (kDebugMode) {
         debugPrint('Playing main theme in loop');
       }
@@ -66,15 +65,31 @@ class AudioService {
     }
   }
 
+  Future<void> playBackgroundMusicWithUserInteraction() async {
+    // Este método se llama después de una interacción del usuario
+    // para cumplir con las políticas de autoplay del navegador
+    if (!_isBackgroundMusicEnabled) return;
+
+    try {
+      await playMainTheme();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error playing background music after user interaction: $e');
+      }
+    }
+  }
+
   Future<void> playBattleTheme() async {
-    if (!_isBackgroundMusicEnabled || _currentBackgroundTrack == 'battle_theme') return;
-    
+    if (!_isBackgroundMusicEnabled || _currentBackgroundTrack == 'battle_theme') {
+      return;
+    }
+
     try {
       await _backgroundPlayer.stop();
       await _backgroundPlayer.setReleaseMode(ReleaseMode.loop);
       await _backgroundPlayer.play(AssetSource('music/battle_theme.mp3'));
       _currentBackgroundTrack = 'battle_theme';
-      
+
       if (kDebugMode) {
         debugPrint('Playing battle theme in loop');
       }
@@ -87,15 +102,15 @@ class AudioService {
 
   Future<void> playVictoryTheme() async {
     if (!_areSoundEffectsEnabled) return;
-    
+
     try {
       // Cancelar suscripción anterior si existe
       await _victoryCompleteSubscription?.cancel();
-      
+
       // Reproducir tema de victoria como efecto (no en loop)
       await _effectPlayer.stop();
       await _effectPlayer.play(AssetSource('music/victory_theme.mp3'));
-      
+
       if (kDebugMode) {
         debugPrint('Playing victory theme');
       }
@@ -108,10 +123,10 @@ class AudioService {
 
   Future<void> playClickSound() async {
     if (!_areSoundEffectsEnabled) return;
-    
+
     try {
       await _effectPlayer.play(AssetSource('music/tap_sound.mp3'));
-      
+
       if (kDebugMode) {
         debugPrint('Playing click sound');
       }
@@ -124,10 +139,10 @@ class AudioService {
 
   Future<void> playSuccessSound() async {
     if (!_areSoundEffectsEnabled) return;
-    
+
     try {
       await _effectPlayer.play(AssetSource('music/tap_sound.mp3'));
-      
+
       if (kDebugMode) {
         debugPrint('Playing success sound');
       }
@@ -140,10 +155,10 @@ class AudioService {
 
   Future<void> playErrorSound() async {
     if (!_areSoundEffectsEnabled) return;
-    
+
     try {
       await _effectPlayer.play(AssetSource('music/tap_sound.mp3'));
-      
+
       if (kDebugMode) {
         debugPrint('Playing error sound');
       }
@@ -158,7 +173,7 @@ class AudioService {
     try {
       await _backgroundPlayer.stop();
       _currentBackgroundTrack = null;
-      
+
       if (kDebugMode) {
         debugPrint('Background music stopped');
       }
@@ -175,7 +190,7 @@ class AudioService {
       await _effectPlayer.stop();
       await _victoryCompleteSubscription?.cancel();
       _currentBackgroundTrack = null;
-      
+
       if (kDebugMode) {
         debugPrint('All audio stopped');
       }
@@ -188,7 +203,7 @@ class AudioService {
 
   Future<void> setBackgroundMusicEnabled(bool enabled) async {
     _isBackgroundMusicEnabled = enabled;
-    
+
     if (!enabled) {
       await stopBackgroundMusic();
     } else if (_isInitialized) {
@@ -198,7 +213,7 @@ class AudioService {
 
   Future<void> setSoundEffectsEnabled(bool enabled) async {
     _areSoundEffectsEnabled = enabled;
-    
+
     if (!enabled) {
       await _effectPlayer.stop();
     }
@@ -206,7 +221,7 @@ class AudioService {
 
   Future<void> setBackgroundVolume(double volume) async {
     _backgroundVolume = volume.clamp(0.0, 1.0);
-    
+
     try {
       await _backgroundPlayer.setVolume(_backgroundVolume);
     } catch (e) {
@@ -218,7 +233,7 @@ class AudioService {
 
   Future<void> setEffectVolume(double volume) async {
     _effectVolume = volume.clamp(0.0, 1.0);
-    
+
     try {
       await _effectPlayer.setVolume(_effectVolume);
     } catch (e) {
@@ -232,7 +247,7 @@ class AudioService {
     try {
       _backgroundPlayer.pause();
       _effectPlayer.pause();
-      
+
       if (kDebugMode) {
         debugPrint('Audio paused on app background');
       }
@@ -248,7 +263,7 @@ class AudioService {
       if (_isBackgroundMusicEnabled && _currentBackgroundTrack != null) {
         _backgroundPlayer.resume();
       }
-      
+
       if (kDebugMode) {
         debugPrint('Audio resumed on app foreground');
       }
@@ -264,7 +279,7 @@ class AudioService {
       _victoryCompleteSubscription?.cancel();
       _backgroundPlayer.dispose();
       _effectPlayer.dispose();
-      
+
       if (kDebugMode) {
         debugPrint('Audio service disposed');
       }

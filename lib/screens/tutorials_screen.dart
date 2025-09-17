@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/tutorial_service.dart';
+import '../services/audio_service.dart';
 import '../widgets/pixel_widgets.dart';
 import '../widgets/pixel_app_bar.dart';
 import '../utils/error_handler.dart';
@@ -13,16 +14,11 @@ class TutorialsScreen extends StatefulWidget {
 
 class _TutorialsScreenState extends State<TutorialsScreen> {
   final TutorialService _tutorialService = TutorialService();
-  
-  // GlobalKeys para los tutoriales (necesarios para algunos tutoriales)
-  final GlobalKey _dummyKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PixelAppBar(
-        title: 'TUTORIALES',
-      ),
+      appBar: const PixelAppBar(title: 'TUTORIALES'),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -42,10 +38,7 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
               children: [
                 const Text(
                   'Selecciona un tutorial para aprender:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 Expanded(
@@ -54,7 +47,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                       children: [
                         _buildTutorialCard(
                           title: 'Tutorial de Pantalla Principal',
-                          description: 'Aprende a navegar por la pantalla principal y conoce todas sus funciones.',
+                          description:
+                              'Aprende a navegar por la pantalla principal y conoce todas sus funciones.',
                           icon: Icons.home,
                           onTap: () => _startHomeScreenTutorial(),
                           tutorialKey: TutorialService.homeScreenTutorial,
@@ -62,7 +56,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 12),
                         _buildTutorialCard(
                           title: 'Tutorial de Misiones',
-                          description: 'Descubre cómo acceder y completar misiones para ganar experiencia.',
+                          description:
+                              'Descubre cómo acceder y completar misiones para ganar experiencia.',
                           icon: Icons.assignment,
                           onTap: () => _startMissionsTutorial(),
                           tutorialKey: 'missions_tutorial',
@@ -70,7 +65,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 12),
                         _buildTutorialCard(
                           title: 'Tutorial de Logros',
-                          description: 'Conoce el sistema de logros y cómo desbloquear nuevos achievements.',
+                          description:
+                              'Conoce el sistema de logros y cómo desbloquear nuevos achievements.',
                           icon: Icons.emoji_events,
                           onTap: () => _startAchievementsTutorial(),
                           tutorialKey: 'achievements_tutorial',
@@ -78,7 +74,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 12),
                         _buildTutorialCard(
                           title: 'Tutorial de Ejercicios de Código',
-                          description: 'Aprende a resolver ejercicios de programación y mejorar tus habilidades.',
+                          description:
+                              'Aprende a resolver ejercicios de programación y mejorar tus habilidades.',
                           icon: Icons.code,
                           onTap: () => _startCodeExercisesTutorial(),
                           tutorialKey: 'code_exercises_tutorial',
@@ -86,7 +83,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 12),
                         _buildTutorialCard(
                           title: 'Tutorial de Tienda',
-                          description: 'Descubre cómo comprar items y mejorar tu equipamiento.',
+                          description:
+                              'Descubre cómo comprar items y mejorar tu equipamiento.',
                           icon: Icons.shopping_cart,
                           onTap: () => _startShopTutorial(),
                           tutorialKey: 'shop_tutorial',
@@ -94,7 +92,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 12),
                         _buildTutorialCard(
                           title: 'Tutorial de Inventario',
-                          description: 'Gestiona tus items y equipamiento de manera eficiente.',
+                          description:
+                              'Gestiona tus items y equipamiento de manera eficiente.',
                           icon: Icons.inventory,
                           onTap: () => _startInventoryTutorial(),
                           tutorialKey: 'inventory_tutorial',
@@ -102,12 +101,15 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                         const SizedBox(height: 12),
                         _buildTutorialCard(
                           title: 'Tutorial de Tabla de Posiciones',
-                          description: 'Compite con otros jugadores y sube en el ranking.',
+                          description:
+                              'Compite con otros jugadores y sube en el ranking.',
                           icon: Icons.leaderboard,
                           onTap: () => _startLeaderboardTutorial(),
                           tutorialKey: 'leaderboard_tutorial',
                         ),
-                        const SizedBox(height: 16), // Padding adicional al final
+                        const SizedBox(
+                          height: 16,
+                        ), // Padding adicional al final
                       ],
                     ),
                   ),
@@ -131,7 +133,7 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
       future: _tutorialService.isTutorialCompleted(tutorialKey),
       builder: (context, snapshot) {
         final isCompleted = snapshot.data ?? false;
-        
+
         return PixelCard(
           child: InkWell(
             onTap: onTap,
@@ -143,23 +145,28 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isCompleted 
-                          ? Colors.green.withValues(alpha: 0.2)
-                          : Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                      color:
+                          isCompleted
+                              ? Colors.green.withValues(alpha: 0.2)
+                              : Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isCompleted 
-                            ? Colors.green
-                            : Theme.of(context).colorScheme.primary,
+                        color:
+                            isCompleted
+                                ? Colors.green
+                                : Theme.of(context).colorScheme.primary,
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       icon,
                       size: 32,
-                      color: isCompleted 
-                          ? Colors.green
-                          : Theme.of(context).colorScheme.primary,
+                      color:
+                          isCompleted
+                              ? Colors.green
+                              : Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -195,7 +202,8 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                            color: Theme.of(context).textTheme.bodyMedium?.color
+                                ?.withValues(alpha: 0.7),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -206,18 +214,16 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: isCompleted 
-                                ? Colors.green
-                                : Theme.of(context).colorScheme.primary,
+                            color:
+                                isCompleted
+                                    ? Colors.green
+                                    : Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                  ),
+                  const Icon(Icons.arrow_forward_ios, size: 16),
                 ],
               ),
             ),
@@ -229,24 +235,21 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
 
   void _startHomeScreenTutorial() {
     try {
-      // Navegar de vuelta al home y mostrar el tutorial
-      Navigator.pop(context);
-      
-      // Esperar un momento para que la navegación se complete
-      Future.delayed(const Duration(milliseconds: 300), () {
+      // Navegar a la pantalla principal primero
+      Navigator.of(context).pop();
+
+      // Reproducir música después de interacción del usuario
+      final audioService = AudioService();
+      audioService.playBackgroundMusicWithUserInteraction();
+
+      // Esperar un momento para que la pantalla se cargue
+      Future.delayed(const Duration(milliseconds: 500), () {
+        // Verificar si el contexto sigue válido antes de usarlo
         if (mounted) {
-          TutorialService.showTutorialDialog(
+          // Iniciar el mismo tutorial que se usa automáticamente
+          TutorialService.startTutorial(
             context,
-            TutorialService.getHomeScreenTutorial(
-              profileKey: _dummyKey,
-              missionsKey: _dummyKey,
-              achievementsKey: _dummyKey,
-              leaderboardKey: _dummyKey,
-              adventureButtonKey: _dummyKey,
-              shopButtonKey: _dummyKey,
-              inventoryButtonKey: _dummyKey,
-              codeExercisesButtonKey: _dummyKey,
-            ),
+            TutorialService.getHomeScreenTutorial(),
             tutorialKey: TutorialService.homeScreenTutorial,
           );
         }
@@ -264,7 +267,9 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Tutorial de misiones disponible en la pantalla de misiones'),
+              content: Text(
+                'Tutorial de misiones disponible en la pantalla de misiones',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
@@ -282,7 +287,9 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Tutorial de logros disponible en la pantalla de logros'),
+              content: Text(
+                'Tutorial de logros disponible en la pantalla de logros',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
@@ -300,7 +307,9 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Tutorial de ejercicios disponible en la pantalla de código'),
+              content: Text(
+                'Tutorial de ejercicios disponible en la pantalla de código',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
@@ -318,7 +327,9 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Tutorial de tienda disponible en la pantalla de tienda'),
+              content: Text(
+                'Tutorial de tienda disponible en la pantalla de tienda',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
@@ -336,7 +347,9 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Tutorial de inventario disponible en la pantalla de inventario'),
+              content: Text(
+                'Tutorial de inventario disponible en la pantalla de inventario',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
@@ -354,7 +367,9 @@ class _TutorialsScreenState extends State<TutorialsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Tutorial de tabla de posiciones disponible en esa pantalla'),
+              content: Text(
+                'Tutorial de tabla de posiciones disponible en esa pantalla',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
