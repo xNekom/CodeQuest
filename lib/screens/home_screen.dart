@@ -32,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   bool _hasInitialized =
       false; // Bandera para evitar inicializaciones múltiples
+  bool _tutorialStarted =
+      false; // Bandera para evitar que el tutorial se inicie dos veces
   bool _showCompletedMissions =
       false; // Estado para mostrar/ocultar misiones completadas
 
@@ -57,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-    // El tutorial se verificará después de que los datos estén cargados
+    // NO llamar _loadUserData() aquí: didChangeDependencies lo invocará
+    // justo después y evita la doble carga que causaba el tutorial doble.
   }
 
   @override
@@ -80,6 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Método para verificar y iniciar tutoriales automáticamente
   Future<void> _checkAndStartTutorial() async {
+    // Evitar que se ejecute más de una vez por ciclo de vida de la pantalla
+    if (_tutorialStarted) return;
+    _tutorialStarted = true;
+
     // Esperar a que la UI se construya completamente y los datos estén cargados
     await Future.delayed(const Duration(milliseconds: 1500));
 

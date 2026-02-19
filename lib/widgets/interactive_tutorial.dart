@@ -189,8 +189,15 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
 
     if (targetKey?.currentContext != null) {
       try {
-        final RenderBox renderBox =
-            targetKey!.currentContext!.findRenderObject() as RenderBox;
+        // Usar un cast seguro: si el RenderObject no es un RenderBox
+        // (p.ej. un RenderSliver) se evita el TypeError
+        final renderObject = targetKey!.currentContext!.findRenderObject();
+        if (renderObject is! RenderBox || !renderObject.attached) {
+          debugPrint('Target no es un RenderBox válido o no está adjunto');
+          setState(() { _targetRect = null; });
+          return;
+        }
+        final RenderBox renderBox = renderObject;
         final position = renderBox.localToGlobal(Offset.zero);
         final size = renderBox.size;
 
