@@ -462,143 +462,139 @@ class _InteractiveTutorialState extends State<InteractiveTutorial>
 
   // Funciones auxiliares eliminadas - el posicionamiento ahora es más inteligente
 
+  // Devuelve únicamente el contenido del tooltip (Container).
+  // El posicionamiento lo gestiona _buildTooltipWithFade() mediante Positioned.
+  // NUNCA debe devolver un Positioned aquí: causaría
+  // Stack > Positioned > LayoutBuilder > Positioned, lo que desencadena un
+  // TypeError en Flutter web (Positioned fuera de Stack directo).
   Widget _buildTooltip() {
     final currentStep = widget.steps[_currentStepIndex];
-    
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final screenSize = MediaQuery.of(context).size;
-        final tooltipPosition = _calculateTooltipPosition(screenSize);
-        
-        // Calcular dimensiones dinámicamente
-        final bool isSmallScreen = screenSize.width < 600;
-        final EdgeInsets padding = MediaQuery.of(context).padding;
-        
-        final double maxAvailableWidth = screenSize.width - padding.horizontal - 40.0;
-        final double maxAvailableHeight = screenSize.height - padding.vertical - 40.0;
-        
-        final int textLength = currentStep.title.length + currentStep.description.length;
-        final double baseWidth = isSmallScreen ? 280.0 : 360.0;
-        final double tooltipWidth = (baseWidth + min(textLength * 2.0, 100.0)).clamp(
-          isSmallScreen ? 240.0 : 300.0,
-          maxAvailableWidth * 0.9
-        );
-        
-        final double baseHeight = 120.0;
-        final double lineHeight = 22.0;
-        final int estimatedLines = (textLength / 40).ceil();
-        final double tooltipHeight = (baseHeight + estimatedLines * lineHeight).clamp(
-          100.0,
-          maxAvailableHeight * 0.8
-        );
+    final screenSize = MediaQuery.of(context).size;
 
-        return Positioned(
-          left: tooltipPosition.dx,
-          top: tooltipPosition.dy,
-          child: Container(
-            width: tooltipWidth,
-            constraints: BoxConstraints(
-              maxHeight: tooltipHeight,
-              minHeight: 100.0,
-            ),
-            padding: EdgeInsets.all(isSmallScreen ? 16.0 : 20.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 10.0,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        currentStep.title,
-                        style: TextStyle(
-                          fontSize: isSmallScreen ? 16.0 : 18.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, size: 20.0),
-                      onPressed: _cancelTutorial,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      style: IconButton.styleFrom(
-                        minimumSize: const Size(24, 24),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                // Description
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      currentStep.description,
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 14.0 : 16.0,
-                        color: Colors.black54,
-                        height: 1.4,
-                      ),
-                    ),
+    final bool isSmallScreen = screenSize.width < 600;
+    final EdgeInsets padding = MediaQuery.of(context).padding;
+
+    final double maxAvailableWidth = screenSize.width - padding.horizontal - 40.0;
+    final double maxAvailableHeight = screenSize.height - padding.vertical - 40.0;
+
+    final int textLength = currentStep.title.length + currentStep.description.length;
+    final double baseWidth = isSmallScreen ? 280.0 : 360.0;
+    final double tooltipWidth = (baseWidth + min(textLength * 2.0, 100.0)).clamp(
+      isSmallScreen ? 240.0 : 300.0,
+      maxAvailableWidth * 0.9,
+    );
+
+    final double baseHeight = 120.0;
+    final double lineHeight = 22.0;
+    final int estimatedLines = (textLength / 40).ceil();
+    final double tooltipHeight = (baseHeight + estimatedLines * lineHeight).clamp(
+      100.0,
+      maxAvailableHeight * 0.8,
+    );
+
+    return Container(
+      width: tooltipWidth,
+      constraints: BoxConstraints(
+        maxHeight: tooltipHeight,
+        minHeight: 100.0,
+      ),
+      padding: EdgeInsets.all(isSmallScreen ? 16.0 : 20.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 10.0,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  currentStep.title,
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 16.0 : 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 16.0),
-                // Navigation buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: _currentStepIndex > 0 ? _previousStep : null,
-                      child: Text(
-                        'Anterior',
-                        style: TextStyle(
-                          fontSize: isSmallScreen ? 14.0 : 16.0,
-                          color: _currentStepIndex > 0 ? Colors.blue : Colors.grey,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '${_currentStepIndex + 1} / ${widget.steps.length}',
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 12.0 : 14.0,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: _currentStepIndex < widget.steps.length - 1 ? _nextStep : widget.onComplete,
-                      child: Text(
-                        _currentStepIndex < widget.steps.length - 1 ? 'Siguiente' : 'Finalizar',
-                        style: TextStyle(
-                          fontSize: isSmallScreen ? 14.0 : 16.0,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, size: 20.0),
+                onPressed: _cancelTutorial,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                style: IconButton.styleFrom(
+                  minimumSize: const Size(24, 24),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          // Description
+          Flexible(
+            child: SingleChildScrollView(
+              child: Text(
+                currentStep.description,
+                style: TextStyle(
+                  fontSize: isSmallScreen ? 14.0 : 16.0,
+                  color: Colors.black54,
+                  height: 1.4,
+                ),
+              ),
             ),
           ),
-        );
-      },
+          const SizedBox(height: 16.0),
+          // Navigation buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: _currentStepIndex > 0 ? _previousStep : null,
+                child: Text(
+                  'Anterior',
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 14.0 : 16.0,
+                    color: _currentStepIndex > 0 ? Colors.blue : Colors.grey,
+                  ),
+                ),
+              ),
+              Text(
+                '${_currentStepIndex + 1} / ${widget.steps.length}',
+                style: TextStyle(
+                  fontSize: isSmallScreen ? 12.0 : 14.0,
+                  color: Colors.grey,
+                ),
+              ),
+              TextButton(
+                onPressed: _currentStepIndex < widget.steps.length - 1
+                    ? _nextStep
+                    : widget.onComplete,
+                child: Text(
+                  _currentStepIndex < widget.steps.length - 1 ? 'Siguiente' : 'Finalizar',
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 14.0 : 16.0,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
