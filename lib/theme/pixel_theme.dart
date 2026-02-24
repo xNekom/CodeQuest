@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PixelTheme {
-  // Colores principales del tema pixel - Paleta moderna y atractiva
+  // Colores principales del tema moderno y atractivo
   static const Color pixel1 = Color(0xFF6366F1); // Índigo vibrante (primaryColor)
   static const Color pixel2 = Color(0xFF10B981); // Verde esmeralda (secondaryColor)
   static const Color pixel3 = Color(0xFFF59E0B); // Ámbar dorado (accentColor)
@@ -21,14 +21,14 @@ class PixelTheme {
 
   // Colores para modo oscuro
   static const Color darkBackgroundColor = Color(0xFF0F172A);        // Azul oscuro profundo
-  static const Color darkDialogSurfaceColor = Color(0xFF1E293B);     // Gris azulado
+  static const Color darkDialogSurfaceColor = Color(0xFF1E293B);     // Gris azulado / Glass
   static const Color darkTextColor = Color(0xFFF1F5F9);              // Gris muy claro
 
   // Constantes de diseño estandarizadas
-  static const double borderRadiusSmall = 4.0;
-  static const double borderRadiusMedium = 8.0;
-  static const double borderRadiusLarge = 12.0;
-  static const double borderRadiusXLarge = 16.0;
+  static const double borderRadiusSmall = 8.0;
+  static const double borderRadiusMedium = 16.0;
+  static const double borderRadiusLarge = 24.0;
+  static const double borderRadiusXLarge = 32.0;
   
   static const double spacingXSmall = 4.0;
   static const double spacingSmall = 8.0;
@@ -57,12 +57,12 @@ class PixelTheme {
       onSurface: lightTextColor, // Negro sobre light green
       onError: Colors.black,
     ),
-    scaffoldBackgroundColor: lightScaffoldBackgroundColor, // Muy light green
-    textTheme: GoogleFonts.pressStart2pTextTheme(
+    scaffoldBackgroundColor: lightScaffoldBackgroundColor,
+    textTheme: GoogleFonts.interTextTheme(
       ThemeData.light().textTheme.copyWith(
-            bodyLarge: const TextStyle(fontSize: 14, color: lightTextColor),
-            bodyMedium: const TextStyle(fontSize: 12, color: lightTextColor),
-            titleLarge: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: lightTextColor),
+            bodyLarge: const TextStyle(fontSize: 16, color: lightTextColor, fontWeight: FontWeight.w400),
+            bodyMedium: const TextStyle(fontSize: 14, color: lightTextColor, fontWeight: FontWeight.w400),
+            titleLarge: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: lightTextColor),
           ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -72,20 +72,20 @@ class PixelTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
-        elevation: 2,
-        shadowColor: primaryColor.withValues(alpha: 0.3),
+        elevation: 0,
+        shadowColor: Colors.transparent,
         padding: const EdgeInsets.symmetric(horizontal: spacingMedium, vertical: spacingSmall),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: lightSurfaceColor,
+      fillColor: lightSurfaceColor.withValues(alpha: 0.8),
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withValues(alpha: 0.2), width: 1),
+        borderSide: BorderSide.none,
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: lightTextColor.withValues(alpha: 0.2), width: 1),
+        borderSide: BorderSide.none,
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       focusedBorder: OutlineInputBorder(
@@ -112,12 +112,12 @@ class PixelTheme {
       onSurface: darkTextColor, // Blanco sobre gris oscuro
       onError: Colors.black,
     ),
-    scaffoldBackgroundColor: darkBackgroundColor, // Gris oscuro
-    textTheme: GoogleFonts.pressStart2pTextTheme(
+    scaffoldBackgroundColor: darkBackgroundColor,
+    textTheme: GoogleFonts.interTextTheme(
       ThemeData.dark().textTheme.copyWith(
-            bodyLarge: const TextStyle(fontSize: 14, color: darkTextColor),
-            bodyMedium: const TextStyle(fontSize: 12, color: darkTextColor),
-            titleLarge: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: darkTextColor),
+            bodyLarge: const TextStyle(fontSize: 16, color: darkTextColor, fontWeight: FontWeight.w400),
+            bodyMedium: const TextStyle(fontSize: 14, color: darkTextColor, fontWeight: FontWeight.w400),
+            titleLarge: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: darkTextColor),
           ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -127,20 +127,20 @@ class PixelTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
-        elevation: 2,
-        shadowColor: primaryColor.withValues(alpha: 0.3),
+        elevation: 0,
+        shadowColor: Colors.transparent,
         padding: const EdgeInsets.symmetric(horizontal: spacingMedium, vertical: spacingSmall),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: darkDialogSurfaceColor,
+      fillColor: darkDialogSurfaceColor.withValues(alpha: 0.8),
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withValues(alpha: 0.2), width: 1),
+        borderSide: BorderSide.none,
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: darkTextColor.withValues(alpha: 0.2), width: 1),
+        borderSide: BorderSide.none,
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
       focusedBorder: OutlineInputBorder(
